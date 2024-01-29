@@ -1,0 +1,42 @@
+.honey-pot-container {
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin-top: -10vh;
+    padding-bottom: 20vh;
+  }
+  
+  .eth-amount {
+    margin: 20px;
+    padding: 10px;
+    background-color: #333; 
+    border-radius: 4px;
+  }
+
+
+  .nuke-button {
+    font-size: 2.5em;
+    font-weight: 700;
+    font-family: 'bebas neue', sans-serif;
+    padding: 10px 45px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    border: 5px;
+    background-color: rgb(7, 255, 255);
+    box-shadow: 0px 0px 5px 2px #0ff;
+    border-radius: 5px;
+  }
+
+  .nuke-button:hover {
+    transform: scale(1.05)
+  }
+
+  .nuke-button:active {
+    color: #ffffff;
+    background-color: transparent;
+    box-shadow: 1px 1px 30px 5px #0ff;
+  }
+  

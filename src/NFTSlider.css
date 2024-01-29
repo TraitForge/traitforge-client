@@ -1,0 +1,91 @@
+.cards-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 18rem; 
+    overflow-x: scroll; 
+    padding: 10px 0;
+    white-space: nowrap; 
+  }
+  
+  .card-container {
+    width: 14.95rem;
+    height: 15rem;
+    margin-right: 10px; 
+    flex: 0 0 auto; 
+    border: 3px solid #0ff;
+    border-radius: 10px;
+    padding: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+
+.card-image {
+    width: 30%;
+    height: auto;
+    margin-top: 0.2em;
+    object-fit: cover;
+}
+
+.card-name, .card-price, .card-parameters-h2, .params{
+    font-size: 1.4rem; 
+    line-height: 0.9;
+    margin-bottom: 2px;
+    margin: 2px 0; 
+    padding: 5px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    text-align: center;
+    width: 100%;
+}
+
+.card-parameters-h2, .params {
+font-size: 1rem;
+}
+
+::-webkit-scrollbar {
+    width: 0px; 
+    height: 12px; 
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 255, 255, 0.065); 
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #acacac; 
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
+@media (max-width: 500px) {
+    .card-container {
+        width: 5rem; 
+        height: 9rem; 
+        margin-right: 10px;
+        margin-left: 10px;
+        padding: 0;
+    }
+
+    .card-image {
+        width: 30%;
+        height: auto;
+    }
+
+    .card-name, .card-price {
+        font-size: 0.8rem; 
+        margin: 1px 0; 
+        text-align: center;
+    }
+
+    .card-parameters-h2,  .params{
+        display: none;
+    }
+}
+

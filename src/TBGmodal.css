@@ -1,0 +1,177 @@
+
+.breeding-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+  }
+
+  .breeding-close-btn {
+    font-size: 2em;
+    cursor: pointer;
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    color: #ffffff;
+    background-color: #00000000;
+    border: none;
+  }
+
+  .breeding-close-btn:hover {
+    color: #aaaaaada;
+  }
+  
+  .breeding-modalContainer {
+      background-color: #000000; 
+      color: #ffffff; 
+      padding: 20px;
+      border-radius: 10px;
+      width: 60%;
+      box-shadow: 0px 0px 6px 3px #0ff;
+  }
+  
+  .breeding-modalHeader,
+  .breeding-modalFooter {
+    font-size: 1.6em;
+    text-align: center;
+  }
+  
+  .breeding-modalHeader {
+    position: relative;
+    top: -25px;
+  }
+  
+  .breeding-modalBody {
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .select-nft-button {
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    background: #fbfbfb; 
+    color: white;
+    border: none;
+    border-radius: 5px; 
+    font-size: 1rem;
+    transition: background-color 0.2s; 
+  }
+  
+  .select-nft-button:hover {
+    background-color: #c6c6c6; 
+  }
+  
+  .breeding-modalFooter button {
+    padding: 0.5rem 2rem;
+    font-family: 'bebas neue';
+    cursor: pointer;
+    margin-top: 90px;
+    background: #0ff; 
+    color: #1c1c1c; 
+    border: none;
+    border-radius: 5px; 
+    font-size: 1.4rem;
+    transition: background-color 0.2s;
+  }
+  
+  .breeding-modalFooter button:disabled {
+    background: #0ff; 
+    cursor: not-allowed;
+  }
+  
+  .breeding-modalFooter button:hover{
+    background-color: #0ff; 
+    box-shadow: 0px 0px 2px 4px #0ff;
+  }
+
+
+.breeding-title-input:focus,
+
+.entity-card {
+    width: 4em;
+    padding: 5px;
+    padding-bottom: 0px;
+    border-radius: 8px;
+    border: 1px solid #0ff;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 11;
+}
+
+.entity-card.selected{
+  box-shadow: 0px 0px 5px 2px #0ff;
+}
+
+.entity-card:hover {
+  transform: scale(1.05);
+  background-color: #28282835; 
+  z-index: 11;
+}
+
+.entity-card img {
+  max-width: 40%;
+  height: auto;
+  size: 0.1em;
+  margin-bottom: 10px;
+  margin-left: -5px;
+  z-index: 11;
+}
+
+.entity-card h3 {
+  margin-top: 12px;
+  font-size: 1.2em;
+  color: #ffffff;
+}
+
+.entity-card-details {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.entity-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  z-index: 11;
+}
+
+
+.price-tab {
+  color: #000;
+  width: 50%;
+}
+
+  @keyframes appear {
+    from {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  input[type="number"], input[type="text"]{
+    width: calc(100% - 20px); 
+    padding: 5px;
+    margin-top: 5px; 
+    border-radius: 4px;
+  }
+  
+
+  @media (max-width: 600px) {
+    .modalContainer {
+      width: 90%; 
+    }
+  }
+  
