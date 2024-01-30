@@ -1,0 +1,137 @@
+.cards-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 18rem; 
+    overflow-x: scroll; 
+    padding: 10px 0;
+    white-space: nowrap; 
+  }
+  .slider-text-h1 {
+    font-size: 0.8em;
+    margin-left: 35px;
+    margin-bottom: 5px;
+  }
+  
+  .slider-arrow {
+  margin-left: 120px;
+  }
+  .card-container {
+    width: 14rem;
+    height: 14rem;
+    margin-left: 20px; 
+    flex: 0 0 auto; 
+    border: 3px solid #0ff;
+    border-radius: 10px;
+    padding: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .first-card {
+    transform: scale(1.05);
+}
+
+.card-image {
+    width: 30%;
+    height: auto;
+    margin-top: 0.2em;
+    object-fit: cover;
+}
+
+.card-name, .card-price, .card-parameters-h2, h3, .params{
+    font-size: 1.4rem; 
+    line-height: 0.9;
+    margin-bottom: 2px;
+    margin: 2px 0; 
+    padding: 5px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    text-align: center;
+    width: 100%;
+}
+
+::-webkit-scrollbar {
+    width: 0px; 
+    height: 0px; 
+  }
+
+  @media (max-width: 710px) {
+    .mint-button button {
+      font-size: 7vw;
+    }
+    
+  }
+
+
+@media (max-width: 500px) {
+    .card-container {
+        width: 5rem; 
+        height: 9rem; 
+        margin-right: 10px;
+        margin-left: 10px;
+        padding: 0;
+    }
+
+    .card-image {
+        width: 30%;
+        height: auto;
+    }
+
+    .card-name, .card-price {
+        font-size: 0.8rem; 
+        margin: 1px 0; 
+        text-align: center;
+    }
+
+    .card-parameters-h2,  .params{
+        display: none;
+    }
+
+    .slider-text-h1{
+      margin-left: 5px;
+    }
+  
+    .slider-arrow {
+      margin-left: 40px;
+    }
+}
+
+@media (max-width: 400px) {
+  
+  .mint-button button{
+    font-size: 6vw;
+    width: 50%;
+    height: 10vw;
+  }
+
+  .gen-container, .gen-container div {
+    font-size: 0.7em;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+  }
+
+  .nexttokenslider {
+    margin-top: 10vh;
+    font-size: 0.8em;
+    margin-bottom: 100px;
+    text-align: left;
+  }
+  
+  .slider-text-h1 {
+    font-size: 0.5em;
+    margin-left: 10px;
+    margin-bottom: 1px;
+  }
+  
+  .slider-arrow {
+  margin-left: 40px;
+  }
+  
+
+}
+
