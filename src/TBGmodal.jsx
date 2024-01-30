@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import Entities from './Entity-data';
 import './TBGmodal.css';
 
-
-const Modal = ({ open, onClose, onSave, listedIds }) => {
+const Modal = ({ open, onClose, onSave, listedIds, entities }) => {
   const [price, setPrice] = useState('');
-  const [selectedEntity, setSelectedEntity] = useState(null)
-  const [listedEntities, setListedEntities] = useState(new Set());
+  const [selectedEntity, setSelectedEntity] = useState(null);
 
   const EntityCard = ({ entity, onSelect, isSelected }) => (
     <div className={`entity-card ${isSelected ? 'selected' : ''}`} onClick={() => onSelect(entity)}>
@@ -22,14 +20,25 @@ const Modal = ({ open, onClose, onSave, listedIds }) => {
   };
 
   const handleSave = () => {
-    if (selectedEntity && selectedEntity.gender !== 'Sire') {
-      alert('Only Sires can be listed for breeding.');
-      setListedEntities(new Set([...listedEntities, selectedEntity.id]));
+    if (!selectedEntity) {
+      alert('Please select an Entity.');
       return;
     }
-
-    onSave(selectedEntity);
-    onClose(); 
+  
+    if (selectedEntity.gender !== 'Sire') {
+      alert('Only Sires can be listed for breeding, and breeders are not allowed.');
+      return;
+    }
+  
+    onSave({
+      ...selectedEntity,
+      id: Math.random().toString(36).substr(2, 9),
+      price: parseFloat(price) || 0
+    });
+  
+    setPrice('');
+    setSelectedEntity(null);
+    onClose();
   };
 
   if (!open) return null;
@@ -44,9 +53,10 @@ const Modal = ({ open, onClose, onSave, listedIds }) => {
         </div>
         <div className='breeding-modalBody'>
         <div className="entity-cards-container">
-        {Entities.filter(entity => !listedIds.includes(entity.id)).map(entity => (
-          <EntityCard key={entity.id} entity={entity} onSelect={handleEntitySelection} isSelected={selectedEntity && entity.id === selectedEntity.id}/>       ))}
-        </div>
+        {Entities.filter(entity => !listedIds.includes(listedIds) && entity.gender !== 'Breeder').map(entity => (
+          <EntityCard key={entity.id} entity={entity} onSelect={handleEntitySelection} isSelected={selectedEntity && entity.id === selectedEntity.id}/>
+         ))}
+          </div>
           <input className='price-tab' type="number" placeholder="Price in ETH" value={price} onChange={(e) => setPrice(e.target.value)} />
         </div>
         <div className='breeding-modalFooter'>

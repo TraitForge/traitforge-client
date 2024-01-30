@@ -59,7 +59,7 @@ function HoneyPot() {
         className='nuke-button' 
         onClick={toggleModal} 
       >
-        Nuke NFT
+        Nuke Entity
       </button>
       {showNFTModal && (
         <HoneyPotModal

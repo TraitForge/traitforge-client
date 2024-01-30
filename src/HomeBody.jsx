@@ -129,7 +129,6 @@ const HomeBody = ({ userWallet }) => {
      </div>
 
      <div className='nexttokenslider'> 
-      <h1 className='slider-text-h1'>Upcoming Entities</h1>
         <Slider/>
       </div>
 

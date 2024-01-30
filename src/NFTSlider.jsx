@@ -1,26 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import './NFTSlider.css';
 import TFLogo from './TFLogo.png';
 
 const dummyNfts = [
-    { id: 1, image: TFLogo, name: 'Entity 1', parameters: 'Parameters', price: '0.1' },
-    { id: 2, image: TFLogo, name: 'Entity 2', parameters: 'Parameters', price: '0.2' },
-    { id: 3, image: TFLogo, name: 'Entity 3', parameters: 'Parameters', price: '0.3' },
-    { id: 4, image: TFLogo, name: 'Entity 4', parameters: 'Parameters', price: '0.4' },
-    { id: 5, image: TFLogo, name: 'Entity 5', parameters: 'Parameters', price: '0.5' },
-    { id: 6, image: TFLogo, name: 'Entity 6', parameters: 'Parameters', price: '0.6' },
-    { id: 7, image: TFLogo, name: 'Entity 7', parameters: 'Parameters', price: '0.7' },
-    { id: 8, image: TFLogo, name: 'Entity 8', parameters: 'Parameters', price: '0.8' },
-    { id: 9, image: TFLogo, name: 'Entity 9', parameters: 'Parameters', price: '0.9' },
-    { id: 10, image: TFLogo, name: 'Entity 10', parameters: 'Parameters', price: '0.10' },
-    { id: 11, image: TFLogo, name: 'Entity 11', parameters: 'Parameters', price: '0.11' },
-    { id: 12, image: TFLogo, name: 'Entity 12', parameters: 'Parameters', price: '0.12' },
-    { id: 13, image: TFLogo, name: 'Entity 13', parameters: 'Parameters', price: '0.13' },
-    { id: 14, image: TFLogo, name: 'Entity 14', parameters: 'Parameters', price: '0.14' },
-    { id: 15, image: TFLogo, name: 'Entity 15', parameters: 'Parameters', price: '0.15' },
-    { id: 16, image: TFLogo, name: 'Entity 16', parameters: 'Parameters', price: '0.16' },
-    { id: 17, image: TFLogo, name: 'Entity 17', parameters: 'Parameters', price: '0.17' },
-    { id: 18, image: TFLogo, name: 'Entity 18', parameters: 'Parameters', price: '0.18' },
+    { id: 1, image: TFLogo, gender: 'Sire', breeds: '9', claimshare: '9%', price: '0.01' },
+    { id: 2, image: TFLogo, gender: 'Breeder', breeds: '1', claimshare: '5%', price: '0.02' },
+    { id: 3, image: TFLogo, gender: 'Breeder', breeds: '12', claimshare: '18%', price: '0.03' },
+    { id: 4, image: TFLogo, gender: 'Sire', breeds: '3', claimshare: '5%', price: '0.04' },
+    { id: 5, image: TFLogo, gender: 'Sire', breeds: '8', claimshare: '25%', price: '0.05' },
+    { id: 6, image: TFLogo, gender: 'Non-Binary', breeds: '2', claimshare: '14%', price: '0.06' },
+    { id: 7, image: TFLogo, gender: 'Breeder', breeds: '4', claimshare: '20%', price: '0.07' },
 ];
 
 const getNftItems = async () => {
@@ -28,16 +19,15 @@ const getNftItems = async () => {
 };
 
 const Card = ({ nft }) => {
+    const isFirstCard = nft.id ===1;
     return (
-        <div className="slider-container">
-        <div className="card-container">
-        <p className="card-price">Price: {nft.price} ETH</p>
+        <div className={`card-container ${isFirstCard ? 'first-card' : ''}`}>
+            <p className="card-price">Price: {nft.price} ETH</p>
             <img src={nft.image} alt="NFT" className="card-image" />
-            <h3 className="card-name">{nft.name}</h3>
-            <h2 className="card-parameters-h2">Parameters:</h2>
-            <p className="params">  {nft.parameters}  </p>
+            <h3> Gender: {nft.gender} </h3>
+            <h3 className="card-name">Breeds per Year: {nft.breeds}</h3>
+            <h2 className="card-parameters-h2">Claimshare:  {nft.claimshare}</h2>
         </div>
-    </div>
     );
 };
 
@@ -50,14 +40,16 @@ const Slider = () => {
 
     return (
         <div className="slider">
-        <div className="cards-container">
-            {nftItems.length > 0 ? (
-                nftItems.map(nft => <Card key={nft.id} nft={nft} />)
-            ) : (
-                <p>Cannot Load Entity Array Slider</p>
+            {nftItems.length > 0 && (
+                <>
+                    <h1 className='slider-text-h1'>Available Entity</h1>
+                    <FontAwesomeIcon className='slider-arrow' icon={faArrowDown} />
+                </>
             )}
+            <div className="cards-container">
+                {nftItems.map((nft, index) => <Card key={nft.id} nft={nft} isFirst={index === 0} />)}
+            </div>
         </div>
-    </div>
     );
 };
 

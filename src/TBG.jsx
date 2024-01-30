@@ -3,14 +3,15 @@ import Modal from './TBGmodal';
 import Entities from './Entity-data'; 
 import './TBG.css';
 
-const ItemList = ({ items }) => (
+const EntityList = ({ entities }) => (
   <div className="breeder-items-list">
-    {items.map((item) => (
-      <div className='card' key={item.id}>
-        <img className='cards-img' src={item.image} alt={`Entity ${item.title}`} />
-        <h5>{item.title}</h5>
-        <p>Price: {item.price} ETH</p>
-        <p>Claimshare {item.claimshare}</p>
+    {entities.map((entity) => (
+      <div className='card' key={entity.id}>
+        <img className='cards-img' src={entity.image} alt={`Entity ${entity.title}`} />
+        <h5>{entity.title}</h5>
+        <p>Price: {entity.price} ETH</p>
+        <p>{entity.gender}</p>
+        <p>Claimshare: {entity.claimshare}</p>
       </div>
     ))}
   </div>
@@ -43,10 +44,9 @@ const NFTListings = () => {
           entities={Entities}
         />
       )}
-      <ItemList items={listedEntities} />
+      <EntityList entities={listedEntities} />
     </div>
   );
 };
 
 export default NFTListings;
-

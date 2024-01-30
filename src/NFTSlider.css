@@ -7,11 +7,19 @@
     padding: 10px 0;
     white-space: nowrap; 
   }
+  .slider-text-h1 {
+    font-size: 0.8em;
+    margin-left: 35px;
+    margin-bottom: 5px;
+  }
   
+  .slider-arrow {
+  margin-left: 120px;
+  }
   .card-container {
-    width: 14.95rem;
-    height: 15rem;
-    margin-right: 10px; 
+    width: 14rem;
+    height: 14rem;
+    margin-left: 20px; 
     flex: 0 0 auto; 
     border: 3px solid #0ff;
     border-radius: 10px;
@@ -22,6 +30,9 @@
     align-items: center;
   }
   
+  .first-card {
+    transform: scale(1.05);
+}
 
 .card-image {
     width: 30%;
@@ -30,7 +41,7 @@
     object-fit: cover;
 }
 
-.card-name, .card-price, .card-parameters-h2, .params{
+.card-name, .card-price, .card-parameters-h2, h3, .params{
     font-size: 1.4rem; 
     line-height: 0.9;
     margin-bottom: 2px;
@@ -43,26 +54,18 @@
     width: 100%;
 }
 
-.card-parameters-h2, .params {
-font-size: 1rem;
-}
-
 ::-webkit-scrollbar {
     width: 0px; 
-    height: 12px; 
+    height: 0px; 
   }
-  
-  ::-webkit-scrollbar-track {
-    background: rgba(0, 255, 255, 0.065); 
+
+  @media (max-width: 710px) {
+    .mint-button button {
+      font-size: 7vw;
+    }
+    
   }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #acacac; 
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-  }
+
 
 @media (max-width: 500px) {
     .card-container {
@@ -87,5 +90,48 @@ font-size: 1rem;
     .card-parameters-h2,  .params{
         display: none;
     }
+
+    .slider-text-h1{
+      margin-left: 5px;
+    }
+  
+    .slider-arrow {
+      margin-left: 40px;
+    }
+}
+
+@media (max-width: 400px) {
+  
+  .mint-button button{
+    font-size: 6vw;
+    width: 50%;
+    height: 10vw;
+  }
+
+  .gen-container, .gen-container div {
+    font-size: 0.7em;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+  }
+
+  .nexttokenslider {
+    margin-top: 10vh;
+    font-size: 0.8em;
+    margin-bottom: 100px;
+    text-align: left;
+  }
+  
+  .slider-text-h1 {
+    font-size: 0.5em;
+    margin-left: 10px;
+    margin-bottom: 1px;
+  }
+  
+  .slider-arrow {
+  margin-left: 40px;
+  }
+  
+
 }
 

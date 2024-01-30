@@ -209,10 +209,10 @@ const OpenInNewTabButton = ({ url, children }) => {
       /> 
 
         <header className="App-header">
-          <h1>
-            <img src={TFLogo} alt="TF Logo" className="logo" />
-            TraitForge
-          </h1>
+        <div className="logo-title-container">
+          <img src={TFLogo} alt="TF Logo" className="logo" />
+          <h1>TraitForge</h1>
+        </div>
           <div className="wallet-connect">
             <button onClick={connectWalletHandler}
               className={`meta-mask-button ${userWallet ? 'disabled' : ''}`}

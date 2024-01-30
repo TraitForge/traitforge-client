@@ -17,26 +17,46 @@
   }
 
 
-  .nuke-button {
+  button {
     font-size: 2.5em;
     font-weight: 700;
-    font-family: 'bebas neue', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     padding: 10px 45px;
-    color: rgb(0, 0, 0);
+    color: rgba(255, 255, 255, 0.593);
     cursor: pointer;
-    border: 5px;
-    background-color: rgb(7, 255, 255);
-    box-shadow: 0px 0px 5px 2px #0ff;
+    border: 5px solid transparent;
+    background-color: rgba(7, 255, 255, 0);
+    box-shadow: 0px 0px 1px 2px #0ff;
     border-radius: 5px;
+    transition: all 0.3s ease; 
+    position: relative; 
+    overflow: hidden; 
   }
-
+  
+  .nuke-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background-color: rgba(255, 255, 255, 0); 
+    transition: all 0.5s ease;
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 20px;
+  }
+  
+  .nuke-button:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
   .nuke-button:hover {
-    transform: scale(1.05)
+    color: #fff; 
+    background-color: rgba(0, 0, 0, 0); 
+    box-shadow: 0px 0px 2px 4px #0ff; 
   }
-
+  
   .nuke-button:active {
-    color: #ffffff;
-    background-color: transparent;
-    box-shadow: 1px 1px 30px 5px #0ff;
+    transform: scale(0.95); 
   }
   
