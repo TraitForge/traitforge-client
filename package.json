@@ -1,0 +1,28 @@
+{
+  "name": "hardhat",
+  "version": "1.0.0",
+  "description": "This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.",
+  "main": "hardhat.config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "alchemy-sdk": "^3.1.2"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "dotenv": "^16.4.1",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.19.4",
+    "hardhat-deploy": "^0.11.45"
+  }
+}
