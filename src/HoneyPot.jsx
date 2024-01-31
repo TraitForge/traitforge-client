@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useWeb3 } from './Web3Context'; 
+import { Web3Provider } from './Web3Context';
 import HoneyPotModal from './honeypotmodal';
 import './honeypot.css'; 
 
 function HoneyPot() {
-  const { web3 } = useWeb3(); 
   const [showNFTModal, setShowNFTModal] = useState(false);
   const [ethAmount, setEthAmount] = useState(0);
   const [usdAmount, setUsdAmount] = useState(0);
@@ -34,7 +33,7 @@ function HoneyPot() {
   };
 
   useEffect(() => {
-    if (web3) {
+    if (Web3Provider) {
       const interval = setInterval(async () => {
         const amount = await fetchEthAmount();
         const rate = await fetchEthToUsdRate();
@@ -46,7 +45,7 @@ function HoneyPot() {
 
       return () => clearInterval(interval);
     }
-  }, [web3]);
+  }, []);
 
   return (
     <div className="honey-pot-container">

@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "^3.8.9",
+    "@ethereumjs/util": "^9.0.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -27,6 +28,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@tsparticles/react": "^3.0.0",
+    "@walletconnect/modal": "^2.6.2",
     "@walletconnect/web3-provider": "^1.8.0",
     "alchemy-sdk": "^3.1.2",
     "assert": "^2.1.0",
@@ -50,7 +52,7 @@
     "tsparticles": "^2.12.0",
     "url": "^0.11.3",
     "web-vitals": "^2.1.4",
-    "web3": "^4.3.0",
+    "web3": "^4.0.0",
     "web3modal": "^1.9.12"
   },
   "devDependencies": {

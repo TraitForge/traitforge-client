@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import './HomeBody.css';
-import Slider from './EntitySlider';
+import Slider from './NFTSlider';
 
-import mintContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/artifacts/contracts/Mint.sol/Mint.json';
+import mintContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/src/contracts/Mint.json';
 
 const HomeBody = ({ userWallet }) => {
   const [entityPrice, setEntityPrice] = useState(null);

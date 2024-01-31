@@ -1,64 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Web3 from 'web3';
 import './buysellModal.css';
 
-import tradeContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/artifacts/contracts/TradeEntities.sol/EntityTrading.json';
-import mintContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/artifacts/contracts/Mint.sol/Mint.json';
+
+import tradeContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/src/contracts/EntityTrading.json';
+import mintContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/src/contracts/Mint.json';
 
 
-  const Modal = ({ open, onClose, onSave, userWallet }) => {
+const Modal = ({ open, onClose, onSave, userWallet }) => {
   const [entities, setEntities] = useState([]);
-  const [selectedNFT, setSelectedNFT] = useState(null);
+  const [selectedEntity, setSelectedEntity] = useState(null);
   const [price, setPrice] = useState('');
-  const [isListed,setIsListed] = useState(false);
+  const [isListed, setIsListed] = useState(false);
   const [error, setError] = useState('');
+
+
+  const web3 = new Web3(Web3.givenProvider);
+  const entityTradingContract = new web3.eth.Contract(tradeContractAbi.abi, '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9');
+  const mintContract = new web3.eth.Contract(mintContractAbi.abi, '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0');
+
+
+  const fetchUserEntities = useCallback(async () => {
+    try {
+      const userEntities = await mintContract.methods.getUserEntities(userWallet).call();
+      setEntities(userEntities.map(entity => ({ ...entity, id: entity[0] }))); 
+    } catch (error) {
+      console.error('Could not retrieve data:', error);
+    }
+  }, [userWallet, mintContract.methods]);
 
   useEffect(() => {
     if (open) {
       fetchUserEntities();
-      setIsListed(false);
     } else {
       setPrice('');
+      setSelectedEntity(null);
     }
-  }, [open]);
-
-  const web3 = new Web3(Web3.givenProvider);
-  const entityTradingAddress = new web3.eth.Contract(tradeContractAbi.abi, '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9');
-  const mintAddress = new web3.eth.Contract(mintContractAbi.abi, '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0');
-
-  const fetchUserEntities = async () => {
-    try {
-      const userEntities = await contract.methods.getUserEntities(userWallet).call();
-      return entities;
-    } catch (error) {
-      console.error('Could not retrieve data:', error);
-      return[];
-    }
-  };
+  }, [open, fetchUserEntities]);
 
   const handlePriceChange = (event) => {
     setPrice(event.target.value);
-    setError('')
+    setError('');
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-  
-  
+
     if (!price) {
       setError('Please enter a price');
-      setTimeout(()=> setError(''), 3000);
+      setTimeout(() => setError(''), 3000);
       return;
     }
-  
-    const selectedNFTData = nfts.find(nft => nft.id === selectedNFT);
-    if (selectedNFTData) {
-      onSave({ ...selectedNFTData, price: parseFloat(price) });
-      setIsListed(true);
-      setTimeout(() => setIsListed(false), 3000);
-      onClose();
+
+    const selectedEntityData = entities.find(entity => entity.id === selectedEntity);
+    if (selectedEntityData) {
+      try {
+        await entityTradingContract.methods.listNFTForSale(selectedEntity, web3.utils.toWei(price, 'ether')).send({ from: userWallet });
+        onSave({ ...selectedEntityData, price: parseFloat(price) });
+        setIsListed(true);
+        setTimeout(() => {
+          setIsListed(false);
+          onClose();
+        }, 6000);
+      } catch (error) {
+        setError('Failed to list Entity. Please try again.');
+        console.error('List Entity error:', error);
+      }
     } else {
-      setError('Please select an NFT to list.');
+      setError('Please select an Entity to list.');
     }
   };
 
@@ -66,20 +75,20 @@ import mintContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/artifacts/c
 
   return (
     <div className='overlay'>
-      <button className='closeBtn' onClick={onClose} > x </button>
+      <button className='closeBtn' onClick={onClose}>x</button>
       <div className='modalContainer'>
-        <header> List Your Entity for Sale </header>
+        <header>List Your Entity for Sale</header>
         <div className='nfts-display-container'>
-          {nfts.map(nft => (
-            <div 
-              key={nft.id} 
-              className={`nfts-item ${selectedNFT === nft.id ? 'selected' : ''}`} 
-              onClick={() => setSelectedNFT(nft.id)}
+          {entities.map(entity => (
+            <div
+              key={entity.id}
+              className={`nfts-item ${selectedEntity === entity.id ? 'selected' : ''}`}
+              onClick={() => setSelectedEntity(entity.id)}
             >
-              <img src={nft.image} alt={nft.name} />
-              <p>{nft.name}</p>
-              <p>{nft.claimshare}</p>
-              <p>{nft.gender}</p>
+              <img src={entity.image} alt={entity.name} />
+              <p>{entity.name}</p>
+              <p>{entity.claimshare}</p>
+              <p>{entity.gender}</p>
             </div>
           ))}
         </div>
@@ -97,8 +106,8 @@ import mintContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/artifacts/c
             <button type="submit" className='btnPrimary'>
               <span className='bold'>List For Sale</span>
             </button>
-            {error && <p style={{color: 'red'}}>{error}</p>}
-            {isListed}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {isListed && <p style={{ color: 'green' }}>Entity Listed Successfully!</p>}
           </form>
         </div>
       </div>

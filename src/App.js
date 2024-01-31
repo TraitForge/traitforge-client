@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { FaWallet, FaCheck, FaBars, FaTimes } from 'react-icons/fa';
 import Particles from "@tsparticles/react";
 import { loadFull } from "tsparticles";
-import { Web3Provider} from './Web3Context';
-import Web3 from 'web3';
-import Web3Modal from "web3modal";
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import { Web3Provider } from './Web3Context';
 import TFLogo from './TFLogo.png';
 import Home from './HomeBody';
 import TBG from './TBG';
@@ -18,6 +15,7 @@ import './App.css';
 
 function App() {
 
+const [userWallet, connectWalletHandler] = useState(Web3Provider);
 
 const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const handleNavLinkClick = () => {
@@ -40,31 +38,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
 };
 
 
-
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: "YOUR_INFURA_ID" 
-    }
-  },
-};
-
-const web3Modal = new Web3Modal({
-  network: "mainnet", 
-  cacheProvider: true,
-  providerOptions
-});
-
-useEffect(() => {
-  if (web3Modal.cachedProvider) {
-    setUserWallet();
-  }
-  // eslint-disable-next-line
- }, []);
-
-
-const OpenInNewTabButton = ({ url, children }) => {
+ const OpenInNewTabButton = ({ url, children }) => {
   const handleClick = () => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
@@ -76,25 +50,7 @@ const OpenInNewTabButton = ({ url, children }) => {
 };
 
   const [showInstructions, setShowInstructions] = useState(false);
-  const [userWallet, setUserWallet] = useState(null);
-  const [isNavExpanded, setIsNavExpanded] = useState(false);
-  
-  const connectWalletHandler = async () => {
-    try {
-      const provider = await web3Modal.connect();
-      const web3 = new Web3(provider);
-  
-      const accounts = await web3.eth.getAccounts();
-      if (accounts.length > 0) {
-        setUserWallet(accounts[0]);
-      }
-  
-      provider.on("connect", (info) => console.log(info));
-      provider.on("disconnect", (error) => console.log(error));
-    } catch (error) {
-      console.error('Error connecting to wallet', error);
-    }
-  };
+  const [isNavExpanded, setIsNavExpanded] = useState(false); 
 
   const toggleInstructions = () => {
     setShowInstructions(!showInstructions);
@@ -196,7 +152,6 @@ const OpenInNewTabButton = ({ url, children }) => {
 
 
   return (
-    <Web3Provider>
     <BrowserRouter>
       <div className="App">
 
@@ -325,7 +280,6 @@ const OpenInNewTabButton = ({ url, children }) => {
         </div>
         </div>
     </BrowserRouter>
-    </Web3Provider>
   );
 }
 

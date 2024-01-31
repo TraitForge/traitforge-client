@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App'
+import { Web3Provider} from './Web3Context';
+import App from './App';
 import './App.css'; 
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
- <App />
+    <Web3Provider>
+      <App />
+    </Web3Provider>
 );
 
