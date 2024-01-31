@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./CustomOwnable.sol";
+import "./Mint.sol";
 
 contract EntityTrading is ReentrancyGuard, CustomOwnable {
     IERC721 public entityContract;
