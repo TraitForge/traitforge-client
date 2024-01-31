@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import importedNfts from './Entity-data'; 
+import Web3 from 'web3';
 import './buysellModal.css';
 
-const Modal = ({ open, onClose, onSave }) => {
-  const [nfts, setNfts] = useState([]);
+import tradeContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/artifacts/contracts/TradeEntities.sol/EntityTrading.json';
+import mintContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/artifacts/contracts/Mint.sol/Mint.json';
+
+
+  const Modal = ({ open, onClose, onSave, userWallet }) => {
+  const [entities, setEntities] = useState([]);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState('');
   const [isListed,setIsListed] = useState(false);
@@ -11,16 +15,25 @@ const Modal = ({ open, onClose, onSave }) => {
 
   useEffect(() => {
     if (open) {
-      fetchUserNFTs();
+      fetchUserEntities();
       setIsListed(false);
     } else {
       setPrice('');
     }
   }, [open]);
 
-  const fetchUserNFTs = () => {
-    setNfts(importedNfts);
-    setSelectedNFT(importedNfts.length > 0 ? importedNfts[0].id : null);
+  const web3 = new Web3(Web3.givenProvider);
+  const entityTradingAddress = new web3.eth.Contract(tradeContractAbi.abi, '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9');
+  const mintAddress = new web3.eth.Contract(mintContractAbi.abi, '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0');
+
+  const fetchUserEntities = async () => {
+    try {
+      const userEntities = await contract.methods.getUserEntities(userWallet).call();
+      return entities;
+    } catch (error) {
+      console.error('Could not retrieve data:', error);
+      return[];
+    }
   };
 
   const handlePriceChange = (event) => {

@@ -24,16 +24,22 @@ contract EntityTrading is ReentrancyGuard, CustomOwnable {
     event EntityListed(uint256 indexed tokenId, address indexed seller, uint256 price);
     event EntitySold(uint256 indexed tokenId, address indexed seller, address indexed buyer, uint256 price);
     event ListingCancelled(uint256 indexed tokenId);
+    event TokenReceived(uint256 indexed tokenId, address indexed fromAddress, address indexed toAddress);
 
     constructor(address _entityContractAddress, address _nukeFundAddress, address _initialOwner) CustomOwnable(_initialOwner) {
     entityContract = IERC721(_entityContractAddress);
     nukeFundAddress = _nukeFundAddress;
     }
     function listEntityForSale(uint256 tokenId, uint256 price) public nonReentrant stopInEmergency {
-    require(entityContract.ownerOf(tokenId) == msg.sender, "You must own the entity");
-    entityContract.transferFrom(msg.sender, address(this), tokenId);
-    listings[tokenId] = Listing(msg.sender, price, true);
-    emit EntityListed(tokenId, msg.sender, price);
+        require(price > 0, "Price must be greater than zero");
+        require(entityContract.getApproved(tokenId) == address(this) || entityContract.isApprovedForAll(msg.sender, address(this)), "Contract must be approved to transfer token");
+        require(entityContract.ownerOf(tokenId) == msg.sender, "You must own the entity");
+        entityContract.transferFrom(msg.sender, address(this), tokenId);
+    
+        emit TokenReceived(tokenId, msg.sender, address(this));
+        listings[tokenId] = Listing(msg.sender, price, true);
+
+        emit EntityListed(tokenId, msg.sender, price);
 }
 
     function buyEntity(uint256 tokenId) public payable nonReentrant stopInEmergency{
@@ -52,7 +58,6 @@ contract EntityTrading is ReentrancyGuard, CustomOwnable {
         listing.isActive = false;
         listings[tokenId] = listing;
         entityContract.transferFrom(address(this), msg.sender, tokenId);
-        payable(listing.seller).transfer(listing.price);
 
         emit EntitySold(tokenId, listing.seller, msg.sender, listing.price);
     }

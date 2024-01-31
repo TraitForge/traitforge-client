@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { FaWallet, FaCheck, FaBars, FaTimes } from 'react-icons/fa';
-import Particles from "react-tsparticles";
+import Particles from "@tsparticles/react";
 import { loadFull } from "tsparticles";
 import { Web3Provider} from './Web3Context';
 import Web3 from 'web3';

@@ -30,6 +30,8 @@ contract Mint is ERC721, CustomOwnable, ReentrancyGuard {
     IHoneypot public honeypotContract;
     mapping(uint256 => Entity) public entities;
     mapping(uint256 => uint256) public lastNukeTime;
+    mapping(uint256 => uint256) public entitiesPerGenerationCount;
+
 
     uint256 public constant MAX_ENTITIES = 10000;
     uint256 public mintedCount = 0;
@@ -44,7 +46,7 @@ contract Mint is ERC721, CustomOwnable, ReentrancyGuard {
     event AttributesQueried(uint256 indexed tokenId, uint256 currentClaimShare, uint256 currentBreedPotential);
     event TokenBurned(uint256 indexed tokenId);
     event ClaimShareIncreased(uint256 indexed tokenId, uint256 newClaimShare);
-    event BreedingOppotunitiesIncreased(uint256 indexed tokenId, uint256 newBreedPotential);
+    event BreedingOpportunitiesIncreased(uint256 indexed tokenId, uint256 newBreedPotential);
     
 
     constructor(address _honeypotAddress, address _breedableTokenAddress, address initialOwner) 
@@ -68,6 +70,7 @@ contract Mint is ERC721, CustomOwnable, ReentrancyGuard {
 
         EntityType entityType = mintedCount % 2 == 0 ? EntityType.Sire : EntityType.Breeder;
         entities[tokenId] = Entity(entityType, claimShare, breedPotential, block.number, block.number, generation, block.number);
+        entitiesPerGenerationCount[generation]++;
 
         mintedCount++;
         totalRaised += msg.value;
@@ -132,10 +135,9 @@ contract Mint is ERC721, CustomOwnable, ReentrancyGuard {
             entity.breedPotential += 2 * yearsPassed;
             entity.lastBreedPotentialUpdate = block.number;
 
-            emit BreedingOppotunitiesIncreased(tokenId, entity.breedPotential);
+            emit BreedingOpportunitiesIncreased(tokenId, entity.breedPotential);
         }
     }
-
     function burnToken(uint256 tokenId) public view {
         address owner = ownerOf(tokenId);
         require(
