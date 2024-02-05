@@ -37,6 +37,7 @@
     "axios": "^1.6.7",
     "canvas-confetti": "^1.9.2",
     "chart.js": "^4.4.1",
+    "ethers": "^6.10.0",
     "graphql": "^16.8.1",
     "https-browserify": "^1.0.0",
     "node-cron": "^3.0.3",
@@ -44,18 +45,16 @@
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.12.0",
+    "react-icons": "^5.0.1",
     "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
-    "react-slick": "^0.29.0",
-    "react-tsparticles": "^2.12.2",
+    "react-slick": "^0.30.1",
     "slick-carousel": "^1.8.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "tsparticles": "^3.0.0",
-    "typescript": "^4.9.5",
     "url": "^0.11.3",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^3.5.2",
     "web3": "^4.4.0",
     "web3modal": "^1.9.12"
   },
@@ -71,7 +70,8 @@
     "hardhat": "^2.19.5",
     "hardhat-deploy": "^0.11.45",
     "process": "^0.11.10",
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "^2.2.1",
+    "typescript": "^4.9.5"
   },
   "eslintConfig": {
     "extends": [

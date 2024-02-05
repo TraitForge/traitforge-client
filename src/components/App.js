@@ -5,10 +5,10 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
 import { Web3Context } from '../utils/Web3Context';
 import TFLogo from '../utils/TFLogo.png';
-import Home from './HomeBody';
-import TBG from './TBG';
+import Home from './Home';
+import TBG from './Breeding';
 import HoneyPot from './HoneyPot';
-import BuySell from './BuySell';
+import BuySell from './Trading';
 import '../styles/App.css';
 
 const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
@@ -22,7 +22,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
         {isNavExpanded ? <FaTimes /> : <FaBars />}
       </button>
       <nav className={isNavExpanded ? "navlist expanded" : "navlist"}>
-        <NavLink to="/HomeBody" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HOME</NavLink>
+        <NavLink to="/Home" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HOME</NavLink>
         <NavLink to="/TBG" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>BREEDING</NavLink>
         <NavLink to="/HoneyPot" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HONEYPOT</NavLink>
         <NavLink to="/BuySell" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>BUY/SELL</NavLink>

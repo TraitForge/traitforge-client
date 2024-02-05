@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import Modal from './TBGmodal';
+import Modal from './BreedingModal';
 import { useEntities } from '../graph-data/EntitiesContext'; 
 import '../styles/TBG.css';
 

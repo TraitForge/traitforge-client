@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import Modal from './buysellModal';
+import Modal from './TradingModal';
 import '../styles/BuySell.css';
 
 import tradeContractABI from '../contracts/EntityTrading.json';

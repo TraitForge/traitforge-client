@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Web3 from 'web3';
-import HoneyPotModal from './honeypotmodal';
+import HoneyPotModal from './HoneyPotModal';
 import '../styles/honeypot.css'; 
 
 import NukeFundAbi from '../contracts/NukeFund.json';

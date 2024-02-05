@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import Web3 from 'web3';
 import { Web3Context } from '../utils/Web3Context';
-import LoadingSpinner from './loadingSpinner';
+import LoadingSpinner from './LoadingSpinner';
 import '../styles/HomeBody.css';
-import Slider from './NFTSlider';
+import Slider from './EntitySlider';
 
 import mintContractAbi from '../contracts/Mint.json';
 
