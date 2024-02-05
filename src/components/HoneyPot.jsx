@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Web3Provider } from './Web3Context';
+import Web3 from 'web3';
 import HoneyPotModal from './honeypotmodal';
-import './honeypot.css'; 
+import '../styles/honeypot.css'; 
+
+import NukeFundAbi from '../contracts/NukeFund.json';
 
 function HoneyPot() {
   const [showNFTModal, setShowNFTModal] = useState(false);
@@ -10,13 +12,23 @@ function HoneyPot() {
   const [usdAmount, setUsdAmount] = useState(0);
 
   const toggleModal = () => {
-    setShowNFTModal(true);
+    setShowNFTModal(prevState => !prevState); 
   };
 
+  const NukeFundAddress = '0x0f52F14b4df86F223234DDC4a61dc0d63B77269a';
+
   const fetchEthAmount = async () => {
-    //smart contract stuff here
-    return Math.random()  * 100; // delete this when real logic is in
-  };
+    try {
+        const web3 = new Web3(Web3.givenProvider || "https://goerli.infura.io/v3/3f27d7e6326b43c5b77e16ac62188640");
+        const nukeFundContract = new web3.eth.Contract(NukeFundAbi.abi, NukeFundAddress);
+        
+        const balance = await nukeFundContract.methods.getFundBalance().call();
+        return web3.utils.fromWei(balance, 'ether');
+    } catch (error) {
+        console.error('Error fetching ETH amount from nuke fund:', error);
+        return 0; 
+    }
+};
 
   const fetchEthToUsdRate = async () => {
     try {
@@ -33,18 +45,17 @@ function HoneyPot() {
   };
 
   useEffect(() => {
-    if (Web3Provider) {
-      const interval = setInterval(async () => {
-        const amount = await fetchEthAmount();
-        const rate = await fetchEthToUsdRate();
+    const interval = setInterval(async () => {
+      const amount = await fetchEthAmount();
+      const rate = await fetchEthToUsdRate();
+      if (amount && rate) {
         const usdValue = convertEthToUsd(amount, rate);
+        setEthAmount(Number(amount).toFixed(2)); 
+        setUsdAmount(Number(usdValue).toFixed(2)); 
+      }
+    }, 10000);
 
-        setEthAmount(amount.toFixed(2));
-        setUsdAmount(usdValue.toFixed(2));
-      }, 10000);
-
-      return () => clearInterval(interval);
-    }
+    return () => clearInterval(interval); 
   }, []);
 
   return (

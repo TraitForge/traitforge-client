@@ -12,24 +12,30 @@ main {
 .Body-Header {
   padding-bottom: 15vh;
 }
+
 .mint-container {
-  text-align:center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+
 .mint-text {
-  display: block;
+  text-align: center;
   font-size:7vw;
   margin-bottom: 10px;
 }
 
 .mint-button {
- display: block;
+ display: flex;
  padding-bottom: 20px;
+ justify-content: center;
 }
 
 .mint-button button{
   font-size: 6vw;
-  width: 50%;
+  width: 700%;
   height: 10vw;
 }
 
@@ -50,7 +56,7 @@ main button:hover{
 
 main button:active {
 box-shadow: 0px 0px 80px 10px #0ff;
-color: #0ff;
+color: rgba(195, 255, 255, 0.931);
 transition: 0.08s;
 }
 
@@ -77,7 +83,6 @@ h2, h3 {
 
 .gen-container {
   display: flex;
-  border: #0ff;
   justify-content: space-around;
   font-size: 0.8em;
 }
@@ -87,7 +92,6 @@ h2, h3 {
   font-size: 0.7em;
   margin-inline: 30px;
 }
-
 
 
 

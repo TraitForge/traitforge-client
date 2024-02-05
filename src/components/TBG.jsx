@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import Modal from './TBGmodal';
-import Entities from './Entity-data'; 
-import './TBG.css';
+import { useEntities } from '../graph-data/EntitiesContext'; 
+import '../styles/TBG.css';
 
 const EntityList = ({ entities }) => (
   <div className="breeder-items-list">
@@ -18,35 +18,27 @@ const EntityList = ({ entities }) => (
 );
 
 const NFTListings = () => {
-  const [listedEntities, setListedEntities] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-
-  const handleSaveListing = (entity) => {
-    if (entity) {
-      setListedEntities([...listedEntities, entity]);
-    }
-    setOpenModal(false);
-  };
+  const { entitiesForSale } = useEntities; 
 
   useEffect(() => {
-    // This effect could be used for initial data loading if necessary
   }, []);
 
   return (
     <div className='TBG-page'>
-      <button className='breed-entity-button' onClick={() => setOpenModal(true)}>List For Breeding</button>
+      <button className='breed-entity-button' onClick={() => setOpenModal(true)}>List Entity For Sale</button>
       {openModal && (
         <Modal 
           open={openModal} 
           onClose={() => setOpenModal(false)} 
-          onSave={handleSaveListing}
-          listedIds={listedEntities.map(e => e.id)}
-          entities={Entities}
+          onSave={(entity) => console.log('Save functionality to be implemented')} 
+          entities={entitiesForSale} 
         />
       )}
-      <EntityList entities={listedEntities} />
+      <EntityList entities={entitiesForSale} />
     </div>
   );
 };
 
 export default NFTListings;
+

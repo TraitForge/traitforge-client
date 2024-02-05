@@ -1,21 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { FaWallet, FaCheck, FaBars, FaTimes } from 'react-icons/fa';
-import Particles from "@tsparticles/react";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
-import { Web3Provider } from './Web3Context';
-import TFLogo from './TFLogo.png';
+import { Web3Context } from '../utils/Web3Context';
+import TFLogo from '../utils/TFLogo.png';
 import Home from './HomeBody';
 import TBG from './TBG';
 import HoneyPot from './HoneyPot';
 import BuySell from './BuySell';
-import './App.css';
-
-
-
-function App() {
-
-const [userWallet, connectWalletHandler] = useState(Web3Provider);
+import '../styles/App.css';
 
 const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const handleNavLinkClick = () => {
@@ -37,11 +31,11 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   );
 };
 
-
- const OpenInNewTabButton = ({ url, children }) => {
+const OpenInNewTabButton = ({ url, children }) => {
   const handleClick = () => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
+
   return (
     <button onClick={handleClick} className="new-tab-button">
       {children}
@@ -49,85 +43,67 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   );
 };
 
+
+
+  function App() {
   const [showInstructions, setShowInstructions] = useState(false);
   const [isNavExpanded, setIsNavExpanded] = useState(false); 
+  const [init, setInit] = useState(false);
 
-  const toggleInstructions = () => {
-    setShowInstructions(!showInstructions);
+ useEffect(() => {
+  initParticlesEngine(async (engine) => {
+    await loadFull(engine);
+  }).then(() => {
+    setInit(true);
+  });
+ }, []);
+
+  const web3Context = useContext(Web3Context);
+  if (!web3Context) {
+    console.error('Web3 Connection Issue');
+    return <div>Error: Web3 context issue</div>;
   };
 
-  const particlesInit = async (main) => { 
-    await loadFull(main); 
-  }; 
-  const particlesLoaded = (container) => { 
-  }; 
-  
-  const ParticlesOptions = {
+  const { userWallet, connectWallet } = web3Context;
+
+  const particlesOptions = {
     background: {
-      color: "#000000",  
+      color: "#000000",
     },
     fpsLimit: 120,
     interactivity: {
-      detect_on: "canvas",  
+      detect_on: "canvas",
       events: {
-      onhover: {
-        enable: true,
-        mode: "attract"
-      },
-        onclick: {
+        onHover: {
           enable: true,
-          mode: "push"  
-        }
+          mode: false,
+        },
+        onClick: {
+          enable: true,
+          mode: "false",
+        },
       },
       modes: {
         push: {
-          particles_nb: 4
-        }
-      }
+          particles_nb: 4,
+        },
+      },
     },
 
 
     particles: {
-      number: {
-        value: 50, 
-        density: {
-          enable: true,
-          area: 400, 
-        },
-      },
-      shape: {
-        type: "circle",
-      },
-      size: {
-        value: 3,
-        random: true,  
-        anim: {
-          enable: true,
-          speed: 4,
-          size_min: 0.3,
-          sync: false
-        },
-      },
+
       color: {
-        value: "#0ff",  
+        value: "#0ff",
       },
-      opacity: {
-        value: 1,
-        anim: {
-          enable: true,
-          speed: 1,
-          opacity_min: 0.1,
-          sync: false
-        }
-      },
-      line_linked: {
-        enable: false  
+      links: {
+        enable: false,
       },
       move: {
         enable: true,
-        speed: 1,
-        direction: "top",
-        random: true,  
+        speed: 0.3,
+        direction: "none",
+        random: true,
         straight: false,
         out_mode: "out",
         bounce: false,
@@ -137,87 +113,108 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
           rotateY: 800,
         },
       },
+      number: {
+        value: 80,
+        density: {
+          enable: true,
+          area: 400,
+        },
+      },
+      opacity: {
+        value: 1,
+        anim: {
+          enable: true,
+          speed: 1,
+          opacity_min: 0.1,
+          sync: false,
+        },
+      },
+      shape: {
+        type: "circle",
+      },
+      size: {
+        value: 1,
+        random: true,
+        anim: {
+          enable: true,
+          speed: 4,
+          size_min: 1,
+          sync: false,
+        },
+      },
     },
   };
 
+  const particlesLoaded = (container) => {
+    console.log(container);
+  };
 
+  const toggleInstructions = () => {
+    setShowInstructions(prev => !prev);
+  };
 
   const links = [
     { url: 'https://discord.gg/S3VJS6ByYE', text: 'HOW TO PLAY' },
     { url: 'https://twitter.com/TraitForge', text: 'TWITTER/X' },
     { url: 'https://discord.gg/wPxFNRWZEf', text: 'DISCORD' },
   ];
-  
-
-
 
   return (
     <BrowserRouter>
-      <div className="App">
-
-
+    <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    {init && (
       <Particles 
-        id="tsparticles" 
-        init={particlesInit} 
-        loaded={particlesLoaded} 
-        options={ParticlesOptions}
-      /> 
-
-        <header className="App-header">
-        <div className="logo-title-container">
-          <img src={TFLogo} alt="TF Logo" className="logo" />
-          <h1>TraitForge</h1>
-        </div>
-          <div className="wallet-connect">
-            <button onClick={connectWalletHandler}
-              className={`meta-mask-button ${userWallet ? 'disabled' : ''}`}
-              disabled={!!userWallet}>
-              <span className="button-text">{userWallet ? 'Wallet Connected' : 'Connect Wallet'}</span>
-              <span className="button-icon">{userWallet ? <FaCheck /> : <FaWallet />}</span>
-            </button>
-            {userWallet && (
-              <div className="wallet-address">
-                <span className="address-text">Address: {userWallet.slice(0, 6)}...{userWallet.slice(-4)}</span>
-                <span className="address-icon"><FaCheck /></span>
-              </div>
-            )}
-          </div>
-          <Navbar isNavExpanded={isNavExpanded} setIsNavExpanded={setIsNavExpanded}/>
-        </header>
-
-        <Routes>
-          <Route path="/" element={<Navigate to ="HomeBody" />} />
-          <Route path="/HomeBody" element={<Home />} />
-          <Route path="/TBG" element={<TBG />} />
-          <Route path="/HoneyPot" element={<HoneyPot />} />
-          <Route path="/BuySell" element={<BuySell />} />
-        </Routes>
+        id="tsparticles"
+        loaded={particlesLoaded}
+        options={particlesOptions}
+      />
+    )}
+    <header className="App-header">
+      <div className="logo-title-container">
+        <img src={TFLogo} alt="TF Logo" className="logo" />
+        <h1>TraitForge</h1>
       </div>
-
-      <div className="footer-container">
-        <footer className="App-Footer">
-          <p>Resources</p>
-          {links.map((link, index) => ( 
-            <OpenInNewTabButton key={index} url={link.url}>
-              {link.text}
-            </OpenInNewTabButton>
-          ))}
-         </footer>
-         <div/>
-         
-
-         <div>
-         <button onClick={toggleInstructions} className='instructions-button'>
-            How To Play
-         </button>
-               {showInstructions && (
-          <div className='instructions-pop-up'>
-          <h4>How to Play</h4>
-          <button className='closer-button' onClick={toggleInstructions}>Close</button>
-          <div className='instructions-content'>
-
-
-<p>Welcome to TraitForge, an innovative NFT honeypot game that blends strategic gameplay with the exciting world of NFTs.</p>
+      <div className="wallet-connect">
+        <button onClick={connectWallet}
+          className={`meta-mask-button ${userWallet ? 'disabled' : ''}`}
+          disabled={!!userWallet}>
+          <span className="button-text">{userWallet ? 'Wallet Connected' : 'Connect Wallet'}</span>
+          <span className="button-icon">{userWallet ? <FaCheck /> : <FaWallet />}</span>
+        </button>
+        {userWallet && (
+          <div className="wallet-address">
+            <span className="address-text">Address: {userWallet.slice(0, 6)}...{userWallet.slice(-4)}</span>
+            <span className="address-icon"><FaCheck /></span>
+          </div>
+        )}
+      </div>
+      <Navbar isNavExpanded={isNavExpanded} setIsNavExpanded={setIsNavExpanded}/>
+    </header>
+    <div className='main-content' style={{ flex: 1 }}>
+      <Routes>
+        <Route path="/" element={<Navigate to="/HomeBody" />} />
+        <Route path="/HomeBody" element={<Home />} />
+        <Route path="/TBG" element={<TBG />} />
+        <Route path="/HoneyPot" element={<HoneyPot />} />
+        <Route path="/BuySell" element={<BuySell />} />
+      </Routes>
+    </div>
+    <footer className="footer-container" style={{ background: '#000', color: '#fff', textAlign: 'center', padding: '10px' }}>
+      <div className="App-Footer">
+        <p>Resources</p>
+        {links.map((link, index) => (
+          <OpenInNewTabButton key={index} url={link.url}>
+            {link.text}
+          </OpenInNewTabButton>
+        ))}
+      </div>
+    </footer>
+    <button onClick={toggleInstructions} className='instructions-button'>
+  How To Play
+    </button>
+    {showInstructions && (
+      <div className='instructions-pop-up'>
+                <p>Welcome to TraitForge, an innovative NFT honeypot game that blends strategic gameplay with the exciting world of NFTs.</p>
 
 
 <h3>Getting Started</h3>
@@ -274,13 +271,9 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
 
 
 <p>Thank you for joining the world of TraitForge. Forge your path, strategize wisely, and enjoy the adventure!</p>
-         </div>
-          </div>
-               )}
-        </div>
-        </div>
-    </BrowserRouter>
-  );
-}
-
+    </div>
+    )}
+  </div>
+</BrowserRouter>
+  )}
 export default App;

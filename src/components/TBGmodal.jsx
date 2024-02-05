@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import Entities from './Entity-data';
-import './TBGmodal.css';
+import { useEntities } from '../graph-data/EntitiesContext';
+import '../styles/TBGmodal.css';
 
 const Modal = ({ open, onClose, onSave, listedIds, entities }) => {
-  const [price, setPrice] = useState('');
-  const [selectedEntity, setSelectedEntity] = useState(null);
+    const [price, setPrice] = useState('');
+    const [selectedEntity, setSelectedEntity] = useState(null);
+
+    const {entitiesFromWallet} = useEntities();
 
   const EntityCard = ({ entity, onSelect, isSelected }) => (
     <div className={`entity-card ${isSelected ? 'selected' : ''}`} onClick={() => onSelect(entity)}>
       <img src={entity.image} alt={entity.title} />
       <h3>{entity.title}</h3>
       <p>{entity.gender}</p>
-      <p>{entity.claimshare}</p>
+      <p>Claimshare: {entity.claimshare}</p>
     </div>
   );
 
   const handleEntitySelection = (entity) => {
-      setSelectedEntity(entity);
+    setSelectedEntity(entity);
   };
 
   const handleSave = () => {
@@ -24,18 +26,18 @@ const Modal = ({ open, onClose, onSave, listedIds, entities }) => {
       alert('Please select an Entity.');
       return;
     }
-  
+
     if (selectedEntity.gender !== 'Sire') {
       alert('Only Sires can be listed for breeding, and breeders are not allowed.');
       return;
     }
-  
+
     onSave({
       ...selectedEntity,
-      id: Math.random().toString(36).substr(2, 9),
-      price: parseFloat(price) || 0
+      id: Math.random().toString(36).substr(2, 9), 
+      price: parseFloat(price) || 0,
     });
-  
+
     setPrice('');
     setSelectedEntity(null);
     onClose();
@@ -43,7 +45,6 @@ const Modal = ({ open, onClose, onSave, listedIds, entities }) => {
 
   if (!open) return null;
 
- 
   return (
     <div className='breeding-overlay'>
       <button onClick={onClose} className="breeding-close-btn">x</button>
@@ -52,10 +53,15 @@ const Modal = ({ open, onClose, onSave, listedIds, entities }) => {
           <h5>List Your Entity for Breeding</h5>
         </div>
         <div className='breeding-modalBody'>
-        <div className="entity-cards-container">
-        {Entities.filter(entity => !listedIds.includes(listedIds) && entity.gender !== 'Breeder').map(entity => (
-          <EntityCard key={entity.id} entity={entity} onSelect={handleEntitySelection} isSelected={selectedEntity && entity.id === selectedEntity.id}/>
-         ))}
+          <div className="entity-cards-container">
+            {entitiesFromWallet.filter(entity => !listedIds.includes(entity.id) && entity.gender === 'Sire').map(entity => (
+              <EntityCard 
+                key={entity.id} 
+                entity={entity} 
+                onSelect={handleEntitySelection} 
+                isSelected={selectedEntity && entity.id === selectedEntity.id}
+              />
+            ))}
           </div>
           <input className='price-tab' type="number" placeholder="Price in ETH" value={price} onChange={(e) => setPrice(e.target.value)} />
         </div>
@@ -68,4 +74,5 @@ const Modal = ({ open, onClose, onSave, listedIds, entities }) => {
 };
 
 export default Modal;
+
 

@@ -1,33 +1,78 @@
 .cards-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    height: 18rem; 
-    overflow-x: scroll; 
-    padding: 10px 0;
-    white-space: nowrap; 
-  }
-  .slider-text-h1 {
-    font-size: 0.8em;
-    margin-left: 35px;
-    margin-bottom: 5px;
-  }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 19rem; 
+  width: 100%;
+  margin-left: 10px;
+  overflow-x: scroll; 
+  white-space: nowrap; 
+}
+
+.card-container {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  text-align: center;
+  height: 14rem; 
+  width: 14rem;
+  overflow-x: scroll; 
+  padding: 10px 0;
+  margin-left: 10px;
+  white-space: nowrap; 
+  margin-top: 10px;
+  border: 1px solid #0ff;
+  border-radius: 10px;
+}
+
+.card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 0.5em;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.144); 
+  color: white;
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(0%);
+}
+
+.card-container:hover .card-info {
+  transform: translateY(0);
+}
+
+.card-info-always-visible {
+  padding: 1px;
+  padding-bottom: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.card-info-on-hover {
+  display: none;
+}
+
+.card-container:hover .card-info-on-hover {
+  display: block;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.slider-text-h1 {
+  font-size: 0.8em;
+  margin-left: 35px;
+  margin-bottom: 5px;
+  background: linear-gradient(to top, rgb(255, 255, 255) 0%, rgba(0, 255, 255, 0.785) 130%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
   
   .slider-arrow {
   margin-left: 120px;
-  }
-  .card-container {
-    width: 14rem;
-    height: 14rem;
-    margin-left: 20px; 
-    flex: 0 0 auto; 
-    border: 3px solid #0ff;
-    border-radius: 10px;
-    padding: 10px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
   
   .first-card {
@@ -35,14 +80,23 @@
 }
 
 .card-image {
-    width: 30%;
+    width: 60%;
     height: auto;
-    margin-top: 0.2em;
     object-fit: cover;
+    opacity: 90%;
 }
 
-.card-name, .card-price, .card-parameters-h2, h3, .params{
-    font-size: 1.4rem; 
+.card-price {
+  font-size: 1.4rem;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  text-align: center;
+}
+
+
+.card-name, .card-parameters-h2, h3, .params{
+    font-size: 1.2rem; 
     line-height: 0.9;
     margin-bottom: 2px;
     margin: 2px 0; 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
-import './NFTSlider.css';
-import TFLogo from './TFLogo.png';
+import '../styles/NFTSlider.css';
+import TFLogo from '../utils/TFLogo.png';
 
 const dummyNfts = [
     { id: 1, image: TFLogo, gender: 'Sire', breeds: '9', claimshare: '9%', price: '0.01' },
@@ -19,17 +19,29 @@ const getNftItems = async () => {
 };
 
 const Card = ({ nft }) => {
-    const isFirstCard = nft.id ===1;
+    const isFirstCard = nft.id === 1;
     return (
+        <div className='cards-container'>
         <div className={`card-container ${isFirstCard ? 'first-card' : ''}`}>
-            <p className="card-price">Price: {nft.price} ETH</p>
             <img src={nft.image} alt="NFT" className="card-image" />
-            <h3> Gender: {nft.gender} </h3>
-            <h3 className="card-name">Breeds per Year: {nft.breeds}</h3>
-            <h2 className="card-parameters-h2">Claimshare:  {nft.claimshare}</h2>
+            <div className='card-info'>
+                <div className='card-info-always-visible'>
+                    <h2 className="card-number">{nft.id}/10,000</h2>
+                    <h1 className="card-price">Price: {nft.price} ETH</h1>
+                </div>
+                <div className='card-info-on-hover'>
+                    <div className='footer-top-level'>
+                        <h3> Gender: {nft.gender} </h3>
+                        <h3 className="card-name">Breeds per Year: {nft.breeds}</h3>
+                        <h2 className="card-parameters-h2">Claimshare:  {nft.claimshare}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
     );
 };
+
 
 const Slider = () => {
     const [nftItems, setNftItems] = useState([]);

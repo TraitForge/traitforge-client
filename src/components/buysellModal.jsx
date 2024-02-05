@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Web3 from 'web3';
-import './buysellModal.css';
+import '../styles/buysellModal.css';
 
 
-import tradeContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/src/contracts/EntityTrading.json';
-import mintContractAbi from '/Users/hudsondungey/TFCREAM/updatedrepo/src/contracts/Mint.json';
-
+import tradeContractAbi from '../contracts/EntityTrading.json';
+import mintContractAbi from '../contracts/Mint.json';
+import erc721ABI from '../contracts/ERC721.json'
 
 const Modal = ({ open, onClose, onSave, userWallet }) => {
   const [entities, setEntities] = useState([]);
@@ -14,20 +14,44 @@ const Modal = ({ open, onClose, onSave, userWallet }) => {
   const [isListed, setIsListed] = useState(false);
   const [error, setError] = useState('');
 
+  const localProvider = 'https://goerli.infura.io/v3/3f27d7e6326b43c5b77e16ac62188640';
 
-  const web3 = new Web3(Web3.givenProvider);
-  const entityTradingContract = new web3.eth.Contract(tradeContractAbi.abi, '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9');
-  const mintContract = new web3.eth.Contract(mintContractAbi.abi, '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0');
+  const web3 = new Web3(new Web3.providers.HttpProvider(localProvider));
+  const entityTradingContract = new web3.eth.Contract(tradeContractAbi.abi, '0x3155a7Db77C5a08103132b1915AF86fd6cD8B863');
+  const mintContract = new web3.eth.Contract(mintContractAbi.abi, '0x4a634580371BB162f371616aec871Bc46201D937');
 
 
+ 
   const fetchUserEntities = useCallback(async () => {
     try {
-      const userEntities = await mintContract.methods.getUserEntities(userWallet).call();
-      setEntities(userEntities.map(entity => ({ ...entity, id: entity[0] }))); 
+        if (!userWallet) {
+            return;
+        }
+
+        const erc721Contract = new web3.eth.Contract(erc721ABI, '0x4a634580371BB162f371616aec871Bc46201D937'); 
+        const ownedTokenIds = await erc721Contract.methods.tokensOfOwner(userWallet).call();
+
+        const userEntities = await Promise.all(ownedTokenIds.map(async (tokenId) => {
+            const entityType = await mintContract.methods.getEntityType(tokenId).call();
+            const claimShare = await mintContract.methods.getClaimShare(tokenId).call();
+            const breedPotential = await mintContract.methods.getBreedPotential(tokenId).call();
+
+            return {
+                id: tokenId,
+                entityType,
+                claimShare,
+                breedPotential,
+            };
+        }));
+
+        setEntities(userEntities);
     } catch (error) {
-      console.error('Could not retrieve data:', error);
+        console.error('Could not retrieve data:', error);
     }
-  }, [userWallet, mintContract.methods]);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [userWallet]); 
+
+  
 
   useEffect(() => {
     if (open) {
@@ -37,6 +61,7 @@ const Modal = ({ open, onClose, onSave, userWallet }) => {
       setSelectedEntity(null);
     }
   }, [open, fetchUserEntities]);
+
 
   const handlePriceChange = (event) => {
     setPrice(event.target.value);
@@ -55,7 +80,7 @@ const Modal = ({ open, onClose, onSave, userWallet }) => {
     const selectedEntityData = entities.find(entity => entity.id === selectedEntity);
     if (selectedEntityData) {
       try {
-        await entityTradingContract.methods.listNFTForSale(selectedEntity, web3.utils.toWei(price, 'ether')).send({ from: userWallet });
+        await entityTradingContract.methods.listEntityForSale(selectedEntity, web3.utils.toWei(price, 'ether')).send({ from: userWallet });
         onSave({ ...selectedEntityData, price: parseFloat(price) });
         setIsListed(true);
         setTimeout(() => {
