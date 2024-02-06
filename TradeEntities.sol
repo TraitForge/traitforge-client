@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Mint.sol";
 
-contract EntityTrading is ReentrancyGuard, CustomOwnable {
+contract EntityTrading is ReentrancyGuard, Ownable {
     IERC721 public entityContract;
 
     address public nukeFundAddress;
@@ -27,11 +27,11 @@ contract EntityTrading is ReentrancyGuard, CustomOwnable {
     event ListingCancelled(uint256 indexed tokenId);
     event TokenReceived(uint256 indexed tokenId, address indexed fromAddress, address indexed toAddress);
 
-    constructor(address _entityContractAddress, address _nukeFundAddress, address _initialOwner) CustomOwnable(_initialOwner) {
+    constructor(address _entityContractAddress, address _nukeFundAddress, address _initialOwner) Ownable(_initialOwner) {
     entityContract = IERC721(_entityContractAddress);
     nukeFundAddress = _nukeFundAddress;
     }
-    function listEntityForSale(uint256 tokenId, uint256 price) public nonReentrant stopInEmergency {
+    function listEntityForSale(uint256 tokenId, uint256 price) public nonReentrant {
         require(price > 0, "Price must be greater than zero");
         require(entityContract.getApproved(tokenId) == address(this) || entityContract.isApprovedForAll(msg.sender, address(this)), "Contract must be approved to transfer token");
         require(entityContract.ownerOf(tokenId) == msg.sender, "You must own the entity");
@@ -43,7 +43,7 @@ contract EntityTrading is ReentrancyGuard, CustomOwnable {
         emit EntityListed(tokenId, msg.sender, price);
 }
 
-    function buyEntity(uint256 tokenId) public payable nonReentrant stopInEmergency{
+    function buyEntity(uint256 tokenId) public payable nonReentrant {
         Listing memory listing = listings[tokenId];
         require(listing.isActive, "Entity not for sale");
         require(msg.value >= listing.price, "Insufficient payment");
@@ -70,7 +70,7 @@ contract EntityTrading is ReentrancyGuard, CustomOwnable {
         payable(owner()).transfer(amount);
     }
 
-    function cancelListing(uint256 tokenId) public nonReentrant stopInEmergency {
+    function cancelListing(uint256 tokenId) public nonReentrant {
         Listing memory listing = listings[tokenId];
         require(listing.seller == msg.sender, "You are not the seller");
         require(listing.isActive, "Listing is not active");
