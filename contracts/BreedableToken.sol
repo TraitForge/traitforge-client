@@ -11,9 +11,7 @@ contract BreedableToken is ERC721, ReentrancyGuard {
     using Address for address payable;
     address payable public devAddress;
     uint256 public breedingFee;
-
     ITokenPool public tokenPool;
-    
 
     struct SireListing {
         uint256 tokenId;
@@ -33,6 +31,8 @@ contract BreedableToken is ERC721, ReentrancyGuard {
         address payable _devAddress,
         uint256 _breedingFee
     ) ERC721(name_, symbol_) {
+        require(_tokenPoolAddress != address(0), "TokenPool address cannot be the zero address");
+        require(_devAddress != address(0), "Dev address cannot be the zero address");
         tokenPool = ITokenPool(_tokenPoolAddress);
         _devAddress = _devAddress;
         breedingFee = _breedingFee;
@@ -88,10 +88,16 @@ function _updateTokenForNextGeneration(uint256 sireClaimShare, uint256 sireBreed
     uint256 newClaimShare = (sireClaimShare + breederClaimShare) / 2;
     uint256 newBreedPotential = (sireBreedPotential + breederBreedPotential) / 2;
 
-    // Correctly call currentGeneration() as a function
-    tokenPool.updateTokenData(tokenIdToUpdate, newClaimShare, newBreedPotential, tokenPool.currentGeneration() + 1);
+    // Correctly call currentGeneration() as a function from the tokenPool instance
+    uint256 currentGen = tokenPool.currentGeneration();
+    // Then use that current generation to calculate the next generation
+    uint256 nextGeneration = currentGen + 1;
+
+    // Now call updateTokenData to update the token's information for the next generation
+    tokenPool.updateTokenData(tokenIdToUpdate, newClaimShare, newBreedPotential, nextGeneration);
     
     return tokenIdToUpdate;
 }
+
 
 }
