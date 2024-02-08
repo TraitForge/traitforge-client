@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./TokenPool.sol";
 
-contract BreedableToken is ERC721, ReentrancyGuard {
+contract BreedableToken is ERC721URIStorage, ReentrancyGuard {
     using Address for address payable;
     address payable public devAddress;
     uint256 public breedingFee;
@@ -98,6 +98,4 @@ function _updateTokenForNextGeneration(uint256 sireClaimShare, uint256 sireBreed
     
     return tokenIdToUpdate;
 }
-
-
 }
