@@ -25,12 +25,12 @@ async function main() {
   console.log("BreedableToken deployed to:", breedableToken.address);
 
   const MintFactory = await ethers.getContractFactory("Mint");
-  const mint = await MintFactory.deploy(tokenPool.address, deployer.address, breedableToken.address); 
+  const mint = await MintFactory.deploy(tokenPool.address, deployer.address); 
   await mint.deployed();
   console.log("Mint deployed to:", mint.address);
 
   const EntityTradingFactory = await ethers.getContractFactory("EntityTrading");
-  const entityTrading = await EntityTradingFactory.deploy(breedableToken.address, deployer.address, nukeFund.address);
+  const entityTrading = await EntityTradingFactory.deploy(mint.address, deployer.address, deployer.address);
   await entityTrading.deployed();
   console.log("EntityTrading deployed to:", entityTrading.address);
 }
