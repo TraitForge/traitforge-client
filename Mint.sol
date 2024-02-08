@@ -1,19 +1,26 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./TokenPool.sol";
 
-contract Mint is ERC721, Ownable, ReentrancyGuard {
+contract Mint is ERC721Enumerable, Ownable, ReentrancyGuard {
     TokenPool private tokenPool; 
     address public honeypotAddress;
     uint256 public currentGeneration = 1;
     uint256 public burnedTokenCount = 0;
 
-    address public addressOfBreeadbleTokenContract;
+    address public addressOfBreedableTokenContract;
     address public addressOfNukeFundContract;
+
+    event MintEvent(address indexed minter, uint256 indexed tokenId, uint256 currentPrice, uint256 generation);
+    event GenerationAdvanced(uint256 newGeneration);
+    event TokenBurned(uint256 indexed tokenId, uint256 burnedTokenCount);
+    event FundsTransferredToHoneypot(uint256 amount, address honeypotAddress);
+    event DevSharePaid(uint256 amount, address devAddress);
+    event AddressUpdated(string addressType, address updatedAddress);
+    event TokenDataGenerated(uint256 indexed tokenId, uint256 claimShare, uint256 breedPotential, uint256 generation);
 
     mapping(uint256 => uint256) public generationMintCounts;
     mapping(uint256 => bool) public isTokenBurned;
@@ -39,6 +46,7 @@ contract Mint is ERC721, Ownable, ReentrancyGuard {
         require(mintedCount < MAX_ENTITIES, "All entities minted for current generation");
         require(tokenId <= MAX_ENTITIES, "Token ID out of bounds");
         require(msg.value >= currentPrice, "Ether sent is not correct");
+        require(tokenPool.availableForBreeding(tokenId), "Token not available for breeding");
 
         uint256 devShare = msg.value / 10;
         uint256 honeypotShare = msg.value - devShare;
@@ -48,10 +56,12 @@ contract Mint is ERC721, Ownable, ReentrancyGuard {
         mintedCount++;
         tokenPool.generateTokenData(tokenId); 
         tokenMintTimeStamp[tokenId] = block.timestamp;
+        tokenPool.generateTokenData(tokenId);
 
         if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
             advanceGeneration();
         }
+        emit MintEvent(msg.sender, tokenId, currentPrice, currentGeneration);
     }
     function advanceGeneration() private {
         currentGeneration++;
@@ -71,8 +81,9 @@ contract Mint is ERC721, Ownable, ReentrancyGuard {
     function markTokenAsBurned(uint256 tokenId) external {
         require(msg.sender == addressOfBreedableTokenContract || msg.sender == addressOfNukeFundContract, "Caller not authorized");
 
-        require(_exists(tokenId), "Token does not exist");
-        requrie(!isTokenBurned[tokenId], "Token already marked as burned");
+        // This will revert if the token does not exist.
+        ownerOf(tokenId);
+        require(!isTokenBurned[tokenId], "Token already marked as burned");
 
         isTokenBurned[tokenId] = true;
         burnedTokenCount += 1;
