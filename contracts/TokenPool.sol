@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -12,11 +13,10 @@ interface ITokenPool is IERC721 {
     function setTokenAvailabilityForBreeding(uint256 tokenId, bool available) external;
     function generateTokenData(uint256 tokenId) external;
     function updateTokenData(uint256 tokenId, uint256 newCLaimShare, uint256 newBreedPotential, uint256 newGeneration) external;
-    function updateTokenURI(uint256 tokenId, string calldata newTokenURI) external;
     function updateGeneration(uint256 newGeneration) external;
 }
 
-contract TokenPool is ERC721URIStorage, ReentrancyGuard, Ownable, ITokenPool {
+contract TokenPool is ERC721Enumerable, ReentrancyGuard, Ownable, ITokenPool {
     struct TokenData {
         uint256 claimShare;
         uint256 breedPotential;
@@ -25,7 +25,7 @@ contract TokenPool is ERC721URIStorage, ReentrancyGuard, Ownable, ITokenPool {
         bool availableForBreeding;
         uint256 currentGeneration;
     }
-
+    uint256 private constant MAX_INDIVIDUAL_CLAIM_SHARE = 5000;
     uint256 public constant MAX_TOKEN = 10000;
     uint256 public currentGeneration = 1;
     mapping(uint256 => TokenData) private nftData;
@@ -34,13 +34,6 @@ contract TokenPool is ERC721URIStorage, ReentrancyGuard, Ownable, ITokenPool {
     address private addressOfMintContract;
 
     constructor() ERC721("Token", "TKN") Ownable(msg.sender) {}
-
-    function updateTokenURI(uint256 tokenId, string calldata newTokenURI) external override {
-        require(tokenExists(tokenId), "TokenPool: URI set of nonexistent token");
-        require(ownerOf(tokenId) == msg.sender || owner() == msg.sender, "TokenPool: caller is not token owner nor contract owner");
-
-        _setTokenURI(tokenId, newTokenURI);
-    }
 
 function tokenExists(uint256 tokenId) public view returns (bool) {
     try this.ownerOf(tokenId) returns (address) {
@@ -61,6 +54,7 @@ function tokenExists(uint256 tokenId) public view returns (bool) {
     function updateTokenData(uint256 tokenId, uint256 newClaimShare, uint256 newBreedPotential, uint256 newGeneration) external override {
     require(tokenExists(tokenId), "TokenPool: tokenId does not exist");
     require(msg.sender == owner() || msg.sender == address(this), "TokenPool: unauthorized");
+    require(newClaimShare <= MAX_INDIVIDUAL_CLAIM_SHARE, "Claim share exceeds maximum limit");
     
     TokenData storage data = tokenData[tokenId];
     data.claimShare = newClaimShare;
@@ -68,8 +62,10 @@ function tokenExists(uint256 tokenId) public view returns (bool) {
     data.generation = newGeneration;
 }
     function generateTokenData(uint256 tokenId) external onlyOwner {
+        uint256 initialClaimShare = calculatePresetClaimShare(tokenId);
         require(tokenId <= MAX_TOKEN, "MAX limit reached");
         require(nftData[tokenId].age == 0, "Token data already generated");
+        require(initialClaimShare <= MAX_INDIVIDUAL_CLAIM_SHARE, "Claim share exceeds maximum limit");
 
         nftData[tokenId] = TokenData({
     claimShare: calculatePresetClaimShare(tokenId) + (100 * currentGeneration),
