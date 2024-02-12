@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./TokenPool.sol";
 
-contract Mint is ERC721URIStorage, Ownable, ReentrancyGuard {
+contract Mint is ERC721Enumerable, Ownable, ReentrancyGuard {
     ITokenPool private tokenPool; 
     address public honeypotAddress;
     uint256 public currentGeneration = 1;
     uint256 public burnedTokenCount = 0;
+    uint256 private _currentTokenId = 0;
 
     address public addressOfBreedableTokenContract;
     address public addressOfNukeFundContract;
@@ -48,12 +49,16 @@ contract Mint is ERC721URIStorage, Ownable, ReentrancyGuard {
         require(msg.value >= currentPrice, "Ether sent is not correct");
         require(tokenPool.availableForBreeding(tokenId), "Token not available for breeding");
 
+        _currentTokenId++;
+         uint256 newTokenId = _currentTokenId;
         uint256 devShare = msg.value / 10;
         uint256 honeypotShare = msg.value - devShare;
         payable(honeypotAddress).transfer(honeypotShare);
 
+
         generationMintCounts[currentGeneration]++;
         mintedCount++;
+        _safeMint(msg.sender, newTokenId);
         tokenPool.generateTokenData(tokenId); 
         tokenMintTimeStamp[tokenId] = block.timestamp;
         tokenPool.generateTokenData(tokenId);
