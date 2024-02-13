@@ -14,6 +14,7 @@ interface ITokenPool is IERC721 {
     function generateTokenData(uint256 tokenId) external;
     function updateTokenData(uint256 tokenId, uint256 newCLaimShare, uint256 newBreedPotential, uint256 newGeneration) external;
     function updateGeneration(uint256 newGeneration) external;
+    function advanceGeneration() external;
 }
 
 contract TokenPool is ERC721Enumerable, ReentrancyGuard, Ownable, ITokenPool {
@@ -31,6 +32,8 @@ contract TokenPool is ERC721Enumerable, ReentrancyGuard, Ownable, ITokenPool {
     mapping(uint256 => TokenData) private nftData;
     mapping(uint256 => bool) public availableForBreeding;
     mapping(uint256 => TokenData) private tokenData;
+    mapping(uint256 => uint256) public mintedTokensPerGeneration;
+
     address private addressOfMintContract;
 
     constructor() ERC721("Token", "TKN") Ownable(msg.sender) {}
@@ -46,7 +49,10 @@ function tokenExists(uint256 tokenId) public view returns (bool) {
     function setAddressOfMintContract(address _mintContract) external onlyOwner {
         addressOfMintContract = _mintContract;
     }
-
+    function advanceGeneration() external onlyOwner {
+        require(msg.sender == addressOfMintContract || msg.sender == owner(), "Unauthorized");
+        currentGeneration += 1;
+    }
     function updateGeneration(uint256 newGeneration) external {
         require(msg.sender == addressOfMintContract, "Unauthorized");
         currentGeneration = newGeneration;
@@ -66,6 +72,9 @@ function tokenExists(uint256 tokenId) public view returns (bool) {
         require(tokenId <= MAX_TOKEN, "MAX limit reached");
         require(nftData[tokenId].age == 0, "Token data already generated");
         require(initialClaimShare <= MAX_INDIVIDUAL_CLAIM_SHARE, "Claim share exceeds maximum limit");
+        require(currentGeneration == currentGeneration, "TokenPool: Incorrect generation");
+
+        mintedTokensPerGeneration[currentGeneration] += 1;
 
         nftData[tokenId] = TokenData({
     claimShare: calculatePresetClaimShare(tokenId) + (100 * currentGeneration),
