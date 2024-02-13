@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Sample Hardhat Project
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
@@ -14,6 +15,8 @@ npx hardhat run scripts/deploy.js
 ```
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> 4bd242a (Initialize project using Create React App)
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -84,7 +87,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<<<<<<< HEAD
 =======
 # updated-repo
 >>>>>>> 5181af73fe9761c19af2a7b9f2a9f7dc273da1f0
 >>>>>>> 01fec73b34a15e1575023fdc9064b4dd4ef40f62
+=======
+>>>>>>> 4bd242a (Initialize project using Create React App)

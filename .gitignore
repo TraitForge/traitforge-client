@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 node_modules
 .env
 coverage
@@ -12,6 +13,8 @@ cache
 artifacts
 
 =======
+=======
+>>>>>>> 4bd242a (Initialize project using Create React App)
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -35,4 +38,7 @@ artifacts
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
 >>>>>>> 01fec73b34a15e1575023fdc9064b4dd4ef40f62
+=======
+>>>>>>> 4bd242a (Initialize project using Create React App)
