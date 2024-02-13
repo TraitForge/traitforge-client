@@ -40,34 +40,30 @@ contract Mint is ERC721Enumerable, Ownable, ReentrancyGuard {
     tokenPool = TokenPool(_tokenPoolAddress);
     honeypotAddress = _honeypotAddress;
 }
+    function mint() public payable nonReentrant {
+    require(generationMintCounts[currentGeneration] < MAX_TOKENS_PER_GEN, "Generation limit reached");
+    uint256 currentPrice = START_PRICE + (mintedCount * PRICE_INCREMENT);
+    require(mintedCount < MAX_ENTITIES, "All entities minted for current generation");
+    require(msg.value >= currentPrice, "Ether sent is not correct");
 
-    function mint(uint256 tokenId) public payable nonReentrant {
-        require(generationMintCounts[currentGeneration] < MAX_TOKENS_PER_GEN, "Generation limit reached");
-        uint256 currentPrice = START_PRICE + (mintedCount * PRICE_INCREMENT);
-        require(mintedCount < MAX_ENTITIES, "All entities minted for current generation");
-        require(tokenId <= MAX_ENTITIES, "Token ID out of bounds");
-        require(msg.value >= currentPrice, "Ether sent is not correct");
-        require(tokenPool.availableForBreeding(tokenId), "Token not available for breeding");
+    _currentTokenId++;
+    uint256 newTokenId = _currentTokenId;
+    _safeMint(msg.sender, newTokenId);
 
-        _currentTokenId++;
-         uint256 newTokenId = _currentTokenId;
-        uint256 devShare = msg.value / 10;
-        uint256 honeypotShare = msg.value - devShare;
-        payable(honeypotAddress).transfer(honeypotShare);
+    // Token Data Generation call for the newTokenId
+    tokenPool.generateTokenData(newTokenId);
 
+    generationMintCounts[currentGeneration]++;
+    mintedCount++;
+    tokenMintTimeStamp[newTokenId] = block.timestamp;
 
-        generationMintCounts[currentGeneration]++;
-        mintedCount++;
-        _safeMint(msg.sender, newTokenId);
-        tokenPool.generateTokenData(tokenId); 
-        tokenMintTimeStamp[tokenId] = block.timestamp;
-        tokenPool.generateTokenData(tokenId);
-
-        if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
-            advanceGeneration();
-        }
-        emit MintEvent(msg.sender, tokenId, currentPrice, currentGeneration);
+    if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
+        advanceGeneration();
     }
+
+    emit MintEvent(msg.sender, newTokenId, currentPrice, currentGeneration);
+}
+
     function advanceGeneration() private {
         currentGeneration++;
         generationMintCounts[currentGeneration] = 0; 
