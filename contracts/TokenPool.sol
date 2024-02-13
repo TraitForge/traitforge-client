@@ -68,22 +68,34 @@ function tokenExists(uint256 tokenId) public view returns (bool) {
     data.generation = newGeneration;
 }
     function generateTokenData(uint256 tokenId) external onlyOwner {
-        uint256 initialClaimShare = calculatePresetClaimShare(tokenId);
-        require(tokenId <= MAX_TOKEN, "MAX limit reached");
-        require(nftData[tokenId].age == 0, "Token data already generated");
-        require(initialClaimShare <= MAX_INDIVIDUAL_CLAIM_SHARE, "Claim share exceeds maximum limit");
-        require(currentGeneration == currentGeneration, "TokenPool: Incorrect generation");
+    uint256 initialClaimShare = calculatePresetClaimShare(tokenId);
+    require(
+        msg.sender == owner() || msg.sender == addressOfMintContract,
+        "Unauthorized"
+    );
+    require(tokenId <= MAX_TOKEN, "MAX limit reached");
+    require(nftData[tokenId].age == 0, "Token data already generated");
+    require(
+        initialClaimShare <= MAX_INDIVIDUAL_CLAIM_SHARE,
+        "Claim share exceeds maximum limit"
+    );
+    require(
+        currentGeneration == currentGeneration,
+        "TokenPool: Incorrect generation"
+    );
 
-        mintedTokensPerGeneration[currentGeneration] += 1;
+    mintedTokensPerGeneration[currentGeneration] += 1;
 
-        nftData[tokenId] = TokenData({
-    claimShare: calculatePresetClaimShare(tokenId) + (100 * currentGeneration),
-    breedPotential: calculatePresetBreedPotential(tokenId) + (2 * currentGeneration),
-    generation: currentGeneration,
-    age: block.timestamp,
-    availableForBreeding: false,
-    currentGeneration: currentGeneration
-});
+    nftData[tokenId] = TokenData({
+        claimShare: calculatePresetClaimShare(tokenId) +
+            (100 * currentGeneration),
+        breedPotential: calculatePresetBreedPotential(tokenId) +
+            (2 * currentGeneration),
+        generation: currentGeneration,
+        age: block.timestamp,
+        availableForBreeding: false,
+        currentGeneration: currentGeneration
+    });
     }
 
     function calculatePresetClaimShare(uint256 tokenId) private pure returns (uint256) {
@@ -108,3 +120,4 @@ function tokenExists(uint256 tokenId) public view returns (bool) {
         nftData[tokenId].availableForBreeding = available;
     }
 }
+
