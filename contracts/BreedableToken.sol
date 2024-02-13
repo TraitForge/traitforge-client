@@ -48,34 +48,42 @@ function _selectTokenForBreeding() internal pure returns (uint256) {
         });
         emit SireListed(tokenId, price, msg.sender);
     }
-function breed(uint256 sireTokenId, uint256 breederTokenId) external payable nonReentrant {
-    SireListing memory listing = sireListing[sireTokenId];
-
-    require(listing.price > 0, "Breeding must have a fee greater than 0");
-    require(msg.value >= listing.price, "Insufficient payment");
-
-    uint256 devShare = (msg.value * 5) / 100; // 5% to the developer
-    uint256 ownerShare = msg.value - devShare; // Remaining 95% to the sire's owner
-
-    devAddress.sendValue(devShare);
-
-    if(listing.price > 0) {
-        require(msg.value >= listing.price, "Insufficient payment");
-    }
-
+    function breed(uint256 sireTokenId, uint256 breederTokenId) external payable nonReentrant {
     require(tokenPool.availableForBreeding(sireTokenId) && tokenPool.availableForBreeding(breederTokenId), "One or both tokens not available for breeding");
-    (,,uint256 sireGeneration,) = tokenPool.getTokenAttribute1(sireTokenId);
-    (,,uint256 breederGeneration,) = tokenPool.getTokenAttribute1(breederTokenId);
-    require(sireGeneration == breederGeneration, "Tokens must be of the same generation to breed");
+    SireListing memory listing = sireListing[sireTokenId];
+    require(listing.price > 0 && msg.value >= listing.price, "Breeding requirements not met");
+    
+    // Use token IDs to calculate new attributes for the offspring
+    (uint256 newClaimShare, uint256 newBreedPotential) = _calculateNewAttributes(sireTokenId, breederTokenId);
 
-    uint256 offspringTokenId = _selectTokenForBreeding();
-    payable(listing.owner).sendValue(ownerShare);
-    emit TokenBred(offspringTokenId, sireTokenId, breederTokenId, msg.sender);
+    // Fetch the generation of the sire to determine the generation of the offspring
+    (,,uint256 sireGeneration,) = tokenPool.getTokenAttribute1(sireTokenId);
+    uint256 offspringGeneration = sireGeneration + 1; // Offspring is the next generation
+
+    // Mint a new token for the offspring
+    uint256 newTokenId = totalSupply() + 1; // Assuming sequential token IDs
+    _mint(msg.sender, newTokenId); // Mint the new token to the caller
+
+    // Update the offspring's attributes in the TokenPool
+    tokenPool.updateTokenData(newTokenId, newClaimShare, newBreedPotential, offspringGeneration);
+
+    // Distribute the breeding fee between the developer and the sire's owner
+    _distributeBreedingFees(msg.value, sireTokenId);
+
+    // Emit an event to log the breeding action
+    emit TokenBred(newTokenId, sireTokenId, breederTokenId, msg.sender);
+}
+function _distributeBreedingFees(uint256 listingPrice, uint256 sireTokenId) private {
+    uint256 devShare = (listingPrice * 5) / 100; // 5% to the developer
+    uint256 ownerShare = listingPrice - devShare; // Remaining 95% to the sire's owner
+
+    payable(devAddress).transfer(devShare);
+    address sireOwner = tokenPool.ownerOf(sireTokenId);
+    payable(sireOwner).transfer(ownerShare);
 }
 
 function _calculateNewAttributes(uint256 sireTokenId, uint256 breederTokenId) internal view returns (uint256 newClaimShare, uint256 newBreedPotential) {
     (uint256 sireClaimShare, uint256 sireBreedPotential,,) = tokenPool.getTokenAttribute1(sireTokenId);
-    
     (uint256 breederClaimShare, uint256 breederBreedPotential,,) = tokenPool.getTokenAttribute1(breederTokenId);
 
     newClaimShare = (sireClaimShare + breederClaimShare) / 2;
@@ -83,19 +91,5 @@ function _calculateNewAttributes(uint256 sireTokenId, uint256 breederTokenId) in
 
     return (newClaimShare, newBreedPotential);
 }
-function _updateTokenForNextGeneration(uint256 sireClaimShare, uint256 sireBreedPotential, uint256 breederClaimShare, uint256 breederBreedPotential) internal returns (uint256) {
-    uint256 tokenIdToUpdate = _selectTokenForBreeding(); 
-    uint256 newClaimShare = (sireClaimShare + breederClaimShare) / 2;
-    uint256 newBreedPotential = (sireBreedPotential + breederBreedPotential) / 2;
 
-    // Correctly call currentGeneration() as a function from the tokenPool instance
-    uint256 currentGen = tokenPool.currentGeneration();
-    // Then use that current generation to calculate the next generation
-    uint256 nextGeneration = currentGen + 1;
-
-    // Now call updateTokenData to update the token's information for the next generation
-    tokenPool.updateTokenData(tokenIdToUpdate, newClaimShare, newBreedPotential, nextGeneration);
-    
-    return tokenIdToUpdate;
-}
 }
