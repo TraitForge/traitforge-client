@@ -1,14 +1,7 @@
 .cards-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  height: 19rem; 
-  width: 100%;
-  margin-left: 10px;
-  overflow-x: scroll; 
-  white-space: nowrap; 
+  justify-content: center;
+  margin-left: 15px;
 }
-
 .card-container {
   position: relative;
   overflow: hidden;
@@ -17,15 +10,16 @@
   flex-wrap: nowrap;
   justify-content: center;
   text-align: center;
-  height: 14rem; 
-  width: 14rem;
+  height: 14.2rem; 
+  width: 99%;
   overflow-x: scroll; 
   padding: 10px 0;
-  margin-left: 10px;
   white-space: nowrap; 
   margin-top: 10px;
   border: 1px solid #0ff;
   border-radius: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .card-info {
@@ -60,30 +54,16 @@
   padding: 10px;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
-
-.slider-text-h1 {
-  font-size: 0.8em;
-  margin-left: 35px;
-  margin-bottom: 5px;
-  background: linear-gradient(to top, rgb(255, 255, 255) 0%, rgba(0, 255, 255, 0.785) 130%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
   
-  .slider-arrow {
-  margin-left: 120px;
-  }
-  
-  .first-card {
-    transform: scale(1.05);
+.first-card {
+  transform: scale(1.1);
 }
 
 .card-image {
-    width: 60%;
-    height: auto;
-    object-fit: cover;
-    opacity: 90%;
+  width: 60%;
+  height: auto;
+  object-fit: cover;
+  opacity: 90%;
 }
 
 .card-price {
@@ -96,49 +76,67 @@
 
 
 .card-name, .card-parameters-h2, h3, .params{
-    font-size: 1.2rem; 
-    line-height: 0.9;
-    margin-bottom: 2px;
-    margin: 2px 0; 
-    padding: 5px;
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    text-align: center;
-    width: 100%;
+  font-size: 1.2rem; 
+  line-height: 0.9;
+  margin-bottom: 2px;
+  margin: 2px 0; 
+  padding: 5px;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  text-align: center;
+  width: 100%;
+}
+
+.custom-arrows {
+  display: flex;
+  justify-content: center; 
+  position: absolute; 
+  width: 100.8%; 
+  gap: 15px;
+  pointer-events: none; 
+}
+
+.custom-arrow {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.custom-arrow-left, .custom-arrow-right {
+  font-size: 24px; 
+  color: #fff; 
 }
 
 ::-webkit-scrollbar {
-    width: 0px; 
-    height: 0px; 
-  }
-
-  @media (max-width: 710px) {
-    .mint-button button {
-      font-size: 7vw;
-    }
-    
-  }
-
+  width: 0px; 
+  height: 0px; 
+}
 
 @media (max-width: 500px) {
-    .card-container {
-        width: 5rem; 
-        height: 9rem; 
-        margin-right: 10px;
-        margin-left: 10px;
-        padding: 0;
-    }
+  .card-container {
+    height: 9rem;
+    width: auto;
+    margin-left: -8px;
+  }
 
     .card-image {
-        width: 30%;
+        width:90%;
         height: auto;
     }
+    .card-price {
+      font-size: 0.8rem;
+    }
 
-    .card-name, .card-price {
-        font-size: 0.8rem; 
+    .card-name {
+        font-size: 0.7rem; 
         margin: 1px 0; 
         text-align: center;
+    }
+
+    .card-gender {
+      font-size: 0.8rem;
     }
 
     .card-parameters-h2,  .params{
@@ -155,12 +153,6 @@
 }
 
 @media (max-width: 400px) {
-  
-  .mint-button button{
-    font-size: 6vw;
-    width: 50%;
-    height: 10vw;
-  }
 
   .gen-container, .gen-container div {
     font-size: 0.7em;

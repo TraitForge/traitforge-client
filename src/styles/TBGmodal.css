@@ -13,14 +13,16 @@
   }
 
   .breeding-close-btn {
-    font-size: 2em;
+    font-size: 1.5em;
+    color: #fff !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     cursor: pointer;
     position: absolute;
-    top: 30px;
-    right: 20px;
-    color: #ffffff;
-    background-color: #00000000;
-    border: none;
+    top: 50px;
+    right: 5px;
+    text-transform: lowercase !important;
   }
 
   .breeding-close-btn:hover {

@@ -72,8 +72,10 @@ html, body {
 
 .nav-toggle {
   display: none;
-  font-size: 1.5rem; 
+  font-size: 1.2em; 
   color: rgb(209, 209, 209);
+  border: none;
+  box-shadow: none;
   background-color: transparent;
   z-index: 5;
   border: none;
@@ -118,54 +120,12 @@ html, body {
   -webkit-text-fill-color: transparent;
 }
 
-
-.meta-mask-button {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.8em;
-  box-shadow: 0px 0px 1px 1px #0ff;
-  border: 1px #0ff;
-  border-radius: 6px;
-  padding: 2px 4px;
-  color: #f0f0f0;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.wallet-connect {
   position: absolute;
-  top: 10px;
+  top: 5px;
   right: 40px;
-  z-index: 3; 
 }
 
-.meta-mask-button:hover {
-  background-color: #343434;
-}
-
-.wallet-address {
-  background-color: rgb(30, 31, 31);
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.8em;
-  box-shadow: 0px 0px 2px 3px #0ff;
-  border: 1px #0ff;
-  border-radius: 6px;
-  padding: 2px 4px;
-  color: rgb(99, 255, 255);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  text-align: center;
-  max-width: 20vw;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  position: absolute; 
-  top: 10px;
-  right: 40px;
-  z-index: 3;
-}
-
-.button-icon, .address-icon {
-  display: none;
-  padding: 3px;
-  padding-bottom: 0px;
-}
 
 .footer-container {
   text-align: center;
@@ -182,6 +142,7 @@ html, body {
   transition: background-color 0.3s ease; 
   width: 100%; 
   display: flex;
+  margin-left: -10px;
   flex-direction: column; 
   align-items: center; 
   justify-content: center; 
@@ -403,8 +364,8 @@ margin-left: -150px;
   .nav-toggle {
     display: block;
     position: absolute;
-    top: 12px;
-    right: 55px;
+    top: 35px;
+    right: 35px;
   }
 
   .navlist {

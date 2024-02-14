@@ -1,55 +1,61 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Web3 from 'web3';
 import '../styles/buysellModal.css';
+import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { ethers } from 'ethers';
+
+import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
+import mintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
 
 
-import tradeContractAbi from '../contracts/EntityTrading.json';
-import mintContractAbi from '../contracts/Mint.json';
-import erc721ABI from '../contracts/ERC721.json'
+const tradeContractAddress = '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82';
+const mintContractAddress = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0';
 
-const Modal = ({ open, onClose, onSave, userWallet }) => {
+const Modal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [price, setPrice] = useState('');
   const [isListed, setIsListed] = useState(false);
   const [error, setError] = useState('');
-
-  const localProvider = 'https://goerli.infura.io/v3/3f27d7e6326b43c5b77e16ac62188640';
-
-  const web3 = new Web3(new Web3.providers.HttpProvider(localProvider));
-  const entityTradingContract = new web3.eth.Contract(tradeContractAbi.abi, '0x3155a7Db77C5a08103132b1915AF86fd6cD8B863');
-  const mintContract = new web3.eth.Contract(mintContractAbi.abi, '0x4a634580371BB162f371616aec871Bc46201D937');
-
-
+  const { address, isConnected } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
  
   const fetchUserEntities = useCallback(async () => {
+    if (!isConnected || !address) {
+        console.log("Wallet not connected or address not found");
+        return;
+    }
+
     try {
-        if (!userWallet) {
-            return;
-        }
+        const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+        const signer = ethersProvider.getSigner();
+        const mintContract = new ethers.Contract(mintContractAddress, mintContractAbi.abi, signer);
 
-        const erc721Contract = new web3.eth.Contract(erc721ABI, '0x4a634580371BB162f371616aec871Bc46201D937'); 
-        const ownedTokenIds = await erc721Contract.methods.tokensOfOwner(userWallet).call();
+        const balance = await mintContract.balanceOf(address);
+        const tokenIds = await Promise.all([...Array(balance.toNumber()).keys()].map(async (index) => {
+            return mintContract.tokenOfOwnerByIndex(address, index);
+        }));
 
-        const userEntities = await Promise.all(ownedTokenIds.map(async (tokenId) => {
-            const entityType = await mintContract.methods.getEntityType(tokenId).call();
-            const claimShare = await mintContract.methods.getClaimShare(tokenId).call();
-            const breedPotential = await mintContract.methods.getBreedPotential(tokenId).call();
+
+        const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
+          const details = await mintContract.getTokenDetails(tokenId);
+          const { claimShare, breedPotential, generation, age } = details;
 
             return {
-                id: tokenId,
-                entityType,
-                claimShare,
-                breedPotential,
+                id: tokenId.toString(),
+                claimshare: claimShare.toString(),
+                breedpotential: breedPotential.toString(),
+                generation: generation.toString(),
+                age: age.toString(),
             };
         }));
 
-        setEntities(userEntities);
+        setEntities(entitiesDetails);
     } catch (error) {
-        console.error('Could not retrieve data:', error);
+        console.error('Could not retrieve entities:', error);
+        setError('Failed to fetch entities');
     }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [userWallet]); 
+}, [address, isConnected, walletProvider]);
+
 
   
 
@@ -77,26 +83,41 @@ const Modal = ({ open, onClose, onSave, userWallet }) => {
       return;
     }
 
-    const selectedEntityData = entities.find(entity => entity.id === selectedEntity);
-    if (selectedEntityData) {
-      try {
-        await entityTradingContract.methods.listEntityForSale(selectedEntity, web3.utils.toWei(price, 'ether')).send({ from: userWallet });
-        onSave({ ...selectedEntityData, price: parseFloat(price) });
-        setIsListed(true);
-        setTimeout(() => {
-          setIsListed(false);
-          onClose();
-        }, 6000);
-      } catch (error) {
-        setError('Failed to list Entity. Please try again.');
-        console.error('List Entity error:', error);
-      }
-    } else {
-      setError('Please select an Entity to list.');
-    }
-  };
+     if (!isConnected || !address) {
+      setError('wallet not connected');
+      return;
+     }
 
-  if (!open) return null;
+     const selectedEntityData = entities.find(entity => entity.id === selectedEntity);
+     if (selectedEntityData) {
+       try {
+         const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+         const signer = ethersProvider.getSigner();
+         const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractAbi, signer);
+ 
+         const transaction = await tradeContract.listEntityForSale(selectedEntity, ethers.utils.parseEther(price));
+         await transaction.wait();
+
+          const sellingEntity = {
+            id: selectedEntity,
+            price: parseFloat(price),
+          };
+         onSave(sellingEntity);
+         setIsListed(true);
+         setTimeout(() => {
+           setIsListed(false);
+           onClose();
+         }, 3000); 
+       } catch (error) {
+         setError('Failed to list Entity. Please try again.');
+         console.error('List Entity error:', error);
+       }
+     } else {
+       setError('Please select an Entity to list.');
+     }
+   };
+ 
+   if (!open) return null;
 
   return (
     <div className='overlay'>

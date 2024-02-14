@@ -1,35 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import Web3 from 'web3';
 import Modal from './TradingModal';
 import '../styles/BuySell.css';
+import { ethers } from 'ethers';
+import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
+import tradeContractABI from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
 
-import tradeContractABI from '../contracts/EntityTrading.json';
-const tradeContractAddress = "0x3155a7Db77C5a08103132b1915AF86fd6cD8B863";
+const tradeContractAddress = '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82';
 
 const BuySellPage = () => {
+    const [selectedListing, setSelectedListing] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [listings, setListings] = useState([]);
-
-    const localProvider = 'https://goerli.infura.io/v3/3f27d7e6326b43c5b77e16ac62188640';
+    const { isConnected } = useWeb3ModalAccount();
+    const { walletProvider } = useWeb3ModalProvider();
 
     useEffect(() => {
-        const web3 = new Web3(new Web3.providers.HttpProvider(localProvider));
-        const contract = new web3.eth.Contract(tradeContractABI.abi, tradeContractAddress);
+        if (!walletProvider) return;
+
+        const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+        const contract = new ethers.Contract(tradeContractAddress, tradeContractABI.abi, ethersProvider);
         fetchListings(contract);
-    }, []);
+    }, [walletProvider]);
 
     const fetchListings = async (contract) => {
         try {
-            const totalListings = await contract.methods.listings().call(); 
+            const totalListings = await contract.listings(); 
             const listingData = [];
 
             for (let i = 0; i < totalListings; i++) {
-                const listing = await contract.methods.getListingDetails(i).call();
+                const listing = await contract.getListingDetails(i);
                 if (listing.isActive) { 
                     listingData.push({
                         id: i,
                         seller: listing.seller,
-                        price: listing.price,
+                        price: ethers.utils.formatEther(listing.price),
                         gender: listing.gender, 
                         claimshare: listing.claimshare,
                         breedPotential: listing.breedPotential,
@@ -43,31 +47,66 @@ const BuySellPage = () => {
         }
     };
 
-    const handleSavedEntities = (newListing) => {
-        setListings(currentListings => [...currentListings, newListing]);
-    };
 
-    return (
-        <>
-            <div className="buy-sell-page">
-                <button onClick={() => setModalOpen(true)}>Sell Your Entity</button>
-                <Modal onSave={handleSavedEntities} open={modalOpen} onClose={() => setModalOpen(false)} />
-            </div>
-            <div>
-                <h2>Current Listings</h2>
-                <div className="cards-container2">
-                    {listings.map((listing, index) => (
-                        <div key={index} className="listing-cards">
-                            <div className="cards-content">
-                                <p>Seller: {listing.seller}</p>
-                                <p>Price: {listing.price} ETH</p>
-                            </div>
+    const handleSavedEntities = (newEntity) => {
+    setListings(prevListings => [...prevListings, newEntity]);
+};
+
+    
+    const buyEntity = async (listingId, price) => {
+      if (!isConnected || !walletProvider) {
+        alert("Please connect your wallet first.");
+        return;
+        }
+    
+        try {
+          const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+          const signer = ethersProvider.getSigner();
+          const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractABI.abi, signer);
+    
+          const transaction = await tradeContract.buyEntity(listingId, {
+            value: ethers.utils.parseEther(price.toString())
+            });
+    
+            await transaction.wait();
+            alert("Entity purchased successfully!");
+            } catch (error) {
+            console.error("Purchase failed:", error);
+            alert("Purchase failed. Please try again.");
+            }
+        };
+
+        const handleListingSelection = (listing) => {
+            setSelectedListing(listing);
+        };
+
+
+
+
+        return (
+            <>
+                <div className="buy-sell-page">
+                    <button onClick={() => setModalOpen(true)}>Sell Your Entity</button>
+                    <Modal onSave={handleSavedEntities} open={modalOpen} onClose={() => setModalOpen(false)} />
+                </div>
+                <div className="listings">
+                    {listings.map(listing => (
+                        <div key={listing.id} onClick={() => handleListingSelection(listing)}>
+                            <p>Entity ID: {listing.id}</p>
+                            <p>Price: {listing.price} ETH</p>
+                            <p>ClaimShare%: {listing.claimshare}</p>
+                            <p>Gender: {listing.gender}</p>
+                            <p>BreedPotential: {listing.breedPotential}</p>
                         </div>
                     ))}
                 </div>
-            </div>
-        </>
-    );
-};
-
-export default BuySellPage;
+                {selectedListing && (
+                    <button onClick={() => buyEntity(selectedListing.id, selectedListing.price)}>
+                        Buy Entity
+                    </button>
+                )}
+            </>
+        );
+    };
+    
+    export default BuySellPage;

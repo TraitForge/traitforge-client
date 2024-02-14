@@ -1,72 +1,71 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios'; 
-import { Web3Context } from '../utils/Web3Context';
+import React, { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
 import '../styles/honeypotmodal.css';
-import Web3 from 'web3';
-import NukeFundAbi from '../contracts/NukeFund.json';
+import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
+
+const NukeContractAddress = '0x610178dA211FEF7D417bC0e6FeD39F05609AD788'; 
 
 const HoneyPotModal = ({ showEntityModal, onClose }) => {
-  const { userWallet } = useContext(Web3Context);
   const [entities, setEntities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [ethWon, setEthWon] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const { isConnected } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
 
-  const graphEndpoint = 'YOUR_SUBGRAPH_ENDPOINT_HERE';
 
   useEffect(() => {
-    if (!showEntityModal || !userWallet) return;
+    if (!showEntityModal || !isConnected) return;
 
     const fetchEntities = async () => {
       setIsLoading(true);
       setError(null);
 
-      const query = `
-        query {
-          entities(where: { owner: "${userWallet.toLowerCase()}" }) {
-            id
-            image
-            name
-          }
-        }
-      `;
-
       try {
-        const response = await axios.post(graphEndpoint, { query });
-        const { data } = response.data;
-        setEntities(data.entities || []);
+        const provider = new ethers.providers.Web3Provider(walletProvider);
+        const contract = new ethers.Contract(NukeContractAddress, NukeContractAbi.abi, provider);
+
+
+        const entitiesData = await contract.getAllEntities(); 
+        
+        setEntities(entitiesData.map((entity) => ({
+          id: entity.id.toString(),
+          image: entity.image,
+          name: entity.name,
+        })));
+        setIsLoading(false);
       } catch (err) {
-        setError('Failed to load entities');
-        console.error(err);
-      } finally {
+        console.error('Error fetching entities:', err);
+        setError('Failed to load entities.');
         setIsLoading(false);
       }
     };
 
     fetchEntities();
-  }, [showEntityModal, userWallet]);
-
-  const nukeEntity = async (entityId) => {
-    const web3 = new Web3(window.ethereum);
-    const contract = new web3.eth.Contract(NukeFundAbi.abi, NukeFundAbi.networks[5777].address);
-    try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' }); // Request account access
-      const accounts = await web3.eth.getAccounts();
-      const response = await contract.methods.nuke(entityId).send({ from: accounts[0] });
-      const ethAmount = response.events.ClaimShare.returnValues.amount;
-      setEthWon(web3.utils.fromWei(ethAmount, 'ether'));
-      setShowConfirmation(true);
-    } catch (err) {
-      console.error('Nuking entity failed:', err);
-      setError('Failed to nuke entity');
-    }
-  };
+  }, [showEntityModal, isConnected, walletProvider]);
 
   const handleNftSelect = async (entityId) => {
-    const confirmation = window.confirm('This action is irreversible. Press OK to confirm.');
-    if (confirmation) {
-      await nukeEntity(entityId);
+    if (!isConnected) {
+      setError("Please connect your wallet to proceed.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const signer = walletProvider.getSigner();
+      const contractWithSigner = new ethers.Contract(NukeContractAddress, NukeContractAbi, signer);
+
+      const transaction = await contractWithSigner.nuke(entityId);
+      await transaction.wait();
+
+      console.log(`Entity ${entityId} nuked successfully.`);
+      setShowConfirmation(true);
+    } catch (err) {
+      console.error(`Failed to nuke entity ${entityId}:`, err);
+      setError(`Failed to nuke entity ${entityId}.`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,15 +93,15 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
                 </div>
               ))
             ) : (
-              <p>You need an Entity to procced this function!</p>
+              <p>No entities available to nuke.</p>
             )}
           </div>
         )}
         {showConfirmation && (
           <div className="confirmation-modal">
             <div className="confirmation-content">
-              <h2>Congratulations!</h2>
-              <p>You've Claimed {ethWon} ETH!</p>
+              <h2>Action Confirmation</h2>
+              <p>Entity nuked successfully.</p>
               <button className='confirm-close' onClick={handleCloseConfirmation}>Close</button>
             </div>
           </div>
@@ -113,3 +112,4 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
 };
 
 export default HoneyPotModal;
+

@@ -1,6 +1,7 @@
 .buy-sell-page {
   text-align: center;
   margin-top: 5vh;
+  z-index: 10;
 }
 
 .buy-sell-page button {

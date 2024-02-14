@@ -8,19 +8,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10; 
+    z-index: 100; 
   }
   
   .close-button {
-    font-size: 2em;
+    font-size: 1.5em;
+    color: #fff !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     cursor: pointer;
-    color: #ffffff;
     position: absolute;
-    background-color: #00000000;
-    border: none;
-    top: 30px;
-    right: 20px;
-    padding: 3px;
+    top: 50px;
+    right: 5px;
     text-transform: lowercase !important;
 }
 

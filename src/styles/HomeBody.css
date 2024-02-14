@@ -1,8 +1,7 @@
 main {
-    font-size: 2em;
-    margin-top: 15vh;
+  font-size: 2em;
+  margin-top: 15vh;
   }
-
 
 .body {
   padding: 0;
@@ -24,21 +23,21 @@ main {
 .mint-text {
   text-align: center;
   font-size:7vw;
-  margin-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 .mint-button {
- display: flex;
- padding-bottom: 20px;
- justify-content: center;
+  display: flex;
+  padding-bottom: 20px;
+  justify-content: center;
 }
-
+ 
 .mint-button button{
   font-size: 6vw;
   width: 700%;
   height: 10vw;
 }
-
+ 
 main button {
   font-family: 'bebas neue', sans-serif;
   color:  #f0f0f0;
@@ -88,21 +87,8 @@ h2, h3 {
 }
 
 .gen-container div {
-  padding-bottom: 500px;
   font-size: 0.7em;
   margin-inline: 30px;
-}
-
-
-
-
-
-
-@media (max-width: 710px) {
-  .mint-button button {
-    font-size: 7vw;
-  }
-  
 }
 
 @media (max-width: 500px) {
@@ -116,12 +102,6 @@ h2, h3 {
 }
 
 @media (max-width: 400px) {
-
-  .mint-button button{
-    font-size: 6vw;
-    width: 50%;
-    height: 10vw;
-  }
 
   .gen-container, .gen-container div {
     font-size: 0.7em;

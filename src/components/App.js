@@ -1,15 +1,41 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
-import { FaWallet, FaCheck, FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
-import { Web3Context } from '../utils/Web3Context';
 import TFLogo from '../utils/TFLogo.png';
 import Home from './Home';
 import TBG from './Breeding';
 import HoneyPot from './HoneyPot';
 import BuySell from './Trading';
 import '../styles/App.css';
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
+
+const projectId = 'ce6b3d38d61ac9bfbea71e7dda0ba323'; 
+const chains = {
+  chainId: 31337,
+  name: 'Hardhat',
+  currency: 'ETH',
+  rpcUrl: 'http://127.0.0.1:8545/',
+};
+const metadata = {
+  name: 'TraitForge',
+  description: 'TraitForge',
+  url: 'http://localhost:3000', 
+};
+createWeb3Modal({
+  ethersConfig: defaultConfig({ metadata }),
+  chains: [chains],
+  projectId,
+  enableAnalytics: true, 
+  themeMode: 'dark',
+  themeVariables: {
+    '--w3m-font-family': 'bebas neue',
+    '--w3m-font-size-master': '1.1rem',
+    '--w3m-accent': '#33333'
+  }
+});
+
 
 const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const handleNavLinkClick = () => {
@@ -57,14 +83,6 @@ const OpenInNewTabButton = ({ url, children }) => {
     setInit(true);
   });
  }, []);
-
-  const web3Context = useContext(Web3Context);
-  if (!web3Context) {
-    console.error('Web3 Connection Issue');
-    return <div>Error: Web3 context issue</div>;
-  };
-
-  const { userWallet, connectWallet } = web3Context;
 
   const particlesOptions = {
     background: {
@@ -175,25 +193,14 @@ const OpenInNewTabButton = ({ url, children }) => {
         <h1>TraitForge</h1>
       </div>
       <div className="wallet-connect">
-        <button onClick={connectWallet}
-          className={`meta-mask-button ${userWallet ? 'disabled' : ''}`}
-          disabled={!!userWallet}>
-          <span className="button-text">{userWallet ? 'Wallet Connected' : 'Connect Wallet'}</span>
-          <span className="button-icon">{userWallet ? <FaCheck /> : <FaWallet />}</span>
-        </button>
-        {userWallet && (
-          <div className="wallet-address">
-            <span className="address-text">Address: {userWallet.slice(0, 6)}...{userWallet.slice(-4)}</span>
-            <span className="address-icon"><FaCheck /></span>
-          </div>
-        )}
+       <w3m-button/>
       </div>
       <Navbar isNavExpanded={isNavExpanded} setIsNavExpanded={setIsNavExpanded}/>
     </header>
     <div className='main-content' style={{ flex: 1 }}>
       <Routes>
-        <Route path="/" element={<Navigate to="/HomeBody" />} />
-        <Route path="/HomeBody" element={<Home />} />
+        <Route path='/' element={<Navigate to="/Home"/>} />
+        <Route path="/Home" element={<Home />} />
         <Route path="/TBG" element={<TBG />} />
         <Route path="/HoneyPot" element={<HoneyPot />} />
         <Route path="/BuySell" element={<BuySell />} />
