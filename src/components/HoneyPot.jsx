@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import HoneyPotModal from './HoneyPotModal';
-import '../styles/honeypot.css'; 
+import '../styles/HoneyPot.css'; 
 import { useWeb3ModalProvider  } from '@web3modal/ethers5/react'
 
 import NukeFundAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';

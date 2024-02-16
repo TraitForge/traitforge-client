@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import '../styles/buysellModal.css';
+import '../styles/TradingModal.css';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { ethers } from 'ethers';
 
@@ -142,12 +142,14 @@ const Modal = ({ open, onClose, onSave }) => {
           <form onSubmit={handleSubmit}>
             <label>
               Set your Price for your Entity:
+              <div>
               <input
                 type="text"
                 value={price}
                 onChange={handlePriceChange}
                 placeholder="Enter price in ETH"
               />
+              </div>
             </label>
             <button type="submit" className='btnPrimary'>
               <span className='bold'>List For Sale</span>

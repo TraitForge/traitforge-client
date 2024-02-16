@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 import { ethers } from 'ethers';
-import LoadingSpinner from './LoadingSpinner';
-import '../styles/HomeBody.css';
+import LoadingSpinner from './Spinner';
+import '../styles/Home.css';
 import Slider from './EntitySlider';
 import MintAbi from '../artifacts/contracts/Mint.sol/Mint.json';
 
@@ -76,12 +76,6 @@ const mintEntityHandler = async () => {
       </div>
       <div className='nexttokenslider'>
         <Slider />
-      </div>
-      <h2>Entities Overview:</h2>
-      <div className="gen-container">
-        {Object.entries(mintedCounts).map(([generation, count]) => (
-          <div key={generation}>{generation}: <span>{count}</span>/10,000</div>
-        ))}
       </div>
     </main>
   );

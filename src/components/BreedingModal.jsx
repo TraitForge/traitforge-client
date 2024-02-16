@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
-import '../styles/TBGmodal.css';
+import '../styles/BreedingModal.css';
 import BreedContractAbi from '../artifacts/contracts/BreedableToken.sol/BreedableToken.json';
 import MintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
 
@@ -128,7 +128,10 @@ const MintContractAddress = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0';
                             />
                         ))}
                     </div>
+                    <div className='breedbtnContainer'>
+                    Set price for breeding
                     <input className='price-tab' type="number" placeholder="Price in ETH" value={price} onChange={(e) => setPrice(e.target.value)} />
+                    </div>
                 </div>
                 <div className='breeding-modalFooter'>
                     <button onClick={handleSave}>List for Breeding</button>

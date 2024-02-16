@@ -1,0 +1,45 @@
+.transactions-container {
+    background-color: #000; 
+    color: #f5f5f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    max-height: 90vh; 
+    overflow-y: auto; 
+}
+
+.transactions-header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.transaction {
+    background-color: #1c1c1e;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.transaction p {
+    margin: 5px 0; 
+    line-height: 1.5; 
+}
+
+
+@media (max-width: 768px) {
+    .transactions-container {
+        padding: 10px;
+    }
+
+    .transaction {
+        padding: 10px;
+    }
+}
+
+.transaction:hover {
+    background-color: #29292b; /
+}
+
+  

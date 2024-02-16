@@ -2,14 +2,14 @@
 
 .TBG-page {
   text-align: center;
-  margin-top: 5vh;
+  margin-top: 7vh;
 }
 
 .breed-entity-button {
   background-color: rgba(0, 255, 255, 0);
   font-family: 'Bebas Neue';
   font-size: 1.5em; 
-  color: #ffffff; 
+  color: #f0f0f0; 
   border: none; 
   margin-top: 5vh;
   border-radius: 6px; 

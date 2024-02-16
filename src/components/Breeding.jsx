@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
 import Modal from './BreedingModal';
-import '../styles/TBG.css';
+import '../styles/Breeding.css';
 import BreedContractAbi from '../artifacts/contracts/BreedableToken.sol/BreedableToken.json';
 
 const BreedContractAddress = '0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e';

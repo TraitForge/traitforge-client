@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Genos:wght@600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap');
 
 html, body {
   margin: 0;
@@ -43,6 +44,10 @@ html, body {
   top: 0;
   left: 0;
   z-index: 5;
+}
+
+.header-bar {
+display: none;
 }
 
 .logo-title-container, .wallet-connect, .navlist, .meta-mask-button, .wallet-address {
@@ -90,6 +95,7 @@ html, body {
   top: 0;
   left: -5px;
   z-index: 2;
+  gap: 10px;
   background: #000000;
 }
 
@@ -161,7 +167,7 @@ html, body {
   top: 3rem;
   left: 4rem;
   padding: 5px;
-  z-index: 3;
+  z-index: 1000;
   box-shadow: none;
   background-color: rgb(0, 0, 0);
   color: #000000;
@@ -177,26 +183,16 @@ html, body {
   position: fixed;
   bottom: 10px;
   right: 10px;
-  width: 300px;
-  max-height: 200px; 
-  z-index: 5;
-  font-size: 0.5em;
+  width: 400px;
+  max-height: 400px; 
+  z-index: 5000;
+  font-size: 0.6em;
   color:#000000;
   background-color: white;
   padding: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   overflow-y: auto;
-}
-
-.instructions-content {
-  max-height: 300px;
-  overflow-y: auto;
-  color: #000000;
-  padding: 15px;
-  margin-top: -2em;
-  line-height: 1.5;
-  font-size: 0.9em;
 }
 
 .instructions-content p {
@@ -214,20 +210,10 @@ html, body {
   margin-bottom: 5px;
 }
 
-.instructions-content ul {
-  padding-left: 20px;
-  margin-top: 0;
-}
-
 .instructions-content ul li {
+  margin-left: -20px;
+  padding-left: -20px;
   margin-bottom: 10px; 
-}
-
-.closer-button {
-color: #000000;
-position: fixed;
-margin-top: -57px;
-margin-left: -150px;
 }
 
 .new-tab-button {
@@ -267,6 +253,7 @@ margin-left: -150px;
     margin-top: -2.4rem;
     margin-left: -2.4rem;
   }
+
 }
 
 @media (max-width: 710px) {
@@ -294,6 +281,12 @@ margin-left: -150px;
   .instructions-button {
     font-size: 1.1em;
   }
+  
+  .instructions-pop-up {
+    width: 270px;
+    height: 350px;
+    font-size: 0.8em;
+  }
 }
 
 @media (max-width: 510px) {
@@ -308,12 +301,11 @@ margin-left: -150px;
 .navlist a {
   padding: 0.5rem 1.5em;
 }
-
 }
 
 @media (max-width: 440px) {
   .App-header {
-    background-color: #000000; /* Ensure this is set to black */
+    background-color: #000000; 
   }
 
   .navlist {
@@ -367,6 +359,12 @@ margin-left: -150px;
     top: 35px;
     right: 35px;
   }
+
+  .header-bar {
+    color: black;
+    display: block;
+    padding-top: 50px;
+    }
 
   .navlist {
     display: none; 

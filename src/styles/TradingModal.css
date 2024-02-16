@@ -35,7 +35,10 @@
     color: #ffffff; 
     border-radius: 10px;
     width: 60%;
-    box-shadow: 0px 0px 6px 3px #0ff;
+    border: 0.5px solid #0ff;
+    display: grid;
+    place-items: center;
+    height: 40vh;
 }
 
 
@@ -46,8 +49,8 @@
 
 .nfts-display-container {
     display: flex;
+    align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
     width: 30%;
     height: auto;
     padding: 10px;
@@ -80,19 +83,18 @@
     z-index: 11;
 }
 
-
-.modalContainer .btnContainer {
-    text-align: center;
-}
-
 .modalContainer input[type="text"] {
-    width: calc(100% - 20px);
+    width: 60%;
     padding: 10px;
-    margin-bottom: 15px;
     border: 1px solid #0ff;
     border-radius: 4px;
     background-color: #222;
     color: #fff;
+}
+
+
+.btnPrimary {
+    margin-bottom: 10px;
 }
 
 @media (max-width: 770px) {

@@ -8,6 +8,7 @@ import Home from './Home';
 import TBG from './Breeding';
 import HoneyPot from './HoneyPot';
 import BuySell from './Trading';
+import Stats from './Stats';
 import '../styles/App.css';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
 
@@ -50,8 +51,9 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
       <nav className={isNavExpanded ? "navlist expanded" : "navlist"}>
         <NavLink to="/Home" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HOME</NavLink>
         <NavLink to="/TBG" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>BREEDING</NavLink>
+        <NavLink to="/BuySell" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>MARKETPLACE</NavLink>
         <NavLink to="/HoneyPot" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HONEYPOT</NavLink>
-        <NavLink to="/BuySell" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>BUY/SELL</NavLink>
+        <NavLink to="/Stats" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>GAME STATS</NavLink>
       </nav>
     </>
   );
@@ -188,6 +190,7 @@ const OpenInNewTabButton = ({ url, children }) => {
       />
     )}
     <header className="App-header">
+      <div className='header-bar'> black </div>
       <div className="logo-title-container">
         <img src={TFLogo} alt="TF Logo" className="logo" />
         <h1>TraitForge</h1>
@@ -204,6 +207,7 @@ const OpenInNewTabButton = ({ url, children }) => {
         <Route path="/TBG" element={<TBG />} />
         <Route path="/HoneyPot" element={<HoneyPot />} />
         <Route path="/BuySell" element={<BuySell />} />
+        <Route path="/Stats" element={<Stats />} />
       </Routes>
     </div>
     <footer className="footer-container" style={{ background: '#000', color: '#fff', textAlign: 'center', padding: '10px' }}>
@@ -216,9 +220,9 @@ const OpenInNewTabButton = ({ url, children }) => {
         ))}
       </div>
     </footer>
-    <button onClick={toggleInstructions} className='instructions-button'>
-  How To Play
-    </button>
+     <button onClick={toggleInstructions} className='instructions-button'>
+        {showInstructions ? 'Close' : 'How To Play'}
+      </button>
     {showInstructions && (
       <div className='instructions-pop-up'>
                 <p>Welcome to TraitForge, an innovative NFT honeypot game that blends strategic gameplay with the exciting world of NFTs.</p>

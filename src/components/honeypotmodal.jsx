@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
-import '../styles/honeypotmodal.css';
+import '../styles/HoneyPotModal.css';
 import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
 const NukeContractAddress = '0x610178dA211FEF7D417bC0e6FeD39F05609AD788'; 
@@ -11,9 +11,10 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedEntityId, setSelectedEntityId] = useState(null);
   const { isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
-
 
   useEffect(() => {
     if (!showEntityModal || !isConnected) return;
@@ -25,7 +26,6 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider);
         const contract = new ethers.Contract(NukeContractAddress, NukeContractAbi.abi, provider);
-
 
         const entitiesData = await contract.getAllEntities(); 
         
@@ -45,7 +45,12 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
     fetchEntities();
   }, [showEntityModal, isConnected, walletProvider]);
 
-  const handleNftSelect = async (entityId) => {
+  const handleNftSelect = (entityId) => {
+    setSelectedEntityId(entityId);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmNuke = async () => {
     if (!isConnected) {
       setError("Please connect your wallet to proceed.");
       return;
@@ -56,14 +61,15 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
       const signer = walletProvider.getSigner();
       const contractWithSigner = new ethers.Contract(NukeContractAddress, NukeContractAbi, signer);
 
-      const transaction = await contractWithSigner.nuke(entityId);
+      const transaction = await contractWithSigner.nuke(selectedEntityId);
       await transaction.wait();
 
-      console.log(`Entity ${entityId} nuked successfully.`);
+      console.log(`Entity ${selectedEntityId} nuked successfully.`);
       setShowConfirmation(true);
+      setShowConfirmModal(false); 
     } catch (err) {
-      console.error(`Failed to nuke entity ${entityId}:`, err);
-      setError(`Failed to nuke entity ${entityId}.`);
+      console.error(`Failed to nuke entity ${selectedEntityId}:`, err);
+      setError(`Failed to nuke entity ${selectedEntityId}.`);
     } finally {
       setIsLoading(false);
     }
@@ -71,6 +77,7 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
 
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);
+    setShowConfirmModal(false); 
     onClose();
   };
 
@@ -97,6 +104,16 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
             )}
           </div>
         )}
+        {showConfirmModal && (
+          <div className="confirmation-modal">
+            <div className="confirmation-content">
+              <h2>Confirm Action</h2>
+              <p>Are you sure you want to nuke this entity?</p>
+              <button className='confirm-action' onClick={handleConfirmNuke}>Confirm</button>
+              <button className='cancel-action' onClick={() => setShowConfirmModal(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
         {showConfirmation && (
           <div className="confirmation-modal">
             <div className="confirmation-content">
@@ -112,4 +129,5 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
 };
 
 export default HoneyPotModal;
+
 

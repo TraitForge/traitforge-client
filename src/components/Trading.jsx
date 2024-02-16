@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './TradingModal';
-import '../styles/BuySell.css';
+import '../styles/Trading.css';
 import { ethers } from 'ethers';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 import tradeContractABI from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
