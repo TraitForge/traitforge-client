@@ -39,8 +39,8 @@
 }
 
 .card-info-always-visible {
-  padding: 1px;
-  padding-bottom: 5px;
+  padding-bottom: 1px;
+  max-height: 100px;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -60,14 +60,21 @@
 }
 
 .card-image {
-  width: 60%;
+  width: 100%;
+  margin-bottom: -10px;
   height: auto;
   object-fit: cover;
   opacity: 90%;
 }
 
+.card-number {
+  font-size: 1.6rem;
+  margin-bottom: -5px;
+  padding-top: 2px;
+}
+
 .card-price {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   white-space: nowrap; 
   overflow: hidden; 
   text-overflow: ellipsis; 
@@ -76,11 +83,11 @@
 
 
 .card-name, .card-parameters-h2, h3, .params{
-  font-size: 1.2rem; 
+  font-size: 1.1rem; 
   line-height: 0.9;
   margin-bottom: 2px;
   margin: 2px 0; 
-  padding: 5px;
+  padding: 2px;
   white-space: nowrap; 
   overflow: hidden; 
   text-overflow: ellipsis; 

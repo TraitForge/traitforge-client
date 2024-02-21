@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import '../styles/EntitySlider.css';
-import TFLogo from '../utils/TFLogo.png';
+import Traitforger from '../utils/traitforgertransparent.png';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react';
@@ -12,20 +12,20 @@ import mintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
 const mintContractAddress = '0x91680735BBb6243a001Be4c5c8d19AB2E846e00a';
 
 const dummyEntities = [
-    { id: 1, image: TFLogo, gender: 'Sire', breeds: '9', claimshare: '9%', price: '0.01' },
-    { id: 2, image: TFLogo, gender: 'Breeder', breeds: '1', claimshare: '5%', price: '0.02' },
-    { id: 3, image: TFLogo, gender: 'Breeder', breeds: '12', claimshare: '18%', price: '0.03' },
-    { id: 4, image: TFLogo, gender: 'Sire', breeds: '3', claimshare: '5%', price: '0.04' },
-    { id: 5, image: TFLogo, gender: 'Sire', breeds: '8', claimshare: '25%', price: '0.05' },
-    { id: 6, image: TFLogo, gender: 'Non-Binary', breeds: '2', claimshare: '14%', price: '0.06' },
-    { id: 7, image: TFLogo, gender: 'Breeder', breeds: '4', claimshare: '20%', price: '0.07' },
-    { id: 8, image: TFLogo, gender: 'Sire', breeds: '9', claimshare: '9%', price: '0.08' },
-    { id: 9, image: TFLogo, gender: 'Breeder', breeds: '1', claimshare: '5%', price: '0.09' },
-    { id: 10, image: TFLogo, gender: 'Breeder', breeds: '12', claimshare: '18%', price: '0.10' },
-    { id: 11, image: TFLogo, gender: 'Sire', breeds: '3', claimshare: '5%', price: '0.11' },
-    { id: 12, image: TFLogo, gender: 'Sire', breeds: '8', claimshare: '25%', price: '0.12' },
-    { id: 13, image: TFLogo, gender: 'Non-Binary', breeds: '2', claimshare: '14%', price: '0.13' },
-    { id: 14, image: TFLogo, gender: 'Breeder', breeds: '4', claimshare: '20%', price: '0.14' },
+    { id: 1, image: Traitforger, gender: 'Sire', breeds: '9', claimshare: '9%', price: '0.01', performancefactor: '20%' },
+    { id: 2, image: Traitforger, gender: 'Breeder', breeds: '1', claimshare: '5%', price: '0.02', performancefactor: '2%' },
+    { id: 3, image: Traitforger, gender: 'Breeder', breeds: '12', claimshare: '18%', price: '0.03', performancefactor: '12%' },
+    { id: 4, image: Traitforger, gender: 'Sire', breeds: '3', claimshare: '5%', price: '0.04', performancefactor: '40%' },
+    { id: 5, image: Traitforger, gender: 'Sire', breeds: '8', claimshare: '25%', price: '0.05', performancefactor: '11%' },
+    { id: 6, image: Traitforger, gender: 'Non-Binary', breeds: '2', claimshare: '14%', price: '0.06', performancefactor: '5%' },
+    { id: 7, image: Traitforger, gender: 'Breeder', breeds: '4', claimshare: '20%', price: '0.07', performancefactor: '6%' },
+    { id: 8, image: Traitforger, gender: 'Sire', breeds: '9', claimshare: '9%', price: '0.08', performancefactor: '32%' },
+    { id: 9, image: Traitforger, gender: 'Breeder', breeds: '1', claimshare: '5%', price: '0.09', performancefactor: '12%' },
+    { id: 10, image: Traitforger, gender: 'Breeder', breeds: '12', claimshare: '18%', price: '0.10', performancefactor: '7%' },
+    { id: 11, image: Traitforger, gender: 'Sire', breeds: '3', claimshare: '5%', price: '0.11', performancefactor: '18%' },
+    { id: 12, image: Traitforger, gender: 'Sire', breeds: '8', claimshare: '25%', price: '0.12', performancefactor: '21%' },
+    { id: 13, image: Traitforger, gender: 'Non-Binary', breeds: '2', claimshare: '14%', price: '0.13', performancefactor: '1%' },
+    { id: 14, image: Traitforger, gender: 'Breeder', breeds: '4', claimshare: '20%', price: '0.14', performancefactor: '11%' },
 ];
 
 const getEntityItems = async () => {
@@ -46,8 +46,9 @@ const Card = ({ entity }) => {
                     <div className='card-info-on-hover'>
                         <div className='footer-top-level'>
                             <h3 className='card-gender'> Gender: {entity.gender} </h3>
-                            <h3 className="card-name">Breeds per Year: {entity.breeds}</h3>
-                            <h2 className="card-parameters-h2">Claimshare: {entity.claimshare}</h2>
+                            <h3 className="card-name">Breed Potential: {entity.breeds}</h3>
+                            <h2 className="card-parameters-h2">Nuke Factor: {entity.claimshare}</h2>
+                            <h2 className="card-parameters-h2"> Performance Factor: {entity.performancefactor}</h2>
                         </div>
                     </div>
                 </div>

@@ -24,7 +24,7 @@ const Stats = () => {
         <h1 className="stats-title">Statistics</h1>
         <div className="stats-grid">
           <div className="stat-card">
-            <h2>Highest Claimshare</h2>
+            <h2>Highest Nuke Factor</h2>
             <ul>
               {stats.highestClaimshare.length > 0 ? (
                 stats.highestClaimshare.map((item, index) => <li key={index}>{item}</li>)
@@ -58,7 +58,7 @@ const Stats = () => {
       <TransactionsDisplay />
     </>
   );
-};
+}
 
 
 async function getStatsFromAPI() {

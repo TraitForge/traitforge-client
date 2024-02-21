@@ -4,7 +4,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/re
 import '../styles/HoneyPotModal.css';
 import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
-const NukeContractAddress = '0x610178dA211FEF7D417bC0e6FeD39F05609AD788'; 
+const NukeContractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'; 
 
 const HoneyPotModal = ({ showEntityModal, onClose }) => {
   const [entities, setEntities] = useState([]);
@@ -91,10 +91,10 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
         ) : error ? (
           <p className="error">Error: {error}</p>
         ) : (
-          <div className="nft-list">
+          <div className="nft-lists">
             {entities.length > 0 ? (
               entities.map(entity => (
-                <div key={entity.id} className="nft-item" onClick={() => handleNftSelect(entity.id)}>
+                <div key={entity.id} className="nft-items" onClick={() => handleNftSelect(entity.id)}>
                   <img src={entity.image} alt={entity.name} />
                   <p>{entity.name}</p>
                 </div>

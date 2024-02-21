@@ -12,6 +12,13 @@
     z-index: 110; 
 }
 
+.btnPrimary {
+    font-size: 1.3em;
+}
+
+.btnPrimary:hover {
+    transform: scale(1.02);
+}
 
 .closeBtn {
     font-size: 1.5em;
@@ -38,7 +45,7 @@
     border: 0.5px solid #0ff;
     display: grid;
     place-items: center;
-    height: 40vh;
+    height: 50vh;
 }
 
 
@@ -86,6 +93,7 @@
 .modalContainer input[type="text"] {
     width: 60%;
     padding: 10px;
+    margin-bottom: 15px;
     border: 1px solid #0ff;
     border-radius: 4px;
     background-color: #222;
@@ -93,9 +101,6 @@
 }
 
 
-.btnPrimary {
-    margin-bottom: 10px;
-}
 
 @media (max-width: 770px) {
     .modalContainer {

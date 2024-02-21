@@ -1,13 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 .TBG-page {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
   margin-top: 7vh;
 }
 
 .breed-entity-button {
   background-color: rgba(0, 255, 255, 0);
   font-family: 'Bebas Neue';
+  max-width: 70%;
   font-size: 1.5em; 
   color: #f0f0f0; 
   border: none; 
@@ -23,6 +27,13 @@
   transform: scale(1.05)
 }
 
+.breed-sorting-options h1 {
+  font-size: 1.2em;
+  padding: 5px;
+  border-top: 1px solid #0ff ;
+  width: 25vw;
+  margin-bottom: -5px;
+}
 
 .breeder-items-list {
   display: grid;
@@ -44,6 +55,14 @@
   cursor: pointer;
   transition: transform 0.3s ease;
   z-index: 11;
+}
+
+@media (max-width: 1400px) {
+  .breed-sorting-options h1 {
+    width: 40vw;
+
+  }
+  
 }
 
 

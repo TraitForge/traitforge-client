@@ -1,145 +1,168 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import '../styles/TradingBreedingModal.css';
+import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { ethers } from 'ethers';
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
-import '../styles/BreedingModal.css';
-import BreedContractAbi from '../artifacts/contracts/BreedableToken.sol/BreedableToken.json';
-import MintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
+
+import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
+import mintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
 
 
-const BreedContractAddress = '0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e';
-const MintContractAddress = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0';
+const tradeContractAddress = '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9';
+const mintContractAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
+
+const TradingModal = ({ open, onClose, onSave }) => {
+  const [entities, setEntities] = useState([]);
+  const [selectedEntity, setSelectedEntity] = useState(null);
+  const [price, setPrice] = useState('');
+  const [isListed, setIsListed] = useState(false);
+  const [error, setError] = useState('');
+  const { address, isConnected } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
+ 
+  const fetchUserEntities = useCallback(async () => {
+    if (!isConnected || !address) {
+        console.log("Wallet not connected or address not found");
+        return;
+    }
+
+    try {
+        const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+        const signer = ethersProvider.getSigner();
+        const mintContract = new ethers.Contract(mintContractAddress, mintContractAbi.abi, signer);
+
+        const balance = await mintContract.balanceOf(address);
+        const tokenIds = await Promise.all([...Array(balance.toNumber()).keys()].map(async (index) => {
+            return mintContract.tokenOfOwnerByIndex(address, index);
+        }));
 
 
-    const Modal = ({ open, onClose, onSave, listedIds }) => {
-        const [price, setPrice] = useState('');
-        const [selectedEntity, setSelectedEntity] = useState(null);
-        const [entities, setEntities] = useState([]);
-        const { address, isConnected } = useWeb3ModalAccount();
-        const { provider } = useWeb3ModalProvider();
-    
-        useEffect(() => {
-            if (!isConnected || !address) {
-              console.log("Wallet not connected or address not found");
-              return;
-            }
-          
-            const fetchEntitiesFromBlockchain = async () => {
-              try {
-                const ethersProvider = new ethers.providers.Web3Provider(provider);
-                const signer = ethersProvider.getSigner();
-                const BreedContract = new ethers.Contract(BreedContractAddress, BreedContractAbi.abi, signer);
-                const mintContract = new ethers.Contract(MintContractAddress, MintContractAbi.abi, signer);
-                const balance = await mintContract.balanceOf(address);
-                const tokenIds = await Promise.all([...Array(balance.toNumber()).keys()].map(async (index) => {
-                  return mintContract.tokenOfOwnerByIndex(address, index);
-                }));
-          
-                const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
-                  const details = await BreedContract.getTokenDetails(tokenId);
-                  const { claimShare, breedPotential, generation, age } = details;
-          
-                  return {
-                    id: tokenId.toString(),
-                    claimshare: claimShare.toString(),
-                    breedpotential: breedPotential.toString(),
-                    generation: generation.toString(),
-                    age: age.toString(),
-                  };
-                }));
-          
-                setEntities(entitiesDetails);
-              } catch (error) {
-                console.error('Could not retrieve entities:', error);
-              }
+        const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
+          const details = await mintContract.getTokenDetails(tokenId);
+          const { claimShare, breedPotential, generation, age } = details;
+
+            return {
+                id: tokenId.toString(),
+                nukefactor: claimShare.toString(),
+                breedpotential: breedPotential.toString(),
+                generation: generation.toString(),
+                age: age.toString(),
             };
-          
-            fetchEntitiesFromBlockchain();
-          }, [isConnected, address, provider ]);
-          
+        }));
 
-    
+        setEntities(entitiesDetails);
+    } catch (error) {
+        console.error('Could not retrieve entities:', error);
+        setError('Failed to fetch entities');
+    }
+}, [address, isConnected, walletProvider]);
 
-    const EntityCard = ({ entity, onSelect, isSelected }) => (
-        <div className={`entity-card ${isSelected ? 'selected' : ''}`} onClick={() => onSelect(entity)}>
-            <img src={entity.image} alt={entity.title} />
-            <h3>{entity.title}</h3>
-            <p>{entity.gender}</p>
-            <p>Claimshare: {entity.claimshare}</p>
+
+  
+
+  useEffect(() => {
+    if (open) {
+      fetchUserEntities();
+    } else {
+      setPrice('');
+      setSelectedEntity(null);
+    }
+  }, [open, fetchUserEntities]);
+
+
+  const handlePriceChange = (event) => {
+    setPrice(event.target.value);
+    setError('');
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!price) {
+      setError('Please enter a price');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+     if (!isConnected || !address) {
+      setError('wallet not connected');
+      return;
+     }
+
+     const selectedEntityData = entities.find(entity => entity.id === selectedEntity);
+     if (selectedEntityData) {
+       try {
+         const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+         const signer = ethersProvider.getSigner();
+         const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractAbi, signer);
+ 
+         const transaction = await tradeContract.listEntityForSale(selectedEntity, ethers.utils.parseEther(price));
+         await transaction.wait();
+
+          const sellingEntity = {
+            id: selectedEntity,
+            price: parseFloat(price),
+          };
+         onSave(sellingEntity);
+         setIsListed(true);
+         setTimeout(() => {
+           setIsListed(false);
+           onClose();
+         }, 3000); 
+       } catch (error) {
+         setError('Failed to list Entity. Please try again.');
+         console.error('List Entity error:', error);
+       }
+     } else {
+       setError('Please select an Entity to list.');
+     }
+   };
+ 
+   if (!open) return null;
+
+   return (
+    <div className='overlay'>
+      <button className='closeBtn' onClick={onClose}>x</button>
+      <div className='modalContainer'>
+        <header>List Your Entity for Sale</header>
+        <div className='nfts-display-container'>
+          {entities.length > 0 ? (
+            entities.map(entity => (
+              <div
+                key={entity.id}
+                className={`nfts-item ${selectedEntity === entity.id ? 'selected' : ''}`}
+                onClick={() => setSelectedEntity(entity.id)}
+              >
+                <img src={entity.image} alt={entity.name} />
+                <p>{entity.name}</p>
+                <p>{entity.claimshare}</p>
+                <p>{entity.gender}</p>
+              </div>
+            ))
+          ) : (
+            <p>No entities available for listing.</p>
+          )}
         </div>
-    );
-
-    const handleEntitySelection = (entity) => {
-        setSelectedEntity(entity);
-    };
-
-    const handleSave = async () => {
-        if (!selectedEntity) {
-            alert('Please select an Entity.');
-            return;
-        }
-
-        if (!price) {
-            alert('Please set a price.');
-            return;
-        }
-
-        if (selectedEntity.gender !== 'Sire') {
-            alert('Only Sires can be listed for breeding. Breeders are not allowed.');
-            return;
-        }
-
-        try {
-            const signer = provider.getSigner();
-            const contract = new ethers.Contract(BreedContractAddress, BreedContractAbi, signer);
-            const transaction = await contract.listEntityForBreeding(selectedEntity.id, ethers.utils.parseEther(price));
-            await transaction.wait();
-
-            onSave({
-                ...selectedEntity,
-                price: parseFloat(price),
-            });
-
-            setPrice('');
-            setSelectedEntity(null);
-            onClose();
-        } catch (error) {
-            console.error('Error listing entity for breeding:', error);
-            alert('Failed to list entity for breeding. Please try again.');
-        }
-    };
-
-    if (!open) return null;
-
-    return (
-        <div className='breeding-overlay'>
-            <button onClick={onClose} className="breeding-close-btn">x</button>
-            <div className='breeding-modalContainer'>
-                <div className='breeding-modalHeader'>
-                    <h5>List Your Entity for Breeding</h5>
-                </div>
-                <div className='breeding-modalBody'>
-                    <div className="entity-cards-container">
-                        {entities.filter(entity => !listedIds.includes(entity.id) && entity.gender === 'Sire').map(entity => (
-                            <EntityCard 
-                                key={entity.id} 
-                                entity={entity} 
-                                onSelect={handleEntitySelection} 
-                                isSelected={selectedEntity && entity.id === selectedEntity.id}
-                            />
-                        ))}
-                    </div>
-                    <div className='breedbtnContainer'>
-                    Set price for breeding
-                    <input className='price-tab' type="number" placeholder="Price in ETH" value={price} onChange={(e) => setPrice(e.target.value)} />
-                    </div>
-                </div>
-                <div className='breeding-modalFooter'>
-                    <button onClick={handleSave}>List for Breeding</button>
-                </div>
-            </div>
+        <div className='btnContainer'>
+          <div onSubmit={handleSubmit}>
+            <label>
+              Set your Price for your Entity:
+              <div>
+                <input
+                  type="text"
+                  value={price}
+                  onChange={handlePriceChange}
+                  placeholder="Enter price in ETH"
+                />
+              </div>
+            </label>
+            <button type="submit" className="btnPrimary">List For Breeding</button>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {isListed && <p style={{ color: 'green' }}>Entity Listed Successfully!</p>}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
-export default Modal;
 
-
+export default TradingModal;

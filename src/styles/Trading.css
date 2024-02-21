@@ -1,22 +1,88 @@
-.buy-sell-page {
-  text-align: center;
+.Trading-page {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+
+.Trading-top-buttons{
   margin-top: 7vh;
   z-index: 10;
 }
 
-.buy-sell-page button {
+.sellEntity {
   background-color: rgba(0, 255, 255, 0);
   font-family: 'Bebas Neue';
   font-size: 1.5em; 
   color: #f0f0f0; 
   border: none; 
+  margin-top: 5vh;
   border-radius: 6px; 
   padding: 0.5rem 3rem; 
-  margin-top: 5vh;
   cursor: pointer; 
   box-shadow: 0px 0px 1px 1px #0ff;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
+
+.sellEntity:hover {
+  transform: scale(1.05)
+}
+
+.tradingfilters {
+  font-size: 0.3em;
+  margin-top: 20px;
+}
+
+.tradingfiltersh1 {
+  font-size: 1em;
+  padding: 5px;
+  border-top: 1px solid #0ff ;
+}
+
+.sorting-options {
+  margin-top: -20px;
+}
+
+.sorting-dropdown {
+  font-size: 0.65em;
+  padding: 2px;
+  margin: 10px 0;
+  font-family: 'bebas neue';
+  border: 0.5px solid rgb(168, 255, 255);
+  border-radius: 8px;
+  background-color: rgb(15, 15, 15);
+  color: rgb(232, 232, 232);
+  cursor: pointer;
+}
+
+.sorting-dropdown:hover, .sorting-dropdown:focus {
+  border-color: #0ff;
+  outline: none;
+}
+
+.tradingfilters button:last-child {
+  margin-right: 0;
+}
+
+.tradingfilters button {
+  padding: 0px;
+  margin-top: -10px;
+  width: 120px;
+  margin-right: 10px;
+  color: rgba(241, 241, 241, 0.565);
+  border: 0.5px solid #0ff;
+  box-shadow: none;
+}
+
+.tradingfilters :hover {
+  transform: scale(1.1);
+}
+
+.tradingfilters button.active-filter {
+  color: rgb(255, 255, 255); 
+  border: 2px solid #0ff;
+}
+
 
 .buy-sell-page button:hover {
   transform: scale(1.05)
@@ -80,6 +146,18 @@
 
 @media (max-width: 768px) {
 
+  .sorting-dropdown {
+   margin-top: 20px;
+   margin-bottom: -5px;
+  }
+
+  .tradingfilters button {
+    width: 80px;
+  }
+
+  .tradingfiltersh1 {
+    margin-bottom: -20px;
+  }
 
   .modalContainer {
     margin: 10px;

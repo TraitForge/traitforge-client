@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-do
 import { FaBars, FaTimes } from 'react-icons/fa';
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter, faDiscord, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import TFLogo from '../utils/TFLogo.png';
 import Home from './Home';
 import TBG from './Breeding';
@@ -12,12 +14,12 @@ import Stats from './Stats';
 import '../styles/App.css';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
 
-const projectId = 'ce6b3d38d61ac9bfbea71e7dda0ba323'; 
+const projectId = '60db0656302510a26d3e49acc62e5473'; 
 const chains = {
   chainId: 31337,
   name: 'Hardhat',
   currency: 'ETH',
-  rpcUrl: 'http://127.0.0.1:8545/',
+  rpcUrl: 'http://127.0.0.1:8545',
 };
 const metadata = {
   name: 'TraitForge',
@@ -32,11 +34,9 @@ createWeb3Modal({
   themeMode: 'dark',
   themeVariables: {
     '--w3m-font-family': 'bebas neue',
-    '--w3m-font-size-master': '1.1rem',
-    '--w3m-accent': '#33333'
-  }
-});
-
+    '--w3m-font-size-master': '0.9rem',
+    '--w3m-accent': '#33333',
+  }});
 
 const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const handleNavLinkClick = () => {
@@ -59,18 +59,11 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   );
 };
 
-const OpenInNewTabButton = ({ url, children }) => {
-  const handleClick = () => {
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
-  return (
-    <button onClick={handleClick} className="new-tab-button">
-      {children}
-    </button>
-  );
-};
-
+const SocialMediaLink = ({ url, icon, className }) => (
+  <a href={url} target="_blank" rel="noopener noreferrer" className="SM-icons" >
+    <FontAwesomeIcon icon={icon} size="1.5x" />
+  </a>
+);
 
 
   function App() {
@@ -174,10 +167,13 @@ const OpenInNewTabButton = ({ url, children }) => {
   };
 
   const links = [
-    { url: 'https://discord.gg/S3VJS6ByYE', text: 'HOW TO PLAY' },
-    { url: 'https://twitter.com/TraitForge', text: 'TWITTER/X' },
-    { url: 'https://discord.gg/wPxFNRWZEf', text: 'DISCORD' },
+    { url: 'https://t.me/+b31jKqlV-1BjNzY1', icon: faTelegram, text: 'Telegram' },
+    { url: 'https://twitter.com/TraitForge', icon: faTwitter, text: 'Twitter' },
+    { url: 'https://discord.gg/wPxFNRWZEf', icon: faDiscord, text: 'Discord' },
   ];
+
+
+  
 
   return (
     <BrowserRouter>
@@ -211,15 +207,12 @@ const OpenInNewTabButton = ({ url, children }) => {
       </Routes>
     </div>
     <footer className="footer-container" style={{ background: '#000', color: '#fff', textAlign: 'center', padding: '10px' }}>
-      <div className="App-Footer">
-        <p>Resources</p>
-        {links.map((link, index) => (
-          <OpenInNewTabButton key={index} url={link.url}>
-            {link.text}
-          </OpenInNewTabButton>
-        ))}
-      </div>
-    </footer>
+          <div className="App-Footer">
+            {links.map((link, index) => (
+              <SocialMediaLink key={index} url={link.url} icon={link.icon} className="social-media-link" />
+            ))}
+          </div>
+        </footer>
      <button onClick={toggleInstructions} className='instructions-button'>
         {showInstructions ? 'Close' : 'How To Play'}
       </button>

@@ -9,6 +9,7 @@ import NukeFundAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
 function HoneyPot() {
   const [showNFTModal, setShowNFTModal] = useState(false);
+  const [nukeHistory, setNukeHistory] = useState([]);
   const [ethAmount, setEthAmount] = useState(0);
   const [usdAmount, setUsdAmount] = useState(0);
   const { walletProvider } = useWeb3ModalProvider();
@@ -17,7 +18,7 @@ function HoneyPot() {
     setShowNFTModal(prevState => !prevState); 
   };
 
-  const NukeFundAddress = '0x610178dA211FEF7D417bC0e6FeD39F05609AD788';
+  const NukeFundAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
 
   const fetchEthAmount = useCallback(async () => {
     try {
@@ -60,6 +61,13 @@ function HoneyPot() {
     return () => clearInterval(interval); 
   }, [fetchEthAmount]);
 
+  useEffect(() => {
+    const storedNukeHistory = localStorage.getItem('Nuked');
+    if (storedNukeHistory) {
+      setNukeHistory(JSON.parse(storedNukeHistory));
+    }
+  }, []);
+
   return (
     <div className="honey-pot-container">
       <h1>The HoneyPot</h1>
@@ -78,6 +86,24 @@ function HoneyPot() {
           onClose={() => setShowNFTModal(false)}
         />
       )}
+      <div className='nuke-history'>
+      <h1>Nuke History</h1>
+      {nukeHistory.length > 0 ? (
+        nukeHistory.map((tx, index) => (
+          <div key={index} className="nuke-event">
+              <p>Type: {tx.type}</p>
+              <p>From: {tx.from}</p>
+              <p>To: {tx.to || "N/A"}</p>
+              <p>Amount: {tx.amount || "N/A"}</p>
+              <p>Token ID: {tx.tokenId || "N/A"}</p>
+              <p>Time: {new Date(tx.timestamp).toLocaleString()}</p>
+          </div>
+        ))
+      ) : (
+        <p>No Nuke history found.</p>
+      )}
+
+      </div>
     </div>
   );
 }

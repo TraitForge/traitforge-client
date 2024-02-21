@@ -40,7 +40,7 @@
   
   
   
-  .nft-list {
+  .nft-lists {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -48,7 +48,7 @@
     z-index: 11;
   }
   
-  .nft-item {
+  .nft-items {
     width: 4em;
     padding: 5px;
     padding-bottom: 0px;
@@ -60,17 +60,17 @@
     z-index: 11;
   }
 
-  .nft-item.selected{
+  .nft-items.selected{
     box-shadow: 0px 0px 5px 2px #0ff;
   }
   
-  .nft-item:hover {
+  .nft-items:hover {
     transform: scale(1.05);
     background-color: #28282835; 
     z-index: 11;
   }
   
-  .nft-item img {
+  .nft-items img {
     max-width: 40%;
     height: auto;
     size: 0.1em;

@@ -5,9 +5,7 @@ import Modal from './BreedingModal';
 import '../styles/Breeding.css';
 import BreedContractAbi from '../artifacts/contracts/BreedableToken.sol/BreedableToken.json';
 
-const BreedContractAddress = '0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e';
-
-
+const BreedContractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
 const EntityList = ({ entities }) => (
   <div className="breeder-items-list">
@@ -17,7 +15,7 @@ const EntityList = ({ entities }) => (
         <h5>{entity.title}</h5>
         <p>Price: {entity.price} ETH</p>
         <p>{entity.gender}</p>
-        <p>Claimshare: {entity.claimshare}</p>
+        <p>Nuke Factor: {entity.nukefactor}</p>
       </div>
     ))}
   </div>
@@ -28,7 +26,7 @@ const NFTListings = () => {
   const { walletProvider } = useWeb3ModalProvider();
   const [entitiesForBreed, setEntitiesForBreed] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  
+  const [sortOption, setSortOption] = useState('');
 
   useEffect(() => {
     const fetchEntities = async () => {
@@ -46,7 +44,7 @@ const NFTListings = () => {
           title: entity.title,
           price: ethers.utils.formatEther(entity.price),
           gender: entity.gender,
-          claimshare: entity.claimshare.toNumber(),
+          nukefactor: entity.claimshare.toNumber(),
         }));
         
         setEntitiesForBreed(entities);
@@ -58,18 +56,36 @@ const NFTListings = () => {
     fetchEntities();
   }, [isConnected, walletProvider]);
 
+  // Sorting logic
+  const getSortedEntities = () => {
+    if (!sortOption) return entitiesForBreed; 
+    return entitiesForBreed.sort((a, b) => {
+      if (sortOption === 'priceLowHigh') {
+        return parseFloat(a.price) - parseFloat(b.price);
+      } else if (sortOption === 'priceHighLow') {
+        return parseFloat(b.price) - parseFloat(a.price);
+      }
+      return 0;
+    });
+  };
+
+  const sortedEntities = getSortedEntities();
+
   return (
     <div className='TBG-page'>
       <button className='breed-entity-button' onClick={() => setOpenModal(true)}>List Entity For Breeding</button>
       {openModal && (
-        <Modal 
-          open={openModal} 
-          onClose={() => setOpenModal(false)} 
-          onSave={(entity) => console.log('Save functionality to be implemented')} 
-          entities={entitiesForBreed} 
-        />
-      )}
-      <EntityList entities={entitiesForBreed} />
+        <Modal open={openModal}  onClose={() => setOpenModal(false)} onSave={(entity) => console.log('Save functionality to be implemented')} entities={entitiesForBreed} /> )}
+     
+      <div className="breed-sorting-options">
+        <h1> Filter </h1>
+        <select className="sorting-dropdown" onChange={(e) => setSortOption(e.target.value)}>
+          <option value="">Select Sorting Option</option>
+          <option value="priceLowHigh">Price: Low to High</option>
+          <option value="priceHighLow">Price: High to Low</option>
+        </select>
+      </div>
+      <EntityList entities={sortedEntities} />
     </div>
   );
 };
