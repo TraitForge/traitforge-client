@@ -219,7 +219,17 @@ const SocialMediaLink = ({ url, icon, className }) => (
     {showInstructions && (
       <div className='instructions-pop-up'>
                 <p>Welcome to TraitForge, an innovative NFT honeypot game that blends strategic gameplay with the exciting world of NFTs.</p>
+       <h3> Terminology </h3>
 
+    <ul>
+        <li>Entity - The name of a TraitForge specific Token.</li>
+        <li>Nuke Factor - The % of NukeFund claimed when you Nuke your Entity.</li>
+        <li>Performance Factor - The rate at which your Entities Abilities increase over time.</li>
+        <li>Gender - The Gender of your entity changes the outcome of a Breed event (eg, Sires receive ETH, Breeders receive Next-Gen Entity).</li>
+        <li>Breed Potential - The amount of times you can breed per year.</li>
+        <li>Generation - the Generation of your token.</li>
+        <li>NukeFund - The pool of ETH that the game revolves around. 90% of ETH from minting goes to NukeFund.</li>
+    </ul>
 
 <h3>Getting Started</h3>
 <ul>
@@ -279,5 +289,6 @@ const SocialMediaLink = ({ url, icon, className }) => (
     )}
   </div>
 </BrowserRouter>
-  )}
+  );
+    }
 export default App;

@@ -58,8 +58,6 @@ const TradingModal = ({ open, onClose, onSave }) => {
 }, [address, isConnected, walletProvider]);
 
 
-  
-
   useEffect(() => {
     if (open) {
       fetchUserEntities();

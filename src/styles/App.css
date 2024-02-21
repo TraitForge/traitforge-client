@@ -205,7 +205,9 @@ display: none;
   padding-bottom: 15px;
 }
 
-.instructions-content h3 {
+.instructions-pop-up h3 {
+  margin-top: 50px;
+  font-size: 1.6em;
   color: rgb(0, 0, 0); 
   margin-bottom: 5px;
 }
