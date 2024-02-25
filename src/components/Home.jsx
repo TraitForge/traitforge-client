@@ -13,30 +13,28 @@ const HomeBody = () => {
   const [entityPrice, setEntityPrice] = useState(null);
   const [mintedCounts, setMintedCounts] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
   const { isConnected} = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
-  const getLatestEntityPrice = useCallback(async () => {
-    if (!walletProvider) return;
-    try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
-      const signer = ethersProvider.getSigner();
-      const mintContract = new ethers.Contract(MintAddress, MintAbi.abi, signer);
+
+const getLatestEntityPrice = useCallback(async () => {
+  if (!walletProvider) return;
+  try {
+  const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+  const signer = ethersProvider.getSigner();
+  const mintContract = new ethers.Contract(MintAddress, MintAbi.abi, signer);
       
-      const startPrice = await mintContract.START_PRICE();
-      const priceIncrement = await mintContract.PRICE_INCREMENT();
-      const mintedCount = await mintContract.mintedCount();
-      const currentPrice = startPrice.add(priceIncrement.mul(mintedCount));
-      const priceInEth = ethers.utils.formatEther(currentPrice);
-  
-      console.log('priceInEth:', priceInEth);
-      setEntityPrice(priceInEth);
-      setMintedCounts(mintedCounts);
-    } catch (error) {
-      console.error('Error in getLatestEntityPrice:', error);
-    }
-  }, [walletProvider, mintedCounts]);
+  const startPrice = await mintContract.START_PRICE();
+  const priceIncrement = await mintContract.PRICE_INCREMENT();
+  const mintedCount = await mintContract.mintedCount();
+  const currentPrice = startPrice.add(priceIncrement.mul(mintedCount));
+  const priceInEth = ethers.utils.formatEther(currentPrice);
+  console.log('priceInEth:', priceInEth);
+  setEntityPrice(priceInEth);
+  setMintedCounts(mintedCounts);
+  } catch (error) {
+  console.error('Error in getLatestEntityPrice:', error);
+}}, [walletProvider, mintedCounts]);
 
 const mintEntityHandler = async () => {
   if (!isConnected) {
@@ -59,26 +57,26 @@ const mintEntityHandler = async () => {
 };
 
 
-  useEffect(() => {
-    getLatestEntityPrice();
-  }, [getLatestEntityPrice]);
+useEffect(() => {
+ getLatestEntityPrice();
+}, [getLatestEntityPrice]);
 
 
-  return (
-    <main>
-      <div className='mint-container'>
-        <span className='mint-text'>Mint your traitforge entity</span>
-        <div className='mint-button'>
-          <button onClick={mintEntityHandler} disabled={isLoading || !entityPrice}>
-            {isLoading ? <LoadingSpinner /> : `Mint for ${entityPrice || '...'} ETH`}
-          </button>
-        </div>
-      </div>
-      <div className='nexttokenslider'>
-        <Slider />
-      </div>
-    </main>
-  );
-};
+return (
+<main>
+  <div className='mint-container'>
+    <span className='mint-text'>Mint your traitforge entity</span>
+    <div className='mint-button'>
+    <button onClick={mintEntityHandler} disabled={isLoading || !entityPrice}>
+    {isLoading ? <LoadingSpinner /> : `Mint for ${entityPrice || '...'} ETH`}
+    </button>
+    </div>
+  </div>
+
+<div className='nexttokenslider'>
+  <Slider />
+</div>
+</main>
+)};
 
 export default HomeBody;
