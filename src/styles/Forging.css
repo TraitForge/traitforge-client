@@ -57,6 +57,40 @@
   z-index: 11;
 }
 
+.processing-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.forge-button {
+  background-color: rgba(0, 255, 255, 0);
+  font-family: 'Bebas Neue';
+  font-size: 1em; 
+  color: #f0f0f0; 
+  border: none; 
+  border-radius: 6px; 
+  padding: 0.5rem 3rem; 
+  cursor: pointer; 
+  box-shadow: 0px 0px 1px 1px #0ff;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.modal-content {
+  padding: 20px;
+  background: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 @media (max-width: 1400px) {
   .breed-sorting-options h1 {
     width: 40vw;

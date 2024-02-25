@@ -4,11 +4,11 @@ import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/re
 import { ethers } from 'ethers';
 
 import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
-import mintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
+import ERC721ContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
 
 
 const tradeContractAddress = '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9';
-const mintContractAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
+const ERC721ContractAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
 
 const TradingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);
@@ -21,6 +21,7 @@ const TradingModal = ({ open, onClose, onSave }) => {
  
   const fetchUserEntities = useCallback(async () => {
     if (!isConnected || !address) {
+        alert("Wallet not connected");
         console.log("Wallet not connected or address not found");
         return;
     }
@@ -28,7 +29,7 @@ const TradingModal = ({ open, onClose, onSave }) => {
     try {
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
       const signer = ethersProvider.getSigner();
-      const mintContract = new ethers.Contract(mintContractAddress, mintContractAbi.abi, signer);
+      const mintContract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
 
       const balance = await mintContract.balanceOf(address);
       let tokenIds = [];
@@ -38,14 +39,15 @@ const TradingModal = ({ open, onClose, onSave }) => {
       }
 
       const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
-        const details = await mintContract.getTokenDetails(tokenId);
-        const { claimShare, breedPotential, generation, age } = details;
+        const details = await mintContract.getEntityAttributes(tokenId);
+        const { nukeFactor, forgePotential, generation, age, type } = details;
 
         return {
           id: tokenId.toString(),
-          nukefactor: claimShare.toString(),
-          breedpotential: breedPotential.toString(),
+          nukefactor: nukeFactor.toString(),
+          forgepotential: forgePotential.toString(),
           generation: generation.toString(),
+          type: type,
           age: age.toString(),
         };
       }));
@@ -65,18 +67,15 @@ const TradingModal = ({ open, onClose, onSave }) => {
   }, [open, fetchUserEntities]);
 
 
+
+
   const handlePriceChange = (event) => {
     setPrice(event.target.value);
     setError('');
   };
 
-  const handleSubmit = async (event) => {
+  const listEntity = async (event) => {
     event.preventDefault();
-
-    if (!price) {
-      setError('Please enter a price');
-      return;
-    }
 
     if (!isConnected || !address) {
       setError('Wallet not connected');
@@ -88,6 +87,11 @@ const TradingModal = ({ open, onClose, onSave }) => {
       return;
     }
 
+    if (!price) {
+      setError('Please enter a price');
+      return;
+    }
+
     try {
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
       const signer = ethersProvider.getSigner();
@@ -95,11 +99,6 @@ const TradingModal = ({ open, onClose, onSave }) => {
 
       const transaction = await tradeContract.listEntityForSale(selectedEntity, ethers.utils.parseEther(price));
       await transaction.wait();
-
-      onSave({
-        id: selectedEntity,
-        price: parseFloat(price),
-      });
 
       setIsListed(true);
       setTimeout(() => {
@@ -127,10 +126,10 @@ const TradingModal = ({ open, onClose, onSave }) => {
                 className={`nfts-item ${selectedEntity === entity.id ? 'selected' : ''}`}
                 onClick={() => setSelectedEntity(entity.id)}
               >
-                <img src={entity.image} alt={entity.name} />
-                <p>{entity.name}</p>
-                <p>{entity.claimshare}</p>
-                <p>{entity.gender}</p>
+                <img src={entity.image} alt={entity.id} />
+                <p>{entity.forgepotential}</p>
+                <p>{entity.nukefactor}</p>
+                <p>{entity.type}</p>
               </div>
             ))
           ) : (
@@ -138,7 +137,7 @@ const TradingModal = ({ open, onClose, onSave }) => {
           )}
         </div>
         <div className='btnContainer'>
-          <div onSubmit={handleSubmit}>
+          <div onSubmit={listEntity}>
             <label>
               Set your Price for your Entity:
               <input

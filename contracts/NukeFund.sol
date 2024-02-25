@@ -1,60 +1,74 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-interface IMint is IERC721 {
-    function someFunction() external;
-    function calculateClaimShare(uint256 tokenId) external view returns (uint256);
-    function burnToken(uint256 tokenId) external;
-    function tokenMintTimeStamp(uint256 tokenid) external view returns (uint256);
+interface ICustomERC721 {
+    function ownerOf(uint256 tokenId) external view returns (address);
+    function getTokenAge(uint256 tokenId) external view returns (uint256);
+    function getTokenCreationTimestamp(uint256 tokenId) external view returns (uint256);
+    function getEntropy(uint256 tokenId) external view returns (uint256); 
+    function burn(uint256 tokenId) external; 
 }
-contract NukeFund is ReentrancyGuard, Ownable {
-    IMint public mintContract;
-    uint256 public fund;
-    mapping(uint256 => uint256) public tokenMaturityTime;
 
-    event Nuked(address indexed owner, uint256 tokenId, uint256 claimAmount);
-    event depositEvent(address indexed sender, uint256 amount);
-    event withdrawalEvent(address indexed recipient, uint256 amount);
+contract NukeFund is ReentrancyGuard {
+    uint256 private fund;
+    ICustomERC721 public erc721Contract;
+
     event FundBalanceUpdated(uint256 newBalance);
+    event FundReceived(address from, uint256 amount);
+    event Nuked(address indexed owner, uint256 tokenId, uint256 nukeAmount);
 
-    constructor(address _mintContractAddress) Ownable(msg.sender){
-        mintContract = IMint(_mintContractAddress);
+    constructor(address _erc721Address) {
+        erc721Contract = ICustomERC721(_erc721Address);
     }
-    function deposit() external payable {
-        require(msg.sender == address(mintContract) || msg.sender == owner(), "Unauthorized");
+
+    receive() external payable {
         fund += msg.value;
-        emit depositEvent(msg.sender, msg.value);
+        emit FundReceived(msg.sender, msg.value);
         emit FundBalanceUpdated(fund);
     }
-    function nuke(uint256 tokenId) public nonReentrant {
-        require(mintContract.ownerOf(tokenId) == msg.sender, "Not the owner");
-        uint256 claimAmount = mintContract.calculateClaimShare(tokenId);
-        require(claimAmount <= fund, "Insufficient fund");
-        require(block.timestamp >= tokenMaturityTime[tokenId], "Token is not mature yet");
-        
-        fund -= claimAmount;
-        payable(msg.sender).transfer(claimAmount);
-        mintContract.burnToken(tokenId);
 
-        emit Nuked(msg.sender, tokenId, claimAmount);
-    }
-    function withdraw(uint256 amount) public onlyOwner nonReentrant {
-        require(amount <= fund, "Insufficient fund");
-        fund -= amount;
-        payable(owner()).transfer(amount);
-        emit withdrawalEvent(owner(),amount);
-    }
     function getFundBalance() public view returns (uint256) {
         return fund;
     }
-    function canTokenbeNuked(uint256 tokenId) public view returns (bool) {
-        uint256 mintTime = mintContract.tokenMintTimeStamp(tokenId);
-        require(mintTime > 0, "Token does not exist or mint time not recorded");
-        return (block.timestamp>= mintTime + 3 days);
+
+    function calculateNukeFactor(uint256 tokenId) public view returns (uint256) {
+        require(erc721Contract.ownerOf(tokenId) != address(0), "ERC721: operator query for nonexistent token");
+
+        uint256 entropy = erc721Contract.getEntropy(tokenId);
+        uint256 ageInSeconds = erc721Contract.getTokenAge(tokenId);
+        uint256 ageInDays = ageInSeconds / (24 * 60 * 60);
+        uint256 initialNukeFactor = entropy / 4;
+        uint256 agingFactor = entropy % 10;
+        uint256 finalNukeFactor = ((agingFactor * ageInDays) + initialNukeFactor) / 4;
+        uint256 finalNukeFactorBasisPoints = finalNukeFactor * 10000;
+
+        return finalNukeFactorBasisPoints;
+    }
+
+    function nuke(uint256 tokenId) public nonReentrant {
+        require(erc721Contract.ownerOf(tokenId) == msg.sender, "Not the owner");
+        require(canTokenBeNuked(tokenId), "Token is not mature yet");
+
+        uint256 nukeFactorBasisPoints = calculateNukeFactor(tokenId);
+        uint256 claimAmount = (fund * nukeFactorBasisPoints) / 1000000; 
+
+        fund -= claimAmount;
+        payable(msg.sender).transfer(claimAmount);
+        erc721Contract.burn(tokenId); 
+
+        emit Nuked(msg.sender, tokenId, claimAmount);
+        emit FundBalanceUpdated(fund);
+    }
+
+    function canTokenBeNuked(uint256 tokenId) public view returns (bool) {
+        uint256 tokenCreationTimestamp = erc721Contract.getTokenCreationTimestamp(tokenId);
+        uint256 tokenMintingAge = block.timestamp - tokenCreationTimestamp;
+        return tokenMintingAge >= 3 * 86400;
+    }
+
+    function setERC721ContractAddress(address _erc721Address) external {
+        erc721Contract = ICustomERC721(_erc721Address);
     }
 }

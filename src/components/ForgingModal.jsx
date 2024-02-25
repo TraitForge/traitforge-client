@@ -145,7 +145,7 @@ const TradingModal = ({ open, onClose, onSave }) => {
         <div className='btnContainer'>
           <div onSubmit={handleSubmit}>
             <label>
-              Set your Price for your Entity:
+              Set your Price:
               <div>
                 <input
                   type="text"
@@ -155,7 +155,7 @@ const TradingModal = ({ open, onClose, onSave }) => {
                 />
               </div>
             </label>
-            <button type="submit" className="btnPrimary">List For Breeding</button>
+            <button type="submit" className="btnPrimary">List For Forging</button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {isListed && <p style={{ color: 'green' }}>Entity Listed Successfully!</p>}
           </div>

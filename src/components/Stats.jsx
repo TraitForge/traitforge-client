@@ -5,7 +5,7 @@ import '../styles/Stats.css';
 const Stats = () => {
     const [stats, setStats] = useState({
         highestClaimshare: [],
-        mostBreeds: [],
+        mostForges: [],
         addressWithMostEntities: [],
       });
 
@@ -26,18 +26,18 @@ const Stats = () => {
           <div className="stat-card">
             <h2>Highest Nuke Factor</h2>
             <ul>
-              {stats.highestClaimshare.length > 0 ? (
-                stats.highestClaimshare.map((item, index) => <li key={index}>{item}</li>)
+              {stats.highestNukefactor.length > 0 ? (
+                stats.highestNukefactor.map((item, index) => <li key={index}>{item}</li>)
               ) : (
                 <li>Loading...</li>
               )}
             </ul>
           </div>
           <div className="stat-card">
-            <h2>Most Breeds executed</h2>
+            <h2>Most Forges executed</h2>
             <ul>
-              {stats.mostBreeds.length > 0 ? (
-                stats.mostBreeds.map((item, index) => <li key={index}>{item}</li>)
+              {stats.mostForges.length > 0 ? (
+                stats.mostForges.map((item, index) => <li key={index}>{item}</li>)
               ) : (
                 <li>Loading...</li>
               )}
@@ -63,14 +63,14 @@ const Stats = () => {
 
 async function getStatsFromAPI() {
     return new Promise(resolve => setTimeout(() => resolve({
-      highestClaimshare: [
+      highestNukefactor: [
         '1st: 0x12e379a83939874d002uv03 (1st gen 5/10,000) (46%)',
         '2nd: 0x24f479b84939874d003uv04 (2nd gen 72/10,000) (45%)',
         '3rd: 0x35g569c95939874d004uv05 (1st gen 964/10,000) (43%)',
         '4th: 0x46h679d06939874d005uv06 (2th gen 1992/10,000) (40%)',
         '5th: 0x57i789e17939874d006uv07 (1th gen 5678/10,000) (39%)',
       ],
-      mostBreeds: [
+      mostForges: [
         '1st: 0x11d299her378493dy4983 (16 Breeds over 3 Years)',
         '2nd: 0x22e3aajsi48493fy5984 (14 Breeds over 2 Years)',
         '3rd: 0x33f4bbktj59493gz6985 (12 Breeds over 4 Years)',

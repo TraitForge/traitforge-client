@@ -21,25 +21,24 @@ const BuySellPage = () => {
 
         const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
         const contract = new ethers.Contract(tradeContractAddress, tradeContractABI.abi, ethersProvider);
-        fetchListings(contract);
+        entitiesForSale(contract);
     }, [walletProvider, filter]); 
 
-    const fetchListings = async (contract) => {
+    const entitiesForSale = async (contract) => {
         try {
-            const totalListings = await contract.totalListings(); 
+            const totalListings = await contract.entitiesForSale(); 
             const listingData = [];
 
-            for (let i = 0; i < totalListings.toNumber(); i++) {
-                const listing = await contract.getListingDetails(i);
+            for (let tokenId = 0; tokenId < totalListings.toNumber(); tokenId++) {
+                const listing = await contract.calculateAttributes(tokenId);
                 listingData.push({
-                    id: i,
+                    tokenId: listing.tokenId.toString(),
                     seller: listing.seller,
                     price: ethers.utils.formatEther(listing.price),
-                    gender: listing.gender,
-                    claimshare: listing.claimshare,
-                    breedPotential: listing.breedPotential,
-                    isSire: listing.isSire,
-                    agingSpeed: listing.agingSpeed,
+                    isForger: listing.isForger,
+                    performanceFactor: listing.performanceFactor.toString(),
+                    nukefactor: listing.nukeFactor.toString(),
+                    forgePotential: listing.forgePotential.toString(),
                 });
             }
 
@@ -48,60 +47,56 @@ const BuySellPage = () => {
             console.error("Error fetching listings:", error);
         }
     };
-
-    const handleSavedEntities = (newEntity) => {
-        setListings(prevListings => [...prevListings, newEntity]);
-    };
     
-    const buyEntity = async (listingId, price) => {
+    const buyEntity = async (selectedListing) => {
         if (!isConnected || !walletProvider) {
             alert("Please connect your wallet first.");
             return;
         }
-    
         try {
             const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
             const signer = ethersProvider.getSigner();
             const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractABI.abi, signer);
     
-            const transaction = await tradeContract.buyEntity(listingId, {
-                value: ethers.utils.parseEther(price.toString())
+            const transaction = await tradeContract.buyEntity(selectedListing, {
+                value: ethers.utils.parseEther(selectedListing.price.toString())
             });
     
             await transaction.wait();
             alert("Entity purchased successfully!");
     
         } catch (error) {
-            console.error("Purchase failed:", error);
             alert("Purchase failed. Please try again.");
         }
     };
+
 
     const handleFilterChange = (newFilter) => {
         setFilter(newFilter);
     };
     
+
     const getSortedFilteredListings = () => {
         let filtered = listings.filter(listing => {
             if (filter === 'All') return true;
-            if (filter === 'Sire') return listing.isSire;
-            if (filter === 'Breeder') return !listing.isSire;
+            if (filter === 'Forger') return listing.isForger;
+            if (filter === 'Merger') return !listing.isForger;
             return false; 
         });
 
         switch (sortOption) {
-            case 'highestClaimShare':
-                return filtered.sort((a, b) => parseFloat(b.claimshare) - parseFloat(a.claimshare));
-            case 'lowestClaimShare':
-                return filtered.sort((a, b) => parseFloat(a.claimshare) - parseFloat(b.claimshare));
-            case 'highestBreedPotential':
-                return filtered.sort((a, b) => parseFloat(b.breedPotential) - parseFloat(a.breedPotential));
-            case 'lowestBreedPotential':
-                return filtered.sort((a, b) => parseFloat(a.breedPotential) - parseFloat(b.breedPotential));
-            case 'highestAgingSpeed':
-                return filtered.sort((a, b) => parseFloat(b.agingSpeed) - parseFloat(a.agingSpeed));
-            case 'lowestAgingSpeed':
-                return filtered.sort((a, b) => parseFloat(a.agingSpeed) - parseFloat(b.agingSpeed));
+            case 'highestNukeFactor':
+                return filtered.sort((a, b) => parseFloat(b.nukefactor) - parseFloat(a.nukefactor));
+            case 'lowestNukeFactor':
+                return filtered.sort((a, b) => parseFloat(a.nukefactor) - parseFloat(b.nukefactor));
+            case 'highestForgePotential':
+                return filtered.sort((a, b) => parseFloat(b.forgePotential) - parseFloat(a.forgePotential));
+            case 'lowestForgePotential':
+                return filtered.sort((a, b) => parseFloat(a.forgePotential) - parseFloat(b.forgePotential));
+            case 'highestPerformanceFactor':
+                return filtered.sort((a, b) => parseFloat(b.performanceFactor) - parseFloat(a.performanceFactor));
+            case 'lowestPerformanceFactor':
+                return filtered.sort((a, b) => parseFloat(a.performanceFactor) - parseFloat(b.performanceFactor));
             case 'highestPrice':
                 return filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
                 case 'lowestPrice':
@@ -117,7 +112,7 @@ const BuySellPage = () => {
         <div className='Trading-page'>
             <div className="Trading-top-buttons">
                 <button className='sellEntity' onClick={() => setModalOpen(true)}>Sell Your Entity</button>
-            <Modal onSave={handleSavedEntities} open={modalOpen} onClose={() => setModalOpen(false)} />
+            <Modal open={modalOpen} onClose={() => setModalOpen(false)} />
             
                 <h1 className='tradingfiltersh1'>Filter listings</h1>
                 <div className="sorting-options">
@@ -125,34 +120,33 @@ const BuySellPage = () => {
                         <option value="">Select Sorting Option</option>
                         <option value="highestPrice">Price high to low</option>
                         <option value="lowestPrice">Price low to high</option>
-                        <option value="highestClaimShare">Nuke Factor highest</option>
-                        <option value="lowestClaimShare">Nuke Factor lowest</option>
-                        <option value="highestBreedPotential">Breed Potential highest</option>
-                        <option value="lowestBreedPotential">Breed Potential lowest</option>
-                        <option value="highestAgingSpeed">Aging Speed highest</option>
-                        <option value="lowestAgingSpeed">Aging Speed lowest</option>
+                        <option value="highestNukeFactor">Nuke Factor highest</option>
+                        <option value="lowestNukeFactor">Nuke Factor lowest</option>
+                        <option value="highestForgePotential">Forge Potential highest</option>
+                        <option value="lowestForgePotential">Forge Potential lowest</option>
+                        <option value="highestPerformanceFactor">Performance Factor Speed highest</option>
+                        <option value="lowestPerformanceFactor">Performance Factor lowest</option>
                     </select>
                 </div>
                 <div className="tradingfilters">
                     <button className={filter === 'All' ? 'active-filter' : ''} onClick={() => handleFilterChange('All')}>All</button>
-                    <button className={filter === 'Sire' ? 'active-filter' : ''} onClick={() => handleFilterChange('Sire')}>Sires</button>
-                    <button className={filter === 'Breeder' ? 'active-filter' : ''} onClick={() => handleFilterChange('Breeder')}>Breeders</button>
+                    <button className={filter === 'Forger' ? 'active-filter' : ''} onClick={() => handleFilterChange('Forger')}>Forgers</button>
+                    <button className={filter === 'Merger' ? 'active-filter' : ''} onClick={() => handleFilterChange('Merger')}>Mergers</button>
                 </div>
             </div>
             <div className="listings">
                 {filteredAndSortedListings.map(listing => (
-                    <div key={listing.id} onClick={() => setSelectedListing(listing)}>
-                        <p>Entity ID: {listing.id}</p>
+                    <div key={listing.tokenId} onClick={() => setSelectedListing(listing)}>
+                        <p>Entity ID: {listing.tokenId}</p>
                         <p>Price: {listing.price} ETH</p>
-                        <p>NukeFactor%: {listing.claimshare}</p>
-                        <p>Gender: {listing.gender}</p>
-                        <p>BreedPotential: {listing.breedPotential}</p>
-                        <p>Sire: {listing.isSire ? 'Yes' : 'No'}</p>
+                        <p>NukeFactor%: {listing.nukefactor}</p>
+                        <p>forgePotential: {listing.forgePotential}</p>
+                        <p>Forger: {listing.isForger ? 'Yes' : 'No'}</p>
                     </div>
                 ))}
             </div>
             {selectedListing && (
-                <button onClick={() => buyEntity(selectedListing.id, selectedListing.price)}>
+                <button onClick={() => buyEntity(selectedListing.tokenId, selectedListing.price)}>
                     Buy Entity
                 </button>
             )}

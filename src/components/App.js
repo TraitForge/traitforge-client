@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faDiscord, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import TFLogo from '../utils/TFLogo.png';
 import Home from './Home';
-import TBG from './Breeding';
+import Forging from './Forging';
 import HoneyPot from './HoneyPot';
-import BuySell from './Trading';
+import Trading from './Trading';
 import Stats from './Stats';
 import '../styles/App.css';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
@@ -50,7 +50,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
       </button>
       <nav className={isNavExpanded ? "navlist expanded" : "navlist"}>
         <NavLink to="/Home" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HOME</NavLink>
-        <NavLink to="/TBG" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>BREEDING</NavLink>
+        <NavLink to="/Forging" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>Forging</NavLink>
         <NavLink to="/BuySell" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>MARKETPLACE</NavLink>
         <NavLink to="/HoneyPot" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HONEYPOT</NavLink>
         <NavLink to="/Stats" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>GAME STATS</NavLink>
@@ -200,9 +200,9 @@ const SocialMediaLink = ({ url, icon, className }) => (
       <Routes>
         <Route path='/' element={<Navigate to="/Home"/>} />
         <Route path="/Home" element={<Home />} />
-        <Route path="/TBG" element={<TBG />} />
+        <Route path="/Forging" element={<Forging />} />
         <Route path="/HoneyPot" element={<HoneyPot />} />
-        <Route path="/BuySell" element={<BuySell />} />
+        <Route path="/Trading" element={<Trading />} />
         <Route path="/Stats" element={<Stats />} />
       </Routes>
     </div>
@@ -225,8 +225,8 @@ const SocialMediaLink = ({ url, icon, className }) => (
         <li>Entity - The name of a TraitForge specific Token.</li>
         <li>Nuke Factor - The % of NukeFund claimed when you Nuke your Entity.</li>
         <li>Performance Factor - The rate at which your Entities Abilities increase over time.</li>
-        <li>Gender - The Gender of your entity changes the outcome of a Breed event (eg, Sires receive ETH, Breeders receive Next-Gen Entity).</li>
-        <li>Breed Potential - The amount of times you can breed per year.</li>
+        <li>Type - The Type of your entity changes the outcome of a Forge event (eg, Forgers receive ETH, Mergers receive Next-Gen Entity).</li>
+        <li>Forge Potential - The amount of times you can breed per year.</li>
         <li>Generation - the Generation of your token.</li>
         <li>NukeFund - The pool of ETH that the game revolves around. 90% of ETH from minting goes to NukeFund.</li>
     </ul>
@@ -240,7 +240,7 @@ const SocialMediaLink = ({ url, icon, className }) => (
 <h3>Generation 1 Mint</h3>
 <ul>
 <li>Mint Your Entity: Mint one of the 10,000 unique Gen 1 entities. The minting price starts at 0.01 ETH and increases 0.01 ETH with each mint.</li>
-<li>Understand Your Entity: Each entity has specific traits, including a claim share, breed potential, and a unique visual appearance.</li>
+<li>Understand Your Entity: Each entity has specific traits, including a claim share, Forge potential, and a unique visual appearance.</li>
 </ul>
 
 <h3>The Honeypot (Nuke Fund)</h3>
@@ -249,19 +249,19 @@ const SocialMediaLink = ({ url, icon, className }) => (
 <li>Strategise Your Claim: You can nuke your entity to claim a portion of the fund, but this decision is irreversible.</li>
 </ul>
 
-<h3>Breeding Entities</h3>
+<h3>Forging Entities</h3>
 <ul>
-<li>Sires and Breeders: Gender will be randomly set on mint.</li>
-<li>Sires: Charge a fee to the Breeder to create a Next-Gen entity.</li>
-<li>Breeders: Pay a Sire to create and obtain the new Next-Gen entity.</li>
-<li>Breeding Process: Pair Sires with Breeders to create Next-Gen entities. The traits of the offspring are a combination of both parents.</li>
+<li>Forgers and Mergers: Gender will be randomly set on mint.</li>
+<li>Forgers: Charge a fee to the Merger to create a Next-Gen entity.</li>
+<li>Mergers: Pay a Forger to create and obtain the new Next-Gen entity.</li>
+<li>Forging Process: Pair Forgers with Mergers to create Next-Gen entities. The traits of the offspring are a combination of both Entities.</li>
 <li>Breed or Nuke: Each entity has limited breeding times. After breeding, you can still nuke your entity or continue to the next generation.</li>
 </ul>
 
 <h3>Economic Activity and Aging</h3>
 <ul>
 <li>Transaction Fees: A portion of all game transactions contributes to the Nuke Fund and the developers.</li>
-<li>Aging Mechanism: Your entity ages and evolves over time, enhancing its claim share and breed potential.</li>
+<li>Aging Mechanism: Your entity ages and evolves over time, enhancing its claim share and Forge potential.</li>
 </ul>
 
 <h3>Generations and Multi-chain Expansion</h3>

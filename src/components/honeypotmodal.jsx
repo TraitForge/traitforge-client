@@ -12,7 +12,7 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
   const [error, setError] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [selectedEntityId, setSelectedEntityId] = useState(null);
+  const [selectedEntity, setSelectedEntity] = useState(null);
   const { isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
@@ -27,12 +27,11 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
         const provider = new ethers.providers.Web3Provider(walletProvider);
         const contract = new ethers.Contract(NukeContractAddress, NukeContractAbi.abi, provider);
 
-        const entitiesData = await contract.getAllEntities(); 
+        const entitiesData = await contract.getEntities(); 
         
         setEntities(entitiesData.map((entity) => ({
-          id: entity.id.toString(),
+          entity: entity.tokenId.toString(),
           image: entity.image,
-          name: entity.name,
         })));
         setIsLoading(false);
       } catch (err) {
@@ -45,8 +44,8 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
     fetchEntities();
   }, [showEntityModal, isConnected, walletProvider]);
 
-  const handleNftSelect = (entityId) => {
-    setSelectedEntityId(entityId);
+  const handleEntitySelect = (entity) => {
+    setSelectedEntity(entity);
     setShowConfirmModal(true);
   };
 
@@ -61,15 +60,15 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
       const signer = walletProvider.getSigner();
       const contractWithSigner = new ethers.Contract(NukeContractAddress, NukeContractAbi, signer);
 
-      const transaction = await contractWithSigner.nuke(selectedEntityId);
+      const transaction = await contractWithSigner.nuke(selectedEntity);
       await transaction.wait();
 
-      console.log(`Entity ${selectedEntityId} nuked successfully.`);
+      console.log(`Entity ${selectedEntity} nuked successfully.`);
       setShowConfirmation(true);
       setShowConfirmModal(false); 
     } catch (err) {
-      console.error(`Failed to nuke entity ${selectedEntityId}:`, err);
-      setError(`Failed to nuke entity ${selectedEntityId}.`);
+      console.error(`Failed to nuke entity ${selectedEntity}:`, err);
+      setError(`Failed to nuke entity ${selectedEntity}.`);
     } finally {
       setIsLoading(false);
     }
@@ -94,9 +93,8 @@ const HoneyPotModal = ({ showEntityModal, onClose }) => {
           <div className="nft-lists">
             {entities.length > 0 ? (
               entities.map(entity => (
-                <div key={entity.id} className="nft-items" onClick={() => handleNftSelect(entity.id)}>
-                  <img src={entity.image} alt={entity.name} />
-                  <p>{entity.name}</p>
+                <div key={entity.tokenId} className="nft-items" onClick={() => handleEntitySelect(entity)}>
+                  <img src={entity.image} alt={entity.tokenId}/>
                 </div>
               ))
             ) : (

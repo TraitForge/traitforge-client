@@ -1,43 +1,29 @@
+// Import ethers from Hardhat package
 const { ethers } = require("hardhat");
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+    const Ownable = await ethers.getContractFactory("Ownable");
+    const ownable = await Ownable.deploy();
+    await ownable.deployed();
+    console.log("Ownable deployed to:", ownable.address);
 
-  const TokenPoolFactory = await ethers.getContractFactory("TokenPool");
-  const tokenPool = await TokenPoolFactory.deploy(); 
-  await tokenPool.deployed();
-  console.log("TokenPool deployed to:", tokenPool.address);
+    const EntropyGenerator = await ethers.getContractFactory("EntropyGenerator");
+    const entropyGenerator = await EntropyGenerator.deploy();
+    await entropyGenerator.deployed();
+    console.log("EntropyGenerator deployed to:", entropyGenerator.address);
 
-  const NukeFundFactory = await ethers.getContractFactory("NukeFund");
-  const nukeFund = await NukeFundFactory.deploy(deployer.address);
-  await nukeFund.deployed();
-  console.log("NukeFund deployed to:", nukeFund.address);
+    const NukeFund = await ethers.getContractFactory("NukeFund");
+    const nukeFund = await NukeFund.deploy(CustomERC721);
+    await nukeFund.deployed();
+    console.log("NukeFund deployed to:", nukeFund.address);
 
-  const BreedableTokenFactory = await ethers.getContractFactory("BreedableToken");
-  const breedableToken = await BreedableTokenFactory.deploy(
-    "BreedableTokenName", 
-    "BT",                
-    tokenPool.address,   
-    deployer.address,  
-    ethers.utils.parseEther("0.01") 
-  );
-  await breedableToken.deployed();
-  console.log("BreedableToken deployed to:", breedableToken.address);
-
-  const MintFactory = await ethers.getContractFactory("Mint");
-  const mint = await MintFactory.deploy(tokenPool.address, deployer.address); 
-  await mint.deployed();
-  console.log("Mint deployed to:", mint.address);
-
-  const EntityTradingFactory = await ethers.getContractFactory("EntityTrading");
-  const entityTrading = await EntityTradingFactory.deploy(mint.address, deployer.address, deployer.address);
-  await entityTrading.deployed();
-  console.log("EntityTrading deployed to:", entityTrading.address);
+    const CustomERC721 = await ethers.getContractFactory("CustomERC721");
+    const customERC721 = await CustomERC721.deploy(ownable.address, nukeFund.address, entropyGenerator.address);
+    await customERC721.deployed();
+    console.log("CustomERC721 deployed to:", customERC721.address);
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
+main().catch((error) => {
     console.error(error);
-    process.exit(1);
-  });
+    process.exitCode = 1;
+});
