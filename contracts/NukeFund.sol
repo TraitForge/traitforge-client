@@ -15,37 +15,37 @@ interface ICustomERC721 {
 contract NukeFund is ReentrancyGuard {
     uint256 private fund;
     ICustomERC721 public erc721Contract;
-    
+    address payable public devAddress;
+
     event FundBalanceUpdated(uint256 newBalance);
     event FundReceived(address from, uint256 amount);
     event Nuked(address indexed owner, uint256 tokenId, uint256 nukeAmount);
+    event DevShareDistributed(uint256 devShare);
 
-    constructor(
-    address _erc721Address // Pass the address of the deployed CustomERC721 contract
-) 
+constructor(address _erc721Address)     
+// Pass the address of the deployed CustomERC721 contract
 ReentrancyGuard() 
 {
     erc721Contract = ICustomERC721(_erc721Address);
-    // Other initialization code...
 }
 function setERC721ContractAddress(address _erc721Address) external {
         erc721Contract = ICustomERC721(_erc721Address);
     }
 
     receive() external payable {
-        fund += msg.value; // Update the fund with the received amount
+        uint256 devShare = msg.value / 10;
+        uint256 remainingFund = msg.value - devShare;
+
+        fund += remainingFund;
+        devAddress.transfer(devShare);
+
         emit FundReceived(msg.sender, msg.value); // Log the received funds
+        emit DevShareDistributed(devShare);
         emit FundBalanceUpdated(fund); // Update the fund balance
     }
     
-
     function getFundBalance() public view returns (uint256) {
         return fund;
-    }
-
-    function receiveFunds() external payable {
-        fund += msg.value; // Increase the fund balance by the amount sent with the transaction
-        emit FundBalanceUpdated(fund); // Emit an event with the new balance
     }
 
     function calculateNukeFactor(uint256 tokenId) public view returns (uint256) {
