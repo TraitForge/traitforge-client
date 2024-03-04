@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './TradingModal';
+import OwnersListingModal from './ownersListingsModal';
 import '../styles/Trading.css';
 import { ethers } from 'ethers';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
-import tradeContractABI from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
+import tradeContractABI from '';
 
-const tradeContractAddress = '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9';
+const tradeContractAddress = '';
 
 const BuySellPage = () => {
   const [selectedListing, setSelectedListing] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [ownersListingModalOpen, setOwnersListingModalOpen] = useState(false);
   const [listings, setListings] = useState([]);
   const [sortOption, setSortOption] = useState('');
   const [filter, setFilter] = useState('All');
@@ -55,9 +57,7 @@ const buyEntity = async (selectedListing) => {
     const signer = ethersProvider.getSigner();
     const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractABI.abi, signer);
     
-    const transaction = await tradeContract.buyEntity(selectedListing, {
-        value: ethers.utils.parseEther(selectedListing.price.toString())
-    });
+    const transaction = await tradeContract.buyEntity(selectedListing);
     await transaction.wait();
     alert("Entity purchased successfully!");
     } catch (error) {
@@ -105,7 +105,9 @@ return (
 <div className='Trading-page'>
     <div className="Trading-top-buttons">
     <button className='sellEntity' onClick={() => setModalOpen(true)}>Sell Your Entity</button>
+    <button className='ownersListings' onClick={() => setOwnersListingModalOpen(true)}>Your Listings</button>
     <Modal open={modalOpen} onClose={() => setModalOpen(false)} />
+    <OwnersListingModal open={ownersListingModalOpen} onClose={() => setOwnersListingModalOpen(false)} />
             
     <h1 className='tradingfiltersh1'>Filter listings</h1>
     <div className="sorting-options">

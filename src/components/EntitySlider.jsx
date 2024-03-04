@@ -7,9 +7,9 @@ import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react';
 import { ethers } from 'ethers';
-import mintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
+import mintContractAbi from '';
 
-const mintContractAddress = '0x91680735BBb6243a001Be4c5c8d19AB2E846e00a';
+const mintContractAddress = '';
 
 const dummyEntities = [
   { id: 1, image: Traitforger, type: 'Forger', forgefactor: '9', nukefactor: '9%', price: '0.01', performancefactor: '20%' }, 

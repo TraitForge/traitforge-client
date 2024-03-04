@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import MintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
-import BreedContractAbi from '../artifacts/contracts/BreedableToken.sol/BreedableToken.json';
-import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
+import MintContractAbi from '';
+import BreedContractAbi from '';
+import NukeContractAbi from '';
 
-const MintContractAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
-const BreedContractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
-const NukeContractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
+const MintContractAddress = '';
+const BreedContractAddress = '';
+const NukeContractAddress = '';
 
 const defaultProvider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545/");
 
 const TransactionsDisplay = () => {
   const [transactions, setTransactions] = useState([]);
 
- useEffect(() => {
+useEffect(() => {
   const loadedTransactions = localStorage.getItem('transactions');
   const initialTransactions = loadedTransactions ? JSON.parse(loadedTransactions) : [];
   setTransactions(initialTransactions);

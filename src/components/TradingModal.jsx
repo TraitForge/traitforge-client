@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import '../styles/TradingBreedingModal.css';
+import '../styles/TradingForgingModal.css';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { ethers } from 'ethers';
 
-import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
-import ERC721ContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
+import tradeContractAbi from '';
+import ERC721ContractAbi from '';
 
 
-const tradeContractAddress = '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9';
-const ERC721ContractAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
+const tradeContractAddress = '';
+const ERC721ContractAddress = '';
 
 const TradingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);
@@ -33,7 +33,7 @@ const fetchUserEntities = useCallback(async () => {
   let tokenIds = [];
   for (let index = 0; index < balance.toNumber(); index++) {
   const tokenId = await mintContract.tokenOfOwnerByIndex(address, index);
-  tokenIds.push(tokenId);
+  tokenIds.push(tokenId.toString());
   }
   const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
   const details = await mintContract.getEntityAttributes(tokenId);

@@ -8,29 +8,59 @@ contract EntropyGenerator {
     uint256 private currentNumberIndex = 0;
     uint256 private constant MAX_SLOT_INDEX = 769; 
     uint256 private constant MAX_NUMBER_INDEX = 12; 
+    
+    address private allowedCaller;
 
-    constructor() {
+
+    constructor(address _CustomERC721) {
+        allowedCaller = _CustomERC721;
     }
 
-    function writeEntropy() public {
-        require(lastInitializedIndex < 770, "All slots already initialized.");
+     modifier onlyAllowedCaller() {
+        require(msg.sender == allowedCaller, "Caller is not allowed");
+        _;
+    }
 
-        uint256 startIndex = lastInitializedIndex;
-        uint256 endIndex;
+    function writeEntropyBatch1() public {
+        require(lastInitializedIndex < 256, "Batch 1 already initialized.");
 
+        uint256 endIndex = lastInitializedIndex + 256; 
         unchecked {
-            endIndex = lastInitializedIndex + 390 < 770 ? lastInitializedIndex + 390 : 770;
+        for (uint256 i = lastInitializedIndex; i < endIndex; i++) {
+            uint256 pseudoRandomValue = uint256(keccak256(abi.encodePacked(block.number, i))) % uint256(10)**78;
+            require(pseudoRandomValue != 999999, "Invalid value, retry.");
+            entropySlots[i] = pseudoRandomValue;
+        }
+        }
+        lastInitializedIndex = endIndex;
+    }
+
+    function writeEntropyBatch2() public {
+        require(lastInitializedIndex >= 256 && lastInitializedIndex < 512, "Batch 2 not ready or already initialized.");
+
+        uint256 endIndex = lastInitializedIndex + 256; 
+        unchecked {
+        for (uint256 i = lastInitializedIndex; i < endIndex; i++) {
+            uint256 pseudoRandomValue = uint256(keccak256(abi.encodePacked(block.number, i))) % uint256(10)**78;
+            require(pseudoRandomValue != 999999, "Invalid value, retry.");
+            entropySlots[i] = pseudoRandomValue;
+        }
+}
+        lastInitializedIndex = endIndex;
         }
 
-        for (uint256 i = startIndex; i < endIndex; i++) {
-            uint256 pseudoRandomValue;
-            unchecked {
-                pseudoRandomValue = uint256(keccak256(abi.encodePacked(block.timestamp, i))) % uint256(10)**78;
+
+      function writeEntropyBatch3() public  {
+    require(lastInitializedIndex >= 512 && lastInitializedIndex < 770, "Batch 3 not ready or already completed.");
+    unchecked {
+        for (uint256 i = lastInitializedIndex; i < 770; i++) { 
+        uint256 pseudoRandomValue = uint256(keccak256(abi.encodePacked(block.number, i))) % uint256(10)**78;
+        entropySlots[i] = pseudoRandomValue;
             }
-            entropySlots[i] = pseudoRandomValue;
-            lastInitializedIndex = i + 1;
         }
+        lastInitializedIndex = 770; 
     }
+
 
     function setEntropySlot(uint256 index, uint256 value) public {
         require(index < 770, "Index out of bounds.");
@@ -38,31 +68,37 @@ contract EntropyGenerator {
     }
 
 
-    function getNextEntropy() public returns (uint256) {
+    function getNextEntropy() public  onlyAllowedCaller returns (uint256) {
         require(currentSlotIndex <= MAX_SLOT_INDEX, "Max slot index reached.");
         uint256 entropy = getEntropy(currentSlotIndex, currentNumberIndex);
 
-        // Increment indices for the next call
         if (currentNumberIndex >= MAX_NUMBER_INDEX) {
             currentNumberIndex = 0;
             currentSlotIndex++;
         } else {
             currentNumberIndex++;
         }
-
         return entropy;
     }
 
-    function getEntropy(uint256 slotIndex, uint256 numberIndex) private view returns (uint256) {
-        require(slotIndex <= MAX_SLOT_INDEX, "Slot index out of bounds.");
-        uint256 position = numberIndex * 6;
-        require(position <= 72, "Position calculation error");
-        
-        uint256 slotValue = entropySlots[slotIndex];
-        uint256 entropy = (slotValue / (10**(72 - position))) % 1000000;
-        uint256 paddedEntropy = entropy * (10 ** (6 - numberOfDigits(entropy)));
+     function getEntropy(uint256 slotIndex, uint256 numberIndex) private view returns (uint256) {
+    require(slotIndex <= MAX_SLOT_INDEX, "Slot index out of bounds.");
+    if (slotIndex == 516 && numberIndex == 3) {
+        return 999999; 
+    }
+    
+    uint256 position = numberIndex * 6;
+    require(position <= 72, "Position calculation error");
+    
+    uint256 slotValue = entropySlots[slotIndex];
+    uint256 entropy = (slotValue / (10**(72 - position))) % 1000000;
+    uint256 paddedEntropy = entropy * (10 ** (6 - numberOfDigits(entropy)));
 
-        return paddedEntropy;
+    return paddedEntropy;
+    }
+
+    function getPublicEntropy(uint256 slotIndex, uint256 numberIndex) public view returns (uint256) {
+    return getEntropy(slotIndex, numberIndex);
     }
 
     function numberOfDigits(uint256 number) private pure returns (uint256) {

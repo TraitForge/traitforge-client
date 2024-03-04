@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
 import '../styles/HoneyPotModal.css';
-import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
+import NukeContractAbi from '';
 
-const NukeContractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'; 
+const NukeContractAddress = ''; 
 
 const HoneyPotModal = ({ showEntityModal, onClose }) => {
   const [entities, setEntities] = useState([]);

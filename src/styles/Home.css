@@ -39,7 +39,6 @@ main {
 }
  
 main button {
-  font-family: 'bebas neue', sans-serif;
   color:  #f0f0f0;
   background-color: transparent;
   border-radius: 10px;
@@ -76,7 +75,6 @@ h2, h3 {
   border: none;
   padding: 10px 15px;
   margin: 10px;
-  font-family: 'Bebas Neue', sans-serif;
   cursor: pointer;
 }
 

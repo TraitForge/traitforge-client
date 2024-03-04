@@ -4,9 +4,9 @@ import { ethers } from 'ethers';
 import LoadingSpinner from './Spinner';
 import '../styles/Home.css';
 import Slider from './EntitySlider';
-import MintAbi from '../artifacts/contracts/Mint.sol/Mint.json';
+import MintAbi from '';
 
-const MintAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
+const MintAddress = '';
 
 
 const HomeBody = () => {

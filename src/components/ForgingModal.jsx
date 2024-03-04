@@ -1,35 +1,37 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import '../styles/TradingBreedingModal.css';
+import '../styles/TradingForgingModal.css';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { ethers } from 'ethers';
-import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
-import mintContractAbi from '../artifacts/contracts/Mint.sol/Mint.json';
+import forgeContractAbi from '';
+import ERC721ContractAbi from '';
 
-const tradeContractAddress = '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9';
-const mintContractAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
+const forgeContractAddress = '';
+const ERC721ContractAddress = '';
 
 const TradingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);
-  const [selectedEntity, setSelectedEntity] = useState(null);
-  const [price, setPrice] = useState('');
-  const [isListed, setIsListed] = useState(false);
   const [error, setError] = useState('');
+  const [isListed, setIsListed] = useState(null);
+  const [price, setPrice] = useState('');
+  const [selectedEntity, setSelectedEntity] = useState(null);
   const { address, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
- 
-const fetchUserEntities = useCallback(async () => {
+
+  const fetchUserEntities = useCallback(async () => {
   if (!isConnected || !address) {
   console.log("Wallet not connected or address not found");
   return;
- }
+  }
   try {
   const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
   const signer = ethersProvider.getSigner();
-  const mintContract = new ethers.Contract(mintContractAddress, mintContractAbi.abi, signer);
+  const mintContract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
   const balance = await mintContract.balanceOf(address);
-  const tokenIds = await Promise.all([...Array(balance.toNumber()).keys()].map(async (index) => {
-  return mintContract.tokenOfOwnerByIndex(address, index);
-  }));
+  let tokenIds = [];
+  for (let index = 0; index < balance.toNumber(); index++) {
+  const tokenId = await mintContract.tokensOfOwnerByIndex(address, index);
+  tokenIds.push(tokenId.toString());
+  }
 
   const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
   const details = await mintContract.getTokenDetails(tokenId);
@@ -40,13 +42,14 @@ const fetchUserEntities = useCallback(async () => {
     breedpotential: breedPotential.toString(),
     generation: generation.toString(),
     age: age.toString(),
-    };
+  };
   }));
- setEntities(entitiesDetails);
+
+  setEntities(entitiesDetails);
   } catch (error) {
   console.error('Could not retrieve entities:', error);
   setError('Failed to fetch entities');
-}
+  }
 }, [address, isConnected, walletProvider]);
 
 
@@ -82,15 +85,15 @@ const handleSubmit = async (event) => {
   try {
   const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
   const signer = ethersProvider.getSigner();
-  const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractAbi, signer);
-  const transaction = await tradeContract.listEntityForSale(selectedEntity, ethers.utils.parseEther(price));
+  const tradeContract = new ethers.Contract(forgeContractAddress, forgeContractAbi, signer);
+  const transaction = await tradeContract.listEntityForForge(selectedEntity, ethers.utils.parseEther(price));
   await transaction.wait();
 
-  const sellingEntity = {
+  const forgeEntity = {
     id: selectedEntity,
     price: parseFloat(price),
   };
-  onSave(sellingEntity);
+  onSave(forgeEntity);
   setIsListed(true);
   setTimeout(() => {
   setIsListed(false);
@@ -112,7 +115,7 @@ return (
   <button className='closeBtn' onClick={onClose}>x</button>
 
 <div className='modalContainer'>
-  <header>List Your Entity for Sale</header>
+  <header>List Your Entity for Forging</header>
   <div className='nfts-display-container'>
     {entities.length > 0 ? (entities.map(entity => (
     <div key={entity.id} className={`nfts-item ${selectedEntity === entity.id ? 'selected' : ''}`} onClick={() => setSelectedEntity(entity.id)}>

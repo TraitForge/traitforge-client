@@ -12,7 +12,6 @@
 
 .sellEntity {
   background-color: rgba(0, 255, 255, 0);
-  font-family: 'Bebas Neue';
   font-size: 1.5em; 
   color: #f0f0f0; 
   border: none; 
@@ -26,6 +25,10 @@
 
 .sellEntity:hover {
   transform: scale(1.05)
+}
+
+.ownersListings {
+  color: rgb(255, 255, 255);
 }
 
 .tradingfilters {
@@ -47,7 +50,6 @@
   font-size: 0.65em;
   padding: 2px;
   margin: 10px 0;
-  font-family: 'bebas neue';
   border: 0.5px solid rgb(168, 255, 255);
   border-radius: 8px;
   background-color: rgb(15, 15, 15);

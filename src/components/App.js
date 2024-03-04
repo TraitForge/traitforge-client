@@ -5,7 +5,7 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faDiscord, faTelegram } from '@fortawesome/free-brands-svg-icons';
-import TFLogo from '../utils/TFLogo.png';
+import TFLogo from '../utils/transparentlogo.png';
 import Home from './Home';
 import Forging from './Forging';
 import HoneyPot from './HoneyPot';
@@ -13,6 +13,7 @@ import Trading from './Trading';
 import Stats from './Stats';
 import '../styles/App.css';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
+
 
 const projectId = '60db0656302510a26d3e49acc62e5473'; 
 const chains = {
@@ -170,7 +171,7 @@ const toggleInstructions = () => {
 const links = [
   { url: 'https://t.me/+b31jKqlV-1BjNzY1', icon: faTelegram, text: 'Telegram' },
   { url: 'https://twitter.com/TraitForge', icon: faTwitter, text: 'Twitter' },
-  { url: 'https://discord.gg/wPxFNRWZEf', icon: faDiscord, text: 'Discord' },
+  { url: 'https://discord.gg/Q3Z9A9eV', icon: faDiscord, text: 'Discord' },
 ];
 
 
