@@ -5,7 +5,9 @@ import '../styles/Trading.css';
 import { ethers } from 'ethers';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 import tradeContractABI from '';
+import entropyGeneratorABI from '';
 
+const entropyGeneratorAddress = '';
 const tradeContractAddress = '';
 
 const BuySellPage = () => {
@@ -18,33 +20,37 @@ const BuySellPage = () => {
   const { isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
-useEffect(() => {
-  if (!walletProvider) return;
-  const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
-  const contract = new ethers.Contract(tradeContractAddress, tradeContractABI.abi, ethersProvider);
-  entitiesForSale(contract);
-}, [walletProvider, filter]); 
-
-
-const entitiesForSale = async (contract) => {
-  try {
-  const totalListings = await contract.entitiesForSale(); 
-  const listingData = [];
-  for (let tokenId = 0; tokenId < totalListings.toNumber(); tokenId++) {
-  const listing = await contract.calculateAttributes(tokenId);
-    listingData.push({
-    tokenId: listing.tokenId.toString(),
-    seller: listing.seller,
-    price: ethers.utils.formatEther(listing.price),
-    isForger: listing.isForger,
-    performanceFactor: listing.performanceFactor.toString(),
-    nukefactor: listing.nukeFactor.toString(),
-    forgePotential: listing.forgePotential.toString(),
-    });
-  } setListings(listingData);
-} catch (error) {
-console.error("Error fetching listings:", error);
-}};
+  useEffect(() => {
+    const fetchEntities = async () => {
+      if (!isConnected) return;
+      try {
+        const provider = new ethers.providers.Web3Provider(walletProvider);
+        const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractAbi, provider);
+        const entropyContract = new ethers.Contract(entropyGeneratorABI.abi, entropyGeneratorAddress, provider);
+        const data = await tradeContract.fetchEntitiesForSale();
+  
+        const entitiesPromises = data.map(async (entity) => {
+        const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entropy);
+  
+          return {
+            ...entity,
+            nukeFactor: nukeFactor.toString(),
+            breedPotential: breedPotential.toString(),
+            performanceFactor: performanceFactor.toString(),
+            isSire: isSire,
+            price: ethers.utils.formatEther(entity.price), 
+          };
+        });
+  
+        const entities = await Promise.all(entitiesPromises);
+        setListings(entities);
+      } catch (error) {
+        console.error("Failed to fetch entities:", error);
+      }
+    };
+  
+    fetchEntities();
+}, [isConnected, walletProvider]);
     
 
 const buyEntity = async (selectedListing) => {

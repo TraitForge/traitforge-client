@@ -4,11 +4,10 @@ import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/re
 import { ethers } from 'ethers';
 
 import tradeContractAbi from '';
-import ERC721ContractAbi from '';
+import entropyGeneratorABI from '';
 
-
+const entropyGeneratorAddress = '';
 const tradeContractAddress = '';
-const ERC721ContractAddress = '';
 
 const TradingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);
@@ -20,37 +19,45 @@ const TradingModal = ({ open, onClose, onSave }) => {
   const { walletProvider } = useWeb3ModalProvider();
  
 
-const fetchUserEntities = useCallback(async () => {
-  if (!isConnected || !address) {
-  alert("Wallet not connected");
-  console.log("Wallet not connected or address not found");
-  return;
-  } try {
-  const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
-  const signer = ethersProvider.getSigner();
-  const mintContract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
-  const balance = await mintContract.balanceOf(address);
-  let tokenIds = [];
-  for (let index = 0; index < balance.toNumber(); index++) {
-  const tokenId = await mintContract.tokenOfOwnerByIndex(address, index);
-  tokenIds.push(tokenId.toString());
-  }
-  const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
-  const details = await mintContract.getEntityAttributes(tokenId);
-  const { nukeFactor, forgePotential, generation, age, type } = details;
-  return {
-    id: tokenId.toString(),
-    nukefactor: nukeFactor.toString(),
-    forgepotential: forgePotential.toString(),
-    generation: generation.toString(),
-    type: type,
-    age: age.toString(),
-}})); setEntities(entitiesDetails);
-} catch (error) {
-console.error('Could not retrieve entities:', error);
- setError('Failed to fetch entities');
-}}, [address, isConnected, walletProvider]);
+  const fetchUserEntities = useCallback(async () => {
+    if (!isConnected || !address) {
+      alert("Wallet not connected");
+      console.log("Wallet not connected or address not found");
+      return;
+    }
 
+    try {
+      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const signer = ethersProvider.getSigner();
+      const ERC721Contract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
+      const entropyContract = new ethers.Contract(entropyGeneratorAddress, entropyGeneratorABI.abi, signer);
+
+      const balance = await ERC721Contract.balanceOf(address);
+      let tokenIds = [];
+      for (let index = 0; index < balance.toNumber(); index++) {
+        const tokenId = await ERC721Contract.tokenOfOwnerByIndex(address, index);
+        tokenIds.push(tokenId.toString());
+      }
+
+      const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
+        const entropy = await entropyContract.getEntropyForToken(tokenId);
+        const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entropy);
+
+        return {
+          tokenId,
+          nukeFactor: nukeFactor.toString(),
+          breedPotential: breedPotential.toString(),
+          performanceFactor: performanceFactor.toString(),
+          isSire: isSire,
+        };
+      }));
+
+      setEntities(entitiesDetails);
+    } catch (error) {
+      console.error('Could not retrieve entities:', error);
+      setError('Failed to fetch entities');
+    }
+  }, [address, isConnected, walletProvider]);
 
 useEffect(() => {
   if (open) {

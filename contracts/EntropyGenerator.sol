@@ -81,7 +81,7 @@ contract EntropyGenerator {
         return entropy;
     }
 
-     function getEntropy(uint256 slotIndex, uint256 numberIndex) private view returns (uint256) {
+    function getEntropy(uint256 slotIndex, uint256 numberIndex) private view returns (uint256) {
     require(slotIndex <= MAX_SLOT_INDEX, "Slot index out of bounds.");
     if (slotIndex == 516 && numberIndex == 3) {
         return 999999; 
@@ -121,16 +121,16 @@ contract EntropyGenerator {
         return lastInitializedIndex;
     }
 
-    function deriveTokenParameters(uint256 slotIndex, uint256 numberIndex) public view returns (uint256 nukeFactor, uint256 breedPotential, uint256 performanceFactor, bool isSire) {
-        uint256 entropy = getEntropy(slotIndex, numberIndex);
+ function deriveTokenParameters(uint256 entropy) public pure returns (uint256 nukeFactor, uint256 breedPotential, uint256 performanceFactor, bool isSire) {
 
-        nukeFactor = entropy / 4000000;
-        breedPotential = getFirstDigit(entropy);
-        performanceFactor = entropy % 10;
+    nukeFactor = entropy / 4000000;
+    breedPotential = getFirstDigit(entropy);
+    performanceFactor = entropy % 10;
 
-        uint256 gender = entropy % 3;
-        isSire = gender == 0;
+    uint256 gender = entropy % 3;
+    isSire = gender == 0;
 
-        return (nukeFactor, breedPotential, performanceFactor, isSire);
-    }
+    return (nukeFactor, breedPotential, performanceFactor, isSire);
+}
+
 }

@@ -3,10 +3,10 @@ import '../styles/TradingForgingModal.css';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { ethers } from 'ethers';
 import forgeContractAbi from '';
-import ERC721ContractAbi from '';
+import entropyGeneratorABI from '';
 
+const entropyGeneratorAddress = '';
 const forgeContractAddress = '';
-const ERC721ContractAddress = '';
 
 const TradingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);
@@ -19,32 +19,33 @@ const TradingModal = ({ open, onClose, onSave }) => {
 
   const fetchUserEntities = useCallback(async () => {
   if (!isConnected || !address) {
+  alert("Wallet not connected");
   console.log("Wallet not connected or address not found");
   return;
   }
   try {
   const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
   const signer = ethersProvider.getSigner();
-  const mintContract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
-  const balance = await mintContract.balanceOf(address);
+  const ERC721Contract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
+  const entropyContract = new ethers.Contract(entropyGeneratorAddress, entropyGeneratorABI.abi, signer);
+  const balance = await ERC721Contract.balanceOf(address);
   let tokenIds = [];
   for (let index = 0; index < balance.toNumber(); index++) {
-  const tokenId = await mintContract.tokensOfOwnerByIndex(address, index);
+  const tokenId = await ERC721Contract.tokenOfOwnerByIndex(address, index);
   tokenIds.push(tokenId.toString());
   }
 
   const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
-  const details = await mintContract.getTokenDetails(tokenId);
-  const { claimShare, breedPotential, generation, age } = details;
+  const entropy = await entropyContract.getEntropyForToken(tokenId);
+  const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entropy);
   return {
-    id: tokenId.toString(),
-    nukefactor: claimShare.toString(),
-    breedpotential: breedPotential.toString(),
-    generation: generation.toString(),
-    age: age.toString(),
-  };
+    tokenId,
+    nukeFactor: nukeFactor.toString(),
+    breedPotential: breedPotential.toString(),
+    performanceFactor: performanceFactor.toString(),
+    isSire: isSire,
+    };
   }));
-
   setEntities(entitiesDetails);
   } catch (error) {
   console.error('Could not retrieve entities:', error);
@@ -120,9 +121,10 @@ return (
     {entities.length > 0 ? (entities.map(entity => (
     <div key={entity.id} className={`nfts-item ${selectedEntity === entity.id ? 'selected' : ''}`} onClick={() => setSelectedEntity(entity.id)}>
     <img src={entity.image} alt={entity.name} />
-    <p>{entity.name}</p>
-    <p>{entity.claimshare}</p>
-    <p>{entity.gender}</p>
+    <p>{entity.performanceFactor}</p>
+    <p>{entity.breedPotential}</p>
+    <p>{entity.nukeFactor}</p>
+    <p>{entity.isSire}</p>
     </div>
     ))
     ) : (

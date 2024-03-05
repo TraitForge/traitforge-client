@@ -11,14 +11,17 @@ const ForgeContractAddress = '';
 
 const EntityList = ({ entities, onEntitySelect }) => (
   <div className="breeder-items-list">
-  {entities.map((entity) => (
-  <div className='card' key={entity.id} onClick={() => onEntitySelect(entity)}>
-  <img className='cards-img' src={entity.image} alt={`Entity ${entity.title}`} />
-  <h5>{entity.title}</h5>
-  <p>Price: {entity.price} ETH</p>
-  <p>{entity.gender}</p>
-  <p>Nuke Factor: {entity.nukefactor}</p>
-  </div>
+    {entities.map((entity) => (
+      <div className='card' key={entity.id} onClick={() => onEntitySelect(entity)}>
+        <img className='cards-img' src={entity.image} alt={`Entity ${entity.title}`} />
+        <h5>{entity.title}</h5>
+        <p>Price: {entity.price} ETH</p>
+        <p>Gender: {entity.gender}</p>
+        <p>Nuke Factor: {entity.nukeFactor}</p>
+        <p>Breed Potential: {entity.breedPotential}</p>
+        <p>Performance Factor: {entity.performanceFactor}</p>
+        <p>Is Sire: {entity.isSire ? 'Yes' : 'No'}</p>
+      </div>
     ))}
   </div>
 );
@@ -46,29 +49,37 @@ const NFTListings = () => {
   const [processing, setProcessing] = useState(false);
   const [processingText, setProcessingText] = useState('Forging');
 
-useEffect(() => {
-  const fetchEntities = async () => {
-  if (!isConnected) return;
-  try {
-  const provider = new ethers.providers.Web3Provider(walletProvider);
-  const contract = new ethers.Contract(ForgeContractAddress, ForgeContractAbi, provider);
-  const data = await contract.fetchEntitiesForForging();
-        
-  const entities = data.map(entity => ({
-  id: entity.id.toString(),
-  image: entity.image,
-  title: entity.title,
-  price: ethers.utils.formatEther(entity.price),
-  gender: entity.gender,
-  nukefactor: entity.claimshare.toNumber(),
-  }));
-        
-  setEntitiesForForging(entities);
-  } catch (error) {
-  console.error("Failed to fetch entities:", error);
-  }};
-  fetchEntities();
-},[isConnected, walletProvider]);
+  useEffect(() => {
+    const fetchEntities = async () => {
+      if (!isConnected) return;
+  
+      try {
+        const provider = new ethers.providers.Web3Provider(walletProvider);
+        const contract = new ethers.Contract(ForgeContractAddress, ForgeContractAbi, provider);
+        const data = await contract.fetchEntitiesForForging();
+  
+        const entitiesPromises = data.map(async (entity) => {
+        const [nukeFactor, breedPotential, performanceFactor, isSire] = await contract.deriveTokenParameters(entropy);
+  
+          return {
+            ...entity,
+            nukeFactor: nukeFactor.toString(),
+            breedPotential: breedPotential.toString(),
+            performanceFactor: performanceFactor.toString(),
+            isSire: isSire,
+            price: ethers.utils.formatEther(entity.price), 
+          };
+        });
+  
+        const entities = await Promise.all(entitiesPromises);
+        setEntitiesForForging(entities);
+      } catch (error) {
+        console.error("Failed to fetch entities:", error);
+      }
+    };
+  
+    fetchEntities();
+  }, [isConnected, walletProvider]);
 
 const getSortedEntities = () => {
   if (!sortOption) return entitiesForForging; 
