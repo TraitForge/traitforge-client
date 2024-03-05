@@ -15,12 +15,19 @@ interface IEntropyGenerator {
     function getNextEntropy() external returns (uint256);
 }
 
+interface IEntityMerging {
+    function breedWithListed(uint256 forgerTokenId, uint256 mergerTokenId) external payable returns (uint256);
+    function getEntropiesForTokens(uint256 forgerTokenId, uint256 mergerTokenId) 
+        external 
+        view 
+        returns (uint256 forgerEntropy, uint256 mergerEntropy);
+}
+
 contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
-    address public mergingContract;
+    IEntityMerging private entityMergingContract;
     IDAOFund public daoFund;
     INukeFund public nukeFundContract;
     
-
     IEntropyGenerator private entropyGenerator;
 
     address payable public nukeFundAddress;
@@ -32,6 +39,7 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
     uint256 private _tokenIds;
     uint256 public totalGenerationCirculation = 0;
     uint256 private totalSupplyCount;
+
 
     mapping(uint256 => uint256) public tokenCreationTimestamps;
     mapping(uint256 => uint256) public tokenEntropy;
@@ -51,8 +59,8 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         entropyGenerator = IEntropyGenerator(_entropyGeneratorAddress);
     }
 
-    function setMergingContract(address _mergingContract) external onlyOwner {
-        mergingContract = _mergingContract;
+    function setEntityMergingContract(address _entityMergingAddress) external onlyOwner {
+        entityMergingContract = IEntityMerging(_entityMergingAddress);
     }
 
     function setDAOFundAddress(address _daoFundAddress) external onlyOwner {
@@ -70,7 +78,7 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         emit GenerationIncremented(currentGeneration);
     }
 
-    function getEntropy(uint256 tokenId) public view returns (uint256) {
+    function getTokenEntropy(uint256 tokenId) public view returns (uint256) {
         require(ownerOf(tokenId) != address(0), "ERC721: query for nonexistent token");
         return tokenEntropy[tokenId];
     }
@@ -80,17 +88,25 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         return block.timestamp - tokenCreationTimestamps[tokenId];
     }
 
-    // breed function, now callable by the merging contract
-    function breed(uint256 parent1Id, uint256 parent2Id, string memory baseTokenURI) external returns (uint256) {
-        require(msg.sender == mergingContract, "Only the merging contract can initate breeding.");
+    function fetchEntropies(uint256 forgerTokenId, uint256 mergerTokenId) external view returns (uint256, uint256) {
+        (uint256 forgerEntropy, uint256 mergerEntropy) = entityMergingContract.getEntropiesForTokens(forgerTokenId, mergerTokenId);
+        return (forgerEntropy, mergerEntropy);
+    }
 
-        uint256 parent1Entropy = tokenEntropy[parent1Id];
-        uint256 parent2Entropy = tokenEntropy[parent2Id];
-        uint256 newEntropy = (parent1Entropy + parent2Entropy) / 2;
+    function breed(uint256 parent1Id, uint256 parent2Id, string memory baseTokenURI) external payable nonReentrant returns (uint256) {
+       entityMergingContract.breedWithListed{value: msg.value}(parent1Id, parent2Id);
+       require(msg.sender == address(entityMergingContract), "unauthorized caller");
+       
+        // Calculate the new entity's entropy
+        (uint256 forgerEntropy, uint256 mergerEntropy) = entityMergingContract.getEntropiesForTokens(parent1Id, parent2Id);
+        uint256 newEntropy = (forgerEntropy + mergerEntropy) / 2;
         
-        currentGeneration++;// Determine the generation for the new entity
+        // Mint the new entity
         uint256 newTokenId = _mintNewEntity(newEntropy, baseTokenURI);
-        totalGenerationCirculation += 1;// Update the generation count for the new entity's generation
+
+        // Update generation and circulation
+        currentGeneration++;
+        totalGenerationCirculation++;
 
         emit Entitybred(newTokenId, parent1Id, parent2Id, newEntropy);
 
@@ -150,5 +166,12 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         require(ownerOf(tokenId) != address(0), "ERC721: query for nonexistent token");
         return tokenCreationTimestamps[tokenId];
     }
+
+    function isForger(uint256 tokenId) public view returns (bool) {
+        uint256 entropy = tokenEntropy[tokenId];
+        uint256 roleIndicator = entropy % 3;
+        return roleIndicator == 0; // Adjust logic as needed
+}
+
 
 }

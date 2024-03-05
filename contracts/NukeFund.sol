@@ -48,6 +48,16 @@ function setERC721ContractAddress(address _erc721Address) external {
         return fund;
     }
 
+    function calculateAge(uint256 tokenId) public view returns (uint256) {
+        require(erc721Contract.ownerOf(tokenId) != address(0), "Token does not exist");
+
+        uint256 daysOld = (block.timestamp - erc721Contract.getTokenCreationTimestamp(tokenId)) / 60 / 60 / 24;
+        uint256 perfomanceFactor = erc721Contract.getEntropy(tokenId) % 10;
+
+        uint256 age = (daysOld * perfomanceFactor) / 365;
+        return age;
+    }
+
     function calculateNukeFactor(uint256 tokenId) public view returns (uint256) {
     require(erc721Contract.ownerOf(tokenId) != address(0), "ERC721: operator query for nonexistent token");
 
@@ -56,13 +66,11 @@ function setERC721ContractAddress(address _erc721Address) external {
     // Use getTokenAge from the ERC721 contract (ICustomERC721) to get the age in seconds
     uint256 ageInSeconds = erc721Contract.getTokenAge(tokenId);
 
-    // Example calculation (this needs to be adjusted according to your logic)
-    uint256 ageInDays = ageInSeconds / (24 * 60 * 60);
-    uint256 initialNukeFactor = entropy / 4; 
-    uint256 agingFactor = entropy % 10;
-    uint256 finalNukeFactor = ((agingFactor * ageInDays) + initialNukeFactor) / 4;
+    uint256 ageInDays = ageInSeconds / (24 * 60 * 60); // convert age from seconds to days 
+    uint256 initialNukeFactor = entropy / 4; // calcualte initalNukeFactor based on entropy 
 
-    // Conversion to basis points
+    uint256 finalNukeFactor = ((ageInDays * 250) / 10000) + initialNukeFactor;
+
     return finalNukeFactor;
 }
 
@@ -95,10 +103,8 @@ function nuke(uint256 tokenId) public nonReentrant {
 function canTokenBeNuked(uint256 tokenId) public view returns (bool) {
     // Ensure the token exists
     require(erc721Contract.ownerOf(tokenId) != address(0), "ERC721: operator query for nonexistent token");
-
     // Get the age of the token in seconds from the ERC721 contract
     uint256 tokenAgeInSeconds = erc721Contract.getTokenAge(tokenId);
-
     // Assuming tokenAgeInSeconds is the age of the token since its creation, check if it's at least 3 days old
     return tokenAgeInSeconds >= 3 days;
 }
