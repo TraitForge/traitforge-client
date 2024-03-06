@@ -1,25 +1,34 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract EntropyGenerator {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract EntropyGenerator is Ownable {
     uint256[770] private entropySlots;
     uint256 private lastInitializedIndex = 0;
     uint256 private currentSlotIndex = 0;
     uint256 private currentNumberIndex = 0;
-    uint256 private constant MAX_SLOT_INDEX = 769; 
-    uint256 private constant MAX_NUMBER_INDEX = 12; 
+    uint256 private constant MAX_SLOT_INDEX = 770; 
+    uint256 private constant MAX_NUMBER_INDEX = 13; 
     
     address private allowedCaller;
 
+    event AllowedCallerUpdated(address allowedCaller);
 
-    constructor(address _CustomERC721) {
-        allowedCaller = _CustomERC721;
-    }
+
+    constructor(address _CustomERC721, address initialOwner) Ownable(initialOwner) {
+    allowedCaller = _CustomERC721;
+}
 
      modifier onlyAllowedCaller() {
         require(msg.sender == allowedCaller, "Caller is not allowed");
         _;
     }
+
+    function setAllowedCaller(address _allowedCaller) external onlyOwner {
+    allowedCaller = _allowedCaller;
+    emit AllowedCallerUpdated(_allowedCaller); // Emit an event for this update.
+}
 
     function writeEntropyBatch1() public {
         require(lastInitializedIndex < 256, "Batch 1 already initialized.");
@@ -45,12 +54,12 @@ contract EntropyGenerator {
             require(pseudoRandomValue != 999999, "Invalid value, retry.");
             entropySlots[i] = pseudoRandomValue;
         }
-}
+        }
         lastInitializedIndex = endIndex;
         }
 
 
-      function writeEntropyBatch3() public  {
+    function writeEntropyBatch3() internal  {
     require(lastInitializedIndex >= 512 && lastInitializedIndex < 770, "Batch 3 not ready or already completed.");
     unchecked {
         for (uint256 i = lastInitializedIndex; i < 770; i++) { 
@@ -61,27 +70,28 @@ contract EntropyGenerator {
         lastInitializedIndex = 770; 
     }
 
-
     function setEntropySlot(uint256 index, uint256 value) public {
         require(index < 770, "Index out of bounds.");
         entropySlots[index] = value % uint256(10)**78;
     }
-
 
     function getNextEntropy() public  onlyAllowedCaller returns (uint256) {
         require(currentSlotIndex <= MAX_SLOT_INDEX, "Max slot index reached.");
         uint256 entropy = getEntropy(currentSlotIndex, currentNumberIndex);
 
         if (currentNumberIndex >= MAX_NUMBER_INDEX) {
-            currentNumberIndex = 0;
-            currentSlotIndex++;
+        currentNumberIndex = 0;
+        if (currentSlotIndex >= MAX_SLOT_INDEX - 1) { 
+            currentSlotIndex = 0; 
         } else {
-            currentNumberIndex++;
+            currentSlotIndex++;
         }
-        return entropy;
+    } else {
+        currentNumberIndex++;
+    }return entropy;
     }
 
-     function getEntropy(uint256 slotIndex, uint256 numberIndex) private view returns (uint256) {
+    function getEntropy(uint256 slotIndex, uint256 numberIndex) private view returns (uint256) {
     require(slotIndex <= MAX_SLOT_INDEX, "Slot index out of bounds.");
     if (slotIndex == 516 && numberIndex == 3) {
         return 999999; 

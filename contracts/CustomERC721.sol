@@ -39,8 +39,7 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
     uint256 private _tokenIds;
     uint256 public totalGenerationCirculation = 0;
     uint256 private totalSupplyCount;
-
-
+    
     mapping(uint256 => uint256) public tokenCreationTimestamps;
     mapping(uint256 => uint256) public tokenEntropy;
     mapping(uint256 => uint256) public generationMintCounts;
@@ -49,6 +48,7 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
     event GenerationIncremented(uint256 newGeneration);
     event FundsDistributedToNukeFund(address indexed to, uint256 amount);
     event Entitybred(uint256 indexed newTokenId, uint256 parent1id, uint256 parent2Id, uint256 newEntropy);
+    event NukeFundContractUpdated(address nukeFundAddress);
     
     constructor(
         address initialOwner,
@@ -57,6 +57,11 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
     ) ERC721("CustomERC721", "C721") Ownable(initialOwner) {
         nukeFundContract = INukeFund(_nukeFundAddress);
         entropyGenerator = IEntropyGenerator(_entropyGeneratorAddress);
+    }
+
+    function setNukeFundContract(address _nukeFundAddress) external onlyOwner {
+        nukeFundContract = INukeFund(_nukeFundAddress);
+        emit NukeFundContractUpdated(_nukeFundAddress); // Consider adding an event for this.
     }
 
     function setEntityMergingContract(address _entityMergingAddress) external onlyOwner {

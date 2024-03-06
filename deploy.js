@@ -1,43 +1,51 @@
-const { ethers } = require("hardhat");
+const hre = require("hardhat");
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  // Deploy EntropyGenerator
+  const EntropyGenerator = await hre.ethers.getContractFactory("EntropyGenerator");
+  const entropyGenerator = await EntropyGenerator.deploy(/* CustomERC721 Address Placeholder */);
+  await entropyGenerator.deployed();
+  console.log("EntropyGenerator deployed to:", entropyGenerator.address);
 
-  const TokenPoolFactory = await ethers.getContractFactory("TokenPool");
-  const tokenPool = await TokenPoolFactory.deploy(); 
-  await tokenPool.deployed();
-  console.log("TokenPool deployed to:", tokenPool.address);
+  // Deploy CustomERC721 with EntropyGenerator address
+  const CustomERC721 = await hre.ethers.getContractFactory("CustomERC721");
+  const customERC721 = await CustomERC721.deploy(/* Owner Address */, /* NukeFund Address Placeholder */, entropyGenerator.address);
+  await customERC721.deployed();
+  console.log("CustomERC721 deployed to:", customERC721.address);
 
-  const NukeFundFactory = await ethers.getContractFactory("NukeFund");
-  const nukeFund = await NukeFundFactory.deploy(deployer.address);
+  // Update EntropyGenerator with correct CustomERC721 address
+  const updateEntropyGeneratorTx = await entropyGenerator.setAllowedCaller(customERC721.address);
+  await updateEntropyGeneratorTx.wait();
+
+  // Deploy DAOFund with your token address
+  const DAOFund = await hre.ethers.getContractFactory("DAOFund");
+  const daoFund = await DAOFund.deploy(/* Token Address Placeholder */);
+  await daoFund.deployed();
+  console.log("DAOFund deployed to:", daoFund.address);
+
+  // Deploy EntityMerging with necessary addresses
+  const EntityMerging = await hre.ethers.getContractFactory("EntityMerging");
+  const entityMerging = await EntityMerging.deploy(/* Owner Address */, /* NukeFund Address Placeholder */, entropyGenerator.address, customERC721.address);
+  await entityMerging.deployed();
+  console.log("EntityMerging deployed to:", entityMerging.address);
+
+  // Deploy NukeFund with CustomERC721 address
+  const NukeFund = await hre.ethers.getContractFactory("NukeFund");
+  const nukeFund = await NukeFund.deploy(customERC721.address);
   await nukeFund.deployed();
   console.log("NukeFund deployed to:", nukeFund.address);
 
-  const BreedableTokenFactory = await ethers.getContractFactory("BreedableToken");
-  const breedableToken = await BreedableTokenFactory.deploy(
-    "BreedableTokenName", 
-    "BT",                
-    tokenPool.address,   
-    deployer.address,  
-    ethers.utils.parseEther("0.01") 
-  );
-  await breedableToken.deployed();
-  console.log("BreedableToken deployed to:", breedableToken.address);
+  // Set DAOFund and EntityMerging addresses in CustomERC721
+  const setDAOFundTx = await customERC721.setDAOFundAddress(daoFund.address);
+  await setDAOFundTx.wait();
+  
+  const setEntityMergingTx = await customERC721.setEntityMergingContract(entityMerging.address);
+  await setEntityMergingTx.wait();
 
-  const MintFactory = await ethers.getContractFactory("Mint");
-  const mint = await MintFactory.deploy(tokenPool.address, deployer.address, breedableToken.address); 
-  await mint.deployed();
-  console.log("Mint deployed to:", mint.address);
-
-  const EntityTradingFactory = await ethers.getContractFactory("EntityTrading");
-  const entityTrading = await EntityTradingFactory.deploy(breedableToken.address, deployer.address, nukeFund.address);
-  await entityTrading.deployed();
-  console.log("EntityTrading deployed to:", entityTrading.address);
+  // Additional setups like setting other contract addresses or initial states can be added here
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
