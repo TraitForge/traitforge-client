@@ -51,11 +51,6 @@ html, body {
   font-family: 'Bebas Neue', sans-serif;
 }
 
-.logo-title-container, .wallet-connect, .navlist, .meta-mask-button, .wallet-address {
-  z-index: 6; 
-  font-family: 'Bebas Neue', sans-serif;
-}
-
 .App-header h1 {
   font-size: 2.5rem;
   margin: 0;
@@ -68,6 +63,8 @@ html, body {
 
 .logo-title-container {
   display: flex;
+  position: absolute;
+  top: 2px;
   align-items: center;
   font-family: 'Bebas Neue', sans-serif;
 }
@@ -83,7 +80,7 @@ html, body {
 .nav-toggle {
   display: none;
   font-size: 1.2em; 
-  color: rgb(209, 209, 209);
+  color: rgb(255, 255, 255);
   border: none;
   box-shadow: none;
   background-color: transparent;
@@ -136,17 +133,33 @@ html, body {
 
 .wallet-connect-button {
   position: absolute;
+  display: flex;
   right: 40px;
-  top: -19px;
+  top: 7px;
+  align-items: center;
+  flex-direction: row;
   padding: 0;
   border: none;
   z-index: 150;
   box-shadow: none;
+  height: 30px;
   font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  gap: 5px;
+
+}
+
+.wallet-connect-button:active {
+  color: #a0a0a0;
+}
+
+.wallet-connect-button:hover {
+  color: #b4b4b4;
 }
 
 .wallet-icon {
-  font-size: 40px; 
+  font-size: 30px; 
+  margin-bottom: 3px;
 }
 
 .footer-container {
@@ -181,29 +194,28 @@ html, body {
 }
 
 .instructions-button {
-  position: fixed;
-  top: 3rem;
-  left: 4rem;
+  position: absolute;
+  right: 10px;
+  bottom: 0px;
   padding: 5px;
   z-index: 1000;
   box-shadow: none;
-  background-color: rgb(0, 0, 0);
   color: #000000;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 0.7em;
+  font-size: 1.2em;
   font-family: 'bebas neue';
 }
 
 .instructions-pop-up {
   position: fixed;
-  bottom: 10px;
+  bottom: 70px;
   right: 10px;
   width: 400px;
   max-height: 400px; 
-  z-index: 5000;
+  z-index: 5500;
   font-size: 0.6em;
   color:#000000;
   background-color: white;
@@ -257,13 +269,9 @@ html, body {
   .nav-toggle {
     display: block;
     position: absolute;
-    margin-top: 11px;
-    right: 60px;
-    font-size: 40px;
-  }
-
-  .wallet-connect-button {
-    top: -18px;
+    top: -5px;
+    right: 120px;
+    font-size: 33px;
   }
 
   .navlist {
@@ -271,7 +279,7 @@ html, body {
   }
 
   .App-header h1 {
-    font-size: 40px;
+    font-size: 30px;
     margin: 0;
     display: flex;
     align-items: center;
@@ -280,30 +288,12 @@ html, body {
   }
 }
 
-@media (max-width: 700px) {
-
-  .nav-toggle {
-    display: block;
-    position: absolute;
-    margin-top: 11px;
-    right: 60px;
-    font-size: 40px;
-  }
-
-  .wallet-connect-button {
-    top: -15px;
-  }
-}
-
 
 @media (max-width: 540px) {
   .App-header {
     background-color: #000000;
+    height: 40px;
     z-index: 20;
-  }
-
-  .wallet-connect-button {
-    top: -3px;
   }
 
   .navlist {
@@ -313,11 +303,21 @@ html, body {
    margin-right: 15px;
   }
 
+  .nav-toggle {
+    right: 40px;
+    top: -5px;
+  }
+
   .instructions-button {
-    position: fixed;
-    top: 2.5em;
-    left: 2.2em;
-    font-size: medium;
+  bottom: 3px
+  }
+  
+  .instructions-pop-up {
+  width: 50%;
+  height: 30%;
+  }
+  .wallet-connect-button p{
+    display: none;
   }
 }
 

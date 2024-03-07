@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './TradingModal';
-import OwnersListingModal from './ownersListingsModal';
 import '../styles/Trading.css';
 import { ethers } from 'ethers';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
@@ -13,7 +12,6 @@ const tradeContractAddress = '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD';
 const BuySellPage = () => {
   const [selectedListing, setSelectedListing] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [ownersListingModalOpen, setOwnersListingModalOpen] = useState(false);
   const [listings, setListings] = useState([]);
   const [sortOption, setSortOption] = useState('');
   const [filter, setFilter] = useState('All');
@@ -111,11 +109,7 @@ return (
 <div className='Trading-page'>
     <div className="Trading-top-buttons">
     <button className='sellEntity' onClick={() => setModalOpen(true)}>Sell Your Entity</button>
-    <button className='ownersListings' onClick={() => setOwnersListingModalOpen(true)}>Your Listings</button>
     <Modal open={modalOpen} onClose={() => setModalOpen(false)} />
-    <div className='owners-listing-modal-container'>
-    <OwnersListingModal open={ownersListingModalOpen} onClose={() => setOwnersListingModalOpen(false)} />
-    </div> 
     <h1 className='tradingfiltersh1'>Filter listings</h1>
     <div className="sorting-options">
     <select className="sorting-dropdown" onChange={(e) => setSortOption(e.target.value)}>

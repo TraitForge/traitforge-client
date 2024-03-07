@@ -127,8 +127,10 @@
 }
 
 .custom-arrow-left, .custom-arrow-right {
-  font-size: 24px; 
+  font-size: 20px; 
   color: #fff; 
+  padding-inline: 40px;
+  padding-block: 10px;
 }
 
 ::-webkit-scrollbar {

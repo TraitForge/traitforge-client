@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, createContext, useContext, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Traitforger from '../utils/traitforgertransparent.png';
 import '../styles/EntitySlider.css';

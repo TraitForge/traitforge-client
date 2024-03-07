@@ -4,7 +4,7 @@ import '../styles/Stats.css';
 
 const Stats = () => {
   const [stats, setStats] = useState({
-  highestClaimshare: [],
+  highestNukefactor: [],
   mostForges: [],
   addressWithMostEntities: [],
 });

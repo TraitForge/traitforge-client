@@ -39,7 +39,7 @@ createWeb3Modal({
   themeMode: 'dark',
   themeVariables: {
   '--w3m-font-family': 'bebas neue',
-  '--w3m-font-size-master': '0.9rem',
+  '--w3m-font-size-master': '1.3rem',
   '--w3m-accent': '#33333',
 }});
 
@@ -206,12 +206,12 @@ return (
   <Navbar isNavExpanded={isNavExpanded} setIsNavExpanded={setIsNavExpanded}/>
   <div>
             <button className="wallet-connect-button" onClick={openModal}>
-                <FontAwesomeIcon icon={faWallet} className="wallet-icon" /> 
+            <p>wallet</p>
+                <FontAwesomeIcon icon={faWallet} className="wallet-icon"/> 
             </button>
             {isModalOpen && (
                 <ModalComponent isOpen={isModalOpen} onClose={closeModal}>
                     <div style={{alignItems: 'center'}}>
-                        <p>Connect your wallet</p>
                         <w3m-button onClick={closeModal}/>
                     </div>
                 </ModalComponent>
@@ -238,12 +238,11 @@ return (
     <SocialMediaLink key={index} url={link.url} icon={link.icon} className="social-media-link" />
     ))}
   </div>
+  <button onClick={toggleInstructions} className='instructions-button'>
+  {showInstructions ? 'Close' : '?'}
+</button>
 </footer>
 
-
-<button onClick={toggleInstructions} className='instructions-button'>
-  {showInstructions ? 'Close' : 'How To Play'}
-</button>
 
   {showInstructions && (
 <div className='instructions-pop-up'>

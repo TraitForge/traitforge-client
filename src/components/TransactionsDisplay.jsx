@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import MintContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
-import BreedContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
 import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
-const MintContractAddress = '';
-const BreedContractAddress = '';
-const NukeContractAddress = '';
+const MintContractAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
+const NukeContractAddress = '0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43';
 
 const defaultProvider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545/");
 
@@ -19,7 +17,6 @@ useEffect(() => {
   setTransactions(initialTransactions);
   const provider = defaultProvider;
   const mintContract = new ethers.Contract(MintContractAddress, MintContractAbi.abi, provider);
-  const breedContract = new ethers.Contract(BreedContractAddress, BreedContractAbi.abi, provider);
   const nukeContract = new ethers.Contract(NukeContractAddress, NukeContractAbi.abi, provider);
   
 const handleEvent = (type) => async (...args) => {
@@ -40,12 +37,12 @@ const handleEvent = (type) => async (...args) => {
   localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
   return updatedTransactions;
   })};
-  mintContract.on('MintEvent', handleEvent("MintEvent"));
-  breedContract.on('TokenBred', handleEvent("TokenBred"));
+  mintContract.on('Minted', handleEvent("Minted"));
+  mintContract.on('Entitybred', handleEvent("Entitybred"));
   nukeContract.on('Nuked', handleEvent("Nuked")); 
   return () => { 
-   mintContract.off('MintEvent', handleEvent("MintEvent")); 
-   breedContract.off('TokenBred', handleEvent("TokenBred")); 
+   mintContract.off('Minted', handleEvent("Minted")); 
+   mintContract.off('Entitybred', handleEvent("Entitybred")); 
    nukeContract.off('Nuked', handleEvent("Nuked"));
 }}, []); 
 

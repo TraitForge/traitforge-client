@@ -44,7 +44,7 @@
 .modalContainer {
     background-color: #000; 
     color: #ffffff; 
-    border-radius: 10px;
+    border-radius: 3px;
     width: 60%;
     border: 0.5px solid #0ff;
     display: grid;

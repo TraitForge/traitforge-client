@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
 import Modal from './ForgingModal';
-import OwnersListingModal from './ownersListingsModal';
 import '../styles/Forging.css';
 import LoadingSpinner from './Spinner'
 import ForgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
@@ -43,7 +42,6 @@ const NFTListings = () => {
   const { walletProvider } = useWeb3ModalProvider();
   const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [ownersListingModalOpen, setOwnersListingModalOpen] = useState(false);
   const [sortOption, setSortOption] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [processing, setProcessing] = useState(false);
@@ -125,12 +123,8 @@ const forgeNewEntity = async () => {
 return (
 <div className='TBG-page'>
     <button className='breed-entity-button' onClick={() => setOpenModal(true)}>List Entity For Forging</button>
-    <button className='ownersListings' onClick={() => setOwnersListingModalOpen(true)}>Your Listings</button>
   {openModal && (
   <Modal open={openModal}  onClose={() => setOpenModal(false)} /> )}
-      <div className='owners-listing-modal-container'>
-    <OwnersListingModal open={ownersListingModalOpen} onClose={() => setOwnersListingModalOpen(false)} />
-    </div>
      
   <div className="breed-sorting-options">
     <h1> Filter </h1>
