@@ -1,6 +1,14 @@
 .cards-container {
   justify-content: center;
   margin-left: 15px;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+.slider-container.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh; 
 }
 .card-container {
   position: relative;
@@ -20,7 +28,9 @@
   border-radius: 10px;
   margin-bottom: 20px;
   margin-top: 20px;
+  font-family: 'Bebas Neue', sans-serif;
 }
+
 
 .card-info {
   position: absolute;
@@ -32,16 +42,19 @@
   color: white;
   transition: transform 0.3s ease-in-out;
   transform: translateY(0%);
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .card-container:hover .card-info {
   transform: translateY(0);
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .card-info-always-visible {
   padding-bottom: 1px;
   max-height: 100px;
   background-color: rgba(0, 0, 0, 0.5);
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 
@@ -79,6 +92,7 @@
   overflow: hidden; 
   text-overflow: ellipsis; 
   text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 
@@ -93,13 +107,14 @@
   text-overflow: ellipsis; 
   text-align: center;
   width: 100%;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .custom-arrows {
   display: flex;
   justify-content: center; 
   position: absolute; 
-  width: 100.8%; 
+  width: 100%; 
   gap: 15px;
   pointer-events: none; 
 }
@@ -187,4 +202,3 @@
   
 
 }
-

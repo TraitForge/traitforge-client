@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import MintContractAbi from '';
-import BreedContractAbi from '';
-import NukeContractAbi from '';
+import MintContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
+import BreedContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
+import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
 const MintContractAddress = '';
 const BreedContractAddress = '';

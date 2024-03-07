@@ -2,13 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/TradingForgingModal.css';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { ethers } from 'ethers';
-import forgeContractAbi from '';
-import entropyGeneratorABI from '';
+import forgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
+import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
-const entropyGeneratorAddress = '';
-const forgeContractAddress = '';
+const ERC721ContractAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
+const forgeContractAddress = ' 0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB';
 
-const TradingModal = ({ open, onClose, onSave }) => {
+const ForgingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);
   const [error, setError] = useState('');
   const [isListed, setIsListed] = useState(null);
@@ -27,7 +27,7 @@ const TradingModal = ({ open, onClose, onSave }) => {
   const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
   const signer = ethersProvider.getSigner();
   const ERC721Contract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
-  const entropyContract = new ethers.Contract(entropyGeneratorAddress, entropyGeneratorABI.abi, signer);
+  const forgeContract = new ethers.Contract(forgeContractAddress, forgeContractAbi.abi, signer);
   const balance = await ERC721Contract.balanceOf(address);
   let tokenIds = [];
   for (let index = 0; index < balance.toNumber(); index++) {
@@ -36,8 +36,8 @@ const TradingModal = ({ open, onClose, onSave }) => {
   }
 
   const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
-  const entropy = await entropyContract.getEntropyForToken(tokenId);
-  const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entropy);
+  const entropy = await ERC721Contract.getEntropyForToken(tokenId);
+  const [nukeFactor, breedPotential, performanceFactor, isSire] = await ERC721Contract.deriveTokenParameters(entropy);
   return {
     tokenId,
     nukeFactor: nukeFactor.toString(),
@@ -155,4 +155,4 @@ return (
 </div>
 )};
 
-export default TradingModal;
+export default ForgingModal;

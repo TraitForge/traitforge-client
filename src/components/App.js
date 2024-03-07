@@ -4,9 +4,11 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadFull } from "tsparticles";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWallet } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import TFLogo from '../utils/transparentlogo.png';
 import Home from './Home';
+import ModalComponent from './connectwallet';
 import Forging from './Forging';
 import HoneyPot from './HoneyPot';
 import Trading from './Trading';
@@ -15,7 +17,7 @@ import '../styles/App.css';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
 
 
-const projectId = '60db0656302510a26d3e49acc62e5473'; 
+const projectId = 'ce6b3d38d61ac9bfbea71e7dda0ba323'; 
 const chains = {
   chainId: 31337,
   name: 'Hardhat',
@@ -54,7 +56,7 @@ return (
   <nav className={isNavExpanded ? "navlist expanded" : "navlist"}>
    <NavLink to="/Home" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HOME</NavLink>
    <NavLink to="/Forging" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>Forging</NavLink>
-   <NavLink to="/BuySell" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>MARKETPLACE</NavLink>
+   <NavLink to="/Trading" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>MARKETPLACE</NavLink>
    <NavLink to="/HoneyPot" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>HONEYPOT</NavLink>
    <NavLink to="/Stats" className={({ isActive }) => (isActive ? "active" : "")} onClick={handleNavLinkClick}>GAME STATS</NavLink>
   </nav>
@@ -73,12 +75,21 @@ function App() {
   const [showInstructions, setShowInstructions] = useState(false);
   const [isNavExpanded, setIsNavExpanded] = useState(false); 
   const [init, setInit] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 useEffect(() => {
   initParticlesEngine(async (engine) => {
   await loadFull(engine);
   }).then(() => {setInit(true)});
 }, []);
+
+const openModal = () => {
+  setIsModalOpen(true);
+};
+
+const closeModal = () => {
+  setIsModalOpen(false);
+};
 
 
 const particlesOptions = {
@@ -192,9 +203,20 @@ return (
     <h1>TraitForge</h1>
   </div>
 
-  <div className="wallet-connect"><w3m-button/></div>
-
   <Navbar isNavExpanded={isNavExpanded} setIsNavExpanded={setIsNavExpanded}/>
+  <div>
+            <button className="wallet-connect-button" onClick={openModal}>
+                <FontAwesomeIcon icon={faWallet} className="wallet-icon" /> 
+            </button>
+            {isModalOpen && (
+                <ModalComponent isOpen={isModalOpen} onClose={closeModal}>
+                    <div style={{alignItems: 'center'}}>
+                        <p>Connect your wallet</p>
+                        <w3m-button onClick={closeModal}/>
+                    </div>
+                </ModalComponent>
+            )}
+  </div>
 </header>
 
 

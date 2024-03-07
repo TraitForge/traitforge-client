@@ -4,11 +4,11 @@ import OwnersListingModal from './ownersListingsModal';
 import '../styles/Trading.css';
 import { ethers } from 'ethers';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
-import tradeContractABI from '';
-import entropyGeneratorABI from '';
+import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
+import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
-const entropyGeneratorAddress = '';
-const tradeContractAddress = '';
+const ERC721ContractAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
+const tradeContractAddress = '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD';
 
 const BuySellPage = () => {
   const [selectedListing, setSelectedListing] = useState(null);
@@ -26,11 +26,11 @@ const BuySellPage = () => {
       try {
         const provider = new ethers.providers.Web3Provider(walletProvider);
         const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractAbi, provider);
-        const entropyContract = new ethers.Contract(entropyGeneratorABI.abi, entropyGeneratorAddress, provider);
+        const entropyContract = new ethers.Contract(ERC721ContractAbi.abi, ERC721ContractAddress, provider);
         const data = await tradeContract.fetchEntitiesForSale();
   
         const entitiesPromises = data.map(async (entity) => {
-        const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entropy);
+        const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entity);
   
           return {
             ...entity,
@@ -61,7 +61,7 @@ const buyEntity = async (selectedListing) => {
     try {
     const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
     const signer = ethersProvider.getSigner();
-    const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractABI.abi, signer);
+    const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractAbi.abi, signer);
     
     const transaction = await tradeContract.buyEntity(selectedListing);
     await transaction.wait();
@@ -113,8 +113,9 @@ return (
     <button className='sellEntity' onClick={() => setModalOpen(true)}>Sell Your Entity</button>
     <button className='ownersListings' onClick={() => setOwnersListingModalOpen(true)}>Your Listings</button>
     <Modal open={modalOpen} onClose={() => setModalOpen(false)} />
+    <div className='owners-listing-modal-container'>
     <OwnersListingModal open={ownersListingModalOpen} onClose={() => setOwnersListingModalOpen(false)} />
-            
+    </div> 
     <h1 className='tradingfiltersh1'>Filter listings</h1>
     <div className="sorting-options">
     <select className="sorting-dropdown" onChange={(e) => setSortOption(e.target.value)}>

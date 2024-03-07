@@ -29,11 +29,18 @@ mapping(address => uint256) public totalEntropyByAddress;
 mapping(address => bool) public addressMinted;
 
 event TokensDistributed(address recipient, uint256 amount);
+event TokenAddressUpdated(address tokenAddress);
 
 constructor(address tokenAddress) Ownable(msg.sender) { // Pass the deploying address as the initial owner
         require(tokenAddress != address(0), "Token address cannot be zero");
         token = IERC20(tokenAddress);
     }
+
+function setTokenAddress(address _tokenAddress) external onlyOwner {
+    token = IERC20(_tokenAddress);
+    emit TokenAddressUpdated(_tokenAddress); // Emit an event when the address is updated.
+}
+
 
 function startAirdrop() external onlyOwner {
     airdropStarted = true;
@@ -41,7 +48,7 @@ function startAirdrop() external onlyOwner {
 
 function updateEntropyForAddress(uint256 _totalEntropy) external onlyOwner {
         totalEntropy = _totalEntropy;
-    }
+}
 
 function setDevelopersMultisig(address _multisig) public onlyOwner {
     require(airdropStarted, "Airdrop has not started");

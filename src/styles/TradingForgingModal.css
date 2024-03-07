@@ -10,14 +10,17 @@
     justify-content: center;
     align-items: center;
     z-index: 110; 
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .btnPrimary {
     font-size: 1.3em;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .btnPrimary:hover {
     transform: scale(1.02);
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .closeBtn {
@@ -31,6 +34,7 @@
     top: 5px;
     right: 5px;
     text-transform: lowercase !important;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .closeBtn:hover {
@@ -46,12 +50,14 @@
     display: grid;
     place-items: center;
     height: 50vh;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 
 .modalContainer header {
     font-size: 1.5em;
     margin-bottom: 20px;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .nfts-display-container {
@@ -61,6 +67,7 @@
     width: 30%;
     height: auto;
     padding: 10px;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 
@@ -74,6 +81,7 @@
     cursor: pointer;
     transition: transform 0.3s ease;
     z-index: 11;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .nfts-item.selected {
@@ -98,6 +106,7 @@
     border-radius: 4px;
     background-color: #222;
     color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 
@@ -113,5 +122,3 @@
         height: 40%;
     }
 }
-
-

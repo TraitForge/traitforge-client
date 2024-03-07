@@ -5,9 +5,9 @@ import Modal from './ForgingModal';
 import OwnersListingModal from './ownersListingsModal';
 import '../styles/Forging.css';
 import LoadingSpinner from './Spinner'
-import ForgeContractAbi from '';
+import ForgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
 
-const ForgeContractAddress = '';
+const ForgeContractAddress = ' 0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB';
 
 const EntityList = ({ entities, onEntitySelect }) => (
   <div className="breeder-items-list">
@@ -59,7 +59,7 @@ const NFTListings = () => {
         const data = await contract.fetchEntitiesForForging();
   
         const entitiesPromises = data.map(async (entity) => {
-        const [nukeFactor, breedPotential, performanceFactor, isSire] = await contract.deriveTokenParameters(entropy);
+        const [nukeFactor, breedPotential, performanceFactor, isSire] = await contract.deriveTokenParameters(entity);
   
           return {
             ...entity,
@@ -128,7 +128,9 @@ return (
     <button className='ownersListings' onClick={() => setOwnersListingModalOpen(true)}>Your Listings</button>
   {openModal && (
   <Modal open={openModal}  onClose={() => setOpenModal(false)} /> )}
-  <OwnersListingModal open={ownersListingModalOpen} onClose={() => setOwnersListingModalOpen(false)} />
+      <div className='owners-listing-modal-container'>
+    <OwnersListingModal open={ownersListingModalOpen} onClose={() => setOwnersListingModalOpen(false)} />
+    </div>
      
   <div className="breed-sorting-options">
     <h1> Filter </h1>

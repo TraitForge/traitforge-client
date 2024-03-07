@@ -1,8 +1,27 @@
-
-.unlist-display-container {
+.unlist-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
     justify-content: center;
-    margin-left: 10px;
-    
+    align-items: center;
+    z-index: 110; 
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.unlist-modalContainer {
+    background-color: #000; 
+    color: #ffffff; 
+    border-radius: 10px;
+    width: 60%;
+    border: 0.5px solid #0ff;
+    display: grid;
+    place-items: center;
+    height: 50vh;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .nfts-item {
@@ -13,10 +32,12 @@
     height: 100px; 
     cursor: pointer;
     transition: transform 0.2s; 
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .nfts-item.selected {
     transform: scale(1.1); 
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 .unlist-button{
@@ -25,4 +46,5 @@
     border-radius: 5px;
     font-size: 0.6em;
     border: 0.3px solid #0ff;
+    font-family: 'Bebas Neue', sans-serif;
 }

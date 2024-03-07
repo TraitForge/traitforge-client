@@ -4,9 +4,9 @@ import { ethers } from 'ethers';
 import HoneyPotModal from './HoneyPotModal';
 import '../styles/HoneyPot.css'; 
 import { useWeb3ModalProvider  } from '@web3modal/ethers5/react'
-import NukeFundAbi from '';
+import NukeFundAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
-const NukeFundAddress = '';
+const NukeFundAddress = '0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43';
 
 function HoneyPot() {
   const [showNFTModal, setShowNFTModal] = useState(false);

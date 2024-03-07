@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 import { ethers } from 'ethers';
-import tradeContractAbi from ''; 
-import forgeContractAbi from ''; 
+import '../styles/ownersListings.css';
+import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json'; 
+import forgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json'; 
 
-const tradeContractAddress = '';
-const forgeContractAddress = '';
+const tradeContractAddress = '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD';
+const forgeContractAddress = ' 0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB';
 
 const OwnersListingsModal = ({ open, onClose }) => {
   const { address, isConnected } = useWeb3ModalAccount();
@@ -74,9 +75,9 @@ const unlistEntity = useCallback(async() => {
   if (!open) return null;
 
 return (
-  <div className='overlay'>
+  <div className='unlist-overlay'>
     <button className='closeBtn' onClick={onClose}>x</button>
-    <div className='modalContainer'>
+    <div className='unlist-modalContainer'>
     <header>Unlist an Entity</header>
     <div className='unlist-display-container'>
     {entities.length > 0 ? (entities.map(entity => (

@@ -2,12 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/TradingForgingModal.css';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { ethers } from 'ethers';
+import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
+import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
-import tradeContractAbi from '';
-import entropyGeneratorABI from '';
-
-const entropyGeneratorAddress = '';
-const tradeContractAddress = '';
+const ERC721ContractAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
+const tradeContractAddress = '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD';
 
 const TradingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);
@@ -21,48 +20,39 @@ const TradingModal = ({ open, onClose, onSave }) => {
 
   const fetchUserEntities = useCallback(async () => {
     if (!isConnected || !address) {
-      alert("Wallet not connected");
-      console.log("Wallet not connected or address not found");
-      return;
+    alert("Wallet not connected");
+    console.log("Wallet not connected or address not found");
+    return;
     }
-
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
-      const signer = ethersProvider.getSigner();
-      const ERC721Contract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
-      const entropyContract = new ethers.Contract(entropyGeneratorAddress, entropyGeneratorABI.abi, signer);
-
-      const balance = await ERC721Contract.balanceOf(address);
-      let tokenIds = [];
-      for (let index = 0; index < balance.toNumber(); index++) {
-        const tokenId = await ERC721Contract.tokenOfOwnerByIndex(address, index);
-        tokenIds.push(tokenId.toString());
-      }
-
-      const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
-        const entropy = await entropyContract.getEntropyForToken(tokenId);
-        const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entropy);
-
-        return {
-          tokenId,
-          nukeFactor: nukeFactor.toString(),
-          breedPotential: breedPotential.toString(),
-          performanceFactor: performanceFactor.toString(),
-          isSire: isSire,
-        };
-      }));
-
-      setEntities(entitiesDetails);
+    const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+    const signer = ethersProvider.getSigner();
+    const ERC721Contract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
+    const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractAbi.abi, signer);
+    const balance = await ERC721Contract.balanceOf(address);
+    let tokenIds = [];
+    for (let index = 0; index < balance.toNumber(); index++) {
+    const tokenId = await ERC721Contract.tokenOfOwnerByIndex(address, index);
+    tokenIds.push(tokenId.toString());
+    }
+  
+    const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
+    const entropy = await ERC721Contract.getEntropyForToken(tokenId);
+    const [nukeFactor, breedPotential, performanceFactor, isSire] = await ERC721Contract.deriveTokenParameters(entropy);
+    return {
+      tokenId,
+      nukeFactor: nukeFactor.toString(),
+      breedPotential: breedPotential.toString(),
+      performanceFactor: performanceFactor.toString(),
+      isSire: isSire,
+      };
+    }));
+    setEntities(entitiesDetails);
     } catch (error) {
-      console.error('Could not retrieve entities:', error);
-      setError('Failed to fetch entities');
+    console.error('Could not retrieve entities:', error);
+    setError('Failed to fetch entities');
     }
   }, [address, isConnected, walletProvider]);
-
-useEffect(() => {
-  if (open) {
-  fetchUserEntities();
-} }, [open, fetchUserEntities]);
 
 
 const handlePriceChange = (event) => {

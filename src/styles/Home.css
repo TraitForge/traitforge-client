@@ -1,15 +1,18 @@
 main {
   font-size: 2em;
   margin-top: 15vh;
+  font-family: 'Bebas Neue', sans-serif;
   }
 
 .body {
   padding: 0;
   margin: 0;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .Body-Header {
   padding-bottom: 15vh;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .mint-container {
@@ -17,6 +20,7 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 
@@ -24,18 +28,21 @@ main {
   text-align: center;
   font-size:7vw;
   padding-bottom: 10px;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .mint-button {
   display: flex;
   padding-bottom: 20px;
   justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
 }
  
 .mint-button button{
   font-size: 6vw;
   width: 700%;
   height: 10vw;
+  font-family: 'Bebas Neue', sans-serif;
 }
  
 main button {
@@ -45,6 +52,7 @@ main button {
   border: 1px;
   box-shadow: 0px 0px 4px 2px #0ff;
   cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 main button:hover{
@@ -67,6 +75,7 @@ h2, h3 {
   font-size: 0.8em;
   margin-bottom: 100px;
   text-align: left;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .slider-button {
@@ -76,17 +85,20 @@ h2, h3 {
   padding: 10px 15px;
   margin: 10px;
   cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .gen-container {
   display: flex;
   justify-content: space-around;
   font-size: 0.8em;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 .gen-container div {
   font-size: 0.7em;
   margin-inline: 30px;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 @media (max-width: 500px) {

@@ -25,7 +25,7 @@ contract EntityTrading is ReentrancyGuard, Ownable {
 
     constructor(address customERC721Address) Ownable(msg.sender) {
     customERC721 = CustomERC721(customERC721Address);
-    }
+}
 
     function setNukeFundAddress(address payable _nukeFundAddress) external onlyOwner {
         nukeFundAddress = _nukeFundAddress;
