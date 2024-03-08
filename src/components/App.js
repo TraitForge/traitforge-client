@@ -239,7 +239,7 @@ return (
     ))}
   </div>
   <button onClick={toggleInstructions} className='instructions-button'>
-  {showInstructions ? 'Close' : '?'}
+  {showInstructions ? 'x' : '?'}
 </button>
 </footer>
 

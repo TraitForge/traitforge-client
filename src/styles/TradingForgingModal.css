@@ -45,6 +45,7 @@
     background-color: #000; 
     color: #ffffff; 
     border-radius: 3px;
+    padding: 30px;
     width: 60%;
     border: 0.5px solid #0ff;
     display: grid;

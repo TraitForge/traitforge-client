@@ -21,15 +21,15 @@ const Contract = new ethers.Contract(ContractAddress, ContractABI, provider);
 const baseCharacterPath = './assets/';
 const variablesPath = './assets/variables';
 
-const outfitPath = path.join(variablesPath, 'outfits');
-const hairstylePath = path.join(variablesPath, 'hairstyles');
-const tattooPath = path.join(variablesPath, 'tattoos');
-const glassesPath = path.join(variablesPath, 'glasses');
+const varPath1 = path.join(variablesPath, 'varOptions1');
+const varPath2 = path.join(variablesPath, 'varOptions2');
+const varPath3 = path.join(variablesPath, 'varOptions3');
+const varPath4 = path.join(variablesPath, 'varOptions4');
 
-const outfitOptions = ['outfit1', 'outfit2', 'outfit3', 'outfit4', 'outfit5', 'outfit6', 'outfit7', 'outfit8', 'outfit9', 'outfit10'];
-const hairstyleOptions = ['hairstyle1', 'hairstyle2', 'hairstyle3', 'hairstyle4', 'hairstyle5', 'hairstyle6', 'hairstyle7', 'hairstyle8', 'hairstyle9', 'hairstyle10'];
-const tattooOptions = ['tattoo1', 'tattoo2', 'tattoo3', 'tattoo4', 'tattoo5', 'tattoo6', 'tattoo7', 'tattoo8', 'tattoo9', 'tattoo10'];
-const glassesOptions = ['glasses1', 'glasses2', 'glasses3', 'glasses4', 'glasses5', 'glasses6', 'glasses7', 'glasses8', 'glasses9', 'glasses10' ];
+const varOptions1 = ['var1option1', 'var1option2', 'var1option3', 'var1option4', 'var1option5', 'var1option6', 'var1option7', 'var1option8', 'var1option9', 'var1option10'];
+const varOptions2 = ['var2option1', 'var2option2', 'var2option3', 'var2option4', 'var2option5', 'var2option6', 'var2option7', 'var2option8', 'var2option9', 'var2option10'];
+const varOptions3 = ['var3option1', 'var3option2', 'var3option3', 'var3option4', 'var3option5', 'var3option6', 'var3option7', 'var3option8', 'var3option9', 'var3option10'];
+const varOptions4 = ['var4option1', 'var4option2', 'var4option3', 'var4option4', 'var4option5', 'var4option6', 'var4option7', 'var4option8', 'var4option9', 'var4option10'];
 
 const colorOptions1 = [
   '#FFD700', // Vibrant Gold
@@ -91,18 +91,19 @@ async function baseCharacterImg(offsetX = 0, offsetY = 0, entityGeneration, over
 async function variablesLayer(entityEntropy) {
   const entropy = entityEntropy.toString();
 
-  const outfitIndex = parseInt(entropy[0]) % outfitOptions.length;
-  const hairstyleIndex = parseInt(entropy[1]) % hairstyleOptions.length;
-  const tattooIndex = parseInt(entropy[2]) % tattooOptions.length;
-  const glassesIndex = parseInt(entropy[3]) % glassesOptions.length;
+
+  const optionIndex1 = parseInt(entropy[0]) % varOptions1.length;
+  const optionIndex2 = parseInt(entropy[1]) % varOptions2.length;
+  const optionIndex3 = parseInt(entropy[2]) % varOptions3.length;
+  const optionIndex4 = parseInt(entropy[3]) % varOptions4.length;
 
   const color1 = colorOptions1[parseInt(entropy[entropy.length - 2]) % colorOptions1.length];
   const color2 = colorOptions2[parseInt(entropy[entropy.length - 1]) % colorOptions2.length];
 
-  let outfitImage = await tintImage(path.join(outfitPath, `${outfitOptions[outfitIndex]}.png`), color1);
-  let hairstyleImage = await tintImage(path.join(hairstylePath, `${hairstyleOptions[hairstyleIndex]}.png`), color2);
-  let tattooImage = await tintImage(path.join(tattooPath, `${tattooOptions[tattooIndex]}.png`), color2);
-  let glassesImage = await tintImage(path.join(glassesPath, `${glassesOptions[glassesIndex]}.png`), color1);
+  let varImage1 = await tintImage(path.join(varPath1, `${varOptions1[optionIndex1]}.png`), color1);
+  let varImage2 = await tintImage(path.join(varPath2, `${varOptions2[optionIndex2]}.png`), color2);
+  let varImage3 = await tintImage(path.join(varPath3, `${varOptions3[optionIndex3]}.png`), color2);
+  let varImage4 = await tintImage(path.join(varPath4, `${varOptions4[optionIndex4]}.png`), color1);
 
   let baseImage = sharp({
   create: {
@@ -114,10 +115,10 @@ async function variablesLayer(entityEntropy) {
   }).png();
 
   baseImage = await baseImage.composite([
-    { input: outfitImage, top: 0, left: 0 },
-    { input: hairstyleImage, top: 0, left: 0 },
-    { input: tattooImage, top: 0, left: 0 },
-    { input: glassesImage, top: 0, left: 0 },
+    { input: varImage1, top: 0, left: 0 },
+    { input: varImage2, top: 0, left: 0 },
+    { input: varImage3, top: 0, left: 0 },
+    { input: varImage4, top: 0, left: 0 },
   ]);
   return await baseImage.toBuffer();
 }

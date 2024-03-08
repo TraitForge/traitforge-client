@@ -18,16 +18,13 @@ const ForgingModal = ({ open, onClose, onSave }) => {
   const { walletProvider } = useWeb3ModalProvider();
 
   const fetchUserEntities = useCallback(async () => {
-  if (!isConnected || !address) {
-  alert("Wallet not connected");
-  console.log("Wallet not connected or address not found");
+  if (!isConnected) {
   return;
   }
   try {
   const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
   const signer = ethersProvider.getSigner();
   const ERC721Contract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
-  const forgeContract = new ethers.Contract(forgeContractAddress, forgeContractAbi.abi, signer);
   const balance = await ERC721Contract.balanceOf(address);
   let tokenIds = [];
   for (let index = 0; index < balance.toNumber(); index++) {
@@ -75,10 +72,6 @@ const handleSubmit = async (event) => {
   if (!price) {
   setError('Please enter a price');
   setTimeout(() => setError(''), 3000);
-  return;
-  }
-  if (!isConnected || !address) {
-  setError('wallet not connected');
   return;
   }
   const selectedEntityData = entities.find(entity => entity.id === selectedEntity);

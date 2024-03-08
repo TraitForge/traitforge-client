@@ -122,7 +122,7 @@ const forgeNewEntity = async () => {
 
 return (
 <div className='TBG-page'>
-    <button className='breed-entity-button' onClick={() => setOpenModal(true)}>List Entity For Forging</button>
+    <button className='breed-entity-button' onClick={() => setOpenModal(true)}>List For Forging</button>
   {openModal && (
   <Modal open={openModal}  onClose={() => setOpenModal(false)} /> )}
      

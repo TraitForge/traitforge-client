@@ -110,7 +110,7 @@ return (
     <div className="Trading-top-buttons">
     <button className='sellEntity' onClick={() => setModalOpen(true)}>Sell Your Entity</button>
     <Modal open={modalOpen} onClose={() => setModalOpen(false)} />
-    <h1 className='tradingfiltersh1'>Filter listings</h1>
+    <h1 className='tradingfiltersh1'>Filter</h1>
     <div className="sorting-options">
     <select className="sorting-dropdown" onChange={(e) => setSortOption(e.target.value)}>
         <option value="">Select Sorting Option</option>

@@ -21,7 +21,8 @@
   border: none; 
   margin-top: 5vh;
   border-radius: 6px; 
-  padding: 0.5rem 3rem; 
+  padding-block: 2px; 
+  padding-inline: 30px; 
   cursor: pointer; 
   box-shadow: 0px 0px 1px 1px #0ff;
   transition: background-color 0.3s, box-shadow 0.3s;
@@ -54,8 +55,9 @@ transform: scale(1.03);
 }
 
 .tradingfiltersh1 {
-  font-size: 1em;
-  padding: 5px;
+  font-size: 1.2em; 
+  padding-top: 5px;
+  margin-bottom: 13px;
   width: 20vw;
   border-top: 1px solid #0ff ;
   font-family: 'Bebas Neue', sans-serif;
