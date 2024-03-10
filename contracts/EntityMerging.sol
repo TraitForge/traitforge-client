@@ -27,12 +27,10 @@ contract EntityMerging is CustomERC721, IEntityMerging {
      constructor(
         address initialOwner,
         address payable nukeFundAddress,
-        address entropyGeneratorAddress,
-        address _entityMergingContractAddress // Additional parameter for EntityMerging logic
+        address entropyGeneratorAddress
+        
         
     ) CustomERC721(initialOwner, nukeFundAddress, entropyGeneratorAddress) {
-        // setting the IEntityMerging contract address
-        entityMergingContract = IEntityMerging(_entityMergingContractAddress);
     }
 
     function setMergingContract(address _mergingContract) external onlyOwner {
@@ -108,7 +106,4 @@ contract EntityMerging is CustomERC721, IEntityMerging {
         lastBreedResetTimestamp[tokenId] = block.timestamp;
     }
 }
-
-
-
 }
