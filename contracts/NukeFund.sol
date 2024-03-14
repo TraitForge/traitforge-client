@@ -2,8 +2,6 @@
 pragma solidity ^0.8.20;
 
 import "./CustomERC721.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Interface to interact with the CustomERC721 contract
 interface ICustomERC721 {
@@ -19,6 +17,11 @@ contract NukeFund is ReentrancyGuard, Ownable {
     ICustomERC721 public erc721Contract;
     address payable public devAddress;
 
+    // Constructor now properly passes the initial owner address to the Ownable constructor
+    constructor(address _erc721Address, address payable _devAddress) Ownable(_devAddress) {
+        erc721Contract = ICustomERC721(_erc721Address);
+        devAddress = _devAddress; // Set the developer's address
+    }
     // Events for logging contract activities
     event FundBalanceUpdated(uint256 newBalance);
     event FundReceived(address from, uint256 amount);
@@ -26,9 +29,6 @@ contract NukeFund is ReentrancyGuard, Ownable {
     event DevShareDistributed(uint256 devShare);
     event ERC721ContractAddressUpdated(address indexed newAddress);
 
-constructor(address _erc721Address, address initialOwner) Ownable(initialOwner) {
-        erc721Contract = ICustomERC721(_erc721Address);
-    }
     // Fallback function to receive ETH and update fund balance
     receive() external payable {
         uint256 devShare = msg.value / 10; // Calculate developer's share (10%)
@@ -69,7 +69,7 @@ constructor(address _erc721Address, address initialOwner) Ownable(initialOwner) 
     require(erc721Contract.ownerOf(tokenId) != address(0), "ERC721: operator query for nonexistent token");
 
     uint256 entropy = erc721Contract.getEntropy(tokenId); // Corrected line
- // Assume this is stored within NukeFund or accessible somehow
+    // Assume this is stored within NukeFund or accessible somehow
     // Use getTokenAge from the ERC721 contract (ICustomERC721) to get the age in seconds
     uint256 ageInSeconds = erc721Contract.getTokenAge(tokenId);
 

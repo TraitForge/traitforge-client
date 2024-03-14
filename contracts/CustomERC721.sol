@@ -66,9 +66,6 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         entropyGenerator = IEntropyGenerator(_entropyGeneratorAddress);
     }
 
-    function initialize(address _entropyGeneratorAddress) public onlyOwner {
-        IEntropyGenerator(_entropyGeneratorAddress).setAllowedCaller(address(this));
-    }
 
     // Function to set the nuke fund contract address, restricted to the owner
     function setNukeFundContract(address _nukeFundAddress) external onlyOwner {
@@ -89,7 +86,6 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
     function setEntropyGenerator(address _entropyGeneratorAddress) external onlyOwner {
         entropyGenerator = IEntropyGenerator(_entropyGeneratorAddress);
     }
-
 
     // Function to increment the generation of tokens, restricted to the owner
     function incrementGeneration() public onlyOwner {
@@ -172,7 +168,7 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         emit Minted(to, newItemId, entropyValue);
     }
 
-    // distributes funds to nukeFund contract
+    // distributes funds to nukeFund contract, where its then distrubted 10% dev 90% nukeFund
     function distributeFunds(uint256 totalAmount) private {
         require(address(this).balance >= totalAmount, "Insufficient balance");
         

@@ -14,12 +14,22 @@ contract EntropyGenerator is Ownable {
     uint256 private constant MAX_NUMBER_INDEX = 13; 
     
     address private allowedCaller;
+    bool private initialized = false;
 
     event AllowedCallerUpdated(address allowedCaller);
+    event EntropyRetrieved(uint256 indexed entropy);
 
     constructor(address _CustomERC721, address initialOwner) Ownable(initialOwner) {
     allowedCaller = _CustomERC721;
 }
+
+    function initialize(address _CustomERC721) public onlyOwner {
+        require(!initialized, "EntropyGenerator: already initialized");
+        allowedCaller = _CustomERC721;
+        initialized = true;
+        emit AllowedCallerUpdated(_CustomERC721);
+    }
+
     // Modifier to restrict certain functions to the allowed caller
      modifier onlyAllowedCaller() {
         require(msg.sender == allowedCaller, "Caller is not allowed");
@@ -30,6 +40,12 @@ contract EntropyGenerator is Ownable {
     allowedCaller = _allowedCaller;
     emit AllowedCallerUpdated(_allowedCaller); // Emit an event for this update.
 } 
+
+    // function to get the current allowed caller
+    function getAllowedCaller() external view returns (address) {
+        return allowedCaller;
+    }
+
     // Functions to initalize entropy values inbatches to spread gas cost over multiple transcations 
     function writeEntropyBatch1() public {
         require(lastInitializedIndex < 256, "Batch 1 already initialized.");
@@ -60,7 +76,7 @@ contract EntropyGenerator is Ownable {
         }
 
     // allows setting a specific entropy slot with a value
-    function writeEntropyBatch3() internal  {
+    function writeEntropyBatch3() public  {
     require(lastInitializedIndex >= 512 && lastInitializedIndex < 770, "Batch 3 not ready or already completed.");
     unchecked {
         for (uint256 i = lastInitializedIndex; i < 770; i++) { 
@@ -70,18 +86,13 @@ contract EntropyGenerator is Ownable {
         }
         lastInitializedIndex = 770; 
     }
-    // allows setting a specific entropy slot with value
-    function setEntropySlot(uint256 index, uint256 value) public {
-        require(index < 770, "Index out of bounds.");
-        entropySlots[index] = value % uint256(10)**78;
-    }
-
+    
     // function to retrieve the next entropy value, accessible only by the allowed caller
-    function getNextEntropy() public  onlyAllowedCaller returns (uint256) {
-        require(currentSlotIndex <= MAX_SLOT_INDEX, "Max slot index reached.");
-        uint256 entropy = getEntropy(currentSlotIndex, currentNumberIndex);
+    function getNextEntropy() public onlyAllowedCaller returns (uint256) {
+    require(currentSlotIndex <= MAX_SLOT_INDEX, "Max slot index reached.");
+    uint256 entropy = getEntropy(currentSlotIndex, currentNumberIndex);
 
-        if (currentNumberIndex >= MAX_NUMBER_INDEX) {
+    if (currentNumberIndex >= MAX_NUMBER_INDEX) {
         currentNumberIndex = 0;
         if (currentSlotIndex >= MAX_SLOT_INDEX - 1) { 
             currentSlotIndex = 0; 
@@ -90,8 +101,13 @@ contract EntropyGenerator is Ownable {
         }
     } else {
         currentNumberIndex++;
-    }return entropy;
     }
+    
+    // Emit the event with the retrieved entropy value
+    emit EntropyRetrieved(entropy);
+
+    return entropy;
+}
     
     // private function to calculate the entropy value based on slot and number index
     function getEntropy(uint256 slotIndex, uint256 numberIndex) private view returns (uint256) {

@@ -30,7 +30,7 @@ contract EntityMerging is CustomERC721, IEntityMerging {
         address entropyGeneratorAddress
         
         
-    ) CustomERC721(initialOwner, nukeFundAddress, entropyGeneratorAddress) {
+     ) CustomERC721(initialOwner, nukeFundAddress, entropyGeneratorAddress) {
     }
 
     function setMergingContract(address _mergingContract) external onlyOwner {
