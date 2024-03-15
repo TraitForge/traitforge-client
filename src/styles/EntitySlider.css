@@ -1,7 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Electrolize&display=swap');
+.sliderpage {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.353);
+  width: 120%;
+}
+
+.current-entity {
+  display: flex;
+  font-size: 1em;
+
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; 
+}
+
+.current-entity footer {
+  margin-top: 10px;
+  margin-bottom: -10px;
+}
+
+.currentMint {
+  width: 30%;
+  height: auto;
+  border-bottom: 2px solid #00fff794;
+}
+
+.current-container {
+  z-index: 0;
+}
+
+.slider-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .cards-container {
   justify-content: center;
-  margin-left: 15px;
-  font-family: 'Bebas Neue', sans-serif;
+  width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.slider-container {
+  position: relative;
 }
 
 .slider-container.loading {
@@ -10,27 +57,74 @@
   align-items: center;
   height: 20vh; 
 }
+
 .card-container {
   position: relative;
   overflow: hidden;
   display: flex;
+  background-color: rgba(0, 255, 255, 0.146);
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
   text-align: center;
-  height: 14.2rem; 
-  width: 99%;
+  height: 20rem; 
+  width: 100%;
   overflow-x: scroll; 
-  padding: 10px 0;
   white-space: nowrap; 
-  margin-top: 10px;
-  border: 1px solid #0ff;
+  margin-top: 20px; 
   border-radius: 10px;
   margin-bottom: 20px;
-  margin-top: 20px;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  border-image: linear-gradient(45deg, rgba(50, 255, 255, 0.874), #4babff24, #5cffff35) 1;
+  background-clip: padding-box;
+  position: relative;
 }
 
+.card-container::before,
+.card-container::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px;
+  z-index: -1;
+  background: linear-gradient(45deg, rgba(121, 146, 255, 0.18), rgba(106, 243, 255, 0.076), rgba(97, 158, 255, 0.123), rgba(255, 0, 0, 0.195));
+  background-size: 400% 400%;
+  animation: moveGradient 6s infinite linear;
+} 
+
+@keyframes moveGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes glitchEffect {
+  0%, 100% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 25%, 0% 25%), polygon(0% 75%, 100% 75%, 100% 100%, 0% 100%);
+    transform: translate(0);
+  }
+  10%, 30%, 50%, 70% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 25%, 0% 25%), polygon(0% 75%, 100% 75%, 100% 100%, 0% 100%);
+    transform: translate(-7px, 0);
+  }
+  20%, 40%, 60%, 80% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 25%, 0% 25%), polygon(0% 75%, 100% 75%, 100% 100%, 0% 100%);
+    transform: translate(7px, 0);
+  }
+}
+
+.card-container::before {
+  animation: glitchEffect 0.7s infinite linear;
+}
 
 .card-info {
   position: absolute;
@@ -38,66 +132,73 @@
   left: 0;
   font-size: 0.5em;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.144); 
+  background-color: rgba(0, 0, 0, 0); 
   color: white;
   transition: transform 0.3s ease-in-out;
   transform: translateY(0%);
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .card-container:hover .card-info {
   transform: translateY(0);
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .card-info-always-visible {
   padding-bottom: 1px;
   max-height: 100px;
-  background-color: rgba(0, 0, 0, 0.5);
-  font-family: 'Bebas Neue', sans-serif;
-}
-
-
-.card-info-on-hover {
-  display: none;
+  background-color: rgba(38, 38, 38, 0.537);
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .card-container:hover .card-info-on-hover {
   display: block;
-  padding: 10px;
+  padding: 2px;
   background-color: rgba(0, 0, 0, 0.5);
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
   
-.first-card {
-  transform: scale(1.1);
+.footer-top-level {
+  border-top: 1px solid #0ff;
+  padding-top: 5px;
 }
 
 .card-image {
   width: 100%;
-  margin-bottom: -10px;
-  height: auto;
+  height: 72%;
   object-fit: cover;
   opacity: 90%;
 }
 
 .card-number {
-  font-size: 1.6rem;
-  margin-bottom: -5px;
+  font-size: 1.2rem;
+ margin-bottom: -8px;
   padding-top: 2px;
 }
 
 .card-price {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   white-space: nowrap; 
   overflow: hidden; 
   text-overflow: ellipsis; 
   text-align: center;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  margin-bottom: 0px;
 }
 
 
 .card-name, .card-parameters-h2, h3, .params{
-  font-size: 1.1rem; 
+  font-size: 1rem; 
   line-height: 0.9;
   margin-bottom: 2px;
   margin: 2px 0; 
@@ -107,30 +208,66 @@
   text-overflow: ellipsis; 
   text-align: center;
   width: 100%;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
-.custom-arrows {
-  display: flex;
-  justify-content: center; 
-  position: absolute; 
-  width: 100%; 
-  gap: 15px;
-  pointer-events: none; 
-}
-
-.custom-arrow {
-  background-color: transparent;
-  border: none;
+.custom-slider-arrow {
+  background-color: rgba(0, 255, 255, 0.307);
+  border-top: 2px solid #0ff;
+  border-bottom: 2px solid #0ff;
+  border-left: 0.5px solid #0ff;
+  border-right: 0.5px solid #0ff;
+  border-radius: 1px;
+  clip-path: polygon(
+    0 0, 
+    calc(100% - 20px) 0,
+    100% 20px, 
+    100% 100%, 
+    20px 100%,
+    0 calc(100% - 20px) 
+  );
+  box-shadow: none;
   cursor: pointer;
   pointer-events: auto;
+  position: absolute;
+  top: 50%;
+  z-index: 10; 
 }
 
-.custom-arrow-left, .custom-arrow-right {
+.custom-slider-arrow-right.loading {
+  display: none;
+}
+
+
+.custom-slider-arrow:hover {
+box-shadow: none;
+}
+
+.custom-slider-arrow:active {
+  box-shadow: none;
+  transform: scale(1.2);
+  }
+
+.custom-slider-arrow-left{
+  left: -80px;
   font-size: 20px; 
-  color: #fff; 
-  padding-inline: 40px;
+  color: #00fff7; 
+  padding-inline: 20px;
   padding-block: 10px;
+}
+
+.custom-slider-arrow-right {
+  right: -80px;
+  font-size: 20px; 
+  color: #00fff7; 
+  padding-inline: 20px;
+  padding-block: 10px;
+}
+
+.custom-slider-arrow.hide {
+  display: none;
 }
 
 ::-webkit-scrollbar {

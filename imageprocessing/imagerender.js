@@ -1,22 +1,10 @@
 const express = require('express');
 const sharp = require('sharp');
-const { createCanvas, loadImage } = require('canvas');
 const fs = require('fs').promises;
-const { ethers } = require("ethers");
 const path = require('path');
 
 const app = express();
 const port = 8080;
-
-let fetch;
-import('node-fetch').then(module => {
-  fetch = module.default;
-}).catch(err => console.error(err));
-
-const provider = new ethers.providers.JsonRpcProvider(""); 
-const ContractAddress = ""; 
-const ContractABI = [""]; 
-const Contract = new ethers.Contract(ContractAddress, ContractABI, provider);
 
 const baseCharacterPath = './assets/';
 const variablesPath = './assets/variables';
@@ -34,7 +22,7 @@ const varOptions4 = ['var4option1', 'var4option2', 'var4option3', 'var4option4',
 const colorOptions1 = [
   '#FFD700', // Vibrant Gold
   '#000000', // True Black
-  '#002147', // Deep Navy (Dark Blue
+  '#002147', // Deep Navy (Dark Blue)
   '#0078FF', // Bright Blue
   '#CCCC00', // Darker Yellow
   '#7D00FF', // Deep Purple
@@ -57,40 +45,19 @@ const colorOptions2 = [
   '#83C5BE'  // Middle Blue Green
 ];
 
-async function fetchMetadata(tokenId) {
-  try {
-  const tokenURI = await Contract.tokenURI(tokenId);
-  const uriResponse = await fetch(tokenURI);
-  const metadata = await uriResponse.json();
-  const entityEntropy = await Contract.entityEntropy(tokenId);
-  const entityGeneration = await Contract.entityGeneration(tokenId);
-  const entityAge = await Contract.entityAge(tokenId);
-  const combinedData = {
-    metadata,
-    entityEntropy,
-    entityGeneration,
-    entityAge
-    };
-  console.log(combinedData);
-  return combinedData;
-  } catch (error) {
-  console.error("Error fetching metadata and contract data:", error);
-}
-}
 
-async function baseCharacterImg(offsetX = 0, offsetY = 0, entityGeneration, overlayBuffer) {
-  generation = entityGeneration.toString();
-  const imagePath = path.join(baseCharacterPath, `${generation}`, 'baseCharacter.png');
+async function baseCharacterImg(entityGeneration, overlayBuffer = null, offsetX = 0, offsetY = 0) {
+  const generation = entityGeneration.toString();
+  const imagePath = path.join(baseCharacterPath, `baseCharacter_${generation}.png`); // Corrected template string
   let baseCharacter = sharp(imagePath);
   if (overlayBuffer) {
-  baseCharacter = await baseCharacter.composite([{ input: overlayBuffer, top: offsetY, left: offsetX }])
+    baseCharacter = await baseCharacter.composite([{ input: overlayBuffer, top: offsetY, left: offsetX }]);
   }
   return baseCharacter;
 }
 
 async function variablesLayer(entityEntropy) {
   const entropy = entityEntropy.toString();
-
 
   const optionIndex1 = parseInt(entropy[0]) % varOptions1.length;
   const optionIndex2 = parseInt(entropy[1]) % varOptions2.length;
@@ -127,15 +94,15 @@ async function tintImage(imagePath, hexColor) {
   const { r, g, b } = hexToRgb(hexColor);
   const overlay = await sharp({
   create: {
-    width: 500,
-    height: 500,
+    width: 1000,
+    height: 1000,
     channels: 4,
     background: { r, g, b, alpha: 0.5 } 
   }
   }).png().toBuffer();
 
   return sharp(imagePath)
-  .resize(500, 500)
+  .resize(1000, 1000)
   .composite([{ input: overlay, blend: 'multiply' }])
   .toBuffer();
 }
@@ -150,52 +117,23 @@ function hexToRgb(hex) {
 }
 
 
-function agingLayer(entityEntropy, entityAge) {
-  const entropy = parseInt(entityEntropy, 10);
-  const age = parseFloat(entityAge); 
-  const performanceFactor = entropy % 10;
-  let effectiveAge = age * performanceFactor;
-  const maxEffectiveAge = 3;
-  if (effectiveAge > maxEffectiveAge) {
-    effectiveAge = maxEffectiveAge;
-  }
-  const opacity = effectiveAge / maxEffectiveAge;
-  return opacity; 
-}
+async function composeIMG(entityEntropy, entityGeneration) {
 
-async function adjustOpacityWithCanvas( opacity ) {
-  const image = await loadImage('./assets/Aging-layer.png');
-  const canvas = createCanvas(image.width, image.height);
-  const ctx = canvas.getContext('2d');
-
-  ctx.globalAlpha = opacity;
-
-  ctx.drawImage(image, 0, 0, image.width, image.height);
-
-  const buffer = canvas.toBuffer('image/png');
-
-  const processedImage = await sharp(buffer)
-  .resize(image.width, image.height) 
-  .toBuffer();
-
-  await fs.promises.writeFile('processedImage.png', processedImage);
-  return processedImage;
-}
-
-async function composeIMG(entityEntropy, entityGeneration, entityAge) {
-  if (!provider) {
-  console.error('Provider is not available.');
-  return null;
-  }
   try {
-  const opacity = agingLayer(entityEntropy, entityAge);
-  const agingImageBuffer = await adjustOpacityWithCanvas(opacity);
-  const baseCharacterBuffer = await baseCharacterImg(entityGeneration).toBuffer();
+  const baseCharacterBuffer = await baseCharacterImg(entityGeneration);
   const variablesImgBuffer = await variablesLayer(entityEntropy);
-  const composedImage = await sharp(agingImageBuffer)
+  const composedImage = await sharp({
+    create: {
+      width: 1000, // Adjusted to match your variable images' dimensions
+      height: 1000,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 0 }
+    }
+  })
   .composite([
     { input: baseCharacterBuffer, blend: 'over' },
     { input: variablesImgBuffer, blend: 'over' },
+    // Ensure to include or exclude the agingImageBuffer based on its definition
   ])
   .toBuffer();
 
@@ -208,18 +146,20 @@ async function composeIMG(entityEntropy, entityGeneration, entityAge) {
 
 
 app.get('/generate-image', async (req, res) => {
-  const tokenId = req.query.tokenId; 
+  const { entityEntropy, entityGeneration } = req.query; 
   try {
-  const { entityEntropy, entityGeneration } = await fetchMetadata(tokenId);
-  const imageBuffer = await composeIMG(entityEntropy, entityGeneration);
-  if (imageBuffer) {
-  res.type('jpeg').send(imageBuffer);
-  } else {
-  throw new Error('Image Layering Failed', error);
-  } 
+    if (!entityEntropy || !entityGeneration) {
+      throw new Error('Missing required parameters: entityEntropy, entityGeneration');
+    }
+    const imageBuffer = await composeIMG(entityEntropy, entityGeneration);
+    if (imageBuffer) {
+      res.type('png').send(imageBuffer);
+    } else {
+      throw new Error('Image Layering Failed');
+    }
   } catch (error) {
-  console.error("failed to generate:", error);
-res.status(500).send("Failed to compose image");
+    console.error("Failed to generate:", error);
+    res.status(500).send("Failed to compose image");
   }
 });
 

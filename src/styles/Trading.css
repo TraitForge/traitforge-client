@@ -3,6 +3,19 @@
   justify-content: center;
   align-content: center;
   font-family: 'Bebas Neue', sans-serif;
+  background-image: url('../utils/marketplace-background.jpg');
+  height: 100vh;
+  padding-bottom: 20vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.market-page-container {
+  background-color: rgba(0, 0, 0, 0.744);
+  margin-top: 10vh;
+  width: 90vw;
+  border-radius: 10px;
 }
 
 .Trading-top-buttons{
@@ -15,18 +28,19 @@
 }
 
 .sellEntity {
-  background-color: rgba(0, 255, 255, 0);
+  color:  #f0f0f0;
+  padding-inline: 15px;
+  background-color: rgba(0, 191, 255, 0.19);
+  border-radius: 1px;
+  border: none;
+  box-shadow: 0px 0px 1px 1px rgb(0, 255, 94);
+  cursor: pointer;
+  max-width: 70%;
   font-size: 1.5em; 
-  color: #f0f0f0; 
-  border: none; 
-  margin-top: 5vh;
-  border-radius: 6px; 
-  padding-block: 2px; 
-  padding-inline: 30px; 
-  cursor: pointer; 
-  box-shadow: 0px 0px 1px 1px #0ff;
   transition: background-color 0.3s, box-shadow 0.3s;
   font-family: 'Bebas Neue', sans-serif;
+  margin-top: 10px;
+  margin-bottom: 30px;
 }
 
 .sellEntity:hover {
@@ -47,68 +61,55 @@
 .ownersListings:hover {
 transform: scale(1.03);
 }
-
-.tradingfilters {
-  font-size: 0.3em;
-  margin-top: 20px;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
-.tradingfiltersh1 {
-  font-size: 1.2em; 
-  padding-top: 5px;
-  margin-bottom: 13px;
-  width: 20vw;
-  border-top: 1px solid #0ff ;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
-.sorting-options {
-  margin-top: -20px;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
 .sorting-dropdown {
-  font-size: 0.65em;
-  padding: 2px;
-  margin: 10px 0;
-  border: 0.5px solid rgb(168, 255, 255);
+  position: relative;
+  font-size: 0.7em;
+  border: 0.5px solid rgba(168, 255, 255, 0.109);
   border-radius: 8px;
-  background-color: rgb(15, 15, 15);
+  background-color: rgba(15, 15, 15, 0.114);
   color: rgb(232, 232, 232);
   cursor: pointer;
   font-family: 'Bebas Neue', sans-serif;
 }
 
 .sorting-dropdown:hover, .sorting-dropdown:focus {
-  border-color: #0ff;
+  border-color: rgb(0, 255, 162);
   outline: none;
 }
 
-.tradingfilters button:last-child {
-  margin-right: 0;
+.tradingfilters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px; 
+  font-size: 1em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.427); 
+  width: 95%;
+  position: relative; 
+  top: 0;
 }
 
 .tradingfilters button {
-  padding: 0px;
-  margin-top: -10px;
-  width: 120px;
-  margin-right: 10px;
-  color: rgba(241, 241, 241, 0.565);
-  border: 0.5px solid #0ff;
-  box-shadow: none;
+  color: #bdbdbd;
+  text-decoration: none;
+  padding: 0rem 2rem;
+  transition: color 0.3s ease;
+  background: none; 
+  border: none; 
+  cursor: pointer;
   font-family: 'Bebas Neue', sans-serif;
+  font-size: 1em;
 }
 
-.tradingfilters :hover {
-  transform: scale(1.1);
+.tradingfilters > .sorting-dropdown {
+  margin-left: auto; 
 }
 
-.tradingfilters button.active-filter {
-  color: rgb(255, 255, 255); 
-  border: 2px solid #0ff;
+.tradingfilters button.active-filter, .tradingfilters button:hover {
+  color: white; 
+  border-bottom: 2px solid rgb(255, 255, 255);
+  margin-bottom: -1.5px;
 }
-
 
 .buy-sell-page button:hover {
   transform: scale(1.05)

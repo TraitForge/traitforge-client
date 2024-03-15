@@ -10,9 +10,9 @@ import Spinner from './Spinner';
 import EntropyGeneratorContractAbi from '../artifacts/contracts/EntropyGenerator.sol/EntropyGenerator.json';
 import customERC721Abi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
-const customERC721Address = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
-const EntropyGeneratorContractAddress = '0x51A1ceB83B83F1985a81C295d1fF28Afef186E02';
-const totalSlots = 770; //change later
+const customERC721Address = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const EntropyGeneratorContractAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9';
+const totalSlots = 770; 
 const valuesPerSlot = 13;
 
 const EntityContext = createContext();
@@ -66,6 +66,8 @@ const Card = ({ entity, index }) => {
 const Slider = () => {
     const [entityItems, setEntityItems] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isBeginning, setIsBeginning] = useState(true);
+    const [isEnd, setIsEnd] = useState(false);
     const splideRef = useRef();
 
     const initializeEthersProvider = () => {
@@ -144,31 +146,70 @@ const Slider = () => {
         }
     }, [entityItems]);
 
+    useEffect(() => {
+        const handleMoved = (splide, newIndex) => {
+            setIsBeginning(newIndex === 0);
+            setIsEnd(newIndex >= entityItems.length - splide.options.perPage);
+        };
+    
+        if (splideRef.current && splideRef.current.splide) {
+            const splideInstance = splideRef.current.splide;
+            
+            splideInstance.on('mounted move', () => handleMoved(splideInstance, splideInstance.index));
+            handleMoved(splideInstance, splideInstance.index); 
+    
+            return () => {
+                splideInstance.off('mounted move', handleMoved);
+            };
+        }
+    }, [entityItems]);
+
+    const currentEntity = entityItems.length > 0 ? entityItems[0] : null;
+
     return (
         <EntityContext.Provider value={entityItems}>
+        <div className='sliderpage'>
+            <div className='current-container'>
+           {currentEntity && (
+            <div className='current-entity'>
+                <div className='currentMint'>
+                <Card className='currentcard' entity={currentEntity} index={currentEntity.id} />
+                </div>
+                <footer> upcoming </footer>
+            </div>
+        )}
+        </div>
+        <div className="slider-wrapper"> 
+        <div className="slider-container">
             <div className={`slider-container ${isLoading ? 'loading' : ''}`}>
-                {isLoading ? (
+            {isLoading ? (
                     <Spinner />
-                ) : (
-                    <>
-                        <div className="slider">
+            ) : (
+                <>
+            <button 
+             onClick={() => splideRef.current?.splide?.go('<')}
+             className={`custom-slider-arrow custom-slider-arrow-left ${isBeginning || isLoading ? 'hide' : ''}`}>
+             <FontAwesomeIcon icon={faArrowLeft} />
+            </button>
+    
+                        <div className="cards-container">
                             {entityItems.length > 0 && (
                                 <Splide
                                     ref={splideRef}
                                     options={{
-                                        perPage: 8,
+                                        perPage: 5,
                                         rewind: true,
-                                        gap: '0.5rem',
+                                        gap: '0.4rem', 
                                         pagination: false,
                                         arrows: false,
                                         breakpoints: {
-                                            1350: { perPage: 6 },
-                                            800: { perPage: 4 },
-                                            500: { perPage: 3 },
-                                        },
+                                        1350: { perPage: 5 },
+                                        800: { perPage: 4 },
+                                        500: { perPage: 3 },
+                                        }
                                     }}
                                 >
-                                    {entityItems.map((entity, index) => (
+                                    {entityItems.slice(1).map((entity, index) => (
                                         <SplideSlide key={entity.id}>
                                             <Card entity={entity} index={index + 1} />
                                         </SplideSlide>
@@ -176,18 +217,18 @@ const Slider = () => {
                                 </Splide>
                             )}
                         </div>
-                        <div className="custom-arrows">
-                            <button onClick={() => splideRef.current?.splide?.go('<')} className="custom-arrow custom-arrow-left">
-                                <FontAwesomeIcon icon={faArrowLeft} />
-                            </button>
-                            <button onClick={() => splideRef.current?.splide?.go('>')} className="custom-arrow custom-arrow-right">
-                                <FontAwesomeIcon icon={faArrowRight} />
-                            </button>
-                        </div>
                     </>
                 )}
+                <button 
+                 onClick={() => splideRef.current?.splide?.go('>')}
+                 className={`custom-slider-arrow custom-slider-arrow-right ${isEnd || isLoading ? 'hide' : ''}`}>
+                 <FontAwesomeIcon icon={faArrowRight} />
+                </button>
             </div>
-        </EntityContext.Provider>
+            </div>
+        </div>
+        </div>
+    </EntityContext.Provider>
     );
 };
 

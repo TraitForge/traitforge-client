@@ -2,16 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 import { ethers } from 'ethers';
 import LoadingSpinner from './Spinner';
+import MintButton from '../utils/mintbutton.png';
 import '../styles/Home.css';
 import Slider from './EntitySlider';
 import MintAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
-const MintAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
+const MintAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 
 const HomeBody = () => {
   const [entityPrice, setEntityPrice] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [mintNumber, setMintNumber] = useState(null);
   const { isConnected} = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
@@ -76,6 +78,27 @@ const mintEntityHandler = async () => {
   }
 };
 
+const calculateMintNumber = async () => {
+  if (!entityPrice) {
+    return;
+  }
+  let calculatedMintNumber;
+  try {
+    const price = (entityPrice);
+    calculatedMintNumber = price * 100;
+  } catch (error) {
+    console.error('Failed to calculate:', error);
+    return;
+  }
+  setMintNumber(calculatedMintNumber);
+};
+
+
+useEffect(() => {
+  if (entityPrice) {
+    calculateMintNumber();
+  }
+}, [entityPrice]);
 
 useEffect(() => {
  getLatestEntityPrice();
@@ -86,16 +109,12 @@ return (
 <main>
   <div className='mint-container'>
     <span className='mint-text'>Mint your traitforge entity</span>
-    <div className='mint-button'>
-    <button onClick={mintEntityHandler} disabled={isLoading || !entityPrice}>
-    {isLoading ? <LoadingSpinner /> : `Mint for ${entityPrice || '...'} ETH`}
-    </button>
+    <img src={isLoading ? LoadingSpinner : MintButton} className='mint-button' onClick={mintEntityHandler} />
+    <div className='nexttokenslider'>
+    <Slider />
     </div>
   </div>
 
-<div className='nexttokenslider'>
-  <Slider />
-</div>
 </main>
 )};
 

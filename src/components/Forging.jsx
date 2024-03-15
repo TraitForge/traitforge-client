@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
 import Modal from './ForgingModal';
+import OwnerEntitiesModal from './OwnerEntities';
+import ClaimEntity from '../utils/claimentity.png';
+import PoolForgeCard from '../utils/PoolSelectCard.png';
+import WalletForgeCard from '../utils/WalletSelectCard.png';
+import ForgeButton from '../utils/forgebutton.png';
 import '../styles/Forging.css';
-import LoadingSpinner from './Spinner'
+import LoadingSpinner from './Spinner';
 import ForgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
 
-const ForgeContractAddress = ' 0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB';
+const ForgeContractAddress = '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853';
 
 const EntityList = ({ entities, onEntitySelect }) => (
   <div className="breeder-items-list">
@@ -40,8 +45,10 @@ const ProcessingModal = ({ processing, text}) => {
 const NFTListings = () => {
   const { isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
+  const entityList = useRef(null);
   const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openOwnerEntitiesModal, setOpenOwnerEntitiesModal] = useState(false);
   const [sortOption, setSortOption] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [processing, setProcessing] = useState(false);
@@ -96,6 +103,16 @@ const openEntityToForge = (entity) => {
   setSelectedEntity(entity);
 };
 
+const toggleOwnerEntitiesModal = () => {
+  console.log('Toggling OwnerEntitiesModal');
+  setOpenOwnerEntitiesModal(true);
+};
+
+const scrollToEntityList = () => {
+  entityList.current?.scrollIntoView({ behavior: 'smooth' });
+};
+
+
 const forgeNewEntity = async () => {
   if (!isConnected) return;
   setProcessing(true);
@@ -122,20 +139,50 @@ const forgeNewEntity = async () => {
 
 return (
 <div className='TBG-page'>
-    <button className='breed-entity-button' onClick={() => setOpenModal(true)}>List For Forging</button>
-  {openModal && (
-  <Modal open={openModal}  onClose={() => setOpenModal(false)} /> )}
-     
-  <div className="breed-sorting-options">
-    <h1> Filter </h1>
-    <select className="sorting-dropdown" onChange={(e) => setSortOption(e.target.value)}>
-    <option value="">Select Sorting Option</option>
-    <option value="priceLowHigh">Price: Low to High</option>
-    <option value="priceHighLow">Price: High to Low</option>
-    </select>
+<div className='forge-arena-container'>
+      <h1>Forging Arena</h1>
+     <div className="selected-entity-placeholder">
+      <div className='forgecardsrow'>
+      <img src={PoolForgeCard} alt='forge place holder' className='other-entities' onClick={scrollToEntityList}/>
+      <img src={ClaimEntity} alt='claim box'/>
+      <img src={WalletForgeCard} alt='forge place holder' className='your-entities' onClick={toggleOwnerEntitiesModal} />
+      {openOwnerEntitiesModal && (
+       <OwnerEntitiesModal isOpen={openOwnerEntitiesModal} onClose={() => setOpenOwnerEntitiesModal(false)} />
+     )} 
+      </div>
+      {selectedEntity && ( 
+        <div className='selectedEntity'>
+          <img src={selectedEntity.image} alt={`Entity ${selectedEntity.title}`} />
+          <div>
+            <h5>{selectedEntity.title}</h5>
+            <p>Price: {selectedEntity.price} ETH</p>
+            <p>Gender: {selectedEntity.gender}</p>
+          </div>
+          </div>
+      )}
+      </div>
+      <img src={ForgeButton} alt='forge' className="forge-button" onClick={() => forgeNewEntity()}/>
+    </div>
+
+  <div className='entity-list-container' ref={entityList}>
+   <div className="breed-sorting-options">
+     <div className="left-items">
+      {openModal && (
+        <Modal open={openModal} onClose={() => setOpenModal(false)} />
+      )}
+      <button className='breed-entity-button' onClick={() => setOpenModal(true)}>List Your Forger</button>
+     </div>
+    <div className="right-items">
+      <select className="forge-sorting-dropdown" onChange={(e) => setSortOption(e.target.value)}>
+        <option value="">Select Sorting Option</option>
+        <option value="priceLowHigh">Price: Low to High</option>
+        <option value="priceHighLow">Price: High to Low</option>
+      </select>
+    </div>
   </div>
-      
   <EntityList entities={sortedEntities} openSelectEntity={openEntityToForge} />
+</div>
+
 
   {selectedEntity && (
   <div className="detailed-card">

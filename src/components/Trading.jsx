@@ -6,8 +6,8 @@ import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/re
 import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
 import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
-const ERC721ContractAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
-const tradeContractAddress = '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD';
+const ERC721ContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const tradeContractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
 const BuySellPage = () => {
   const [selectedListing, setSelectedListing] = useState(null);
@@ -107,12 +107,15 @@ const filteredAndSortedListings = getSortedFilteredListings();
 
 return (
 <div className='Trading-page'>
-    <div className="Trading-top-buttons">
+<div className='market-page-container'>
+  <div className="Trading-top-buttons">
     <button className='sellEntity' onClick={() => setModalOpen(true)}>Sell Your Entity</button>
     <Modal open={modalOpen} onClose={() => setModalOpen(false)} />
-    <h1 className='tradingfiltersh1'>Filter</h1>
-    <div className="sorting-options">
-    <select className="sorting-dropdown" onChange={(e) => setSortOption(e.target.value)}>
+    <div className="tradingfilters">
+      <button className={filter === 'All' ? 'active-filter' : ''} onClick={() => handleFilterChange('All')}>All</button>
+      <button className={filter === 'Forger' ? 'active-filter' : ''} onClick={() => handleFilterChange('Forger')}>Forgers</button>
+      <button className={filter === 'Merger' ? 'active-filter' : ''} onClick={() => handleFilterChange('Merger')}>Mergers</button>
+      <select className="sorting-dropdown" onChange={(e) => setSortOption(e.target.value)}>
         <option value="">Select Sorting Option</option>
         <option value="highestPrice">Price high to low</option>
         <option value="lowestPrice">Price low to high</option>
@@ -122,16 +125,10 @@ return (
         <option value="lowestForgePotential">Forge Potential lowest</option>
         <option value="highestPerformanceFactor">Performance Factor Speed highest</option>
         <option value="lowestPerformanceFactor">Performance Factor lowest</option>
-    </select>
-    </div>
-
-
-    <div className="tradingfilters">
-        <button className={filter === 'All' ? 'active-filter' : ''} onClick={() => handleFilterChange('All')}>All</button>
-        <button className={filter === 'Forger' ? 'active-filter' : ''} onClick={() => handleFilterChange('Forger')}>Forgers</button>
-        <button className={filter === 'Merger' ? 'active-filter' : ''} onClick={() => handleFilterChange('Merger')}>Mergers</button>
-    </div>
-    </div>
+      </select>
+       </div> 
+       </div>
+       </div>
 
     <div className="listings">
     {filteredAndSortedListings.map(listing => (

@@ -10,35 +10,21 @@ html, body {
   font-family: 'Bebas Neue', sans-serif;
 }
 
-#tsparticles {
-  position: absolute; 
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -2; 
-}
-
 .App {
   text-align: center;
-  min-height: 100vh;
-  width: 100%;
   font-size: calc(10px + 2vmin);
   position: relative;
   z-index: 1; 
   display: flex;
-  flex-direction: column;
-  flex: 1;
   font-family: 'Bebas Neue', sans-serif;
 }
 
 .App-header {
-  background-color: #000000; 
+  background-color: #00000050; 
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 0 1rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -53,7 +39,6 @@ html, body {
 
 .App-header h1 {
   font-size: 2.5rem;
-  margin: 0;
   display: flex;
   align-items: center;
   z-index: 6;
@@ -64,8 +49,9 @@ html, body {
 .logo-title-container {
   display: flex;
   position: absolute;
-  top: 2px;
   align-items: center;
+  top: -25px;
+  left: 10px;
   font-family: 'Bebas Neue', sans-serif;
 }
 
@@ -98,14 +84,14 @@ html, body {
   top: 0;
   z-index: 2;
   gap: 10px;
-  background: #000000;
+  background: #000000ae;
   font-family: 'Bebas Neue', sans-serif;
 }
 
 .navlist.expanded {
   display: flex;
   font-size: 1.7em; 
-  background: #000000e5;
+  background: #000000f2;
   width: 100%; 
   height: 100%; 
   position: fixed;
@@ -125,8 +111,8 @@ html, body {
 }
 
 .navlist a.active, .navlist a:hover {
-  border-bottom: 2px solid #0ff;
-  background: linear-gradient(to top, rgb(152, 255, 255) 0%, rgba(0, 255, 255, 0.785) 130%);
+  border-bottom: 1px solid rgb(255, 255, 255);
+  background: linear-gradient(to top, rgb(255, 255, 255) 0%, rgba(0, 38, 38, 0.716) 130%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -134,7 +120,7 @@ html, body {
 .wallet-connect-button {
   position: absolute;
   display: flex;
-  right: 40px;
+  right: 50px;
   top: 7px;
   align-items: center;
   flex-direction: row;
@@ -142,11 +128,12 @@ html, body {
   border: none;
   z-index: 150;
   box-shadow: none;
+  color: #f0f0f0;
+  background-color: transparent;
   height: 30px;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 30px;
   gap: 5px;
-
 }
 
 .wallet-connect-button:active {
@@ -160,6 +147,7 @@ html, body {
 .wallet-icon {
   font-size: 30px; 
   margin-bottom: 3px;
+  padding: 5px;
 }
 
 .footer-container {
@@ -178,6 +166,7 @@ html, body {
   transition: background-color 0.3s ease; 
   width: 102%; 
   display: flex;
+  margin-top: -10px;
   margin-left: -15px;
   margin-bottom: -10px;
   flex-direction:row; 
@@ -200,7 +189,7 @@ html, body {
   padding: 5px;
   z-index: 1000;
   box-shadow: none;
-  color: #000000;
+  background-color: transparent;
   color: white;
   border: none;
   border-radius: 5px;
@@ -218,7 +207,7 @@ html, body {
   z-index: 5500;
   font-size: 0.6em;
   color:#000000;
-  background-color: white;
+  background-color: rgba(0, 0, 0, 0);
   padding: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   border-radius: 10px;

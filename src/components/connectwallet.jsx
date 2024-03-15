@@ -5,8 +5,8 @@ import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTra
 import forgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
 import '../styles/ConnectWalletModal.css';
 
-const tradeContractAddress = '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD';
-const forgeContractAddress = '0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB';
+const tradeContractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
+const forgeContractAddress = '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853';
 
 const ConnectWalletModal = ({ isOpen, onClose, children }) => {
   const { address, isConnected } = useWeb3ModalAccount();

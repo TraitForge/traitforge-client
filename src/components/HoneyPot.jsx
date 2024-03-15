@@ -2,11 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import HoneyPotModal from './HoneyPotModal';
+import NukeButton from '../utils/nukebutton.png'
 import '../styles/HoneyPot.css'; 
 import { useWeb3ModalProvider  } from '@web3modal/ethers5/react'
 import NukeFundAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
-const NukeFundAddress = '0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43';
+const NukeFundAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
 
 function HoneyPot() {
   const [showNFTModal, setShowNFTModal] = useState(false);
@@ -71,33 +72,17 @@ return (
 <div className="honey-pot-container">
   <h1>The HoneyPot</h1>
 
+  <div className="frame-container">
   <div className="eth-amount">
-    <h1>{ethAmount} ETH </h1>
+    <h1>{ethAmount} ETH</h1>
     <p>≈ ${usdAmount} USD</p>
   </div>
+</div>
 
-  <button className='nuke-button' onClick={toggleModal}> Nuke Entity </button>
+  <img src={NukeButton}className='nuke-button' onClick={toggleModal}/>
   {showNFTModal && (
   <HoneyPotModal onClose={() => setShowNFTModal(false)}/>
   )}
-
-
-<div className='nuke-history'>
-  <h1>Nuke History</h1>
-  {nukeHistory.length > 0 ? (nukeHistory.map((tx, index) => (
-  <div key={index} className="nuke-event">
-    <p>Type: {tx.type}</p>
-    <p>From: {tx.from}</p>
-    <p>To: {tx.to || "N/A"}</p>
-    <p>Amount: {tx.amount || "N/A"}</p>
-    <p>Token ID: {tx.tokenId || "N/A"}</p>
-    <p>Time: {new Date(tx.timestamp).toLocaleString()}</p>
-  </div>
-  ))
-  ) : (
-  <p>No Nuke history found.</p>
-)}
-</div>
 </div>
 )};
 

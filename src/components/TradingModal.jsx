@@ -5,8 +5,8 @@ import { ethers } from 'ethers';
 import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
 import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
-const ERC721ContractAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
-const tradeContractAddress = '0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD';
+const ERC721ContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const tradeContractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
 const TradingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);

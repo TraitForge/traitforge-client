@@ -3,8 +3,8 @@ import { ethers } from 'ethers';
 import MintContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
 import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
-const MintContractAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
-const NukeContractAddress = '0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43';
+const MintContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const NukeContractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
 
 const defaultProvider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545/");
 

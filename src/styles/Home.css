@@ -1,17 +1,16 @@
 main {
   font-size: 2em;
-  margin-top: 15vh;
+  height: 140vh;
   font-family: 'Bebas Neue', sans-serif;
-  }
+  background-image: url('../utils/home-background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
 .body {
   padding: 0;
   margin: 0;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
-.Body-Header {
-  padding-bottom: 15vh;
   font-family: 'Bebas Neue', sans-serif;
 }
 
@@ -26,44 +25,22 @@ main {
 
 .mint-text {
   text-align: center;
-  font-size:7vw;
+  margin-top: 150px;
+  font-size:4vw;
   padding-bottom: 10px;
   font-family: 'Bebas Neue', sans-serif;
 }
 
 .mint-button {
-  display: flex;
-  padding-bottom: 20px;
-  justify-content: center;
-  font-family: 'Bebas Neue', sans-serif;
-}
- 
-.mint-button button{
-  font-size: 6vw;
-  width: 700%;
-  height: 10vw;
-  font-family: 'Bebas Neue', sans-serif;
-}
- 
-main button {
-  color:  #f0f0f0;
-  background-color: transparent;
-  border-radius: 10px;
-  border: 1px;
-  box-shadow: 0px 0px 4px 2px #0ff;
   cursor: pointer;
-  font-family: 'Bebas Neue', sans-serif;
+  width: 25%;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin-top: 5px;
+  margin-bottom: -40px;
 }
 
-main button:hover{
-  transform: scale(1.02);
-  box-shadow: 0px 0px 5px 4px#0ff;
-}
-
-main button:active {
-box-shadow: 0px 0px 80px 10px #0ff;
-color: rgba(195, 255, 255, 0.931);
-transition: 0.08s;
+.mint-button:hover {
+  transform: scale(1.01);
 }
 
 h2, h3 {
@@ -71,21 +48,13 @@ h2, h3 {
 }
 
 .nexttokenslider {
-  margin-top: 10vh;
+  margin-top: 5vh;
   font-size: 0.8em;
-  margin-bottom: 100px;
-  text-align: left;
+  margin-left: 1px;
+  width: 60%;
   font-family: 'Bebas Neue', sans-serif;
-}
-
-.slider-button {
-  background-color: black;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  margin: 10px;
-  cursor: pointer;
-  font-family: 'Bebas Neue', sans-serif;
+  display: flex;
+  justify-content: center;
 }
 
 .gen-container {

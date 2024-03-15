@@ -5,8 +5,8 @@ import { ethers } from 'ethers';
 import forgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
 import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
-const ERC721ContractAddress = '0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2';
-const forgeContractAddress = ' 0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB';
+const ERC721ContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const forgeContractAddress = '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853';
 
 const ForgingModal = ({ open, onClose, onSave }) => {
   const [entities, setEntities] = useState([]);

@@ -4,7 +4,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/re
 import '../styles/HoneyPotModal.css';
 import NukeContractAbi from '../artifacts/contracts/NukeFund.sol/NukeFund.json';
 
-const NukeContractAddress = '0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43'; 
+const NukeContractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'; 
 
 const HoneyPotModal = ({ showEntityModal, onClose }) => {
   const [entities, setEntities] = useState([]);

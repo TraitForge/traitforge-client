@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { loadFull } from "tsparticles";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faTelegram } from '@fortawesome/free-brands-svg-icons';
@@ -74,14 +72,7 @@ const SocialMediaLink = ({ url, icon, className }) => (
 function App() {
   const [showInstructions, setShowInstructions] = useState(false);
   const [isNavExpanded, setIsNavExpanded] = useState(false); 
-  const [init, setInit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-useEffect(() => {
-  initParticlesEngine(async (engine) => {
-  await loadFull(engine);
-  }).then(() => {setInit(true)});
-}, []);
 
 const openModal = () => {
   setIsModalOpen(true);
@@ -89,90 +80,6 @@ const openModal = () => {
 
 const closeModal = () => {
   setIsModalOpen(false);
-};
-
-
-const particlesOptions = {
-    background: {
-      color: "#000000",
-    },
-    fpsLimit: 120,
-    interactivity: {
-      detect_on: "canvas",
-      events: {
-        onHover: {
-          enable: true,
-          mode: false,
-        },
-        onClick: {
-          enable: true,
-          mode: "false",
-        },
-      },
-      modes: {
-        push: {
-          particles_nb: 4,
-        },
-      },
-    },
-
-
-    particles: {
-
-      color: {
-        value: "#0ff",
-      },
-      links: {
-        enable: false,
-      },
-      move: {
-        enable: true,
-        speed: 0.3,
-        direction: "none",
-        random: true,
-        straight: false,
-        out_mode: "out",
-        bounce: false,
-        attract: {
-          enable: false,
-          rotateX: 1000,
-          rotateY: 800,
-        },
-      },
-      number: {
-        value: 80,
-        density: {
-          enable: true,
-          area: 400,
-        },
-      },
-      opacity: {
-        value: 1,
-        anim: {
-          enable: true,
-          speed: 1,
-          opacity_min: 0.1,
-          sync: false,
-        },
-      },
-      shape: {
-        type: "circle",
-      },
-      size: {
-        value: 1,
-        random: true,
-        anim: {
-          enable: true,
-          speed: 4,
-          size_min: 1,
-          sync: false,
-        },
-      },
-    },
-};
-
-const particlesLoaded = (container) => {
-  console.log(container);
 };
 
 const toggleInstructions = () => {
@@ -189,15 +96,9 @@ const links = [
 return (
   <BrowserRouter>
   <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-  {init && (
-  <Particles 
-    id="tsparticles"
-    loaded={particlesLoaded}
-     options={particlesOptions}
-  />)}
 
 <header className="App-header">
-  <div className='header-bar'> black </div>
+  <div className='header-bar'> . </div>
   <div className="logo-title-container">
     <img src={TFLogo} alt="TF Logo" className="logo" />
     <h1>TraitForge</h1>
@@ -205,10 +106,10 @@ return (
 
   <Navbar isNavExpanded={isNavExpanded} setIsNavExpanded={setIsNavExpanded}/>
   <div>
-            <button className="wallet-connect-button" onClick={openModal}>
+          <button className="wallet-connect-button" onClick={openModal}>
             <p>wallet</p>
                 <FontAwesomeIcon icon={faWallet} className="wallet-icon"/> 
-            </button>
+          </button>
             {isModalOpen && (
                 <ModalComponent isOpen={isModalOpen} onClose={closeModal}>
                     <div style={{alignItems: 'center'}}>
