@@ -3,11 +3,11 @@ import TransactionsDisplay from './TransactionsDisplay';
 import '../styles/Stats.css';
 
 const Stats = () => {
-  const [currentStat, setCurrentStat] = useState('highestNukefactor');
+  const [currentStat, setCurrentStat] = useState('addressWithMostEntities');
   const [stats, setStats] = useState({
-  highestNukefactor: [],
-  mostForges: [],
   addressWithMostEntities: [],
+  highestTotalEntropy: [],
+  mostForges: [],
 });
 
 useEffect(() => {
@@ -18,18 +18,33 @@ useEffect(() => {
 }, []);
 
 const statTypes = {
-  highestNukefactor: 'Highest Nuke Factor',
-  mostForges: 'Most Forges Executed',
   addressWithMostEntities: 'Address with the Most Entities',
+  highestTotalEntropy: 'Highest Total Entropy',
+  mostForges: 'Most Forges Executed',
   transactionsDisplay: 'Game Activity',
 };
 
 const headerTitles = {
-  highestNukefactor: ['Nuke Factor'],
-  mostForges:  ['Forges Executed'],
   addressWithMostEntities: [ 'Entities Owned'],
+  highestTotalEntropy: ['Highest Total Entropy'],
+  mostForges:  ['Forges Executed'],
   transactionsDisplay: [], 
 }
+
+const formatRanking = (index) => {
+  const j = index % 10,
+        k = index % 100;
+  if (j === 1 && k !== 11) {
+    return index + "st";
+  }
+  if (j === 2 && k !== 12) {
+    return index + "nd";
+  }
+  if (j === 3 && k !== 13) {
+    return index + "rd";
+  }
+  return index + "th";
+};
 
 return (
   <div className='page-container'>
@@ -60,8 +75,10 @@ return (
           <div className="stats-grid">
             <div className="stat-card">
               <ul>
-                {stats[currentStat].length > 0 ? (
-                  stats[currentStat].map((item, index) => <li key={index}>{item}</li>)
+              {stats[currentStat].length > 0 ? (
+                  stats[currentStat].map((item, index) => (
+                    <li key={index}><span>{formatRanking(index + 1)}</span> {item}</li>
+                  ))
                 ) : (
                   <li>Loading...</li>
                 )}
@@ -80,17 +97,17 @@ async function getStatsFromAPI() {
   return new Promise(resolve => setTimeout(() => resolve({
 
 
-highestNukefactor: [
-  '0x12e379a83939874d002uv03 (1st gen 5/10,000) (46%)',
-  '0x24f479b84939874d003uv04 (2nd gen 72/10,000) (45%)',
-  '0x35g569c95939874d004uv05 (1st gen 964/10,000) (43%)',
-  '0x46h679d06939874d005uv06 (2th gen 1992/10,000) (40%)',
-  '0x57i789e17939874d006uv07 (1th gen 5678/10,000) (39%)',
-  '0x12e379a83939874d002uv03 (1st gen 5/10,000) (46%)',
-  '0x24f479b84939874d003uv04 (2nd gen 72/10,000) (45%)',
-  '0x35g569c95939874d004uv05 (1st gen 964/10,000) (43%)',
-  '0x46h679d06939874d005uv06 (2th gen 1992/10,000) (40%)',
-  '0x57i789e17939874d006uv07 (1th gen 5678/10,000) (39%)',
+highestTotalEntropy: [
+  '0x12e379a83939874d002uv03  000000000',
+  '0x24f479b84939874d003uv04  000000000',
+  '0x35g569c95939874d004uv05  000000000',
+  '0x46h679d06939874d005uv06  000000000',
+  '0x57i789e17939874d006uv07  000000000',
+  '0x12e379a83939874d002uv03  000000000',
+  '0x24f479b84939874d003uv04  000000000',
+  '0x35g569c95939874d004uv05  000000000',
+  '0x46h679d06939874d005uv06  000000000',
+  '0x57i789e17939874d006uv07  000000000',
 ],
 
 mostForges: [

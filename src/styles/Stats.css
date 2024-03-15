@@ -19,7 +19,6 @@
     border-radius: 20px;
     width: 80vw;
     height: 85vh;
-    align-items: flex-start; 
 }
   
 .stats-container h1{
@@ -65,38 +64,48 @@
     font-style: normal;
     font-size: 0.6em;
     margin-top: 10px;
-    margin-bottom: -15px;
+    margin-bottom: 0px;
     color: #bdbdbd;
 }
   
 .statsclassheader h1 {
-    margin: 0; 
-    flex-grow: 1;
+    margin-left: 30px; 
+    margin-block: 0;
+    flex-grow: 0;
     text-align: center; 
 }
 
 .statsclassheader h1:nth-child(2) {
-    margin-right: 670px; 
-    flex-grow: 0; 
+    margin-right: 400px; 
+    flex-grow: 1; 
+}
+
+.statsclassheader h1:last-child {
+   margin-right: 50px;
 }
   
 .stats-grid {
     display: flex;
     flex-direction: column; 
     gap: 10px;
+    overflow: hidden;
 }
   
 .stat-card {
     border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 2rem;
+    padding: 10px 20px 20px 20px;
+    height: 90%;
     width: calc(100% - 40px); 
+    overflow-y: auto;
 }
   
 .stats-container2 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1rem;
+    overflow: hidden;
+    overflow-y: auto; 
+    max-height: 90%;
 }
   
 ul {
@@ -107,12 +116,18 @@ ul {
   
 li {
     background: #00ff1e27;
+    position: relative;
     margin-bottom: 0.8rem;
     width: 99%;
     padding: 0.2rem;
     border-radius: 5px;
     border: 0.1px solid#65ff3657;
     border-left: 2px solid #65ff36;
+}
+
+.stat-card li span {
+    position: absolute;
+    left: 10px;
 }
   
   
