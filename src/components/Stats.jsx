@@ -77,7 +77,7 @@ return (
               <ul>
               {stats[currentStat].length > 0 ? (
                   stats[currentStat].map((item, index) => (
-                    <li key={index}><span>{formatRanking(index + 1)}</span> {item}</li>
+                    <li className='listli' key={index}><span>{formatRanking(index + 1)}</span> {item}</li>
                   ))
                 ) : (
                   <li>Loading...</li>
