@@ -1,17 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IERC20 {
-    function totalSupply() external view returns (uint256);
-    function balanceOf(address account) external view returns (uint256);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint256);
-    function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-}
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract ERC20FixedSupply is IERC20 {
     uint256 public override totalSupply;
@@ -26,20 +16,29 @@ contract ERC20FixedSupply is IERC20 {
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
-        totalSupply = 1e9 * 10**uint256(decimals); // 1 billion tokens, adjusted for decimals
+        totalSupply = 1e9 * 10 ** uint256(decimals); // 1 billion tokens, adjusted for decimals
         balanceOf[msg.sender] = totalSupply; // Assign the entire supply to the deployer
         emit Transfer(address(0), msg.sender, totalSupply); // Emit a transfer event from the zero address
     }
 
-    function transfer(address recipient, uint256 amount) external override returns (bool) {
-        require(balanceOf[msg.sender] >= amount, "ERC20: transfer amount exceeds balance");
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) external override returns (bool) {
+        require(
+            balanceOf[msg.sender] >= amount,
+            "ERC20: transfer amount exceeds balance"
+        );
         balanceOf[msg.sender] -= amount;
         balanceOf[recipient] += amount;
         emit Transfer(msg.sender, recipient, amount);
         return true;
     }
 
-    function approve(address spender, uint256 amount) external override returns (bool) {
+    function approve(
+        address spender,
+        uint256 amount
+    ) external override returns (bool) {
         allowance[msg.sender][spender] = amount;
         emit Approval(msg.sender, spender, amount);
         return true;
@@ -50,8 +49,14 @@ contract ERC20FixedSupply is IERC20 {
         address recipient,
         uint256 amount
     ) external override returns (bool) {
-        require(balanceOf[sender] >= amount, "ERC20: transfer amount exceeds balance");
-        require(allowance[sender][msg.sender] >= amount, "ERC20: transfer amount exceeds allowance");
+        require(
+            balanceOf[sender] >= amount,
+            "ERC20: transfer amount exceeds balance"
+        );
+        require(
+            allowance[sender][msg.sender] >= amount,
+            "ERC20: transfer amount exceeds allowance"
+        );
         balanceOf[sender] -= amount;
         balanceOf[recipient] += amount;
         allowance[sender][msg.sender] -= amount;
@@ -60,7 +65,10 @@ contract ERC20FixedSupply is IERC20 {
     }
 
     function burn(address from, uint256 amount) external {
-        require(balanceOf[from] >= amount, "ERC20: burn amount exceeds balance");
+        require(
+            balanceOf[from] >= amount,
+            "ERC20: burn amount exceeds balance"
+        );
         balanceOf[from] -= amount;
         totalSupply -= amount;
         emit Transfer(from, address(0), amount);
