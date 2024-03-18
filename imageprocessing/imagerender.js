@@ -130,18 +130,14 @@ async function tintImage(imagePath, hexColor) {
   const originalImage = sharp(imagePath);
   const { data, info } = await originalImage.raw().toBuffer({ resolveWithObject: true });
 
-  // Convert hex color to RGB
   const { r: tintR, g: tintG, b: tintB } = hexToRgb(hexColor);
 
   for (let i = 0; i < data.length; i += 4) {
-    // Check if the pixel is not black or near-black
-    if (data[i] > 10 || data[i + 1] > 10 || data[i + 2] > 10) {
-      // Apply the tint to the pixel
+    if (data[i] > 245 && data[i + 1] > 245 && data[i + 2] > 245) {
       data[i] = (data[i] + tintR) / 2;
       data[i + 1] = (data[i + 1] + tintG) / 2;
       data[i + 2] = (data[i + 2] + tintB) / 2;
     }
-    // Leave the alpha channel as is
   }
 
   const tintedImage = await sharp(data, {
@@ -154,8 +150,6 @@ async function tintImage(imagePath, hexColor) {
 
   return tintedImage;
 }
-
-
 
 
 function hexToRgb(hex) {
