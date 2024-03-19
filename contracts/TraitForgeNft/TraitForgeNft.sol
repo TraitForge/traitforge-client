@@ -31,9 +31,15 @@ contract TraitForgeNft is
     mapping(uint256 => uint256) public tokenCreationTimestamps;
     mapping(uint256 => uint256) public tokenEntropy;
     mapping(uint256 => uint256) public generationMintCounts;
+    mapping(address => bool) public burners;
 
     uint256 private _tokenIds;
     uint256 private totalSupplyCount;
+
+    modifier onlyBurner() {
+        require(burners[msg.sender], "Caller is not burner");
+        _;
+    }
 
     constructor() ERC721("TraitForgeNft", "TFGNFT") Ownable(msg.sender) {}
 
@@ -56,6 +62,10 @@ contract TraitForgeNft is
         address _entropyGeneratorAddress
     ) external onlyOwner {
         entropyGenerator = IEntropyGenerator(_entropyGeneratorAddress);
+    }
+
+    function setBurner(address _account, bool _value) external onlyOwner {
+        burners[_account] = _value;
     }
 
     // Function to increment the generation of tokens, restricted to the owner
@@ -219,7 +229,9 @@ contract TraitForgeNft is
         );
     }
 
-    function burn(uint256 tokenId) external {}
+    function burn(uint256 tokenId) external onlyBurner {
+        _burn(tokenId);
+    }
 
     function _mintNewEntity(
         uint256 entropy,
