@@ -19,57 +19,58 @@ const varOptions3 = ['var3option1', 'var3option2', 'var3option3', 'var3option4',
 const varOptions4 = ['var4option1', 'var4option2', 'var4option3', 'var4option4', 'var4option5', 'var4option6', 'var4option7', 'var4option8', 'var4option9', 'var4option10'];
 
 const colorOptions1 = [
-  '#FFD700', // Vibrant Gold
-  '#9201CB', // Dark Violet
-  '#002147', // Deep Navy (Dark Blue)
-  '#0078FF', // Bright Blue
-  '#CCCC00', // Darker Yellow
-  '#7D00FF', // Deep Purple
-  '#008000', // Office Green (darker tone)
-  '#00B7EB', // Cyan (vibrant but slightly deeper)
-  '#383838', // Dark Gray (replacing OffBlack for contrast)
-  '#CF4520'  // Burnt Orange (darker and richer than OrangeRed)
+  '#db00ff', // Neon Violet
+  '#003cff', // Neon Blue
+  '#00f2ff', // Bright Cyan
+  '#4cFF00', // Neon Green
+  '#b100ff', // Neon Purple
+  '#bb00ff', // Bright Purple
+  '#6200ff', // Neon Indigo
+  '#00eaff', // Bright Cyan
+  '#6e6e6e', // Brighter Gray
+  '#9e9ea0', // Light Slate Gray
 ];
 
 const colorOptions2 = [
-  '#E63946', // Bright Red
-  '#F4A261', // Sandy Brown
-  '#2A9D8F', // Teal Green
-  '#264653', // Dark Slate Gray
-  '#2B2D42', // Independence Blue
-  '#8D99AE', // Cool Gray
-  '#EF233C', // Vivid Carmine Red
-  '#D90429', // Maximum Red
-  '#006D77', // Skobeloff Green
-  '#83C5BE'  // Middle Blue Green
+  '#00a6a6', // Bright Teal
+  '#00dada', // Neon Turquoise
+  '#007acc', // Bright Metallic Blue
+  '#007f7f', // Bright Slate Gray
+  '#6a74ff', // Bright Independence Blue
+  '#bcbef0', // Light Cool Gray
+  '#ff4066', // Neon Carmine Red
+  '#ff2055', // Bright Red
+  '#00ffea', // Bright Skobeloff Green
+  '#a0ffec', // Light Blue Green
 ];
+
 
 const colorOptions3 = [
-  '#FF2079', // Neon Pink
-  '#08F7FE', // Electric Cyan
-  '#FE53BB', // Bright Pink
-  '#F5D300', // Neon Yellow
-  '#00FFAB', // Aquamarine
-  '#B14AED', // Electric Purple
-  '#FFFB00', // Neon Yellow
-  '#FF00E0', // Neon Magenta
-  '#00C0F5', // Sky Blue
-  '#FA00FF'  // Purple Pink
+  '#55555d', // Bright Graphite
+  '#7a7abc', // Bright Slate Blue
+  '#9191a1', // Light Gunmetal Gray
+  '#535353', // Bright Off Black
+  '#5578ff', // Neon Stormy Blue
+  '#78a0a1', // Bright Steel Gray
+  '#768798', // Light Cadet Gray
+  '#757575', // Bright Dark Gray
+  '#4d4d4d', // Bright Almost Black
+  '#5f617a', // Bright Shadow Blue
 ];
+
 
 const colorOptions4 = [
-  '#1BFFA2', // Neon Green
-  '#D61C4E', // Deep Pink
-  '#1A1A40', // Dark Blue
-  '#7209B7', // Violet
-  '#4361EE', // Bright Blue
-  '#48BFE3', // Sky Blue
-  '#560BAD', // Purple
-  '#6930C3', // Indigo
-  '#3A0CA3', // Dark Purple
-  '#F72585'  // Orchid Pink
+  '#00bdbd', // Bright Cyan
+  '#14ffec', // Neon Cyan
+  '#2a8eff', // Bright Blue
+  '#242850', // Bright Night
+  '#3f5066', // Bright Storm Gray
+  '#e0e1e2', // Bright Silver
+  '#7072ff', // Neon Periwinkle
+  '#64666a', // Bright Gunmetal
+  '#606060', // Bright Charcoal
+  '#1f2433', // Deep Space Blue (brightened slightly)
 ];
-
 
 
 

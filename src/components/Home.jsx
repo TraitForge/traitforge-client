@@ -9,11 +9,9 @@ import MintAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
 
 const MintAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
-
 const HomeBody = () => {
   const [entityPrice, setEntityPrice] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [mintNumber, setMintNumber] = useState(null);
   const { isConnected} = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
@@ -77,28 +75,6 @@ const mintEntityHandler = async () => {
     setIsLoading(false);
   }
 };
-
-const calculateMintNumber = async () => {
-  if (!entityPrice) {
-    return;
-  }
-  let calculatedMintNumber;
-  try {
-    const price = (entityPrice);
-    calculatedMintNumber = price * 100;
-  } catch (error) {
-    console.error('Failed to calculate:', error);
-    return;
-  }
-  setMintNumber(calculatedMintNumber);
-};
-
-
-useEffect(() => {
-  if (entityPrice) {
-    calculateMintNumber();
-  }
-}, [entityPrice]);
 
 useEffect(() => {
  getLatestEntityPrice();

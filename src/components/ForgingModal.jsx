@@ -1,151 +1,100 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import '../styles/TradingForgingModal.css';
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 import { ethers } from 'ethers';
 import forgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
-import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
+import { useEntities } from './OwnerEntityContext'; // Import useEntities from your context
+import EntityCards from './EntityCards'; // Ensure this import is correct
 
-const ERC721ContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const forgeContractAddress = '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853';
 
 const ForgingModal = ({ open, onClose, onSave }) => {
-  const [entities, setEntities] = useState([]);
-  const [error, setError] = useState('');
-  const [isListed, setIsListed] = useState(null);
-  const [price, setPrice] = useState('');
+  const { entities, isLoading } = useEntities(); // Use entities and isLoading from context
   const [selectedEntity, setSelectedEntity] = useState(null);
-  const { address, isConnected } = useWeb3ModalAccount();
+  const [price, setPrice] = useState('');
+  const [error, setError] = useState('');
+  const { isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
-  const fetchUserEntities = useCallback(async () => {
-  if (!isConnected) {
-  return;
-  }
-  try {
-  const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
-  const signer = ethersProvider.getSigner();
-  const ERC721Contract = new ethers.Contract(ERC721ContractAddress, ERC721ContractAbi.abi, signer);
-  const balance = await ERC721Contract.balanceOf(address);
-  let tokenIds = [];
-  for (let index = 0; index < balance.toNumber(); index++) {
-  const tokenId = await ERC721Contract.tokenOfOwnerByIndex(address, index);
-  tokenIds.push(tokenId.toString());
-  }
-
-  const entitiesDetails = await Promise.all(tokenIds.map(async (tokenId) => {
-  const entropy = await ERC721Contract.getEntropyForToken(tokenId);
-  const [nukeFactor, breedPotential, performanceFactor, isSire] = await ERC721Contract.deriveTokenParameters(entropy);
-  return {
-    tokenId,
-    nukeFactor: nukeFactor.toString(),
-    breedPotential: breedPotential.toString(),
-    performanceFactor: performanceFactor.toString(),
-    isSire: isSire,
-    };
-  }));
-  setEntities(entitiesDetails);
-  } catch (error) {
-  console.error('Could not retrieve entities:', error);
-  setError('Failed to fetch entities');
-  }
-}, [address, isConnected, walletProvider]);
-
-
-useEffect(() => {
-  if (open) {
-  fetchUserEntities();
-  } else {
-  setPrice('');
-  setSelectedEntity(null);
-}
-}, [open, fetchUserEntities]);
-
-
-const handlePriceChange = (event) => {
-  setPrice(event.target.value);
-  setError('');
-};
-
-
-const handleSubmit = async (event) => {
-  event.preventDefault();
-  if (!price) {
-  setError('Please enter a price');
-  setTimeout(() => setError(''), 3000);
-  return;
-  }
-  const selectedEntityData = entities.find(entity => entity.id === selectedEntity);
-  if (selectedEntityData) {
-  try {
-  const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
-  const signer = ethersProvider.getSigner();
-  const tradeContract = new ethers.Contract(forgeContractAddress, forgeContractAbi, signer);
-  const transaction = await tradeContract.listEntityForForge(selectedEntity, ethers.utils.parseEther(price));
-  await transaction.wait();
-
-  const forgeEntity = {
-    id: selectedEntity,
-    price: parseFloat(price),
+  const handlePriceChange = (event) => {
+    setPrice(event.target.value);
+    setError('');
   };
-  onSave(forgeEntity);
-  setIsListed(true);
-  setTimeout(() => {
-  setIsListed(false);
-  onClose();
-  }, 3000); 
-  } catch (error) {
-  setError('Failed to list Entity. Please try again.');
-  console.error('List Entity error:', error);
-  }
-  } else {
-  setError('Please select an Entity to list.');
-}};
- 
-if (!open) return null;
 
-return (
-<div className='overlay'>
+  const handleEntitySelect = (tokenId) => {
+    setSelectedEntity(tokenId);
+    setError('');
+  };
 
-  <button className='closeBtn' onClick={onClose}>x</button>
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!price) {
+      setError('Please enter a price');
+      return;
+    }
+    if (!selectedEntity) {
+      setError('Please select an entity to list.');
+      return;
+    }
+    if (!isConnected) {
+      setError('Wallet not connected');
+      return;
+    }
+    try {
+      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const signer = ethersProvider.getSigner();
+      const forgeContract = new ethers.Contract(forgeContractAddress, forgeContractAbi.abi, signer);
+      const transaction = await forgeContract.listEntityForForge(selectedEntity, ethers.utils.parseEther(price));
+      await transaction.wait();
 
-<div className='modalContainer'>
-  <header>List Your Entity for Forging</header>
-  <div className='nfts-display-container'>
-    {entities.length > 0 ? (entities.map(entity => (
-    <div key={entity.id} className={`nfts-item ${selectedEntity === entity.id ? 'selected' : ''}`} onClick={() => setSelectedEntity(entity.id)}>
-    <img src={entity.image} alt={entity.name} />
-    <p>{entity.performanceFactor}</p>
-    <p>{entity.breedPotential}</p>
-    <p>{entity.nukeFactor}</p>
-    <p>{entity.isSire}</p>
+      onSave({
+        tokenId: selectedEntity,
+        price: parseFloat(price),
+      });
+      onClose(); 
+    } catch (error) {
+      console.error('Failed to list Entity. Please try again.', error);
+      setError('Failed to list Entity. Please try again.');
+    }
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className='overlay'>
+      <div className='modalContainer'>
+        <button className='closeBtn' onClick={onClose}>x</button>
+        <header>List Your Entity for Forging</header>
+
+        <div className='nfts-display-container'>
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            entities.map(entity => (
+              <EntityCards
+                key={entity.tokenId}
+                entity={entity}
+                isSelected={selectedEntity === entity.tokenId}
+                onSelect={handleEntitySelect}
+              />
+            ))
+          )}
+        </div>
+
+        <form onSubmit={handleSubmit} className='btnContainer'>
+          <label>Set your Price:</label>
+          <input
+            type="text"
+            value={price}
+            onChange={handlePriceChange}
+            placeholder="Enter price in ETH"
+          />
+          <button type="submit" className="btnPrimary">List For Forging</button>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+        </form>
+      </div>
     </div>
-    ))
-    ) : (
-    <p>No entities available for listing.</p>)}
-  </div>
-
-
-<div className='btnContainer'>
-  <div onSubmit={handleSubmit}>
-    <label> Set your Price:
-    <div>
-      <input
-      type="text"
-      value={price}
-      onChange={handlePriceChange}
-      placeholder="Enter price in ETH"
-      />
-    </div>
-    </label>
-
-
-<button type="submit" className="btnPrimary">List For Forging</button>
-  {error && <p style={{ color: 'red' }}>{error}</p>}
-  {isListed && <p style={{ color: 'green' }}>Entity Listed Successfully!</p>}
-</div>
-</div>
-</div>
-</div>
-)};
+  );
+};
 
 export default ForgingModal;

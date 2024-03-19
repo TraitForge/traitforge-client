@@ -30,6 +30,7 @@ const EntityList = ({ entities, onEntitySelect }) => (
   </div>
 );
 
+
 const ProcessingModal = ({ processing, text}) => {
   if (!processing) return null;
   return (
@@ -40,7 +41,9 @@ const ProcessingModal = ({ processing, text}) => {
     </div>
   </div>
 );
-}
+};
+
+
 
 const NFTListings = () => {
   const { isConnected } = useWeb3ModalAccount();
@@ -55,36 +58,30 @@ const NFTListings = () => {
   const [processingText, setProcessingText] = useState('Forging');
 
   useEffect(() => {
-    const fetchEntities = async () => {
-      if (!isConnected) return;
-  
-      try {
-        const provider = new ethers.providers.Web3Provider(walletProvider);
-        const contract = new ethers.Contract(ForgeContractAddress, ForgeContractAbi, provider);
-        const data = await contract.fetchEntitiesForForging();
-  
-        const entitiesPromises = data.map(async (entity) => {
-        const [nukeFactor, breedPotential, performanceFactor, isSire] = await contract.deriveTokenParameters(entity);
-  
-          return {
-            ...entity,
-            nukeFactor: nukeFactor.toString(),
-            breedPotential: breedPotential.toString(),
-            performanceFactor: performanceFactor.toString(),
-            isSire: isSire,
-            price: ethers.utils.formatEther(entity.price), 
-          };
-        });
-  
-        const entities = await Promise.all(entitiesPromises);
-        setEntitiesForForging(entities);
-      } catch (error) {
-        console.error("Failed to fetch entities:", error);
-      }
-    };
-  
-    fetchEntities();
-  }, [isConnected, walletProvider]);
+  const fetchEntities = async () => {
+  if (!isConnected) return;
+  try {
+  const provider = new ethers.providers.Web3Provider(walletProvider);
+  const contract = new ethers.Contract(ForgeContractAddress, ForgeContractAbi, provider);
+  const data = await contract.fetchEntitiesForForging();
+  const forgingListings = data.map(async (entity) => {
+  const [nukeFactor, breedPotential, performanceFactor, isSire] = await contract.deriveTokenParameters(entity);
+  return {
+    entity,
+    nukeFactor: nukeFactor.toString(),
+    breedPotential: breedPotential.toString(),
+    performanceFactor: performanceFactor.toString(),
+    isSire: isSire,
+    price: ethers.utils.formatEther(entity.price), 
+  }});
+  const entities = await Promise.all(forgingListings);
+  setEntitiesForForging(entities);
+  } catch (error) {
+   console.error("Failed to fetch entities:", error);
+  }};
+  fetchEntities();
+}, [isConnected, walletProvider]);
+
 
 const getSortedEntities = () => {
   if (!sortOption) return entitiesForForging; 
@@ -111,7 +108,6 @@ const toggleOwnerEntitiesModal = () => {
 const scrollToEntityList = () => {
   entityList.current?.scrollIntoView({ behavior: 'smooth' });
 };
-
 
 const forgeNewEntity = async () => {
   if (!isConnected) return;
@@ -184,16 +180,16 @@ return (
 </div>
 
 
-  {selectedEntity && (
-  <div className="detailed-card">
-    <img src={selectedEntity.image} alt={`Entity ${selectedEntity.title}`} />
-    <h5>{selectedEntity.title}</h5>
-    <p>Price: {selectedEntity.price} ETH</p>
-    <p>{selectedEntity.gender}</p>
-    <p>Nuke Factor: {selectedEntity.nukefactor}</p>
-    <button className="forge-button" onClick={() => forgeNewEntity(selectedEntity)}>Forge</button>
-    <button className="close-button" onClick={() => setSelectedEntity(null)}>Close</button>
-    <ProcessingModal processing={processing} text={processingText} />
+{selectedEntity && (
+<div className="detailed-card">
+  <img src={selectedEntity.image} alt={`Entity ${selectedEntity.title}`} />
+  <h5>{selectedEntity.title}</h5>
+  <p>Price: {selectedEntity.price} ETH</p>
+  <p>{selectedEntity.gender}</p>
+  <p>Nuke Factor: {selectedEntity.nukefactor}</p>
+  <button className="forge-button" onClick={() => forgeNewEntity(selectedEntity)}>Forge</button>
+  <button className="close-button" onClick={() => setSelectedEntity(null)}>Close</button>
+  <ProcessingModal processing={processing} text={processingText} />
   </div>
    )}
 </div>

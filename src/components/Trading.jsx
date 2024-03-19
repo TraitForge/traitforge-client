@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from './TradingModal';
 import '../styles/Trading.css';
 import { ethers } from 'ethers';
+import EntityCards from './EntityCards';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
 import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC721.json';
@@ -9,7 +10,7 @@ import ERC721ContractAbi from '../artifacts/contracts/CustomERC721.sol/CustomERC
 const ERC721ContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const tradeContractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
-const BuySellPage = () => {
+const TradingPage = () => {
   const [selectedListing, setSelectedListing] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [listings, setListings] = useState([]);
@@ -31,7 +32,7 @@ const BuySellPage = () => {
         const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entity);
   
           return {
-            ...entity,
+            entity,
             nukeFactor: nukeFactor.toString(),
             breedPotential: breedPotential.toString(),
             performanceFactor: performanceFactor.toString(),
@@ -130,21 +131,20 @@ return (
        </div>
        </div>
 
-    <div className="listings">
+       <div className="listings">
     {filteredAndSortedListings.map(listing => (
-        <div key={listing.tokenId} onClick={() => setSelectedListing(listing)}>
-        <p>Entity ID: {listing.tokenId}</p>
-        <p>Price: {listing.price} ETH</p>
-        <p>NukeFactor%: {listing.nukefactor}</p>
-        <p>forgePotential: {listing.forgePotential}</p>
-        <p>Forger: {listing.isForger ? 'Yes' : 'No'}</p>
-    </div>
- ))}
+        <EntityCards 
+            key={listing.tokenId} 
+            entity={listing} 
+            onSelect={() => setSelectedListing(listing)}
+        />
+    ))}
 </div>
+
 {selectedListing && (
      <button onClick={() => buyEntity(selectedListing.tokenId, selectedListing.price)}> Buy Entity </button>
 )}
 </div>
 )};
 
-export default BuySellPage;
+export default TradingPage;
