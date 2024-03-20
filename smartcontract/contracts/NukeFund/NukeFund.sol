@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./INukeFund.sol";
 import "../TraitForgeNft/ITraitForgeNft.sol";
 
@@ -12,10 +12,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     address payable public devAddress;
 
     // Constructor now properly passes the initial owner address to the Ownable constructor
-    constructor(
-        address _traitForgeNft,
-        address payable _devAddress
-    ) Ownable(msg.sender) {
+    constructor(address _traitForgeNft, address payable _devAddress) {
         nftContract = ITraitForgeNft(_traitForgeNft);
         devAddress = _devAddress; // Set the developer's address
     }

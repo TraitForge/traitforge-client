@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IEntityTrading.sol";
 import "../TraitForgeNft/ITraitForgeNft.sol";
@@ -13,7 +13,7 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
 
     mapping(uint256 => Listing) public listings;
 
-    constructor(address _traitForgeNft) Ownable(msg.sender) {
+    constructor(address _traitForgeNft) {
         nftContract = ITraitForgeNft(_traitForgeNft);
     }
 

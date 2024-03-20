@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ITraitForgeNft.sol";
 import "../EntityMerging/IEntityMerging.sol";
@@ -41,7 +41,7 @@ contract TraitForgeNft is
         _;
     }
 
-    constructor() ERC721("TraitForgeNft", "TFGNFT") Ownable(msg.sender) {}
+    constructor() ERC721("TraitForgeNft", "TFGNFT") {}
 
     // Function to set the nuke fund contract address, restricted to the owner
     function setNukeFundContract(

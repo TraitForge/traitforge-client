@@ -1,7 +1,7 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+import { expect } from "chai";
+import { ethers } from "hardhat";
 
-describe("CustomERC721", function () {
+describe("TraitForgeNft", function () {
   before(async function () {
     // Get signers
   });
@@ -11,7 +11,7 @@ describe("CustomERC721", function () {
 
     it("should deploy EntropyGenerator successfully", async function () {});
 
-    it("should deploy CustomERC721 successfully", async function () {});
+    it("should deploy TraitForgeNft successfully", async function () {});
   });
 
   describe("Owner functions", function () {
