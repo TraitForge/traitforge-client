@@ -1,0 +1,46 @@
+{
+  "name": "huddyntom",
+  "version": "1.0.0",
+  "description": "WhippedCream biatch.",
+  "main": "hardhat.config.js",
+  "private": true,
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "hardhat-test": "echo \"Error: no hardhat test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ethereumjs/util": "^9.0.1",
+    "@openzeppelin/contracts": "^5.0.1"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "browserify": "^17.0.0",
+    "buffer": "^6.0.3",
+    "dotenv": "^16.4.1",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.19.5",
+    "hardhat-deploy": "^0.11.45",
+    "process": "^0.11.10",
+    "typescript": "^4.9.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
