@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract DAOFund is Ownable, ReentrancyGuard {
     // constants in the contract
@@ -48,7 +48,7 @@ contract DAOFund is Ownable, ReentrancyGuard {
     event Unstaked(address indexed user, uint256 amount);
     event RewardClaimed(address indexed user, uint256 reward);
 
-    constructor(address tokenAddress) Ownable(msg.sender) {
+    constructor(address tokenAddress) {
         require(tokenAddress != address(0), "Token address cannot be zero");
         token = IERC20(tokenAddress);
     }

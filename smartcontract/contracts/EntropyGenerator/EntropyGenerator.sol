@@ -22,7 +22,7 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
         _;
     }
 
-    constructor(address _traitForgetNft) Ownable(msg.sender) {
+    constructor(address _traitForgetNft) {
         allowedCaller = _traitForgetNft;
     }
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IEntityMerging.sol";
 import "../TraitForgeNft/ITraitForgeNft.sol";
@@ -17,7 +17,7 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
     mapping(uint256 => uint8) public breedingCounts; // track breedPotential
     mapping(uint256 => uint256) private lastBreedResetTimestamp;
 
-    constructor(address _traitForgeNft) Ownable(msg.sender) {
+    constructor(address _traitForgeNft) {
         nftContract = ITraitForgeNft(_traitForgeNft);
     }
 
