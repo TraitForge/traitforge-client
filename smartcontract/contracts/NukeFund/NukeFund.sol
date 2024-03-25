@@ -10,11 +10,19 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     uint256 private fund;
     ITraitForgeNft public nftContract;
     address payable public devAddress;
+    address payable public daoAddress;
+    bool public airdropStarted;
 
     // Constructor now properly passes the initial owner address to the Ownable constructor
-    constructor(address _traitForgeNft, address payable _devAddress) {
+    constructor(
+        address _traitForgeNft,
+        address payable _devAddress,
+        address payable _daoAddress
+    ) {
         nftContract = ITraitForgeNft(_traitForgeNft);
         devAddress = _devAddress; // Set the developer's address
+        daoAddress = _daoAddress;
+        airdropStarted = false;
     }
 
     // Fallback function to receive ETH and update fund balance
@@ -23,10 +31,16 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
         uint256 remainingFund = msg.value - devShare; // Calculate remaining funds to add to the fund
 
         fund += remainingFund; // Update the fund balance
-        devAddress.transfer(devShare); // Transfer dev's share
+
+        if (!airdropStarted) {
+            devAddress.transfer(devShare); // Transfer dev's share
+            emit DevShareDistributed(devShare);
+        } else {
+            daoAddress.transfer(devShare); // Transfer dev's share
+            emit DevShareDistributed(devShare);
+        }
 
         emit FundReceived(msg.sender, msg.value); // Log the received funds
-        emit DevShareDistributed(devShare);
         emit FundBalanceUpdated(fund); // Update the fund balance
     }
 
@@ -36,6 +50,21 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     ) external onlyOwner {
         nftContract = ITraitForgeNft(_traitForgeNft);
         emit TraitForgeNftAddressUpdated(_traitForgeNft); // Emit an event when the address is updated.
+    }
+
+    function setDevAddress(address payable account) external onlyOwner {
+        devAddress = account;
+        emit DevAddressUpdated(account);
+    }
+
+    function setDaoAddress(address payable account) external onlyOwner {
+        daoAddress = account;
+        emit DaoAddressUpdated(account);
+    }
+
+    function startAirdrop() external onlyOwner {
+        require(!airdropStarted, "Already started");
+        airdropStarted = true;
     }
 
     // View function to see the current balance of the fund
