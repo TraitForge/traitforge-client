@@ -5,24 +5,26 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./INukeFund.sol";
 import "../TraitForgeNft/ITraitForgeNft.sol";
+import "../Airdrop/IAirdrop.sol";
 
 contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     uint256 private fund;
     ITraitForgeNft public nftContract;
+    IAirdrop public airdropContract;
     address payable public devAddress;
     address payable public daoAddress;
-    bool public airdropStarted;
 
     // Constructor now properly passes the initial owner address to the Ownable constructor
     constructor(
         address _traitForgeNft,
+        address _airdrop,
         address payable _devAddress,
         address payable _daoAddress
     ) {
         nftContract = ITraitForgeNft(_traitForgeNft);
+        airdropContract = IAirdrop(_airdrop);
         devAddress = _devAddress; // Set the developer's address
         daoAddress = _daoAddress;
-        airdropStarted = false;
     }
 
     // Fallback function to receive ETH and update fund balance
@@ -32,9 +34,11 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
 
         fund += remainingFund; // Update the fund balance
 
-        if (!airdropStarted) {
+        if (!airdropContract.airdropStarted()) {
             devAddress.transfer(devShare); // Transfer dev's share
             emit DevShareDistributed(devShare);
+        } else if (!airdropContract.daoFundAllowed()) {
+            payable(owner()).transfer(devShare);
         } else {
             daoAddress.transfer(devShare); // Transfer dev's share
             emit DevShareDistributed(devShare);
@@ -52,6 +56,11 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
         emit TraitForgeNftAddressUpdated(_traitForgeNft); // Emit an event when the address is updated.
     }
 
+    function setAirdropContract(address _airdrop) external onlyOwner {
+        airdropContract = IAirdrop(_airdrop);
+        emit AirdropAddressUpdated(_airdrop); // Emit an event when the address is updated.
+    }
+
     function setDevAddress(address payable account) external onlyOwner {
         devAddress = account;
         emit DevAddressUpdated(account);
@@ -60,11 +69,6 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     function setDaoAddress(address payable account) external onlyOwner {
         daoAddress = account;
         emit DaoAddressUpdated(account);
-    }
-
-    function startAirdrop() external onlyOwner {
-        require(!airdropStarted, "Already started");
-        airdropStarted = true;
     }
 
     // View function to see the current balance of the fund
