@@ -2,111 +2,73 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./EntropyGenerator.sol";
+import "./ITraitForgeNft.sol";
+import "../EntityMerging/IEntityMerging.sol";
+import "../EntropyGenerator/IEntropyGenerator.sol";
 
-interface INukeFund {
-    function receiveFunds() external payable;
-}
-
-interface IDAOFund {
-    function updateEntropyForAddress(
-        address minter,
-        uint256 entropyValue
-    ) external;
-}
-
-interface IEntropyGenerator {
-    function getNextEntropy() external returns (uint256);
-}
-
-interface IEntityMerging {
-    function breedWithListed(
-        uint256 forgerTokenId,
-        uint256 mergerTokenId
-    ) external payable returns (uint256);
-
-    function getEntropiesForTokens(
-        uint256 forgerTokenId,
-        uint256 mergerTokenId
-    ) external view returns (uint256 forgerEntropy, uint256 mergerEntropy);
-}
-
-contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
-    IEntityMerging private entityMergingContract;
-    IDAOFund public daoFund;
-    INukeFund public nukeFundContract;
-
-    IEntropyGenerator private entropyGenerator;
-
-    address payable public nukeFundAddress;
-
+contract TraitForgeNft is
+    ITraitForgeNft,
+    ERC721URIStorage,
+    ReentrancyGuard,
+    Ownable
+{
+    // Constants for token generation and pricing
     uint256 public constant MAX_TOKENS_PER_GEN = 10000;
     uint256 public constant START_PRICE = 0.01 ether;
     uint256 public constant PRICE_INCREMENT = 0.01 ether;
-    uint256 public currentGeneration = 1;
-    uint256 private _tokenIds;
-    uint256 public totalGenerationCirculation = 0;
-    uint256 private totalSupplyCount;
 
+    IEntityMerging public entityMergingContract;
+    IEntropyGenerator public entropyGenerator;
+    address public nukeFundAddress;
+
+    // Variables for managing generations and token IDs
+    uint256 public currentGeneration = 1;
+    uint256 public totalGenerationCirculation = 0;
+
+    // Mappings for token metadata
     mapping(uint256 => uint256) public tokenCreationTimestamps;
     mapping(uint256 => uint256) public tokenEntropy;
     mapping(uint256 => uint256) public generationMintCounts;
+    mapping(address => bool) public burners;
 
-    event Minted(
-        address indexed minter,
-        uint256 indexed itemId,
-        uint256 entropyValue
-    );
-    event GenerationIncremented(uint256 newGeneration);
-    event FundsDistributedToNukeFund(address indexed to, uint256 amount);
-    event Entitybred(
-        uint256 indexed newTokenId,
-        uint256 parent1id,
-        uint256 parent2Id,
-        uint256 newEntropy
-    );
-    event NukeFundContractUpdated(address nukeFundAddress);
+    uint256 private _tokenIds;
+    uint256 private totalSupplyCount;
 
-    constructor(
-        address initialOwner,
-        address payable _nukeFundAddress,
-        address _entropyGeneratorAddress
-    ) ERC721("CustomERC721", "C721") Ownable(initialOwner) {
-        nukeFundContract = INukeFund(_nukeFundAddress);
-        entropyGenerator = IEntropyGenerator(_entropyGeneratorAddress);
+    modifier onlyBurner() {
+        require(burners[msg.sender], "Caller is not burner");
+        _;
     }
 
-    function setNukeFundContract(address _nukeFundAddress) external onlyOwner {
-        nukeFundContract = INukeFund(_nukeFundAddress);
+    constructor() ERC721("TraitForgeNft", "TFGNFT") {}
+
+    // Function to set the nuke fund contract address, restricted to the owner
+    function setNukeFundContract(
+        address payable _nukeFundAddress
+    ) external onlyOwner {
+        nukeFundAddress = _nukeFundAddress;
         emit NukeFundContractUpdated(_nukeFundAddress); // Consider adding an event for this.
     }
 
+    // Function to set the entity merging (breeding) contract address, restricted to the owner
     function setEntityMergingContract(
         address _entityMergingAddress
     ) external onlyOwner {
         entityMergingContract = IEntityMerging(_entityMergingAddress);
     }
 
-    function setEntropyGeneratorAddress(
+    function setEntropyGenerator(
         address _entropyGeneratorAddress
     ) external onlyOwner {
         entropyGenerator = IEntropyGenerator(_entropyGeneratorAddress);
     }
 
-    function setDAOFundAddress(address _daoFundAddress) external onlyOwner {
-        daoFund = IDAOFund(_daoFundAddress);
+    function setBurner(address _account, bool _value) external onlyOwner {
+        burners[_account] = _value;
     }
 
-    function someFunctionThatUpdatesEntropy(
-        address minter,
-        uint256 entropyValue
-    ) public {
-        require(address(daoFund) != address(0), "DAOFund address not set");
-        daoFund.updateEntropyForAddress(minter, entropyValue);
-    }
-
+    // Function to increment the generation of tokens, restricted to the owner
     function incrementGeneration() public onlyOwner {
         require(
             currentGeneration >= MAX_TOKENS_PER_GEN,
@@ -124,21 +86,20 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         return tokenEntropy[tokenId];
     }
 
+    function getEntropiesForTokens(
+        uint256 forgerTokenId,
+        uint256 mergerTokenId
+    ) public view returns (uint256 forgerEntropy, uint256 mergerEntropy) {
+        forgerEntropy = getTokenEntropy(forgerTokenId);
+        mergerEntropy = getTokenEntropy(mergerTokenId);
+    }
+
     function getTokenAge(uint256 tokenId) public view returns (uint256) {
         require(
             ownerOf(tokenId) != address(0),
             "ERC721: query for nonexistent token"
         );
         return block.timestamp - tokenCreationTimestamps[tokenId];
-    }
-
-    function fetchEntropies(
-        uint256 forgerTokenId,
-        uint256 mergerTokenId
-    ) external view returns (uint256, uint256) {
-        (uint256 forgerEntropy, uint256 mergerEntropy) = entityMergingContract
-            .getEntropiesForTokens(forgerTokenId, mergerTokenId);
-        return (forgerEntropy, mergerEntropy);
     }
 
     function breed(
@@ -156,8 +117,10 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         );
 
         // Calculate the new entity's entropy
-        (uint256 forgerEntropy, uint256 mergerEntropy) = entityMergingContract
-            .getEntropiesForTokens(parent1Id, parent2Id);
+        (uint256 forgerEntropy, uint256 mergerEntropy) = getEntropiesForTokens(
+            parent1Id,
+            parent2Id
+        );
         uint256 newEntropy = (forgerEntropy + mergerEntropy) / 2;
 
         // Mint the new entity
@@ -169,27 +132,6 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
 
         emit Entitybred(newTokenId, parent1Id, parent2Id, newEntropy);
 
-        return newTokenId;
-    }
-
-    function _mintNewEntity(
-        uint256 entropy,
-        string memory baseTokenURI
-    ) private returns (uint256) {
-        totalSupplyCount++;
-        uint256 newTokenId = totalSupplyCount;
-        _mint(msg.sender, newTokenId);
-        _setTokenURI(
-            newTokenId,
-            string(
-                abi.encodePacked(
-                    baseTokenURI,
-                    Strings.toString(newTokenId),
-                    ".json"
-                )
-            )
-        );
-        tokenEntropy[newTokenId] = entropy;
         return newTokenId;
     }
 
@@ -221,20 +163,9 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         tokenEntropy[newItemId] = entropyValue;
         generationMintCounts[currentGeneration]++;
 
-        if (address(daoFund) != address(0)) {
-            daoFund.updateEntropyForAddress(to, entropyValue);
-        }
         distributeFunds(msg.value);
 
         emit Minted(to, newItemId, entropyValue);
-    }
-
-    function distributeFunds(uint256 totalAmount) private {
-        require(address(this).balance >= totalAmount, "Insufficient balance");
-
-        nukeFundContract.receiveFunds{value: totalAmount}();
-
-        emit FundsDistributedToNukeFund(nukeFundAddress, totalAmount);
     }
 
     function getTokenCreationTimestamp(
@@ -251,5 +182,85 @@ contract CustomERC721 is ERC721URIStorage, ReentrancyGuard, Ownable {
         uint256 entropy = tokenEntropy[tokenId];
         uint256 roleIndicator = entropy % 3;
         return roleIndicator == 0; // Adjust logic as needed
+    }
+
+    function calculateTokenParamters(
+        uint256 tokenId
+    )
+        public
+        view
+        returns (
+            uint256 finalNukeFactor,
+            bool isForgerResult,
+            uint8 forgePotential,
+            uint256 performanceFactor
+        )
+    {
+        require(
+            ownerOf(tokenId) != address(0),
+            "ERC721: query for nonexistant token"
+        );
+
+        uint256 entropy = tokenEntropy[tokenId];
+        uint256 ageInSeconds = block.timestamp -
+            tokenCreationTimestamps[tokenId];
+        uint256 ageInDays = ageInSeconds / 86400; // 24 * 60 * 60
+
+        //finalNukeFactor calcualtion
+        uint256 initalNukeFactor = entropy / 4;
+        finalNukeFactor = ((ageInDays * 250) / 10000) + initalNukeFactor;
+
+        // is forger gender
+        isForgerResult = (entropy % 3) == 0;
+
+        // forge potential
+        forgePotential = uint8((entropy / 10000) % 10);
+
+        // perfomance factor
+        uint256 daysOld = (block.timestamp - tokenCreationTimestamps[tokenId]) /
+            86400;
+        performanceFactor = (daysOld * (entropy % 10)) / 365;
+
+        return (
+            finalNukeFactor,
+            isForgerResult,
+            forgePotential,
+            performanceFactor
+        );
+    }
+
+    function burn(uint256 tokenId) external onlyBurner {
+        _burn(tokenId);
+    }
+
+    function _mintNewEntity(
+        uint256 entropy,
+        string memory baseTokenURI
+    ) private returns (uint256) {
+        totalSupplyCount++;
+        uint256 newTokenId = totalSupplyCount;
+        _mint(msg.sender, newTokenId);
+        _setTokenURI(
+            newTokenId,
+            string(
+                abi.encodePacked(
+                    baseTokenURI,
+                    Strings.toString(newTokenId),
+                    ".json"
+                )
+            )
+        );
+        tokenEntropy[newTokenId] = entropy;
+        return newTokenId;
+    }
+
+    // distributes funds to nukeFund contract, where its then distrubted 10% dev 90% nukeFund
+    function distributeFunds(uint256 totalAmount) private {
+        require(address(this).balance >= totalAmount, "Insufficient balance");
+
+        (bool success, ) = nukeFundAddress.call{value: totalAmount}("");
+        require(success, "ETH send failed");
+
+        emit FundsDistributedToNukeFund(nukeFundAddress, totalAmount);
     }
 }

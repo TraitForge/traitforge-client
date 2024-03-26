@@ -152,19 +152,35 @@ const baseCharacterImg = async (
   return baseCharacter.toBuffer();
 };
 
-const tintImage = async (imagePath, hexColor) => {
+const tintImage = async (imagePath, hexColorWhite, hexColorGrey) => {
   const originalImage = sharp(imagePath);
+  hexColorWhite = hexColorWhite ? hexColorWhite.toString() : '';
+  hexColorGrey = hexColorGrey ? hexColorGrey.toString() : '';
+  const rgbWhite = hexToRgb(hexColorWhite);
+  const rgbGrey = hexToRgb(hexColorGrey);
+
   const { data, info } = await originalImage
     .raw()
     .toBuffer({ resolveWithObject: true });
 
-  const { r: tintR, g: tintG, b: tintB } = hexToRgb(hexColor);
+  const { r: tintRWhite, g: tintGWhite, b: tintBWhite } = rgbWhite;
+  const { r: tintRGrey, g: tintGGrey, b: tintBGrey } = rgbGrey;
 
   for (let i = 0; i < data.length; i += 4) {
-    if (data[i] > 245 && data[i + 1] > 245 && data[i + 2] > 245) {
-      data[i] = (data[i] + tintR) / 2;
-      data[i + 1] = (data[i + 1] + tintG) / 2;
-      data[i + 2] = (data[i + 2] + tintB) / 2;
+    const isWhiteOrNearWhite = data[i] > 230 && data[i + 1] > 230 && data[i + 2] > 230;
+    const isGrey = Math.abs(data[i] - data[i + 1]) < 30 && Math.abs(data[i + 1] - data[i + 2]) < 30 && Math.abs(data[i] - data[i + 2]) < 30 &&
+                   data[i] >= 100 && data[i] <= 230 &&
+                   data[i + 1] >= 100 && data[i + 1] <= 230 &&
+                   data[i + 2] >= 100 && data[i + 2] <= 230;
+
+    if (isWhiteOrNearWhite) {
+      data[i] = tintRWhite;
+      data[i + 1] = tintGWhite;
+      data[i + 2] = tintBWhite;
+    } else if (isGrey) {
+      data[i] = tintRGrey;
+      data[i + 1] = tintGGrey;
+      data[i + 2] = tintBGrey;
     }
   }
 
