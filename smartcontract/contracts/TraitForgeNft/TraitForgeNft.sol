@@ -170,7 +170,9 @@ contract TraitForgeNft is
         generationMintCounts[currentGeneration]++;
 
         distributeFunds(msg.value);
-        airdropContract.setUserAmount(msg.sender, msg.value);
+        if (!airdropContract.airdropStarted()) {
+            airdropContract.setUserAmount(msg.sender, msg.value);
+        }
 
         emit Minted(to, newItemId, entropyValue);
     }
