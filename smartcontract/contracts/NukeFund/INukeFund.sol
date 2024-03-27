@@ -8,12 +8,21 @@ interface INukeFund {
     event Nuked(address indexed owner, uint256 tokenId, uint256 nukeAmount);
     event DevShareDistributed(uint256 devShare);
     event TraitForgeNftAddressUpdated(address indexed newAddress);
+    event AirdropAddressUpdated(address indexed newAddress);
+    event DevAddressUpdated(address indexed newAddress);
+    event DaoAddressUpdated(address indexed newAddress);
 
     // Fallback function to receive ETH and update fund balance
     receive() external payable;
 
     // Allow the owner to update the reference to the ERC721 contract
     function setTraitForgeNftContract(address _traitForgeNft) external;
+
+    function setAirdropContract(address _airdrop) external;
+
+    function setDevAddress(address payable account) external;
+
+    function setDaoAddress(address payable account) external;
 
     // View function to see the current balance of the fund
     function getFundBalance() external view returns (uint256);

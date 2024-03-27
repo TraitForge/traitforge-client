@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ITraitForgeNft.sol";
 import "../EntityMerging/IEntityMerging.sol";
 import "../EntropyGenerator/IEntropyGenerator.sol";
+import "../Airdrop/IAirdrop.sol";
 
 contract TraitForgeNft is
     ITraitForgeNft,
@@ -21,6 +22,7 @@ contract TraitForgeNft is
 
     IEntityMerging public entityMergingContract;
     IEntropyGenerator public entropyGenerator;
+    IAirdrop public airdropContract;
     address public nukeFundAddress;
 
     // Variables for managing generations and token IDs
@@ -62,6 +64,10 @@ contract TraitForgeNft is
         address _entropyGeneratorAddress
     ) external onlyOwner {
         entropyGenerator = IEntropyGenerator(_entropyGeneratorAddress);
+    }
+
+    function setAirdropContract(address _airdrop) external onlyOwner {
+        airdropContract = IAirdrop(_airdrop);
     }
 
     function setBurner(address _account, bool _value) external onlyOwner {
@@ -164,6 +170,9 @@ contract TraitForgeNft is
         generationMintCounts[currentGeneration]++;
 
         distributeFunds(msg.value);
+        if (!airdropContract.airdropStarted()) {
+            airdropContract.setUserAmount(msg.sender, msg.value);
+        }
 
         emit Minted(to, newItemId, entropyValue);
     }
