@@ -108,43 +108,6 @@ const ContextProvider = ({ children }) => {
     };
 }, []);
 
-const getOwnerEntities = async (walletProvider) => {
-    const ethersProvider = initializeEthersProvider();
-    if (!ethersProvider) return;
-    setIsLoading(true);
-    const contract = new ethers.Contract(
-      contractsConfig.entropyGeneratorContract,
-      contractsConfig.entropyGeneratorContractAbi,
-      ethersProvider
-    );
-    let allEntropies = [];
-    for (
-      let slotIndex = 0;
-      slotIndex < contractsConfig.totalSlots;
-      slotIndex++
-    ) {
-      const batchPromises = [];
-      for (
-        let numberIndex = 0;
-        numberIndex < contractsConfig.valuesPerSlot;
-        numberIndex++
-      ) {
-        batchPromises.push(contract.getPublicEntropy(slotIndex, numberIndex));
-      }
-      const batchResults = await Promise.allSettled(batchPromises);
-      const processedBatch = batchResults.map(result =>
-        result.status === 'fulfilled' ? parseInt(result.value, 10) : 0
-      );
-      allEntropies = [...allEntropies, ...processedBatch];
-    }
-    const entities = allEntropies.slice(0, 100).map((entropy, index) => ({
-      id: index + 1,
-      entropy,
-    }));
-    setEntities(entities);
-    setIsLoading(false);
-};
-
 const getEntitiesForSale = async () => {
   if (!isConnected) return;
   try {
