@@ -1,7 +1,7 @@
-import mintAbi from '../../solidity/artifacts/contracts/CustomERC721.sol/CustomERC721.json';
-import EntropyGenerator from '../../solidity/artifacts/contracts/EntropyGenerator.sol/EntropyGenerator.json';
-import entityMerging from '../../solidity/artifacts/contracts/EntityMerging.sol/EntityMerging.json';
-import nukeFund from '../../solidity/artifacts/contracts/NukeFund.sol/NukeFund.json';
+import mintAbi from '../../solidity/artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
+import EntropyGenerator from '../../solidity/artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
+import entityMerging from '../../solidity/artifacts/contracts/EntityMerging/EntityMerging.sol/EntityMerging.json';
+import nukeFund from '../../solidity/artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
 
 export const contractsConfig = {
   totalSlots: 770,

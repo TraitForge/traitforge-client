@@ -106,9 +106,9 @@ const ContextProvider = ({ children }) => {
       mintContract.off('Entitybred', handleEvent('Entitybred'));
       nukeContract.off('Nuked', handleEvent('Nuked'));
     };
-  }, []);
+}, []);
 
-  const getEntityItems = async () => {
+const getOwnerEntities = async (walletProvider) => {
     const ethersProvider = initializeEthersProvider();
     if (!ethersProvider) return;
     setIsLoading(true);
@@ -143,9 +143,78 @@ const ContextProvider = ({ children }) => {
     }));
     setEntities(entities);
     setIsLoading(false);
-  };
+};
 
-  const mintEntityHandler = async () => {
+const getEntitiesForSale = async () => {
+  if (!isConnected) return;
+  try {
+    const provider = new ethers.providers.Web3Provider(walletProvider);
+    const tradeContract = new ethers.Contract(
+      contractsConfig.tradeContractAddress,
+      contractsConfig.tradeContractAbi,
+      provider
+    );
+    const entropyContract = new ethers.Contract(
+      contractsConfig.entropyContractAddress,
+      contractsConfig.entropyContractAbi,
+      provider
+    );
+    const data = await tradeContract.fetchEntitiesForSale();
+
+    const entitiesPromises = data.map(async (entity) => {
+      const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entity);
+
+      return {
+        entity,
+        nukeFactor: nukeFactor.toString(),
+        breedPotential: breedPotential.toString(),
+        performanceFactor: performanceFactor.toString(),
+        isSire: isSire,
+        price: ethers.utils.formatEther(entity.price),
+      };
+    });
+
+    const entities = await Promise.all(entitiesPromises);
+    setEntities(entities);
+  } catch (error) {
+    console.error("Failed to fetch entities for sale:", error);
+  }
+};
+
+const getEntitiesForForging = async () => {
+  if (!isConnected) return;
+  try {
+    const provider = new ethers.providers.Web3Provider(walletProvider);
+    const contract = new ethers.Contract(
+      ForgeContractAddress,
+      ForgeContractAbi,
+      provider
+    );
+    const data = await contract.getAllEntitesForMerging();
+    const forgingListings = data.map(async entity => {
+      const [nukeFactor, breedPotential, performanceFactor, isSire] =
+        await contract.deriveTokenParameters(entity);
+      return {
+        entity,
+        nukeFactor: nukeFactor.toString(),
+        breedPotential: breedPotential.toString(),
+        performanceFactor: performanceFactor.toString(),
+        isSire: isSire,
+        price: ethers.utils.formatEther(entity.price),
+      };
+    });
+    const entities = await Promise.all(forgingListings);
+    setEntitiesForForging(entities);
+  } catch (error) {
+    console.error('Failed to fetch entities:', error);
+  }
+};
+getEntitiesForForging();
+}, [isConnected, walletProvider]);
+
+
+
+const mintEntityHandler = async () => {
     if (!isConnected) {
       alert('Please connect your wallet.');
       return;
@@ -172,9 +241,52 @@ const ContextProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+};
 
-  const subscribeToMintEvent = async () => {
+
+function calculateEntityAttributes(entropy, entity) {
+  const initializeEthersProvider = () =>
+    window.ethereum
+      ? new ethers.providers.Web3Provider(window.ethereum)
+      : null;
+  const ethersProvider = initializeEthersProvider();
+  const contract = new ethers.Contract(
+    contractsConfig.mintAddress,
+    contractsConfig.mintAbi,
+    ethersProvider
+  );
+
+  const getFinalNukeFactor = contract.calculateFinalNukeFactor(entity);
+
+  const performanceFactor = entropy % 10;
+  const lastTwoDigits = entropy % 100;
+  const forgePotential = Math.floor(lastTwoDigits / 10);
+  const nukeFactor = Number((entropy / 40000).toFixed(1));
+  const finalNukeFactor = getFinalNukeFactor;
+  let role;
+  const result = entropy % 3;
+  if (result === 0) {
+    role = 'sire';
+  } else {
+    role = 'breeder';
+  }
+
+  return {
+    role,
+    forgePotential,
+    nukeFactor,
+    performanceFactor,
+    finalNukeFactor,
+  };
+}
+
+
+
+
+
+
+
+const subscribeToMintEvent = async () => {
     const ethersProvider = initializeEthersProvider();
     if (!ethersProvider) return;
     const contract = new ethers.Contract(
@@ -199,68 +311,35 @@ const ContextProvider = ({ children }) => {
     return () => {
       contract.removeAllListeners('Minted');
     };
-  };
+};
 
-  function calculateEntityAttributes(entropy, entity) {
-    const initializeEthersProvider = () =>
-      window.ethereum
-        ? new ethers.providers.Web3Provider(window.ethereum)
-        : null;
-    const ethersProvider = initializeEthersProvider();
-    const contract = new ethers.Contract(
-      contractsConfig.mintAddress,
-      contractsConfig.mintAbi,
-      ethersProvider
-    );
 
-    const getFinalNukeFactor = contract.calculateFinalNukeFactor(entity);
 
-    const performanceFactor = entropy % 10;
-    const lastTwoDigits = entropy % 100;
-    const forgePotential = Math.floor(lastTwoDigits / 10);
-    const nukeFactor = Number((entropy / 40000).toFixed(1));
-    const finalNukeFactor = getFinalNukeFactor;
-    let role;
-    const result = entropy % 3;
-    if (result === 0) {
-      role = 'sire';
-    } else {
-      role = 'breeder';
-    }
-
-    return {
-      role,
-      forgePotential,
-      nukeFactor,
-      performanceFactor,
-      finalNukeFactor,
-    };
-  }
-
-  return (
-    <AppContext.Provider
-      value={{
-        entityPrice,
-        isLoading,
-        entities,
-        transactions,
-        getEntityItems,
-        mintEntityHandler,
-        subscribeToMintEvent,
-        calculateEntityAttributes,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
-  );
+return (
+  <AppContext.Provider
+    value={{
+      entityPrice,
+      isLoading,
+      entities,
+      transactions,
+      getEntitiesForSale,
+      getEntitiesForForging,
+      mintEntityHandler,
+      subscribeToMintEvent,
+      calculateEntityAttributes,
+    }}
+  >
+    {children}
+  </AppContext.Provider>
+);
 };
 
 const useContextState = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useContext must be used within a ContextProvider');
-  }
-  return context;
+const context = useContext(AppContext);
+if (!context) {
+  throw new Error('useContext must be used within a ContextProvider');
+}
+return context;
 };
 
 export { useContextState, ContextProvider };
