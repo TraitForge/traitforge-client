@@ -1,10 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import {
-  useWeb3ModalProvider,
-  useWeb3ModalAccount,
-} from '@web3modal/ethers5/react';
+import { useWeb3ModalProvider, useWeb3ModalAccount, createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
 import { contractsConfig } from './contractsConfig';
+import { InfuraProvider } from '@ethersproject/providers';
 
 const AppContext = createContext();
 
@@ -13,33 +11,73 @@ const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
-  const { isConnected } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
-
-  const initializeEthersProvider = () => {
-    if (window.ethereum) {
-      try {
-        return new ethers.providers.Web3Provider(window.ethereum);
-      } catch (error) {
-        console.error('Failed to create a Web3Provider:', error);
-      }
-    } else {
-      console.warn('Ethereum object not found.');
-      return null;
-    }
-  };
+  const [provider, setProvider] = useState(null);
+  const [web3Modal, setWeb3Modal] = useState(null);
 
   useEffect(() => {
+    const initWeb3Modal = async () => {
+      const projectId = 'YOUR_PROJECT_ID';
+      const mainnet = {
+        chainId: 1,
+        name: 'Ethereum',
+        currency: 'ETH',
+        explorerUrl: 'https://etherscan.io',
+        rpcUrl: 'https://cloudflare-eth.com'
+      };
+
+      const metadata = {
+        name: 'My Website',
+        description: 'My Website description',
+        url: 'https://mywebsite.com',
+        icons: ['https://avatars.mywebsite.com/']
+      };
+
+      const ethersConfig = {
+        metadata,
+        enableEIP6963: true,
+        enableInjected: true,
+        enableCoinbase: true,
+        rpcUrl: 'https://cloudflare-eth.com',
+        defaultChainId: 1
+      };
+
+      const web3ModalInstance = new Web3Modal({
+        network: 'mainnet',
+        cacheProvider: true,
+        providerOptions: {},
+        ethersConfig,
+        projectId
+      });
+
+      setWeb3Modal(web3ModalInstance);
+    };
+
+    initWeb3Modal();
+  }, []);
+
+  useEffect(() => {
+    if (!web3Modal) return;
+
+    const connectWallet = async () => {
+      const connection = await web3Modal.connect();
+      const provider = new ethers.providers.Web3Provider(connection);
+      setProvider(provider);
+    };
+
+    connectWallet();
+  }, [web3Modal]);
+
+//Entity Price For Mint
+useEffect(() => {
     const getLatestEntityPrice = async () => {
-      const ethersProvider = initializeEthersProvider();
-      if (!ethersProvider) return;
+      const infuraProvider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
+      if (!infuraProvider) return;
       setIsLoading(true);
       try {
-        const signer = ethersProvider.getSigner();
         const mintContract = new ethers.Contract(
           contractsConfig.mintAddress,
           contractsConfig.mintAbi,
-          signer
+          infuraProvider
         );
         const mintPrice = await mintContract.calculateMintPrice();
         const priceInEth = ethers.utils.formatEther(mintPrice);
@@ -52,257 +90,171 @@ const ContextProvider = ({ children }) => {
     };
 
     getLatestEntityPrice();
-  }, []);
+  }, [provider]);
 
+// Event Listener for Stats
   useEffect(() => {
+    const infuraProvider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
+    if(!infuraProvider) return;
     const loadedTransactions = localStorage.getItem('transactions');
-    const initialTransactions = loadedTransactions
-      ? JSON.parse(loadedTransactions)
-      : [];
+    const initialTransactions = loadedTransactions ? JSON.parse(loadedTransactions) : [];
     setTransactions(initialTransactions);
-    const ethersProvider = initializeEthersProvider();
-    const mintContract = new ethers.Contract(
+      const mintContract = new ethers.Contract(
       contractsConfig.mintAddress,
       contractsConfig.mintAbi,
-      ethersProvider
+      infuraProvider
     );
     const nukeContract = new ethers.Contract(
       contractsConfig.nukeContractAddress,
       contractsConfig.nukeFundContractAbi,
-      ethersProvider
+      infuraProvider
     );
 
-    const handleEvent =
-      type =>
-      async (...args) => {
-        const event = args[args.length - 1];
-        const transactionHash = event.transactionHash;
-        const transaction = await defaultProvider.getTransaction(
-          transactionHash
-        );
-        const valueInEth = ethers.utils.formatEther(transaction.value);
-        const newTransaction = {
-          type,
-          from: 'Smart Contract',
-          to: args[0],
-          amount: valueInEth,
-          timestamp: new Date().getTime(),
-          transactionHash: transactionHash,
-        };
-        setTransactions(prevTransactions => {
-          const updatedTransactions = [newTransaction, ...prevTransactions];
-          localStorage.setItem(
-            'transactions',
-            JSON.stringify(updatedTransactions)
-          );
-          return updatedTransactions;
-        });
+    const handleEvent = (type) => async (...args) => {
+      const event = args[args.length - 1];
+      const transactionHash = event.transactionHash;
+      const transaction = await defaultProvider.getTransaction(transactionHash);
+      const valueInEth = ethers.utils.formatEther(transaction.value);
+      const newTransaction = {
+        type,
+        from: 'Smart Contract',
+        to: args[0],
+        amount: valueInEth,
+        timestamp: new Date().getTime(),
+        transactionHash: transactionHash,
       };
+      setTransactions(prevTransactions => {
+        const updatedTransactions = [newTransaction, ...prevTransactions];
+        localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
+        return updatedTransactions;
+      });
+    };
+
     mintContract.on('Minted', handleEvent('Minted'));
     mintContract.on('Entitybred', handleEvent('Entitybred'));
     nukeContract.on('Nuked', handleEvent('Nuked'));
+
     return () => {
       mintContract.off('Minted', handleEvent('Minted'));
       mintContract.off('Entitybred', handleEvent('Entitybred'));
       nukeContract.off('Nuked', handleEvent('Nuked'));
     };
-}, []);
+  }, [infuraProvider]);
 
-const getEntitiesForSale = async () => {
-  if (!isConnected) return;
-  try {
+// Fetch Entities From Wallet
+const getOwnersEntities = async (address, walletProvider) => {
+    if (!walletProvider || !address) return [];
     const provider = new ethers.providers.Web3Provider(walletProvider);
-    const tradeContract = new ethers.Contract(
-      contractsConfig.tradeContractAddress,
-      contractsConfig.tradeContractAbi,
+    const TraitForgeContract = new ethers.Contract(
+      contractsConfig.traitForgeNftAddress,
+      contractsConfig.traitForgeNftAbi,
       provider
     );
-    const entropyContract = new ethers.Contract(
-      contractsConfig.entropyContractAddress,
-      contractsConfig.entropyContractAbi,
-      provider
-    );
-    const data = await tradeContract.fetchEntitiesForSale();
-
-    const entitiesPromises = data.map(async (entity) => {
-      const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entity);
-
-      return {
-        entity,
-        nukeFactor: nukeFactor.toString(),
-        breedPotential: breedPotential.toString(),
-        performanceFactor: performanceFactor.toString(),
-        isSire: isSire,
-        price: ethers.utils.formatEther(entity.price),
-      };
-    });
-
-    const entities = await Promise.all(entitiesPromises);
-    setEntities(entities);
-  } catch (error) {
-    console.error("Failed to fetch entities for sale:", error);
-  }
-};
-
-const getEntitiesForForging = async () => {
-  if (!isConnected) return;
-  try {
-    const provider = new ethers.providers.Web3Provider(walletProvider);
-    const contract = new ethers.Contract(
-      ForgeContractAddress,
-      ForgeContractAbi,
-      provider
-    );
-    const data = await contract.getAllEntitesForMerging();
-    const forgingListings = data.map(async entity => {
-      const [nukeFactor, breedPotential, performanceFactor, isSire] =
-        await contract.deriveTokenParameters(entity);
-      return {
-        entity,
-        nukeFactor: nukeFactor.toString(),
-        breedPotential: breedPotential.toString(),
-        performanceFactor: performanceFactor.toString(),
-        isSire: isSire,
-        price: ethers.utils.formatEther(entity.price),
-      };
-    });
-    const entities = await Promise.all(forgingListings);
-    setEntitiesForForging(entities);
-  } catch (error) {
-    console.error('Failed to fetch entities:', error);
-  }
-};
-getEntitiesForForging();
-}, [isConnected, walletProvider]);
-
-
-
-const mintEntityHandler = async () => {
-    if (!isConnected) {
-      alert('Please connect your wallet.');
-      return;
-    }
-    setIsLoading(true);
+  
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-      const userAddress = await signer.getAddress();
-      const mintContract = new ethers.Contract(
-        contractsConfig.mintAddress,
-        contractsConfig.mintAbi,
-        signer
-      );
-      const transaction = await mintContract.mintToken(userAddress, {
-        value: ethers.utils.parseEther(entityPrice),
-        gasLimit: ethers.utils.hexlify(1000000),
-      });
-      await transaction.wait();
-      alert('Entity minted successfully.');
+      const balance = await TraitForgeContract.balanceOf(address);
+      let fetchedEntities = [];
+      for (let i = 0; i < balance; i++) {
+        const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
+        const tokenURI = await TraitForgeContract.tokenURI(tokenId);
+        fetchedEntities.push({ tokenId: tokenId.toString(), tokenURI });
+      }
+  
+      return fetchedEntities;
     } catch (error) {
-      console.error('Minting failed:', error);
-      alert('Minting entity failed.');
-    } finally {
-      setIsLoading(false);
+      console.error("Error fetching NFTs:", error);
+      return [];
     }
-};
-
-
-function calculateEntityAttributes(entropy, entity) {
-  const initializeEthersProvider = () =>
-    window.ethereum
-      ? new ethers.providers.Web3Provider(window.ethereum)
-      : null;
-  const ethersProvider = initializeEthersProvider();
-  const contract = new ethers.Contract(
-    contractsConfig.mintAddress,
-    contractsConfig.mintAbi,
-    ethersProvider
-  );
-
-  const getFinalNukeFactor = contract.calculateFinalNukeFactor(entity);
-
-  const performanceFactor = entropy % 10;
-  const lastTwoDigits = entropy % 100;
-  const forgePotential = Math.floor(lastTwoDigits / 10);
-  const nukeFactor = Number((entropy / 40000).toFixed(1));
-  const finalNukeFactor = getFinalNukeFactor;
-  let role;
-  const result = entropy % 3;
-  if (result === 0) {
-    role = 'sire';
-  } else {
-    role = 'breeder';
-  }
-
-  return {
-    role,
-    forgePotential,
-    nukeFactor,
-    performanceFactor,
-    finalNukeFactor,
   };
-}
 
+// Entities Listed in Trading Contract
+const getEntitiesForSale = async () => {
+    if (!provider) return;
+    try {
+      const tradeContract = new ethers.Contract(
+        contractsConfig.tradeContractAddress,
+        contractsConfig.tradeContractAbi,
+        provider
+      );
+      const entropyContract = new ethers.Contract(
+        contractsConfig.entropyContractAddress,
+        contractsConfig.entropyContractAbi,
+        provider
+      );
+      const data = await tradeContract.fetchEntitiesForSale();
 
+      const entitiesPromises = data.map(async (entity) => {
+        const [nukeFactor, breedPotential, performanceFactor, isSire] = await entropyContract.deriveTokenParameters(entity);
 
-
-
-
-
-const subscribeToMintEvent = async () => {
-    const ethersProvider = initializeEthersProvider();
-    if (!ethersProvider) return;
-    const contract = new ethers.Contract(
-      contractsConfig.mintAddress,
-      contractsConfig.mintAbi,
-      ethersProvider.getSigner()
-    );
-
-    contract.on('Minted', (to, newItemId, entropyValue) => {
-      setEntityItems(prevItems => {
-        if (prevItems.length >= 150) {
-          const updatedItems = [
-            ...prevItems.slice(1),
-            { id: newItemId, entropy: entropyValue },
-          ];
-          return updatedItems;
-        } else {
-          return [...prevItems, { id: newItemId, entropy: entropyValue }];
-        }
+        return {
+          entity,
+          nukeFactor: nukeFactor.toString(),
+          breedPotential: breedPotential.toString(),
+          performanceFactor: performanceFactor.toString(),
+          isSire: isSire,
+          price: ethers.utils.formatEther(entity.price),
+        };
       });
-    });
-    return () => {
-      contract.removeAllListeners('Minted');
-    };
-};
 
+      const entities = await Promise.all(entitiesPromises);
+      setEntities(entities);
+    } catch (error) {
+      console.error("Failed to fetch entities for sale:", error);
+    }
+  };
 
+// Entities Listed in Forging/Merging Contract
+const getEntitiesForForging = async () => {
+    if (!provider) return;
+    try {
+      const contract = new ethers.Contract(
+        contractsConfig.forgeContractAddress,
+        contractsConfig.forgeContractAbi,
+        provider
+      );
+      const data = await contract.getAllEntitiesForMerging();
+      const forgingListings = data.map(async entity => {
+        const [nukeFactor, breedPotential, performanceFactor, isSire] =
+          await contract.deriveTokenParameters(entity);
+        return {
+          entity,
+          nukeFactor: nukeFactor.toString(),
+          breedPotential: breedPotential.toString(),
+          performanceFactor: performanceFactor.toString(),
+          isSire: isSire,
+          price: ethers.utils.formatEther(entity.price),
+        };
+      });
+      const entities = await Promise.all(forgingListings);
+      setEntities(entities);
+    } catch (error) {
+      console.error('Failed to fetch entities for forging:', error);
+    }
+  };
 
-return (
-  <AppContext.Provider
-    value={{
-      entityPrice,
-      isLoading,
-      entities,
-      transactions,
-      getEntitiesForSale,
-      getEntitiesForForging,
-      mintEntityHandler,
-      subscribeToMintEvent,
-      calculateEntityAttributes,
-    }}
-  >
-    {children}
-  </AppContext.Provider>
-);
+  return (
+    <AppContext.Provider
+      value={{
+        entityPrice,
+        isLoading,
+        entities,
+        transactions,
+        getEntitiesForSale,
+        getOwnersEntities,
+        getEntitiesForForging,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 const useContextState = () => {
-const context = useContext(AppContext);
-if (!context) {
-  throw new Error('useContext must be used within a ContextProvider');
-}
-return context;
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useContext must be used within a ContextProvider');
+  }
+  return context;
 };
 
 export { useContextState, ContextProvider };

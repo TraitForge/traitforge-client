@@ -13,8 +13,8 @@ import LoadingSpinner from '@/Spinner';
 
 const Forging = () => {
   const {
-    entitiesForForging,
-    fetchEntitiesForForging,
+    getEntitiesForForging,
+    getOwnersEntities,
     isConnected,
   } = useContextState();
   const { forgeContractAddress, forgeContractAbi } = useContractContext(); 
@@ -31,7 +31,7 @@ const Forging = () => {
     if (isConnected) {
       fetchEntitiesForForging();
     }
-  }, [isConnected, fetchEntitiesForForging]);
+  }, [isConnected, getEntitiesForForging, getOwnersEntities]);
 
   const forgeEntity = async () => {
     if (!isConnected ) return;
