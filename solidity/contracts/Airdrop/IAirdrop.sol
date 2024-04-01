@@ -2,17 +2,17 @@
 pragma solidity ^0.8.20;
 
 interface IAirdrop {
-    function setTraitToken(address _traitToken) external;
+  function setTraitToken(address _traitToken) external;
 
-    function startAirdrop(uint256 amount) external;
+  function startAirdrop(uint256 amount) external;
 
-    function airdropStarted() external view returns (bool);
+  function airdropStarted() external view returns (bool);
 
-    function allowDaoFund() external;
+  function allowDaoFund() external;
 
-    function daoFundAllowed() external view returns (bool);
+  function daoFundAllowed() external view returns (bool);
 
-    function setUserAmount(address user, uint256 amount) external;
+  function setUserAmount(address user, uint256 amount) external;
 
-    function claim() external;
+  function claim() external;
 }
