@@ -8,7 +8,7 @@ import ClaimEntity from '@/utils/claimentity.png';
 import PoolForgeCard from '@/utils/PoolSelectCard.png';
 import WalletForgeCard from '@/utils/WalletSelectCard.png';
 import ForgeButton from '@/utils/forgebutton.png';
-import '@/styles/Forging.css';
+import '@/styles/forging.scss';
 import LoadingSpinner from '@/Spinner';
 
 const Forging = () => {

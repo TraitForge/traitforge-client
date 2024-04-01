@@ -9,16 +9,36 @@ import { useContextState } from '@/utils/context';
 import styles from './styles.module.scss';
 
 const Slider = () => {
-  const { isLoading, entities, getEntityItems, subscribeToMintEvent } =
+  const { upcomingMints, subscribeToMintEvent } =
     useContextState();
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const splideRef = useRef();
 
   useEffect(() => {
-    getEntityItems();
+    upcomingMints();
     subscribeToMintEvent();
   }, []);
+
+  const calculateEntityPrice = (index) => {
+    return (index * 0.01).toFixed(2);
+};
+
+function calculateEntityAttributes(entropy) {
+  const performanceFactor = entropy % 10;
+  const lastTwoDigits = entropy % 100;
+  const forgePotential = Math.floor(lastTwoDigits / 10);
+  const nukeFactor = Number((entropy / 40000).toFixed(1));
+  let role; 
+  const result = entropy % 3;
+  if (result === 0) {
+      role = "sire"; 
+  } else {
+      role = "breeder"; 
+  }
+  
+  return { role, forgePotential, nukeFactor, performanceFactor };
+}
 
   useEffect(() => {
     const handleMoved = (splide, newIndex) => {
@@ -55,10 +75,10 @@ const Slider = () => {
             },
           }}
         >
-          {entities.map((entity, index) => (
-            <SplideSlide key={entity.id}>
-              <EntityCard entity={entity} index={index} />
-            </SplideSlide>
+          {entities && entities.map((entity, index) => (
+         <SplideSlide key={entity.id}>
+          <EntityCard entity={entity} index={index} />
+        </SplideSlide>
           ))}
         </Splide>
         <button

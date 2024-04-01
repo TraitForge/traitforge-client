@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { useWeb3ModalProvider, useWeb3ModalAccount, createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
+import { JsonRpcProvider } from 'ethers/providers';
+import { useWeb3ModalProvider, useWeb3ModalAccount, createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
-const infuraProvider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
+const infuraProvider = new JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
 
 const ContextProvider = ({ children }) => {
   const [entitiesForSale, setEntitiesForSale] = useState([]);
+  const [upcomingMints, setUpcomingMints] = useState([]);
   const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
@@ -90,7 +92,35 @@ useEffect(() => {
     };
 
     getLatestEntityPrice();
-  }, [provider]);
+  }, [infuraProvider]);
+
+  useEffect(() => {
+    const getUpcomingMints = async () => {
+        if (!infuraProvider) return;
+        setIsLoading(true);
+        const contract = new ethers.Contract(
+          contractsConfig.entropyGeneratorContractAddress, 
+          contractsConfig.entropyGeneratorContractAbi, 
+          infuraProvider);
+        let allEntropies = [];
+        for (let slotIndex = 0; slotIndex < totalSlots; slotIndex++) {
+            const batchPromises = [];
+            for (let numberIndex = 0; numberIndex < valuesPerSlot; numberIndex++) {
+                batchPromises.push(contract.getPublicEntropy(slotIndex, numberIndex));
+            }
+            const batchResults = await Promise.allSettled(batchPromises);
+            const processedBatch = batchResults.map(result => result.status === 'fulfilled' ? parseInt(result.value, 10) : 0);
+            allEntropies = [...allEntropies, ...processedBatch];
+        }
+        const upcomingMints = allEntropies.slice(0, 150).map((entropy, index) => ({
+            id: index + 1,
+            entropy,
+        }));
+        setIsLoading(false);
+        setUpcomingMints(upcomingMints);
+    };
+    getUpcomingMints();
+}, []);
 
 // Event Listener for Stats
   useEffect(() => {
@@ -99,8 +129,8 @@ useEffect(() => {
     const initialTransactions = loadedTransactions ? JSON.parse(loadedTransactions) : [];
     setTransactions(initialTransactions);
       const mintContract = new ethers.Contract(
-      contractsConfig.mintAddress,
-      contractsConfig.mintAbi,
+      contractsConfig.traitForgeNftAddress,
+      contractsConfig.traitForgeNftAbi,
       infuraProvider
     );
     const nukeContract = new ethers.Contract(
@@ -241,6 +271,7 @@ const getEntitiesForForging = async () => {
         transactions,
         walletProvider, 
         web3Modal,
+        upcomingMints,
         getEntitiesForSale,
         getOwnersEntities,
         getEntitiesForForging,
