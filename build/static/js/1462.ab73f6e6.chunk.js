@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkhuddyntom=self.webpackChunkhuddyntom||[]).push([[1462],{1462:(e,n,a)=>{a.d(n,{updateWobble:()=>b});var o=a(4709);const t=0,l=2*Math.PI,s=60;function b(e,n){var a;const{wobble:b}=e.options,{wobble:c}=e;if(null===b||void 0===b||!b.enable||!c)return;const i=c.angleSpeed*n.factor,u=c.moveSpeed*n.factor*((null!==(a=e.retina.wobbleDistance)&&void 0!==a?a:t)*n.factor)/(o.X5/s),d=l,{position:h}=e;c.angle+=i,c.angle>d&&(c.angle-=d),h.x+=u*Math.cos(c.angle),h.y+=u*Math.abs(Math.sin(c.angle))}}}]);
-//# sourceMappingURL=1462.ab73f6e6.chunk.js.map

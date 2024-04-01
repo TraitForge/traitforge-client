@@ -1,5 +1,0 @@
-)
-await contract.someFunction(...)
-const contract = await ethers.getContractAt("CustomERC721", "0xb7f8bc63bbcad18155201308c8f3540b07f84f5e")
-await contract.someFunction(...)
-const contract = await ethers.getContractAt("ContractName", "0xb7f8bc63bbcad18155201308c8f3540b07f84f5e")
