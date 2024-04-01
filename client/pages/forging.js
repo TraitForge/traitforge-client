@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useContextState } from '@/utils/context';
-import { useContractContext } from '@/ContractContext'; // Import the contract context
+import { contractsConfig } from '@/contractsConfig'; 
 import Modal from './ForgingModal';
 import OwnerEntitiesModal from '@/OwnerEntities';
 import EntityCard from '@/components/EntityCard';
@@ -15,9 +15,8 @@ const Forging = () => {
   const {
     getEntitiesForForging,
     getOwnersEntities,
-    isConnected,
+    walletProvider
   } = useContextState();
-  const { forgeContractAddress, forgeContractAbi } = useContractContext(); 
 
   const entityList = useRef(null);
   const [openModal, setOpenModal] = useState(false);
@@ -28,21 +27,20 @@ const Forging = () => {
   const [selectedEntity, setSelectedEntity] = useState(null);
 
   useEffect(() => {
-    if (isConnected) {
-      fetchEntitiesForForging();
-    }
-  }, [isConnected, getEntitiesForForging, getOwnersEntities]);
+      getEntitiesForForging();
+      getOwnersEntities();
+  }, [ getEntitiesForForging, getOwnersEntities]);
 
   const forgeEntity = async () => {
-    if (!isConnected ) return;
+    if (!walletProvider ) return;
     setProcessing(true);
     setProcessingText('Forging');
     try {
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const forgeContract = new ethers.Contract(
-        forgeContractAddress,
-        forgeContractAbi,
+        contractsConfig.forgeContractAddress,
+        contractsConfig.forgeContractAbi,
         signer
       );
       const transaction = await forgeContract.forgeEntity();

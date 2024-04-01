@@ -2,16 +2,17 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3ModalProvider, useWeb3ModalAccount, createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
 import { contractsConfig } from './contractsConfig';
-import { InfuraProvider } from '@ethersproject/providers';
 
 const AppContext = createContext();
+const infuraProvider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
 
 const ContextProvider = ({ children }) => {
-  const [entities, setEntities] = useState([]);
+  const [entitiesForSale, setEntitiesForSale] = useState([]);
+  const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
-  const [provider, setProvider] = useState(null);
+  const [walletProvider, setWalletProvider] = useState(null);
   const [web3Modal, setWeb3Modal] = useState(null);
 
   useEffect(() => {
@@ -60,8 +61,8 @@ const ContextProvider = ({ children }) => {
 
     const connectWallet = async () => {
       const connection = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-      setProvider(provider);
+      const walletProvider = new ethers.providers.Web3Provider(connection);
+      setWalletProvider(walletProvider);
     };
 
     connectWallet();
@@ -70,7 +71,6 @@ const ContextProvider = ({ children }) => {
 //Entity Price For Mint
 useEffect(() => {
     const getLatestEntityPrice = async () => {
-      const infuraProvider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
       if (!infuraProvider) return;
       setIsLoading(true);
       try {
@@ -94,7 +94,6 @@ useEffect(() => {
 
 // Event Listener for Stats
   useEffect(() => {
-    const infuraProvider = new ethers.providers.JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
     if(!infuraProvider) return;
     const loadedTransactions = localStorage.getItem('transactions');
     const initialTransactions = loadedTransactions ? JSON.parse(loadedTransactions) : [];
@@ -169,17 +168,17 @@ const getOwnersEntities = async (address, walletProvider) => {
 
 // Entities Listed in Trading Contract
 const getEntitiesForSale = async () => {
-    if (!provider) return;
+  if (!infuraProvider) return;
     try {
       const tradeContract = new ethers.Contract(
         contractsConfig.tradeContractAddress,
         contractsConfig.tradeContractAbi,
-        provider
+        infuraProvider
       );
       const entropyContract = new ethers.Contract(
         contractsConfig.entropyContractAddress,
         contractsConfig.entropyContractAbi,
-        provider
+        infuraProvider
       );
       const data = await tradeContract.fetchEntitiesForSale();
 
@@ -197,7 +196,7 @@ const getEntitiesForSale = async () => {
       });
 
       const entities = await Promise.all(entitiesPromises);
-      setEntities(entities);
+      setEntitiesForSale(entities);
     } catch (error) {
       console.error("Failed to fetch entities for sale:", error);
     }
@@ -205,12 +204,12 @@ const getEntitiesForSale = async () => {
 
 // Entities Listed in Forging/Merging Contract
 const getEntitiesForForging = async () => {
-    if (!provider) return;
+  if (!infuraProvider) return;
     try {
       const contract = new ethers.Contract(
         contractsConfig.forgeContractAddress,
         contractsConfig.forgeContractAbi,
-        provider
+        infuraProvider
       );
       const data = await contract.getAllEntitiesForMerging();
       const forgingListings = data.map(async entity => {
@@ -226,7 +225,7 @@ const getEntitiesForForging = async () => {
         };
       });
       const entities = await Promise.all(forgingListings);
-      setEntities(entities);
+      setEntitiesForForging(entities);
     } catch (error) {
       console.error('Failed to fetch entities for forging:', error);
     }
@@ -237,8 +236,11 @@ const getEntitiesForForging = async () => {
       value={{
         entityPrice,
         isLoading,
-        entities,
+        entitiesForForging,
+        entitiesForSale,
         transactions,
+        walletProvider, 
+        web3Modal,
         getEntitiesForSale,
         getOwnersEntities,
         getEntitiesForForging,
