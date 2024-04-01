@@ -1,153 +1,145 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./INukeFund.sol";
-import "../TraitForgeNft/ITraitForgeNft.sol";
-import "../Airdrop/IAirdrop.sol";
+import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+import './INukeFund.sol';
+import '../TraitForgeNft/ITraitForgeNft.sol';
+import '../Airdrop/IAirdrop.sol';
 
 contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
-    uint256 private fund;
-    ITraitForgeNft public nftContract;
-    IAirdrop public airdropContract;
-    address payable public devAddress;
-    address payable public daoAddress;
+  uint256 private fund;
+  ITraitForgeNft public nftContract;
+  IAirdrop public airdropContract;
+  address payable public devAddress;
+  address payable public daoAddress;
 
-    // Constructor now properly passes the initial owner address to the Ownable constructor
-    constructor(
-        address _traitForgeNft,
-        address _airdrop,
-        address payable _devAddress,
-        address payable _daoAddress
-    ) {
-        nftContract = ITraitForgeNft(_traitForgeNft);
-        airdropContract = IAirdrop(_airdrop);
-        devAddress = _devAddress; // Set the developer's address
-        daoAddress = _daoAddress;
+  // Constructor now properly passes the initial owner address to the Ownable constructor
+  constructor(
+    address _traitForgeNft,
+    address _airdrop,
+    address payable _devAddress,
+    address payable _daoAddress
+  ) {
+    nftContract = ITraitForgeNft(_traitForgeNft);
+    airdropContract = IAirdrop(_airdrop);
+    devAddress = _devAddress; // Set the developer's address
+    daoAddress = _daoAddress;
+  }
+
+  // Fallback function to receive ETH and update fund balance
+  receive() external payable {
+    uint256 devShare = msg.value / 10; // Calculate developer's share (10%)
+    uint256 remainingFund = msg.value - devShare; // Calculate remaining funds to add to the fund
+
+    fund += remainingFund; // Update the fund balance
+
+    if (!airdropContract.airdropStarted()) {
+      devAddress.transfer(devShare); // Transfer dev's share
+      emit DevShareDistributed(devShare);
+    } else if (!airdropContract.daoFundAllowed()) {
+      payable(owner()).transfer(devShare);
+    } else {
+      daoAddress.transfer(devShare); // Transfer dev's share
+      emit DevShareDistributed(devShare);
     }
 
-    // Fallback function to receive ETH and update fund balance
-    receive() external payable {
-        uint256 devShare = msg.value / 10; // Calculate developer's share (10%)
-        uint256 remainingFund = msg.value - devShare; // Calculate remaining funds to add to the fund
+    emit FundReceived(msg.sender, msg.value); // Log the received funds
+    emit FundBalanceUpdated(fund); // Update the fund balance
+  }
 
-        fund += remainingFund; // Update the fund balance
+  // Allow the owner to update the reference to the ERC721 contract
+  function setTraitForgeNftContract(address _traitForgeNft) external onlyOwner {
+    nftContract = ITraitForgeNft(_traitForgeNft);
+    emit TraitForgeNftAddressUpdated(_traitForgeNft); // Emit an event when the address is updated.
+  }
 
-        if (!airdropContract.airdropStarted()) {
-            devAddress.transfer(devShare); // Transfer dev's share
-            emit DevShareDistributed(devShare);
-        } else if (!airdropContract.daoFundAllowed()) {
-            payable(owner()).transfer(devShare);
-        } else {
-            daoAddress.transfer(devShare); // Transfer dev's share
-            emit DevShareDistributed(devShare);
-        }
+  function setAirdropContract(address _airdrop) external onlyOwner {
+    airdropContract = IAirdrop(_airdrop);
+    emit AirdropAddressUpdated(_airdrop); // Emit an event when the address is updated.
+  }
 
-        emit FundReceived(msg.sender, msg.value); // Log the received funds
-        emit FundBalanceUpdated(fund); // Update the fund balance
-    }
+  function setDevAddress(address payable account) external onlyOwner {
+    devAddress = account;
+    emit DevAddressUpdated(account);
+  }
 
-    // Allow the owner to update the reference to the ERC721 contract
-    function setTraitForgeNftContract(
-        address _traitForgeNft
-    ) external onlyOwner {
-        nftContract = ITraitForgeNft(_traitForgeNft);
-        emit TraitForgeNftAddressUpdated(_traitForgeNft); // Emit an event when the address is updated.
-    }
+  function setDaoAddress(address payable account) external onlyOwner {
+    daoAddress = account;
+    emit DaoAddressUpdated(account);
+  }
 
-    function setAirdropContract(address _airdrop) external onlyOwner {
-        airdropContract = IAirdrop(_airdrop);
-        emit AirdropAddressUpdated(_airdrop); // Emit an event when the address is updated.
-    }
+  // View function to see the current balance of the fund
+  function getFundBalance() public view returns (uint256) {
+    return fund;
+  }
 
-    function setDevAddress(address payable account) external onlyOwner {
-        devAddress = account;
-        emit DevAddressUpdated(account);
-    }
+  // Calculate the age of a token based on its creation timestamp and current time
+  function calculateAge(uint256 tokenId) public view returns (uint256) {
+    require(nftContract.ownerOf(tokenId) != address(0), 'Token does not exist');
 
-    function setDaoAddress(address payable account) external onlyOwner {
-        daoAddress = account;
-        emit DaoAddressUpdated(account);
-    }
+    uint256 daysOld = (block.timestamp -
+      nftContract.getTokenCreationTimestamp(tokenId)) /
+      60 /
+      60 /
+      24;
+    uint256 perfomanceFactor = nftContract.getTokenEntropy(tokenId) % 10;
 
-    // View function to see the current balance of the fund
-    function getFundBalance() public view returns (uint256) {
-        return fund;
-    }
+    uint256 age = (daysOld * perfomanceFactor) / 365;
+    return age;
+  }
 
-    // Calculate the age of a token based on its creation timestamp and current time
-    function calculateAge(uint256 tokenId) public view returns (uint256) {
-        require(
-            nftContract.ownerOf(tokenId) != address(0),
-            "Token does not exist"
-        );
+  // Calculate the nuke factor of a token, which affects the claimable amount from the fund
+  function calculateNukeFactor(uint256 tokenId) public view returns (uint256) {
+    require(
+      nftContract.ownerOf(tokenId) != address(0),
+      'ERC721: operator query for nonexistent token'
+    );
 
-        uint256 daysOld = (block.timestamp -
-            nftContract.getTokenCreationTimestamp(tokenId)) /
-            60 /
-            60 /
-            24;
-        uint256 perfomanceFactor = nftContract.getTokenEntropy(tokenId) % 10;
+    uint256 entropy = nftContract.getTokenEntropy(tokenId); // Corrected line
+    // Assume this is stored within NukeFund or accessible somehow
+    // Use getTokenAge from the ERC721 contract (ICustomERC721) to get the age in seconds
+    uint256 ageInSeconds = nftContract.getTokenAge(tokenId);
 
-        uint256 age = (daysOld * perfomanceFactor) / 365;
-        return age;
-    }
+    uint256 ageInDays = ageInSeconds / (24 * 60 * 60); // convert age from seconds to days
+    uint256 initialNukeFactor = entropy / 4; // calcualte initalNukeFactor based on entropy
 
-    // Calculate the nuke factor of a token, which affects the claimable amount from the fund
-    function calculateNukeFactor(
-        uint256 tokenId
-    ) public view returns (uint256) {
-        require(
-            nftContract.ownerOf(tokenId) != address(0),
-            "ERC721: operator query for nonexistent token"
-        );
+    uint256 finalNukeFactor = ((ageInDays * 250) / 10000) + initialNukeFactor;
 
-        uint256 entropy = nftContract.getTokenEntropy(tokenId); // Corrected line
-        // Assume this is stored within NukeFund or accessible somehow
-        // Use getTokenAge from the ERC721 contract (ICustomERC721) to get the age in seconds
-        uint256 ageInSeconds = nftContract.getTokenAge(tokenId);
+    return finalNukeFactor;
+  }
 
-        uint256 ageInDays = ageInSeconds / (24 * 60 * 60); // convert age from seconds to days
-        uint256 initialNukeFactor = entropy / 4; // calcualte initalNukeFactor based on entropy
+  function nuke(uint256 tokenId) public nonReentrant {
+    require(nftContract.ownerOf(tokenId) == msg.sender, 'Not the owner');
+    require(canTokenBeNuked(tokenId), 'Token is not mature yet');
 
-        uint256 finalNukeFactor = ((ageInDays * 250) / 10000) +
-            initialNukeFactor;
+    uint256 finalNukeFactor = calculateNukeFactor(tokenId);
+    uint256 potentialClaimAmount = (fund * finalNukeFactor) / 100000; // Calculate the potential claim amount based on the finalNukeFactor
+    uint256 maxAllowedClaimAmount = fund / 2; // Define a maximum allowed claim amount as 50% of the current fund size
 
-        return finalNukeFactor;
-    }
+    // Directly assign the value to claimAmount based on the condition, removing the redeclaration
+    uint256 claimAmount = finalNukeFactor > 50000
+      ? maxAllowedClaimAmount
+      : potentialClaimAmount;
 
-    function nuke(uint256 tokenId) public nonReentrant {
-        require(nftContract.ownerOf(tokenId) == msg.sender, "Not the owner");
-        require(canTokenBeNuked(tokenId), "Token is not mature yet");
+    fund -= claimAmount; // Deduct the claim amount from the fund
+    payable(msg.sender).transfer(claimAmount); // Transfer the claim amount to the player
 
-        uint256 finalNukeFactor = calculateNukeFactor(tokenId);
-        uint256 potentialClaimAmount = (fund * finalNukeFactor) / 100000; // Calculate the potential claim amount based on the finalNukeFactor
-        uint256 maxAllowedClaimAmount = fund / 2; // Define a maximum allowed claim amount as 50% of the current fund size
+    nftContract.burn(tokenId); // Burn the token
 
-        // Directly assign the value to claimAmount based on the condition, removing the redeclaration
-        uint256 claimAmount = finalNukeFactor > 50000
-            ? maxAllowedClaimAmount
-            : potentialClaimAmount;
+    emit Nuked(msg.sender, tokenId, claimAmount); // Emit the event with the actual claim amount
+    emit FundBalanceUpdated(fund); // Update the fund balance
+  }
 
-        fund -= claimAmount; // Deduct the claim amount from the fund
-        payable(msg.sender).transfer(claimAmount); // Transfer the claim amount to the player
-
-        nftContract.burn(tokenId); // Burn the token
-
-        emit Nuked(msg.sender, tokenId, claimAmount); // Emit the event with the actual claim amount
-        emit FundBalanceUpdated(fund); // Update the fund balance
-    }
-
-    function canTokenBeNuked(uint256 tokenId) public view returns (bool) {
-        // Ensure the token exists
-        require(
-            nftContract.ownerOf(tokenId) != address(0),
-            "ERC721: operator query for nonexistent token"
-        );
-        // Get the age of the token in seconds from the ERC721 contract
-        uint256 tokenAgeInSeconds = nftContract.getTokenAge(tokenId);
-        // Assuming tokenAgeInSeconds is the age of the token since its creation, check if it's at least 3 days old
-        return tokenAgeInSeconds >= 3 days;
-    }
+  function canTokenBeNuked(uint256 tokenId) public view returns (bool) {
+    // Ensure the token exists
+    require(
+      nftContract.ownerOf(tokenId) != address(0),
+      'ERC721: operator query for nonexistent token'
+    );
+    // Get the age of the token in seconds from the ERC721 contract
+    uint256 tokenAgeInSeconds = nftContract.getTokenAge(tokenId);
+    // Assuming tokenAgeInSeconds is the age of the token since its creation, check if it's at least 3 days old
+    return tokenAgeInSeconds >= 3 days;
+  }
 }
