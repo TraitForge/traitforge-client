@@ -7,13 +7,12 @@ const Home = () => {
   if (isLoading) return <LoadingSpinner />
 
   return (
-    <div className="mint-container">
+    <div className="mint-container min-h-[100vh]" style={{backgroundImage: "url('/images/home.png')", backgroundPosition: "center", backgroundSize: "cover"}}>
       <span className="mint-text">Mint your traitforge entity</span>
-      <Button bg="#023340" borderColor="#0ADFDB" text="Mint For 0.01 ETH" />
-
       <div className="nexttokenslider">
-        {/* <Slider /> */}
+        <Slider />
       </div>
+      <Button bg="#023340" borderColor="#0ADFDB" text="Mint For 0.01 ETH" />
     </div>
   );
 };
