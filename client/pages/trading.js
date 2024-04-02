@@ -80,9 +80,9 @@ switch (sortOption) {
 const filteredAndSortedListings = getSortedFilteredListings();
 
 return (
-<div className='Trading-page'>
+<div className='trading-page'>
 <div className='market-page-container'>
-  <div className="Trading-top-buttons">
+  <div className="trading-top-buttons">
     <button className='sellEntity' onClick={() => setModalOpen(true)}>Sell Your Entity</button>
     <Modal open={modalOpen} onClose={() => setModalOpen(false)} />
     <div className="tradingfilters">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useModal } from '@/utils/modalContext';
+import styles from './styles.module.scss';
 
 const Modal = () => {
   const { isOpen, modalContent, closeModal } = useModal();
@@ -7,9 +7,9 @@ const Modal = () => {
   if (!isOpen) return null;
 
   return (
-    <div className='overlay'>
-      <div className='modalContainer'>
-        <button className='closeBtn' onClick={closeModal}>x</button>
+    <div className={styles.overlay}>
+      <div className={styles.modalContainer}>
+        <button className={styles.closeBtn} onClick={closeModal}>x</button>
         {modalContent}
       </div>
     </div>

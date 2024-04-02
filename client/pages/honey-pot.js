@@ -1,67 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import HoneyPotModal from '@/HoneyPotModal';
+import React from 'react';
 import NukeButton from '@/utils/nukebutton.png';
 import '@/styles/honeypot.scss';
 import { useContextState } from '@/utils/context';
-import { contractsConfig } from '@/utils/contractsConfig'; 
 
 function HoneyPot() {
-  const [showNFTModal, setShowNFTModal] = useState(false);
-  const [ethAmount, setEthAmount] = useState(0);
-  const [usdAmount, setUsdAmount] = useState(0);
   const {
-    infuraProvider
+    openModal,
+    ethAmount,
+    usdAmount
   } = useContextState();
-
-  const toggleModal = () => {
-    setShowNFTModal(prevState => !prevState);
-  };
-
-  const fetchEthAmount = useCallback(async () => {
-    try {
-      const nukeFundContract = new ethers.Contract(
-        contractsConfig.NukeFundAddress,
-        contractsConfig.NukeFundAbi.abi,
-        infuraProvider
-      );
-      const balance = await nukeFundContract.getFundBalance();
-      return ethers.utils.formatEther(balance);
-    } catch (error) {
-      console.error('Error fetching ETH amount from nuke fund:', error);
-      return 0;
-    }
-  }, [infuraProvider]);
-
-  const fetchEthToUsdRate = async () => {
-    try {
-      const response = await axios.get(
-        'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
-      );
-      return response.data.ethereum.usd;
-    } catch (error) {
-      console.error('Error fetching ETH to USD rate:', error);
-    }
-    return 10000;
-  };
-
-  const convertEthToUsd = (eth, rate) => {
-    return eth * rate;
-  };
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const amount = await fetchEthAmount();
-      const rate = await fetchEthToUsdRate();
-      if (amount && rate) {
-        const usdValue = convertEthToUsd(amount, rate);
-        setEthAmount(Number(amount).toFixed(2));
-        setUsdAmount(Number(usdValue).toFixed(2));
-      }
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [fetchEthAmount]);
 
   return (
     <div className="honey-pot-container">
@@ -74,8 +21,7 @@ function HoneyPot() {
         </div>
       </div>
 
-      <img src={NukeButton} className="nuke-button" onClick={toggleModal} />
-      {showNFTModal && <HoneyPotModal onClose={() => setShowNFTModal(false)} />}
+      <img src={NukeButton} className="nuke-button" onClick={() => openModal(<div>*honeypot modal*</div>)} />
     </div>
   );
 }

@@ -1,24 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig'; 
-import EntityCard from '@/components/common/EntityCard';
 import ClaimEntity from '@/public/images/claimentity.png';
 import PoolForgeCard from '@/public/images/PoolSelectCard.png';
 import WalletForgeCard from '@/public/images/WalletSelectCard.png';
 import ForgeButton from '@/public/images/forgebutton.png';
 import '@/styles/forging.scss';
-import { LoadingSpinner } from '@/components';
+import { LoadingSpinner, EntityCard } from '@/components';
 
 const Forging = () => {
   const {
+    openModal,
     getEntitiesForForging,
     getOwnersEntities,
     walletProvider
   } = useContextState();
 
   const entityList = useRef(null);
-  const [openModal, setOpenModal] = useState(false);
-  const [openOwnerEntitiesModal, setOpenOwnerEntitiesModal] = useState(false);
   const [sortOption, setSortOption] = useState('');
   const [processing, setProcessing] = useState(false);
   const [processingText, setProcessingText] = useState('');
@@ -91,21 +89,12 @@ const Forging = () => {
 
   const sortedEntities = getSortedEntities();
 
-  const openEntityToForge = entity => {
-    setSelectedEntity(entity);
-  };
-
-  const toggleOwnerEntitiesModal = () => {
-    console.log('Toggling OwnerEntitiesModal');
-    setOpenOwnerEntitiesModal(true);
-  };
-
   const scrollToEntityList = () => {
     entityList.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div className="TBG-page">
+    <div className="forging-page">
       <div className="forge-arena-container">
         <h1>Forging Arena</h1>
         <div className="selected-entity-placeholder">
@@ -121,14 +110,8 @@ const Forging = () => {
               src={WalletForgeCard}
               alt="forge place holder"
               className="your-entities"
-              onClick={toggleOwnerEntitiesModal}
+              onClick={() => openModal(<div>*OwnerModal*</div>)}
             />
-            {openOwnerEntitiesModal && (
-              <OwnerEntitiesModal
-                isOpen={openOwnerEntitiesModal}
-                onClose={() => setOpenOwnerEntitiesModal(false)}
-              />
-            )}
           </div>
           {selectedEntity && (
             <div className="selectedEntity">
@@ -155,12 +138,9 @@ const Forging = () => {
       <div className="entity-list-container" ref={entityList}>
         <div className="breed-sorting-options">
           <div className="left-items">
-            {openModal && (
-              <Modal open={openModal} onClose={() => setOpenModal(false)} />
-            )}
             <button
               className="breed-entity-button"
-              onClick={() => setOpenModal(true)}
+              onClick={() => openModal(<div>*OwnerModal*</div>)}
             >
               List Your Forger
             </button>

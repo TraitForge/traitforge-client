@@ -1,4 +1,4 @@
-.Trading-page {
+.trading-page {
     display: flex;
     justify-content: center;
     align-content: center;
@@ -17,7 +17,7 @@
       border-radius: 10px;
     }
   
-    .Trading-top-buttons {
+    .trading-top-buttons {
       margin-top: 7vh;
       z-index: 10;
       display: flex;
@@ -159,7 +159,7 @@
   }
   
   @media (max-width: 1000px) {
-  .Trading-page {
+  .trading-page {
     .ownersListings {
       @media (max-width: 1000px) {
         position: unset;

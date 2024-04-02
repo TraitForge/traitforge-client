@@ -9,7 +9,7 @@ import { useContextState } from '@/utils/context';
 import styles from './styles.module.scss';
 
 const Slider = () => {
-  const { upcomingMints , subscribeToMintEvent } =
+  const { upcomingMints } =
     useContextState();
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -68,8 +68,8 @@ function calculateEntityAttributes(entropy) {
           }}
         >
           {upcomingMints.map((mint, index) => (
-         <SplideSlide key={entity.id}>
-          <EntityCard entity={entity} index={index} />
+         <SplideSlide key={mint.id}>
+          <EntityCard entity={mint} index={index} />
         </SplideSlide>
           ))}
         </Splide>

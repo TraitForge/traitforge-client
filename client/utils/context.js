@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
+import axios from 'axios';
 import { JsonRpcProvider } from 'ethers/providers';
 import { useWeb3ModalProvider, useWeb3ModalAccount, createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
 import Web3Modal from 'web3modal';
@@ -10,6 +11,8 @@ const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 
 const ContextProvider = ({ children }) => {
   const [entitiesForSale, setEntitiesForSale] = useState([]);
+  const [ethAmount, setEthAmount] = useState(0);
+  const [usdAmount, setUsdAmount] = useState(0);
   const [upcomingMints, setUpcomingMints] = useState([]);
   const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +20,8 @@ const ContextProvider = ({ children }) => {
   const [entityPrice, setEntityPrice] = useState(null);
   const [walletProvider, setWalletProvider] = useState(null);
   const [web3Modal, setWeb3Modal] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
 
 
   useEffect(() => {
@@ -69,6 +74,58 @@ const ContextProvider = ({ children }) => {
   initWeb3Modal();
   connectWallet();
 }, []); 
+
+//Modal State Trigger
+const openModal = (content) => {
+  setModalContent(content);
+  setIsOpen(true);
+};
+const closeModal = () => {
+  setIsOpen(false);
+};
+
+//fetching/setting Price States
+const fetchEthAmount = useCallback(async () => {
+  try {
+    const nukeFundContract = new ethers.Contract(
+      contractsConfig.NukeFundAddress,
+      contractsConfig.NukeFundAbi.abi,
+      infuraProvider
+    );
+    const balance = await nukeFundContract.getFundBalance();
+    return ethers.utils.formatEther(balance);
+  } catch (error) {
+    console.error('Error fetching ETH amount from nuke fund:', error);
+    return 0;
+  }
+}, [infuraProvider]);
+
+const fetchEthToUsdRate = async () => {
+  try {
+    const response = await axios.get(
+      'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
+    );
+    return response.data.ethereum.usd;
+  } catch (error) {
+    console.error('Error fetching ETH to USD rate:', error);
+  }
+  return 10000;
+};
+
+useEffect(() => {
+  const interval = setInterval(async () => {
+    const amount = await fetchEthAmount();
+    const rate = await fetchEthToUsdRate();
+    if (amount && rate) {
+      const usdValue = amount * rate;
+      setEthAmount(Number(amount).toFixed(2));
+      setUsdAmount(Number(usdValue).toFixed(2));
+    }
+  }, 10000);
+
+  return () => clearInterval(interval);
+}, [fetchEthAmount]);
+
 
 //Entity Price For Mint
 useEffect(() => {
@@ -264,6 +321,10 @@ const getEntitiesForForging = async () => {
   return (
     <AppContext.Provider
       value={{
+        isOpen,
+        modalContent,
+        ethAmount,
+        usdAmount,
         entityPrice,
         isLoading,
         entitiesForForging,
@@ -274,7 +335,10 @@ const getEntitiesForForging = async () => {
         web3Modal,
         upcomingMints,
         getEntitiesForSale,
+        openModal,
+        closeModal,
         getOwnersEntities,
+        convertEthToUsd,
         getEntitiesForForging,
       }}
     >
