@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .absolute-size {
+      @apply absolute w-full h-full inset-0;
+    }
+  
+    .absolute-center {
+      @apply absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2;
+    }
+  }
+  

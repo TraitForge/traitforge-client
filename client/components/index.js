@@ -5,3 +5,5 @@ export { default as Wrapper } from './ui/Wrapper';
 export { default as Slider } from './common/Slider';
 export { default as LoadingSpinner } from './common/LoadingSpinner';
 export { default as TransactionsDisplay } from './common/TransactionsDisplay';
+
+export { Button} from './common/buttons/Button'
