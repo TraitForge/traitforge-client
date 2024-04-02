@@ -2,10 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { JsonRpcProvider } from 'ethers/providers';
 import { useWeb3ModalProvider, useWeb3ModalAccount, createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
+import Web3Modal from 'web3modal';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
-const infuraProvider = new JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
+const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 
 const ContextProvider = ({ children }) => {
   const [entitiesForSale, setEntitiesForSale] = useState([]);
@@ -18,6 +19,7 @@ const ContextProvider = ({ children }) => {
   const [web3Modal, setWeb3Modal] = useState(null);
 
   useEffect(() => {
+    let web3ModalInstance;
     const initWeb3Modal = async () => {
       const projectId = 'YOUR_PROJECT_ID';
       const mainnet = {
@@ -44,7 +46,7 @@ const ContextProvider = ({ children }) => {
         defaultChainId: 1
       };
 
-      const web3ModalInstance = new Web3Modal({
+      const createWeb3Modal = new Web3Modal({
         network: 'mainnet',
         cacheProvider: true,
         providerOptions: {},
@@ -53,22 +55,19 @@ const ContextProvider = ({ children }) => {
       });
 
       setWeb3Modal(web3ModalInstance);
-    };
+  };
 
-    initWeb3Modal();
-  }, []);
+  const connectWallet = async () => {
+    if (!web3ModalInstance) return;
 
-  useEffect(() => {
-    if (!web3Modal) return;
+    const connection = await web3ModalInstance.connect();
+    const walletProvider = new ethers.providers.Web3Provider(connection);
+    setWalletProvider(walletProvider);
+  };
 
-    const connectWallet = async () => {
-      const connection = await web3Modal.connect();
-      const walletProvider = new ethers.providers.Web3Provider(connection);
-      setWalletProvider(walletProvider);
-    };
-
-    connectWallet();
-  }, [web3Modal]);
+  initWeb3Modal();
+  connectWallet();
+}, []); 
 
 //Entity Price For Mint
 useEffect(() => {
@@ -77,8 +76,8 @@ useEffect(() => {
       setIsLoading(true);
       try {
         const mintContract = new ethers.Contract(
-          contractsConfig.mintAddress,
-          contractsConfig.mintAbi,
+          contractsConfig.traitForgeNftAddress,
+          contractsConfig.traitForgeNftAbi,
           infuraProvider
         );
         const mintPrice = await mintContract.calculateMintPrice();
@@ -103,9 +102,9 @@ useEffect(() => {
           contractsConfig.entropyGeneratorContractAbi, 
           infuraProvider);
         let allEntropies = [];
-        for (let slotIndex = 0; slotIndex < totalSlots; slotIndex++) {
+        for (let slotIndex = 0; slotIndex < contractsConfig.totalSlots; slotIndex++) {
             const batchPromises = [];
-            for (let numberIndex = 0; numberIndex < valuesPerSlot; numberIndex++) {
+            for (let numberIndex = 0; numberIndex < contractsConfig.valuesPerSlot; numberIndex++) {
                 batchPromises.push(contract.getPublicEntropy(slotIndex, numberIndex));
             }
             const batchResults = await Promise.allSettled(batchPromises);
@@ -142,7 +141,7 @@ useEffect(() => {
     const handleEvent = (type) => async (...args) => {
       const event = args[args.length - 1];
       const transactionHash = event.transactionHash;
-      const transaction = await defaultProvider.getTransaction(transactionHash);
+      const transaction = await infuraProvider.getTransaction(transactionHash);
       const valueInEth = ethers.utils.formatEther(transaction.value);
       const newTransaction = {
         type,
@@ -270,6 +269,7 @@ const getEntitiesForForging = async () => {
         entitiesForSale,
         transactions,
         walletProvider, 
+        infuraProvider,
         web3Modal,
         upcomingMints,
         getEntitiesForSale,

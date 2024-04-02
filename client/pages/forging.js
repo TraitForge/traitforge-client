@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useContextState } from '@/utils/context';
-import { contractsConfig } from '@/contractsConfig'; 
+import { contractsConfig } from '@/utils/contractsConfig'; 
 import Modal from './ForgingModal';
 import OwnerEntitiesModal from '@/OwnerEntities';
 import EntityCard from '@/components/EntityCard';
