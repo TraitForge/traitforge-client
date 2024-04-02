@@ -1,0 +1,48 @@
+.honey-pot-container {
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    font-family: 'Bebas Neue', sans-serif;
+    background-image: url('../utils/honeypot-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .frame-container {
+    background-image: url('../utils/honeypotcontainer.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 320px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+  }
+  
+  .eth-amount {
+    width: 20%;
+    background-color: rgba(37, 0, 69, 0.19);
+    border-radius: 4px;
+    padding: 10px;
+  }
+  
+  .nuke-button {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    margin-bottom: 100px;
+    margin-top: 10px;
+    width: 30%;
+  
+    &:hover {
+      transform: scale(1.01);
+    }
+  }
+  

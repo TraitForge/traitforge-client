@@ -1,0 +1,202 @@
+.Trading-page {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    background-image: url('../utils/marketplace-background.jpg');
+    height: 100vh;
+    padding-bottom: 20vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  
+    .market-page-container {
+      background-color: rgba(0, 0, 0, 0.744);
+      margin-top: 10vh;
+      width: 90vw;
+      border-radius: 10px;
+    }
+  
+    .Trading-top-buttons {
+      margin-top: 7vh;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+  
+    .sellEntity {
+      color: #f0f0f0;
+      padding-inline: 15px;
+      background-color: rgba(0, 191, 255, 0.19);
+      border-radius: 1px;
+      border: none;
+      box-shadow: 0px 0px 1px 1px rgb(0, 255, 94);
+      cursor: pointer;
+      max-width: 70%;
+      font-size: 1.5em;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      margin-top: 10px;
+      margin-bottom: 30px;
+  
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  
+    .ownersListings {
+      position: absolute;
+      right: 30px;
+      top: 8vh;
+      width: 200px;
+      color: rgb(255, 255, 255);
+      font-size: 1em;
+      padding: 5px;
+  
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
+  
+    .sorting-dropdown {
+      position: relative;
+      font-size: 0.7em;
+      border: 0.5px solid rgba(168, 255, 255, 0.109);
+      border-radius: 8px;
+      background-color: rgba(15, 15, 15, 0.114);
+      color: rgb(232, 232, 232);
+      cursor: pointer;
+  
+      &:hover, &:focus {
+        border-color: rgb(0, 255, 162);
+        outline: none;
+      }
+    }
+  
+    .tradingfilters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 1em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.427);
+      width: 95%;
+      position: relative;
+      top: 0;
+  
+      button {
+        color: #bdbdbd;
+        text-decoration: none;
+        padding: 0rem 2rem;
+        transition: color 0.3s ease;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+  
+        &.active-filter, &:hover {
+          color: white;
+          border-bottom: 2px solid rgb(255, 255, 255);
+          margin-bottom: -1.5px;
+        }
+      }
+  
+      > .sorting-dropdown {
+        margin-left: auto;
+      }
+    }
+  
+    .buy-sell-page {
+      button {
+        &:hover {
+          transform: scale(1.05);
+        }
+  
+        &:active {
+          background-color: transparent;
+          color: #fcfcfc;
+        }
+      }
+    }
+  
+    .cards-container2 {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: flex-start;
+      padding-left: 10px;
+  
+      .listing-cards {
+        background: black;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 14%;
+        margin-bottom: 20px;
+  
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+  
+    .cards-content,
+    .cards-title,
+    .cards-text {
+      padding: 15px;
+      margin: 0;
+      color: #ffffff;
+      font-size: 1em;
+  
+      &.cards-title {
+        font-size: 1.2em;
+      }
+  
+      &.cards-text {
+        margin-top: 10px;
+      }
+    }
+  }
+  
+  @media (max-width: 1000px) {
+  .Trading-page {
+    .ownersListings {
+      @media (max-width: 1000px) {
+        position: unset;
+        margin-top: 10px;
+        width: 200px;
+        height: 40px;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  
+    @media (max-width: 768px) {
+      .sorting-dropdown {
+        margin-top: 20px;
+        margin-bottom: -5px;
+      }
+  
+      .tradingfilters button {
+        width: 80px;
+      }
+  
+      .tradingfiltersh1 {
+        margin-bottom: 0px;
+      }
+  
+      .modalContainer {
+        margin: 10px;
+        width: auto;
+      }
+  
+      .cards-content {
+        padding: 4px;
+      }
+  
+      .cards-img {
+        width: 40%;
+      }
+    }
+  }
+}

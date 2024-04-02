@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './TradingModal';
-import '../styles/Trading.css';
+import '../styles/trading.scss';
 import { ethers } from 'ethers';
 import EntityCards from '@/EntityCards';
-import { useContextState } from '@/context';
-import { contractsConfig } from '@/contractsConfig'; 
+import { useContextState } from '@/utils/context';
+import { contractsConfig } from '@/utils/contractsConfig'; 
 
 const Marketplace = () => {
   const [selectedListing, setSelectedListing] = useState(null);

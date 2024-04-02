@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import HoneyPotModal from './HoneyPotModal';
-import NukeButton from '../utils/nukebutton.png';
-import '../styles/HoneyPot.css';
+import HoneyPotModal from '@/HoneyPotModal';
+import NukeButton from '@/utils/nukebutton.png';
+import '@/styles/honeypot.scss';
 import { useContextState } from '@/utils/context';
-import { contractsConfig } from '@/contractsConfig'; 
+import { contractsConfig } from '@/utils/contractsConfig'; 
 
 function HoneyPot() {
   const [showNFTModal, setShowNFTModal] = useState(false);
-  const [nukeHistory, setNukeHistory] = useState([]);
   const [ethAmount, setEthAmount] = useState(0);
   const [usdAmount, setUsdAmount] = useState(0);
   const {
@@ -63,13 +62,6 @@ function HoneyPot() {
 
     return () => clearInterval(interval);
   }, [fetchEthAmount]);
-
-  useEffect(() => {
-    const storedNukeHistory = localStorage.getItem('Nuked');
-    if (storedNukeHistory) {
-      setNukeHistory(JSON.parse(storedNukeHistory));
-    }
-  }, []);
 
   return (
     <div className="honey-pot-container">
