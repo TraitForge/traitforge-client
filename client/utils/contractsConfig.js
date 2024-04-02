@@ -7,7 +7,7 @@ import nukeFund from '../../solidity/artifacts/contracts/NukeFund/NukeFund.sol/N
 export const contractsConfig = {
   totalSlots: 770,
   valuesPerSlot: 13,
-  infuraRPCURL: 'https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa',
+  infuraRPCURL: process.env.NEXT_PUBLIC_INFURA_RPCURL,
   traitForgeNftAbi: TraitForgeNftAbi.abi,
   traitForgeNftAddress: process.env.NEXT_PUBLIC_TRAITFORGENFT_ADDRESS,
   entropyGeneratorContractAbi: EntropyGenerator.abi,

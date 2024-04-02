@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig'; 
-import Modal from './ForgingModal';
-import OwnerEntitiesModal from '@/OwnerEntities';
-import EntityCard from '@/components/EntityCard';
-import ClaimEntity from '@/utils/claimentity.png';
-import PoolForgeCard from '@/utils/PoolSelectCard.png';
-import WalletForgeCard from '@/utils/WalletSelectCard.png';
-import ForgeButton from '@/utils/forgebutton.png';
+import EntityCard from '@/components/common/EntityCard';
+import ClaimEntity from '@/public/images/claimentity.png';
+import PoolForgeCard from '@/public/images/PoolSelectCard.png';
+import WalletForgeCard from '@/public/images/WalletSelectCard.png';
+import ForgeButton from '@/public/images/forgebutton.png';
 import '@/styles/forging.scss';
-import LoadingSpinner from '@/Spinner';
+import { LoadingSpinner } from '@/components';
 
 const Forging = () => {
   const {

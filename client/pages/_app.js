@@ -1,16 +1,19 @@
 import { DefaultSeo } from 'next-seo';
 import SEO from '@/next-seo.config';
-import { Wrapper } from '@/components';
+import { Wrapper, Modal } from '@/components';
 import '@/styles/main.scss';
-import { ContextProvider } from '@/utils/context';
+import { ModalProvider } from '@/utils/modalContext'; 
 
 const App = ({ Component, pageProps }) => (
-  <ContextProvider>
-    <Wrapper>
-      <DefaultSeo {...SEO} />
-      <Component {...pageProps} />
-    </Wrapper>
-  </ContextProvider>
+  <ModalProvider> 
+    <ContextProvider>
+      <Wrapper>
+        <DefaultSeo {...SEO} />
+        <Modal /> 
+        <Component {...pageProps} />
+      </Wrapper>
+    </ContextProvider>
+  </ModalProvider>
 );
 
 export default App;

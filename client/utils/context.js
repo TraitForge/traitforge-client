@@ -18,6 +18,7 @@ const ContextProvider = ({ children }) => {
   const [walletProvider, setWalletProvider] = useState(null);
   const [web3Modal, setWeb3Modal] = useState(null);
 
+
   useEffect(() => {
     let web3ModalInstance;
     const initWeb3Modal = async () => {
