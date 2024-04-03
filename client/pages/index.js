@@ -15,6 +15,7 @@ const Home = () => {
       <div className="nexttokenslider">
         <Slider />
       </div>
+      {isLoading && <LoadingSpinner />}
     </div>
   );
 };

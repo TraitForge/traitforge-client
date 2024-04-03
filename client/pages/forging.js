@@ -93,7 +93,6 @@ const Forging = () => {
   const openEntityToForge = (entity) => {
     console.log('Opening entity for forging:', entity);
     setSelectedEntity(entity);
-    // Additional logic for opening entity for forging...
   };
 
   return (

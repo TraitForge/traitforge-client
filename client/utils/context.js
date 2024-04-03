@@ -25,7 +25,6 @@ const ContextProvider = ({ children }) => {
 
 
   useEffect(() => {
-    let web3ModalInstance;
     const initWeb3Modal = async () => {
       const projectId = 'YOUR_PROJECT_ID';
       const mainnet = {
@@ -52,7 +51,7 @@ const ContextProvider = ({ children }) => {
         defaultChainId: 1
       };
 
-      const createWeb3Modal = new Web3Modal({
+      const web3ModalInstance = new Web3Modal({
         network: 'mainnet',
         cacheProvider: true,
         providerOptions: {},
@@ -61,27 +60,37 @@ const ContextProvider = ({ children }) => {
       });
 
       setWeb3Modal(web3ModalInstance);
+      return web3ModalInstance;
   };
 
-  const connectWallet = async () => {
-    if (!web3ModalInstance) return;
-
+  initWeb3Modal().then(connectWallet); // Chain the promises
+}, []);
+const connectWallet = async (web3ModalInstance) => {
+  if (!web3ModalInstance) return;
+  try {
     const connection = await web3ModalInstance.connect();
-    const walletProvider = new ethers.providers.Web3Provider(connection);
-    setWalletProvider(walletProvider);
-  };
-
-  initWeb3Modal();
-  connectWallet();
-}, []); 
+    const provider = new ethers.providers.Web3Provider(connection);
+    setWalletProvider(provider);
+  } catch (error) {
+    console.error('Error connecting wallet:', error);
+  }
+};
 
 //Modal State Trigger
-const openModal = (content) => {
+const useModal = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
+  
+  const openModal = (content) => {
   setModalContent(content);
   setIsOpen(true);
-};
-const closeModal = () => {
+  };
+  
+  const closeModal = () => {
   setIsOpen(false);
+  };
+  
+  return { isOpen, modalContent, openModal, closeModal };
 };
 
 //fetching/setting Price States
@@ -151,7 +160,7 @@ useEffect(() => {
     getLatestEntityPrice();
   }, [infuraProvider]);
 
-  useEffect(() => {
+  //useEffect(() => {
     const getUpcomingMints = async () => {
         if (!infuraProvider) return;
         setIsLoading(true);
@@ -176,8 +185,8 @@ useEffect(() => {
         setIsLoading(false);
         setUpcomingMints(upcomingMints);
     };
-    getUpcomingMints();
-}, []);
+    //getUpcomingMints();
+//}, []);
 
 // Event Listener for Stats
   useEffect(() => {
@@ -334,9 +343,9 @@ const getEntitiesForForging = async () => {
         infuraProvider,
         web3Modal,
         upcomingMints,
+        connectWallet,
         getEntitiesForSale,
-        openModal,
-        closeModal,
+        useModal,
         getOwnersEntities,
         getEntitiesForForging,
       }}
