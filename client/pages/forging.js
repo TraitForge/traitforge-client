@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig'; 
-import ClaimEntity from '@/public/images/claimentity.png';
-import PoolForgeCard from '@/public/images/PoolSelectCard.png';
-import WalletForgeCard from '@/public/images/WalletSelectCard.png';
-import ForgeButton from '@/public/images/forgebutton.png';
-import '@/styles/forging.scss';
+import styles from '@/styles/forging.module.scss';
 import { LoadingSpinner, EntityCard } from '@/components';
 
 const Forging = () => {
@@ -13,7 +9,8 @@ const Forging = () => {
     openModal,
     getEntitiesForForging,
     getOwnersEntities,
-    walletProvider
+    walletProvider,
+    entitiesForForging 
   } = useContextState();
 
   const entityList = useRef(null);
@@ -93,28 +90,36 @@ const Forging = () => {
     entityList.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const openEntityToForge = (entity) => {
+    console.log('Opening entity for forging:', entity);
+    setSelectedEntity(entity);
+    // Additional logic for opening entity for forging...
+  };
+
   return (
-    <div className="forging-page">
-      <div className="forge-arena-container">
+    <div className={styles.forgingPage}>
+      <div className={styles.forgeArenaContainer}>
         <h1>Forging Arena</h1>
-        <div className="selected-entity-placeholder">
-          <div className="forgecardsrow">
+        <div className={styles.selectedEntityPlaceholder}>
+          <div className={styles.forgecardsrow}>
             <img
-              src={PoolForgeCard}
+              src= "/images/PoolSelectCard.png"
               alt="forge place holder"
-              className="other-entities"
+              className={styles.otherEntities}
               onClick={scrollToEntityList}
             />
-            <img src={ClaimEntity} alt="claim box" />
+            <img src= "/images/claimentity.png" 
+            alt="claim box" 
+            />
             <img
-              src={WalletForgeCard}
+              src= "/images/WalletSelectCard.png"
               alt="forge place holder"
-              className="your-entities"
+              className={styles.yourEntities}
               onClick={() => openModal(<div>*OwnerModal*</div>)}
             />
           </div>
           {selectedEntity && (
-            <div className="selectedEntity">
+            <div className={styles.selectedEntity}>
               <img
                 src={selectedEntity.image}
                 alt={`Entity ${selectedEntity.title}`}
@@ -128,26 +133,26 @@ const Forging = () => {
           )}
         </div>
         <img
-          src={ForgeButton}
+          src= "/images/forgebutton.png"
           alt="forge"
-          className="forge-button"
+          className={styles.forgeButton}
           onClick={() => forgeEntity()}
         />
       </div>
 
-      <div className="entity-list-container" ref={entityList}>
-        <div className="breed-sorting-options">
-          <div className="left-items">
+      <div className={styles.entityListContainer} ref={entityList}>
+        <div className={styles.breedSortingOptions}>
+          <div className={styles.leftItems}>
             <button
-              className="breed-entity-button"
+              className={styles.breedEntityButton}
               onClick={() => openModal(<div>*OwnerModal*</div>)}
             >
               List Your Forger
             </button>
           </div>
-          <div className="right-items">
+          <div className={styles.rightItems}>
             <select
-              className="forge-sorting-dropdown"
+              className={styles.forgeSortingDropdown}
               onChange={e => setSortOption(e.target.value)}
             >
               <option value="">Select Sorting Option</option>
@@ -163,7 +168,7 @@ const Forging = () => {
       </div>
 
       {selectedEntity && (
-        <div className="detailed-card">
+        <div className={styles.detailedCard}>
           <img
             src={selectedEntity.image}
             alt={`Entity ${selectedEntity.title}`}
@@ -173,13 +178,13 @@ const Forging = () => {
           <p>{selectedEntity.gender}</p>
           <p>Nuke Factor: {selectedEntity.nukefactor}</p>
           <button
-            className="forge-button"
+            className={styles.forgeButton}
             onClick={() => forgeNewEntity(selectedEntity)}
           >
             Forge
           </button>
           <button
-            className="close-button"
+            className={styles.closeButton}
             onClick={() => setSelectedEntity(null)}
           >
             Close

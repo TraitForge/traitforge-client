@@ -338,7 +338,6 @@ const getEntitiesForForging = async () => {
         openModal,
         closeModal,
         getOwnersEntities,
-        convertEthToUsd,
         getEntitiesForForging,
       }}
     >

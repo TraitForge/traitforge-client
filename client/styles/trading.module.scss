@@ -1,0 +1,174 @@
+$primary-color: #FF7A00;
+$background-color-modal: rgba(0, 0, 0, 0.5);
+$border-color-dropdown: rgba(255, 123, 0, 0.24);
+
+.tradingPage {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  background: url('/images/marketplace-background.jpg') center / cover no-repeat;
+  height: 100vh;
+  padding-bottom: 20vh;
+
+  .marketPageContainer {
+    background-color: rgba(0, 0, 0, 0.744);
+    margin-top: 10vh;
+    width: 90vw;
+    border-radius: 10px;
+  }
+
+  .tradingTopButtons {
+    margin-top: 7vh;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .sellEntity {
+      color: #f0f0f0;
+      padding-inline: 15px;
+      background-color: rgba(0, 191, 255, 0.19);
+      border-radius: 1px;
+      border: none;
+      box-shadow: 0px 0px 1px 1px rgb(0, 255, 94);
+      cursor: pointer;
+      max-width: 70%;
+      font-size: 1.5em;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      margin-top: 10px;
+      margin-bottom: 30px;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .tradingfilters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.427);
+    width: 95%;
+    position: relative;
+    top: 0;
+
+    button {
+      color: #bdbdbd;
+      text-decoration: none;
+      padding: 0rem 2rem;
+      transition: color 0.3s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+
+      &.activeFilter, &:hover {
+        color: white;
+        border-bottom: 2px solid rgb(255, 255, 255);
+        margin-bottom: -1.5px;
+      }
+    }
+
+    .sortingDropdown {
+      font-size: 0.7em;
+      border: 0.5px solid rgba(168, 255, 255, 0.109);
+      border-radius: 8px;
+      background-color: rgba(15, 15, 15, 0.114);
+      color: rgb(232, 232, 232);
+      cursor: pointer;
+
+      &:hover, &:focus {
+        border-color: rgb(0, 255, 162);
+        outline: none;
+      }
+    }
+  }
+
+  .listings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+
+    .entityCard {
+      background: black;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 200px;
+      margin-bottom: 20px;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      .cardContent {
+        padding: 15px;
+        color: white;
+
+        .cardTitle {
+          font-size: 1.2em;
+        }
+
+        .cardText {
+          margin-top: 10px;
+          font-size: 0.9em;
+        }
+      }
+    }
+  }
+
+  .buyButton {
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .tradingPage {
+    .marketPageContainer {
+      width: 95vw;
+    }
+
+    .tradingfilters {
+      flex-direction: column;
+      align-items: center;
+
+      button {
+        margin: 5px 0;
+      }
+
+      .sortingDropdown {
+        margin-top: 10px;
+      }
+    }
+
+    .listings {
+      justify-content: center;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .tradingPage {
+    .tradingTopButtons {
+      flex-direction: row;
+      justify-content: space-around;
+      width: 100%;
+    }
+
+    .tradingfilters {
+      width: 100%;
+      justify-content: space-around;
+
+      button {
+        font-size: 0.8em;
+      }
+    }
+  }
+}

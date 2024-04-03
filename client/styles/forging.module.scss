@@ -1,0 +1,130 @@
+$primary-color: #FF7A00;
+$background-color-modal: rgba(0, 0, 0, 0.5);
+$border-color-dropdown: rgba(255, 123, 0, 0.24);
+
+.forgingPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: url('/images/forge-background.jpg') center / cover no-repeat;
+  height: 140vh;
+
+  .forgeArenaContainer {
+    border-bottom: 1px solid $primary-color;
+    margin-top: 80px;
+    width: 100%; // Use full width or set a max-width for better control
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .forgecardsrow {
+      display: flex;
+      justify-content: center;
+      flex-direction: row;
+      height: 350px;
+      gap: 100px;
+
+      .otherEntities, .yourEntities {
+        &:hover {
+          transform: scale(1.02);
+        }
+      }
+    }
+
+    .forgeButton {
+      cursor: pointer;
+      margin-top: 10px;
+      margin-bottom: 60px;
+      width: 300px;
+      height: auto;
+
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
+  }
+
+  .selectedEntityPlaceholder {
+    .selectedEntity {
+      //styles for selectedEntity
+    }
+  }
+
+  .entityListContainer {
+    background-color: rgba(0, 0, 0, 0.72);
+    width: 95vw;
+    height: 100vw;
+    border-radius: 10px;
+
+    .breedSortingOptions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 1em;
+      margin-top: 40px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.427);
+      width: 95%;
+      position: relative;
+      top: 0;
+
+      .leftItems, .rightItems {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .forgeSortingDropdown {
+        font-size: 0.65em;
+        margin-bottom: 5px;
+        border: 0.5px solid $border-color-dropdown;
+        border-radius: 8px;
+        background-color: rgba(15, 15, 15, 0.137);
+        color: rgb(232, 232, 232);
+        cursor: pointer;
+        align-self: flex-start;
+
+        &:hover, &:focus {
+          border-color: $primary-color;
+          outline: none;
+        }
+      }
+    }
+
+    .breedEntityButton {
+      font-size: 1.2em;
+      color: #f0f0f0;
+      background-color: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: -40px;
+      box-shadow: 0px 0px 1px 1px $primary-color;
+      position: absolute;
+      left: 45%;
+      margin-left: auto; 
+      margin-right: auto;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .detailedCard {
+    // Styles for detailedCard
+  }
+
+  .processingModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $background-color-modal;
+  }
+}

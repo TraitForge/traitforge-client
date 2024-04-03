@@ -1,6 +1,5 @@
 import React from 'react';
-import NukeButton from '@/utils/nukebutton.png';
-import '@/styles/honeypot.scss';
+import styles from '@/styles/honeypot.module.scss';
 import { useContextState } from '@/utils/context';
 
 function HoneyPot() {
@@ -11,17 +10,17 @@ function HoneyPot() {
   } = useContextState();
 
   return (
-    <div className="honey-pot-container">
+    <div className={styles.honeyPotContainer}>
       <h1>The HoneyPot</h1>
 
-      <div className="frame-container">
-        <div className="eth-amount">
+      <div className={styles.frameContainer}>
+        <div className={styles.ethAmount}>
           <h1>{ethAmount} ETH</h1>
           <p>≈ ${usdAmount} USD</p>
         </div>
       </div>
 
-      <img src={NukeButton} className="nuke-button" onClick={() => openModal(<div>*honeypot modal*</div>)} />
+      <img src= "/images/nukebutton.png" className={styles.nukeButton} onClick={() => openModal(<div>*honeypot modal*</div>)} />
     </div>
   );
 }
