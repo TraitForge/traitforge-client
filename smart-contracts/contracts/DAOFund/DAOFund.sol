@@ -23,6 +23,9 @@ contract DAOFund is Ownable, ReentrancyGuard {
       block.timestamp
     );
 
-    token.burn(token.balanceOf(address(this)));
+    require(
+      token.burn(token.balanceOf(address(this))) == true,
+      'Token burn failed'
+    );
   }
 }

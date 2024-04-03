@@ -21,7 +21,8 @@ contract Trait is ITrait, ERC20 {
     return _decimals;
   }
 
-  function burn(uint256 amount) external {
+  function burn(uint256 amount) external returns (bool) {
     _burn(msg.sender, amount);
+    return true;
   }
 }
