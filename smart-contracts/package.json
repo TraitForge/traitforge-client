@@ -5,7 +5,8 @@
   "scripts": {
     "clean": "npx hardhat clean",
     "test": "npx hardhat test",
-    "compile": "npx hardhat clean && npx hardhat compile"
+    "compile": "npx hardhat clean && npx hardhat compile",
+    "deploy": "npx hardhat deploy-all"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.3",
