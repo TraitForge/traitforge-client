@@ -85,12 +85,20 @@ const Marketplace = () => {
     <div className={styles.tradingPage}>
       <div className={styles.marketPageContainer}>
         <div className={styles.tradingTopButtons}>
-          <button className={styles.sellEntity} onClick={() => openModal(<div>*trading modal*</div>)}>Sell Your Entity</button>
           <div className={styles.tradingfilters}>
             <button className={filter === 'All' ? styles.activeFilter : ''} onClick={() => handleFilterChange('All')}>All</button>
             <button className={filter === 'Forger' ? styles.activeFilter : ''} onClick={() => handleFilterChange('Forger')}>Forgers</button>
             <button className={filter === 'Merger' ? styles.activeFilter : ''} onClick={() => handleFilterChange('Merger')}>Mergers</button>
-            <select className={styles.sortingDropdown} onChange={(e) => setSortOption(e.target.value)}>
+          </div> 
+          <div className={styles.sellandfilterbutton}>
+          <img
+              src= "/images/sellButton.png"
+              alt="sell place holder"
+              className={styles.sellEntity}
+              onClick={() => openModal(<div>*trading modal*</div>)}
+            />
+          <select className={styles.tradeSortingDropdown} 
+          onChange={(e) => setSortOption(e.target.value)}>
               <option value="">Select Sorting Option</option>
               <option value="highestPrice">Price high to low</option>
               <option value="lowestPrice">Price low to high</option>
@@ -101,7 +109,7 @@ const Marketplace = () => {
               <option value="highestPerformanceFactor">Performance Factor Speed highest</option>
               <option value="lowestPerformanceFactor">Performance Factor lowest</option>
             </select>
-          </div> 
+            </div>
         </div>
       </div>
 

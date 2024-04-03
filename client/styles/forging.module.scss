@@ -13,7 +13,7 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   .forgeArenaContainer {
     border-bottom: 1px solid $primary-color;
     margin-top: 80px;
-    width: 100%; // Use full width or set a max-width for better control
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
