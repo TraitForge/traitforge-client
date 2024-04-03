@@ -2,8 +2,9 @@
 pragma solidity ^0.8.20;
 
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import './ITrait.sol';
 
-contract Trait is ERC20 {
+contract Trait is ITrait, ERC20 {
   uint8 private _decimals;
 
   constructor(
@@ -18,5 +19,9 @@ contract Trait is ERC20 {
 
   function decimals() public view virtual override returns (uint8) {
     return _decimals;
+  }
+
+  function burn(uint256 amount) external {
+    _burn(msg.sender, amount);
   }
 }
