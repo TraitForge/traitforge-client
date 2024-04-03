@@ -12,6 +12,8 @@ contract DAOFund is Ownable, ReentrancyGuard {
     IUniswapV2Router02(0xf012702a5f0e54015362cBCA26a26fc90AA832a3);
 
   receive() external payable {
+    require(msg.value > 0, 'No ETH sent');
+
     address[] memory path = new address[](2);
     path[1] = uniswapV2Router.WETH();
     path[0] = address(token);
