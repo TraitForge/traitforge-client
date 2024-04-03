@@ -77,10 +77,6 @@ const connectWallet = async (web3ModalInstance) => {
 };
 
 //Modal State Trigger
-const useModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalContent, setModalContent] = useState(null);
-  
   const openModal = (content) => {
   setModalContent(content);
   setIsOpen(true);
@@ -89,9 +85,6 @@ const useModal = () => {
   const closeModal = () => {
   setIsOpen(false);
   };
-  
-  return { isOpen, modalContent, openModal, closeModal };
-};
 
 //fetching/setting Price States
 const fetchEthAmount = useCallback(async () => {
@@ -343,9 +336,10 @@ const getEntitiesForForging = async () => {
         infuraProvider,
         web3Modal,
         upcomingMints,
+        openModal,
+        closeModal,
         connectWallet,
         getEntitiesForSale,
-        useModal,
         getOwnersEntities,
         getEntitiesForForging,
       }}

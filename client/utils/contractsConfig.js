@@ -1,7 +1,7 @@
-import TraitForgeNftAbi from '../../solidity/artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
-import EntropyGenerator from '../../solidity/artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
-import entityMerging from '../../solidity/artifacts/contracts/EntityMerging/EntityMerging.sol/EntityMerging.json';
-import nukeFund from '../../solidity/artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
+import TraitForgeNftAbi from '../../smart-contracts/artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
+import EntropyGenerator from '../../smart-contracts/artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
+import entityMerging from '../../smart-contracts/artifacts/contracts/EntityMerging/EntityMerging.sol/EntityMerging.json';
+import nukeFund from '../../smart-contracts/artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
 
 
 export const contractsConfig = {

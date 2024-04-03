@@ -45,12 +45,6 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
     }
   }
 
-  .selectedEntityPlaceholder {
-    .selectedEntity {
-      //styles for selectedEntity
-    }
-  }
-
   .entityListContainer {
     background-color: rgba(0, 0, 0, 0.72);
     width: 95vw;
@@ -105,15 +99,12 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
       left: 45%;
       margin-left: auto; 
       margin-right: auto;
+      padding: 2px 5px;
 
       &:hover {
         transform: scale(1.05);
       }
     }
-  }
-
-  .detailedCard {
-    // Styles for detailedCard
   }
 
   .processingModal {

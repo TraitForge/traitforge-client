@@ -3,8 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
-import Spinner from '../LoadingSpinner';
-import EntityCard from '../EntityCard';
+import { LoadingSpinner, EntityCard } from '@/components';
 import { useContextState } from '@/utils/context';
 import styles from './styles.module.scss';
 
@@ -31,7 +30,6 @@ function calculateEntityAttributes(entropy) {
   return { role, forgePotential, nukeFactor, performanceFactor };
 }
 
-
   useEffect(() => {
     const handleMoved = (splide, newIndex) => {
       setIsBeginning(newIndex === 0);
@@ -46,8 +44,6 @@ function calculateEntityAttributes(entropy) {
       return () => splideInstance.off('mounted move', handleMoved);
     }
   }, [upcomingMints]);
-
-  if (isLoading) return <Spinner />;
 
   return (
     <div className={styles.sliderWrapper}>

@@ -7,6 +7,7 @@ import { LoadingSpinner, EntityCard } from '@/components';
 const Forging = () => {
   const {
     openModal,
+    modalContent,
     getEntitiesForForging,
     getOwnersEntities,
     walletProvider,
@@ -114,7 +115,7 @@ const Forging = () => {
               src= "/images/WalletSelectCard.png"
               alt="forge place holder"
               className={styles.yourEntities}
-              onClick={() => openModal(<div>*OwnerModal*</div>)}
+              onClick={() => openModal(modalContent)}
             />
           </div>
           {selectedEntity && (
@@ -144,7 +145,7 @@ const Forging = () => {
           <div className={styles.leftItems}>
             <button
               className={styles.breedEntityButton}
-              onClick={() => openModal(<div>*OwnerModal*</div>)}
+              onClick={() => openModal(modalContent)}
             >
               List Your Forger
             </button>
