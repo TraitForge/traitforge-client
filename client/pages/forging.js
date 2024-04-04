@@ -9,12 +9,12 @@ const Forging = () => {
   const {
     isOpen,
     openModal,
-    closeModal,
     getEntitiesForForging,
-    getOwnersEntities,
+    ownerEntities,
     entitiesForForging 
   } = useContextState();
 
+  const [modalContent, setModalContent] = useState(null);
   const entityList = useRef(null);
   const [sortOption, setSortOption] = useState('');
   const [processing, setProcessing] = useState(false);
@@ -24,9 +24,13 @@ const Forging = () => {
 
   useEffect(() => {
       getEntitiesForForging();
-      getOwnersEntities();
-  }, [ getEntitiesForForging, getOwnersEntities]);
+  }, [ getEntitiesForForging ]);
 
+  const openModalWithContent = (content) => {
+    setModalContent(content);
+    openModal(true); 
+  };
+ 
   const forgeEntity = async () => {
     if (!walletProvider ) return;
     setProcessing(true);
@@ -63,9 +67,37 @@ const Forging = () => {
     </div>
   );
 
-  const modalContent = (
-    <div className='entityDisplay'>
-          <h1> Choose an Entity to list </h1>
+  const modalContent1 = (
+    <div className={styles.entityDisplay}>
+      <h1>LIST YOUR ENTITY</h1>
+      <ul>
+        {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
+          ownerEntities.map((entity, index) => (
+            <EntityCard className={styles.entitycard} key={index}>
+              {entity.name} - {entity.description}
+            </EntityCard>
+          ))
+        ) : (
+          <li>You don't own an Entity!</li>
+        )}
+      </ul>
+    </div>
+  );
+
+  const modalContent2 = (
+    <div className={styles.entityDisplay}>
+      <h1>Select entity</h1>
+      <ul>
+        {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
+          ownerEntities.map((entity, index) => (
+            <EntityCard className={styles.entitycard} key={index}>
+              {entity.name} - {entity.description}
+            </EntityCard>
+          ))
+        ) : (
+          <li>You don't own an Entity!</li>
+        )}
+      </ul>
     </div>
   );
 
@@ -123,12 +155,11 @@ const Forging = () => {
               src= "/images/WalletSelectCard.png"
               alt="forge place holder"
               className={styles.yourEntities}
-              onClick={() => openModal()}
+              onClick={() => openModalWithContent(modalContent2)}
             />
             {isOpen && (
-             <Modal>
-          {}
-          <button onClick={closeModal}>Close</button>
+             <Modal background = '/images/forge-background.jpg'>
+          {modalContent2}
             </Modal>
             )}
           </div>
@@ -159,15 +190,14 @@ const Forging = () => {
           <div className={styles.leftItems}>
             <button
               className={styles.breedEntityButton}
-              onClick={() => openModal()}
+              onClick={() => openModalWithContent(modalContent1)}
             >
               List Your Forger
             </button>
             {isOpen && (
-             <Modal>
+             <Modal background = '/images/forge-background.jpg'>
           {modalContent}
-          <button onClick={closeModal}>Close</button>
-            </Modal>
+            </Modal >
             )}
           </div>
           <div className={styles.rightItems}>

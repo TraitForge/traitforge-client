@@ -1,3 +1,7 @@
+.navbar {
+  z-index: 1000;
+}
+
 .logo {
   display: flex;
   align-items: center; 
@@ -13,8 +17,8 @@
 .logo img {
   height: 34px; 
   width: auto; 
-  z-index: 5;
   padding-bottom: 4px;
+  z-index: 2;
 }
 
 .navToggle {
@@ -24,7 +28,6 @@
   border: none;
   box-shadow: none;
   background-color: transparent;
-  z-index: 5;
   border: none;
 }
 
@@ -35,9 +38,8 @@
   align-items: center;
   position: absolute;
   top: 0;
-  z-index: 2;
   gap: 10px;
-  background: #000000ae;
+  background: #0000005c;
 
   a {
     color: #a9a9a9;

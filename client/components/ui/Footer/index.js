@@ -16,7 +16,7 @@ const links = [
   { url: 'https://discord.gg/KWHCEY6zFT', icon: faDiscord, text: 'Discord' },
 ];
 
-const Footer = ({ showInstructions, toggleInstructions }) => {
+const Footer = () => {
   return (
     <footer className={styles.container}>
       <div className={styles.footer}>
@@ -32,9 +32,6 @@ const Footer = ({ showInstructions, toggleInstructions }) => {
           </a>
         ))}
       </div>
-      <button onClick={toggleInstructions}>
-        {showInstructions ? 'x' : '?'}
-      </button>
     </footer>
   );
 };

@@ -24,7 +24,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   };
 
   return (
-    <>
+    <div className={styles.navbar}>
     <div className={styles.logo}>
     <h1> TRAITFORGE </h1>
     <img src='/images/transparentlogo.png' alt='TraitForge Logo' />
@@ -48,7 +48,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
         ))}
       </nav>
      <ConnectButton/>
-    </>
+    </div>
   );
 };
 

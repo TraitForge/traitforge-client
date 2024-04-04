@@ -8,7 +8,10 @@ export default function ConnectButton() {
 
   return (
     <>
-      <button className={styles.connectwallet} onClick={() => open()}><FaWallet/></button>
+      <button className={styles.connectwallet} onClick={() => open()}>
+        <FaWallet/>
+        <span>wallet</span>
+        </button>
     </>
   )
 }

@@ -8,7 +8,7 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   align-content: center;
   font-family: 'Bebas Neue', sans-serif;
   background: url('/images/marketplace-background.jpg') center / cover no-repeat;
-  height: 100vh;
+  height: 140vh;
   padding-bottom: 20vh;
 
   .marketPageContainer {
@@ -45,9 +45,8 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
       max-width: 70%;
       transition: background-color 0.3s, box-shadow 0.3s;
       margin-bottom: 20px;
-
       &:hover {
-        transform: scale(1.05);
+        transform: scale(1.02);
       }
     }
   }
@@ -141,6 +140,20 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
       transform: scale(1.05);
     }
   }
+
+}
+
+.entityDisplay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.entityDisplay h1 {
+ font-size: 1.5em;
+ margin-bottom: 40px;
 }
 
 @media (max-width: 1000px) {

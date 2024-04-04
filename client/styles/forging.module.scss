@@ -9,9 +9,10 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   justify-content: center;
   background: url('/images/forge-background.jpg') center / cover no-repeat;
   height: 140vh;
+  padding-bottom: 20vh;
+}
 
   .forgeArenaContainer {
-    border-bottom: 1px solid $primary-color;
     margin-top: 80px;
     width: 100%;
     display: flex;
@@ -53,20 +54,21 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
 
     .breedSortingOptions {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       font-size: 1em;
-      margin-top: 40px;
+      margin-top: 20px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.427);
-      width: 95%;
+      width: 100%;
       position: relative;
       top: 0;
 
-      .leftItems, .rightItems {
+      .rightItems {
         display: flex;
         align-items: center;
-        gap: 20px;
+        position: absolute;
+        right: 20px;
       }
 
       .forgeSortingDropdown {
@@ -93,12 +95,8 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin-top: -40px;
       box-shadow: 0px 0px 1px 1px $primary-color;
-      position: absolute;
-      left: 45%;
-      margin-left: auto; 
-      margin-right: auto;
+      margin-bottom: 15px;
       padding: 2px 5px;
 
       &:hover {
@@ -118,4 +116,17 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
     align-items: center;
     background-color: $background-color-modal;
   }
-}
+
+  .entityDisplay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 50px;
+  }
+  
+  .entityDisplay h1 {
+   font-size: 1.5em;
+   margin-bottom: 40px;
+  }
+

@@ -86,20 +86,31 @@ const Marketplace = () => {
     }
   };
 
+
+  const filteredAndSortedListings = getSortedFilteredListings();
+
+
+
+
   const modalContent = (
-    <div className='entityDisplay'>
-      <h1>Choose an Entity to list</h1>
+    <div className={styles.entityDisplay}>
+      <h1>SELL YOUR ENTITY</h1>
       <ul>
-        {ownerEntities && ownerEntities.map((entity, index) => (
-          <li key={index}>
-            {entity.name} - {entity.description}
-          </li>
-        ))}
+        {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
+          ownerEntities.map((entity, index) => (
+            <EntityCard className={styles.entitycard} key={index}>
+              {entity.name} - {entity.description}
+            </EntityCard>
+          ))
+        ) : (
+          <li>You don't own an Entity!</li>
+        )}
       </ul>
     </div>
   );
+  
 
-  const filteredAndSortedListings = getSortedFilteredListings();
+
 
   return (
     <div className={styles.tradingPage}>
@@ -115,11 +126,11 @@ const Marketplace = () => {
               src= "/images/sellButton.png"
               alt="sell place holder"
               className={styles.sellEntity}
-              onClick={() => openModal(modalContent)}
+              onClick={() => openModal()}
             />
             {isOpen && (
-             <Modal>
-          {}
+             <Modal background = '/images/marketplace-background.jpg'>
+             {modalContent}
             </Modal>
             )}
           <select className={styles.tradeSortingDropdown} 
@@ -154,5 +165,6 @@ const Marketplace = () => {
     </div>
   );
 };
+
 
 export default Marketplace;

@@ -184,50 +184,6 @@ ul {
   font-family: 'Bebas Neue', sans-serif;
 }
 
-.instructions-pop-up {
-  position: fixed;
-  bottom: 70px;
-  right: 10px;
-  width: 400px;
-  max-height: 400px;
-  z-index: 5500;
-  font-size: 0.6em;
-  color: #000000;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  overflow-y: auto;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
-.instructions-content p {
-  font-size: 1.3em;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
-.instructions-pop-up h4 {
-  color: #000000;
-  margin-top: -5px;
-  padding-bottom: 15px;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
-.instructions-pop-up h3 {
-  margin-top: 50px;
-  font-size: 1.6em;
-  color: rgb(0, 0, 0);
-  margin-bottom: 5px;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
-.instructions-content ul li {
-  margin-left: -20px;
-  padding-left: -20px;
-  margin-bottom: 10px;
-  font-family: 'Bebas Neue', sans-serif;
-}
-
 .new-tab-button:hover {
   transform: scale(1.05);
   background-color: rgb(109, 255, 255);
