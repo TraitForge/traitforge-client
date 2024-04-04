@@ -42,22 +42,11 @@
   background: #0000005c;
 
   a {
-    color: #a9a9a9;
+    color: white;
     text-decoration: none;
-    padding: 0.5rem 2rem;
     transition: color 0.3s ease;
 
-    &.active,
-    &:hover {
-      border-bottom: 1px solid rgb(255, 255, 255);
-      background: linear-gradient(
-        to top,
-        rgb(255, 255, 255) 0%,
-        rgba(0, 38, 38, 0.716) 130%
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    
   }
 }
 

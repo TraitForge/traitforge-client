@@ -1,5 +1,5 @@
-@use 'scss-reset/reset';
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
 
 html,
 body {
@@ -9,16 +9,6 @@ body {
   background-color: #0a0a0a;
   color: white;
   font-family: 'Bebas Neue', sans-serif;
-}
-
-.mint-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  align-items: center;
-  justify-content: center;
-  background: url('/images/home-background.jpg') center / cover no-repeat;
 }
 
 .mint-text {
@@ -39,6 +29,18 @@ body {
   transform: scale(1.01);
 }
 
+.mint-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.mint-text {
+  text-align: center;
+  font-size: 4vw;
+  padding-bottom: 10px;
+}
 
 .page-container {
   display: flex;

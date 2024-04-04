@@ -7,11 +7,9 @@ export default function ConnectButton() {
   const { open } = useWeb3Modal()
 
   return (
-    <>
-      <button className={styles.connectwallet} onClick={() => open()}>
-        <FaWallet/>
-        <span>wallet</span>
-        </button>
-    </>
+    <button className='flex items-center gap-x-8' onClick={() => open()}>
+      <FaWallet />
+      <span>wallet</span>
+    </button>
   )
 }
