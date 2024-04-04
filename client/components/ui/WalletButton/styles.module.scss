@@ -1,0 +1,25 @@
+.connectwallet {
+  position: absolute;
+  align-items: center;
+  justify-content: center; 
+  display: flex;
+  right: 10px;
+  top: 10px;
+  border: none;
+  z-index: 20;
+  box-shadow: none;
+  color: #f0f0f0;
+  background-color: transparent;
+  height: auto;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  gap: 5px;
+
+  &:active {
+    color: #a0a0a0;
+  }
+
+  &:hover {
+    color: #b4b4b4;
+  }
+}

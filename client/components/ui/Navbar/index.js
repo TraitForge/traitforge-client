@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import styles from './styles.module.scss';
+import ConnectButton from '@/components/ui/WalletButton';
 
 const links = [
   { url: '/', text: 'HOME' },
@@ -15,7 +16,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const router = useRouter();
 
   const handleNavLinkClick = () => {
-    setIsNavExpanded(false);
+    setIsNavExpanded(true);
   };
 
   const isActive = path => {
@@ -23,7 +24,11 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   };
 
   return (
-    <>
+    <div className={styles.navbar}>
+    <div className={styles.logo}>
+    <h1> TRAITFORGE </h1>
+    <img src='/images/transparentlogo.png' alt='TraitForge Logo' />
+    </div>
       <button
         className={styles.navToggle}
         onClick={() => setIsNavExpanded(!isNavExpanded)}
@@ -42,7 +47,8 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
           </Link>
         ))}
       </nav>
-    </>
+     <ConnectButton/>
+    </div>
   );
 };
 

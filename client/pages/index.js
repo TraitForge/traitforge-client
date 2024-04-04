@@ -12,9 +12,12 @@ const Home = () => {
         className="mint-button"
         onClick={mintEntityHandler}
       />
-      <div className="nexttokenslider">
-        <Slider />
-      </div>
+      {isLoading && <LoadingSpinner />} 
+      {!isLoading && ( 
+        <div className="nexttokenslider">
+          <Slider />
+        </div>
+      )}
     </div>
   );
 };

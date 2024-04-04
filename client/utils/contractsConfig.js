@@ -1,15 +1,17 @@
-import TraitForgeNftAbi from '../../solidity/artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
-import EntropyGenerator from '../../solidity/artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
-import entityMerging from '../../solidity/artifacts/contracts/EntityMerging/EntityMerging.sol/EntityMerging.json';
-import nukeFund from '../../solidity/artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
+import TraitForgeNftAbi from '../../smart-contracts/artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
+import EntropyGenerator from '../../smart-contracts/artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
+import entityMerging from '../../smart-contracts/artifacts/contracts/EntityMerging/EntityMerging.sol/EntityMerging.json';
+import nukeFund from '../../smart-contracts/artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
+
 
 export const contractsConfig = {
   totalSlots: 770,
   valuesPerSlot: 13,
+  infuraRPCURL: process.env.NEXT_PUBLIC_INFURA_RPCURL,
   traitForgeNftAbi: TraitForgeNftAbi.abi,
-  traitForgeNftAddress: process.env.NEXT_PUBLIC_MINT_ADDRESS,
+  traitForgeNftAddress: process.env.NEXT_PUBLIC_TRAITFORGENFT_ADDRESS,
   entropyGeneratorContractAbi: EntropyGenerator.abi,
-  entropyGeneratorContract: process.env.NEXT_PUBLIC_ENTROPY_GENERATOR_ADDRESS,
+  entropyGeneratorContractAddress: process.env.NEXT_PUBLIC_ENTROPY_GENERATOR_ADDRESS,
   entityMergingContractAbi: entityMerging.abi,
   entityMergingAddress: process.env.NEXT_PUBLIC_MERGING_CONTRACT_ADDRESS,
   nukeFundContractAbi: nukeFund.abi,
