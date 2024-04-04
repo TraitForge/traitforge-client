@@ -3,6 +3,7 @@
   flex-direction: column;
   text-align: center;
   margin-top: auto;
+  z-index: 1000;
 }
 
 .footer {
@@ -18,7 +19,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  z-index: 3;
+  z-index: 1000;
 
   p {
     font-size: 2em;
@@ -35,7 +36,6 @@
     right: 10px;
     bottom: 0px;
     padding: 5px;
-    z-index: 1000;
     box-shadow: none;
     background-color: transparent;
     color: white;

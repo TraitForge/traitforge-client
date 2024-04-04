@@ -33,7 +33,7 @@ const EntityCard = ({ entity, index, calculateEntityPrice }) => {
             <h4 className="card-price">Price: {entityPrice} ETH</h4>
           </div>
         </div>
-        <h4 className="card-type">Role: {role}</h4>
+        <h4 className="card-name">Role: {role}</h4>
         <h4 className="card-name">Forge Potential: {forgePotential}</h4>
         <h4 className="card-parameters-h2">Nuke Factor: {nukeFactor} %</h4>
         <h4 className="card-parameters-h2">

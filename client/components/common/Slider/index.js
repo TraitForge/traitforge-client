@@ -6,14 +6,14 @@ import EntityCard from '../EntityCard';
 import { useContextState } from '@/utils/context';
 
 const Slider = () => {
-  const { upcomingMints, subscribeToMintEvent, isLoading, entities } =
+  const { upcomingMints, subscribeToMintEvent, isLoading } =
     useContextState();
   const [ref, setRef] = useState(0)
 
-  useEffect(() => {
-    upcomingMints();
-    subscribeToMintEvent();
-  }, []);
+  // useEffect(() => {
+  //   upcomingMints();
+  //   subscribeToMintEvent();
+  // }, []);
 
   const calculateEntityPrice = (index) => {
     return (index * 0.01).toFixed(2);
@@ -23,28 +23,29 @@ const Slider = () => {
   if (isLoading) return <Spinner />;
 
   const sliderOption = {
-
     loop: true,
     autoplay: {
       delay: 1000,
     },
-    spaceBetween: 0,
-    slidesPerView: 5,
     speed: 700,
     centeredSlides: true,
     breakpoints: {
       // when window width is >= 320px
       320: {
-        slidesPerView: 1,
-        spaceBetween: 20,
+        slidesPerView: 1.9,
+        spaceBetween: 10,
       },
       // when window width is >= 640px
       769: {
         slidesPerView: 2,
-        spaceBetween: 40,
+        spaceBetween: 15,
       },
-      989: {
+      1024: {
         slidesPerView: 3,
+        spaceBetween: 30,
+      },
+      1224: {
+        slidesPerView: 5,
         spaceBetween: 40,
       },
     },
@@ -53,9 +54,11 @@ const Slider = () => {
   const handlePrev = useCallback(() => ref?.slidePrev())
   const handleNext = useCallback(() => ref?.slideNext())
 
+  const entities = [{}, {}, {}, {}, {}, {}, {}]
+
   return (
     <div className='container relative'>
-      <div className='px-[180px] '>
+      <div className='md:px-20 lg:px-24 xl:px-[180px] '>
         <Swiper
           {...sliderOption}
           onSwiper={setRef}
@@ -69,7 +72,7 @@ const Slider = () => {
       </div>
       <button
         onClick={handlePrev}
-        className={`custom-slider-arrow custom-slider-arrow-left`}
+        className={`custom-slider-arrow custom-slider-arrow-left hidden md:block`}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +109,7 @@ const Slider = () => {
       </button>
       <button
         onClick={handleNext}
-        className={`absolute top-1/2 right-0 custom-slider-arrow custom-slider-arrow-right`}
+        className={`absolute top-1/2 right-0 custom-slider-arrow custom-slider-arrow-right hidden md:block`}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

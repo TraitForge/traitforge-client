@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import styles from './styles.module.scss';
 import { Logo, Wallter } from '@/icons';
+import ConnectButton from '@/components/ui/WalletButton';
 
 const links = [
   { url: '/', text: 'HOME' },
@@ -16,7 +17,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const router = useRouter();
 
   const handleNavLinkClick = () => {
-    setIsNavExpanded(false);
+    setIsNavExpanded(true);
   };
 
   const isActive = path => {
@@ -50,11 +51,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
             </li>
           ))}
         </ul>
-
-        <Link className='flex items-center gap-x-8' href="/wallet">
-          <Wallter />
-          <span className='uppercase text-[32px]'>Wallet</span>
-        </Link>
+        <ConnectButton />
       </nav>
     </header>
   );

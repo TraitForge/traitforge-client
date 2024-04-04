@@ -14,7 +14,7 @@ export default {
         width: 950,
         height: 400,
         alt: 'trait-forge banner',
-        type: 'image/webp',
+        type: '/images/websitelogo.png',
       },
     ],
   },

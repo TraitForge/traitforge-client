@@ -13,10 +13,10 @@ const links = [
     text: 'Telegram',
   },
   { url: 'https://twitter.com/TraitForge', icon: faTwitter, text: 'Twitter' },
-  { url: 'https://discord.gg/Q3Z9A9eV', icon: faDiscord, text: 'Discord' },
+  { url: 'https://discord.gg/KWHCEY6zFT', icon: faDiscord, text: 'Discord' },
 ];
 
-const Footer = ({ showInstructions, toggleInstructions }) => {
+const Footer = () => {
   return (
     <footer className={styles.container}>
       <div className={styles.footer}>
@@ -32,9 +32,6 @@ const Footer = ({ showInstructions, toggleInstructions }) => {
           </a>
         ))}
       </div>
-      <button onClick={toggleInstructions}>
-        {showInstructions ? 'x' : '?'}
-      </button>
     </footer>
   );
 };

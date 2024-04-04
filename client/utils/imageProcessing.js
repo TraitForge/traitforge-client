@@ -169,9 +169,9 @@ const tintImage = async (imagePath, hexColorWhite, hexColorGrey) => {
   for (let i = 0; i < data.length; i += 4) {
     const isWhiteOrNearWhite = data[i] > 230 && data[i + 1] > 230 && data[i + 2] > 230;
     const isGrey = Math.abs(data[i] - data[i + 1]) < 30 && Math.abs(data[i + 1] - data[i + 2]) < 30 && Math.abs(data[i] - data[i + 2]) < 30 &&
-                   data[i] >= 100 && data[i] <= 230 &&
-                   data[i + 1] >= 100 && data[i + 1] <= 230 &&
-                   data[i + 2] >= 100 && data[i + 2] <= 230;
+      data[i] >= 100 && data[i] <= 230 &&
+      data[i + 1] >= 100 && data[i + 1] <= 230 &&
+      data[i + 2] >= 100 && data[i + 2] <= 230;
 
     if (isWhiteOrNearWhite) {
       data[i] = tintRWhite;

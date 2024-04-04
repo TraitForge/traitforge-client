@@ -1,74 +1,77 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
+import axios from 'axios';
 import { JsonRpcProvider } from 'ethers/providers';
-import { useWeb3ModalProvider, useWeb3ModalAccount, createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
-const infuraProvider = new JsonRpcProvider('https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa');
+const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 
 const ContextProvider = ({ children }) => {
   const [entitiesForSale, setEntitiesForSale] = useState([]);
+  const [ethAmount, setEthAmount] = useState(0);
+  const [usdAmount, setUsdAmount] = useState(0);
   const [upcomingMints, setUpcomingMints] = useState([]);
   const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
-  const [walletProvider, setWalletProvider] = useState(null);
-  const [web3Modal, setWeb3Modal] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
+  const [ownerEntities, setOwnerEntities] = useState([]);
 
-  useEffect(() => {
-    const initWeb3Modal = async () => {
-      const projectId = 'YOUR_PROJECT_ID';
-      const mainnet = {
-        chainId: 1,
-        name: 'Ethereum',
-        currency: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        rpcUrl: 'https://cloudflare-eth.com'
-      };
+//Modal State Trigger
+const openModal = (content) => {
+  setModalContent(content);
+  setIsOpen(true);
+  };
+  
+  const closeModal = () => {
+  setIsOpen(false);
+};
 
-      const metadata = {
-        name: 'My Website',
-        description: 'My Website description',
-        url: 'https://mywebsite.com',
-        icons: ['https://avatars.mywebsite.com/']
-      };
+//fetching/setting Price States
+const fetchEthAmount = useCallback(async () => {
+  try {
+    const nukeFundContract = new ethers.Contract(
+      contractsConfig.NukeFundAddress,
+      contractsConfig.NukeFundAbi.abi,
+      infuraProvider
+    );
+    const balance = await nukeFundContract.getFundBalance();
+    return ethers.utils.formatEther(balance);
+  } catch (error) {
+    console.error('Error fetching ETH amount from nuke fund:', error);
+    return 0;
+  }
+}, [infuraProvider]);
 
-      const ethersConfig = {
-        metadata,
-        enableEIP6963: true,
-        enableInjected: true,
-        enableCoinbase: true,
-        rpcUrl: 'https://cloudflare-eth.com',
-        defaultChainId: 1
-      };
+const fetchEthToUsdRate = async () => {
+  try {
+    const response = await axios.get(
+      'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
+    );
+    return response.data.ethereum.usd;
+  } catch (error) {
+    console.error('Error fetching ETH to USD rate:', error);
+  }
+  return null; //10 seconds
+};
 
-      const web3ModalInstance = new Web3Modal({
-        network: 'mainnet',
-        cacheProvider: true,
-        providerOptions: {},
-        ethersConfig,
-        projectId
-      });
+useEffect(() => {
+  const interval = setInterval(async () => {
+    const amount = await fetchEthAmount();
+    const rate = await fetchEthToUsdRate();
+    if (amount && rate) {
+      const usdValue = amount * rate;
+      setEthAmount(Number(amount).toFixed(2));
+      setUsdAmount(Number(usdValue).toFixed(2));
+    }
+  }, 30000);
 
-      setWeb3Modal(web3ModalInstance);
-    };
+  return () => clearInterval(interval);
+}, [fetchEthAmount]);
 
-    initWeb3Modal();
-  }, []);
-
-  useEffect(() => {
-    if (!web3Modal) return;
-
-    const connectWallet = async () => {
-      const connection = await web3Modal.connect();
-      const walletProvider = new ethers.providers.Web3Provider(connection);
-      setWalletProvider(walletProvider);
-    };
-
-    connectWallet();
-  }, [web3Modal]);
 
 //Entity Price For Mint
 useEffect(() => {
@@ -77,8 +80,8 @@ useEffect(() => {
       setIsLoading(true);
       try {
         const mintContract = new ethers.Contract(
-          contractsConfig.mintAddress,
-          contractsConfig.mintAbi,
+          contractsConfig.traitForgeNftAddress,
+          contractsConfig.traitForgeNftAbi,
           infuraProvider
         );
         const mintPrice = await mintContract.calculateMintPrice();
@@ -94,7 +97,7 @@ useEffect(() => {
     getLatestEntityPrice();
   }, [infuraProvider]);
 
-  useEffect(() => {
+  //useEffect(() => {
     const getUpcomingMints = async () => {
         if (!infuraProvider) return;
         setIsLoading(true);
@@ -103,9 +106,9 @@ useEffect(() => {
           contractsConfig.entropyGeneratorContractAbi, 
           infuraProvider);
         let allEntropies = [];
-        for (let slotIndex = 0; slotIndex < totalSlots; slotIndex++) {
+        for (let slotIndex = 0; slotIndex < contractsConfig.totalSlots; slotIndex++) {
             const batchPromises = [];
-            for (let numberIndex = 0; numberIndex < valuesPerSlot; numberIndex++) {
+            for (let numberIndex = 0; numberIndex < contractsConfig.valuesPerSlot; numberIndex++) {
                 batchPromises.push(contract.getPublicEntropy(slotIndex, numberIndex));
             }
             const batchResults = await Promise.allSettled(batchPromises);
@@ -119,8 +122,8 @@ useEffect(() => {
         setIsLoading(false);
         setUpcomingMints(upcomingMints);
     };
-    getUpcomingMints();
-}, []);
+    //getUpcomingMints();
+//}, []);
 
 // Event Listener for Stats
   useEffect(() => {
@@ -142,7 +145,7 @@ useEffect(() => {
     const handleEvent = (type) => async (...args) => {
       const event = args[args.length - 1];
       const transactionHash = event.transactionHash;
-      const transaction = await defaultProvider.getTransaction(transactionHash);
+      const transaction = await infuraProvider.getTransaction(transactionHash);
       const valueInEth = ethers.utils.formatEther(transaction.value);
       const newTransaction = {
         type,
@@ -172,29 +175,31 @@ useEffect(() => {
 
 // Fetch Entities From Wallet
 const getOwnersEntities = async (address, walletProvider) => {
-    if (!walletProvider || !address) return [];
-    const provider = new ethers.providers.Web3Provider(walletProvider);
-    const TraitForgeContract = new ethers.Contract(
-      contractsConfig.traitForgeNftAddress,
-      contractsConfig.traitForgeNftAbi,
-      provider
-    );
-  
-    try {
-      const balance = await TraitForgeContract.balanceOf(address);
-      let fetchedEntities = [];
-      for (let i = 0; i < balance; i++) {
-        const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
-        const tokenURI = await TraitForgeContract.tokenURI(tokenId);
-        fetchedEntities.push({ tokenId: tokenId.toString(), tokenURI });
-      }
-  
-      return fetchedEntities;
-    } catch (error) {
-      console.error("Error fetching NFTs:", error);
-      return [];
+  if (!walletProvider || !address) {
+      setOwnerEntities([]); // Clear previous state if conditions are not met
+      return;
+  }
+  const provider = new ethers.providers.Web3Provider(walletProvider);
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
+    provider
+  );
+  try {
+    const balance = await TraitForgeContract.balanceOf(address);
+    let fetchedEntities = [];
+    for (let i = 0; i < balance; i++) {
+      const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
+      const tokenURI = await TraitForgeContract.tokenURI(tokenId);
+      fetchedEntities.push({ tokenId: tokenId.toString(), tokenURI });
     }
-  };
+    setOwnerEntities(fetchedEntities); // Update state with fetched entities
+  } catch (error) {
+    console.error("Error fetching NFTs:", error);
+    setOwnerEntities([]); // Clear or set to a default state in case of error
+  } 
+  }
+
 
 // Entities Listed in Trading Contract
 const getEntitiesForSale = async () => {
@@ -264,14 +269,21 @@ const getEntitiesForForging = async () => {
   return (
     <AppContext.Provider
       value={{
+        isOpen,
+        modalContent,
+        ethAmount,
+        usdAmount,
         entityPrice,
         isLoading,
         entitiesForForging,
         entitiesForSale,
         transactions,
-        walletProvider, 
-        web3Modal,
+        infuraProvider,
         upcomingMints,
+        ownerEntities, 
+        openModal,
+        closeModal,
+        getUpcomingMints,
         getEntitiesForSale,
         getOwnersEntities,
         getEntitiesForForging,

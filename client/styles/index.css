@@ -279,12 +279,8 @@
   
 
   @media (max-width: 500px) {
-    .card-container {
-      height: 9rem;
-      width: auto;
-      margin-left: -8px;
-    }
-  
+   
+
     .card-image {
       width: 90%;
       height: auto;

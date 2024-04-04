@@ -1,3 +1,26 @@
+.navbar {
+  z-index: 1000;
+}
+
+.logo {
+  display: flex;
+  align-items: center; 
+}
+
+.logo h1 {
+  margin-right: 5px;
+  font-size: 1.5em; 
+  margin-left: 10px;
+  color: #eaeaea;
+}
+
+.logo img {
+  height: 34px; 
+  width: auto; 
+  padding-bottom: 4px;
+  z-index: 2;
+}
+
 .navToggle {
   display: none;
   font-size: 20px;
@@ -5,7 +28,6 @@
   border: none;
   box-shadow: none;
   background-color: transparent;
-  z-index: 5;
   border: none;
 }
 
@@ -16,9 +38,8 @@
   align-items: center;
   position: absolute;
   top: 0;
-  z-index: 2;
   gap: 10px;
-  background: #000000ae;
+  background: #0000005c;
 
   a {
     color: white;
