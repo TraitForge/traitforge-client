@@ -1,3 +1,22 @@
+.logo {
+  display: flex;
+  align-items: center; 
+}
+
+.logo h1 {
+  margin-right: 5px;
+  font-size: 1.5em; 
+  margin-left: 10px;
+  color: #d3d3d3;
+}
+
+.logo img {
+  height: 34px; 
+  width: auto; 
+  z-index: 100;
+  padding-bottom: 4px;
+}
+
 .navToggle {
   display: none;
   font-size: 20px;

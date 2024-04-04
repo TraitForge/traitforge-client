@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig'; 
+import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
-import { LoadingSpinner, EntityCard } from '@/components';
+import { LoadingSpinner, EntityCard, Modal } from '@/components';
 
 const Forging = () => {
   const {
+    isOpen,
     openModal,
+    closeModal,
     getEntitiesForForging,
     getOwnersEntities,
-    walletProvider,
     entitiesForForging 
   } = useContextState();
 
@@ -18,6 +20,7 @@ const Forging = () => {
   const [processing, setProcessing] = useState(false);
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
+  const { walletProvider } = useWeb3ModalProvider()
 
   useEffect(() => {
       getEntitiesForForging();
@@ -57,6 +60,12 @@ const Forging = () => {
       {entities.map((entity, index) => (
         <EntityCard key={entity.id} entity={entity} index={index} onClick={() => onEntitySelect(entity)} />
       ))}
+    </div>
+  );
+
+  const modalContent = (
+    <div className='entityDisplay'>
+          <h1> Choose an Entity to list </h1>
     </div>
   );
 
@@ -116,6 +125,12 @@ const Forging = () => {
               className={styles.yourEntities}
               onClick={() => openModal()}
             />
+            {isOpen && (
+             <Modal>
+          {}
+          <button onClick={closeModal}>Close</button>
+            </Modal>
+            )}
           </div>
           {selectedEntity && (
             <div className={styles.selectedEntity}>
@@ -148,6 +163,12 @@ const Forging = () => {
             >
               List Your Forger
             </button>
+            {isOpen && (
+             <Modal>
+          {modalContent}
+          <button onClick={closeModal}>Close</button>
+            </Modal>
+            )}
           </div>
           <div className={styles.rightItems}>
             <select

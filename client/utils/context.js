@@ -2,8 +2,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { JsonRpcProvider } from 'ethers/providers';
-import { useWeb3ModalProvider, useWeb3ModalAccount, createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
-import Web3Modal from 'web3modal';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
@@ -18,73 +16,18 @@ const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
-  const [walletProvider, setWalletProvider] = useState(null);
-  const [web3Modal, setWeb3Modal] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
-
-  useEffect(() => {
-    const initWeb3Modal = async () => {
-      const projectId = 'YOUR_PROJECT_ID';
-      const mainnet = {
-        chainId: 1,
-        name: 'Ethereum',
-        currency: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        rpcUrl: 'https://cloudflare-eth.com'
-      };
-
-      const metadata = {
-        name: 'My Website',
-        description: 'My Website description',
-        url: 'https://mywebsite.com',
-        icons: ['https://avatars.mywebsite.com/']
-      };
-
-      const ethersConfig = {
-        metadata,
-        enableEIP6963: true,
-        enableInjected: true,
-        enableCoinbase: true,
-        rpcUrl: 'https://cloudflare-eth.com',
-        defaultChainId: 1
-      };
-
-      const web3ModalInstance = new Web3Modal({
-        network: 'mainnet',
-        cacheProvider: true,
-        providerOptions: {},
-        ethersConfig,
-        projectId
-      });
-
-      setWeb3Modal(web3ModalInstance);
-      return web3ModalInstance;
-  };
-
-  initWeb3Modal().then(connectWallet); // Chain the promises
-}, []);
-const connectWallet = async (web3ModalInstance) => {
-  if (!web3ModalInstance) return;
-  try {
-    const connection = await web3ModalInstance.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
-    setWalletProvider(provider);
-  } catch (error) {
-    console.error('Error connecting wallet:', error);
-  }
-};
-
 //Modal State Trigger
-  const openModal = (content) => {
+const openModal = (content) => {
   setModalContent(content);
   setIsOpen(true);
   };
   
   const closeModal = () => {
   setIsOpen(false);
-  };
+};
 
 //fetching/setting Price States
 const fetchEthAmount = useCallback(async () => {
@@ -332,13 +275,10 @@ const getEntitiesForForging = async () => {
         entitiesForForging,
         entitiesForSale,
         transactions,
-        walletProvider, 
         infuraProvider,
-        web3Modal,
         upcomingMints,
         openModal,
         closeModal,
-        connectWallet,
         getEntitiesForSale,
         getOwnersEntities,
         getEntitiesForForging,

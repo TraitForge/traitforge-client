@@ -1,10 +1,12 @@
 import React from 'react';
 import styles from '@/styles/honeypot.module.scss';
+import { Modal } from '@/components'; 
 import { useContextState } from '@/utils/context';
 
 function HoneyPot() {
   const {
     openModal,
+    isOpen,
     ethAmount,
     usdAmount
   } = useContextState();
@@ -20,7 +22,12 @@ function HoneyPot() {
         </div>
       </div>
 
-      <img src= "/images/nukebutton.png" className={styles.nukeButton} onClick={() => openModal(<div>*honeypot modal*</div>)} />
+      <img src= "/images/nukebutton.png" className={styles.nukeButton} onClick={() => openModal()} />
+      {isOpen && (
+             <Modal>
+          {}
+            </Modal>
+            )}
     </div>
   );
 }

@@ -12,11 +12,12 @@
   }
   
   .modalContainer {
-    background: white;
+    background: rgb(141, 141, 141);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 90%;
+    height: 400px;
     max-width: 500px;
     position: relative;
   }

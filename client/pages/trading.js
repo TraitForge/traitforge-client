@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from '@/styles/trading.module.scss';
+import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { ethers } from 'ethers';
-import { EntityCard } from '@/components'; 
+import { EntityCard, Modal } from '@/components'; 
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig'; 
 
@@ -9,13 +10,14 @@ const Marketplace = () => {
   const [selectedListing, setSelectedListing] = useState(null);
   const [sortOption, setSortOption] = useState('');
   const [filter, setFilter] = useState('All');
-
+  const { walletProvider } = useWeb3ModalProvider();
+  
   const {
     openModal,
+    isOpen,
     getEntitiesForSale,
     entitiesForSale, 
     getOwnersEntities,
-    walletProvider
   } = useContextState();
     
   useEffect(() => {
@@ -79,6 +81,12 @@ const Marketplace = () => {
     }
   };
 
+  const modalContent = (
+    <div className='entityDisplay'>
+          <h1> Choose an Entity to list </h1>
+    </div>
+  );
+
   const filteredAndSortedListings = getSortedFilteredListings();
 
   return (
@@ -95,8 +103,13 @@ const Marketplace = () => {
               src= "/images/sellButton.png"
               alt="sell place holder"
               className={styles.sellEntity}
-              onClick={() => openModal(<div>*trading modal*</div>)}
+              onClick={() => openModal()}
             />
+            {isOpen && (
+             <Modal>
+          {}
+            </Modal>
+            )}
           <select className={styles.tradeSortingDropdown} 
           onChange={(e) => setSortOption(e.target.value)}>
               <option value="">Select Sorting Option</option>

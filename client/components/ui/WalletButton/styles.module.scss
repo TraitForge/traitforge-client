@@ -1,0 +1,32 @@
+.connectwallet {
+    position: absolute;
+    display: flex;
+    right: 20px;
+    top: 10px;
+    align-items: center;
+    flex-direction: row;
+    padding: 0;
+    border: none;
+    z-index: 150;
+    box-shadow: none;
+    color: #f0f0f0;
+    background-color: transparent;
+    height: 30px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    gap: 5px;
+  
+    &:active {
+      color: #a0a0a0;
+    }
+  
+    &:hover {
+      color: #b4b4b4;
+    }
+  }
+  
+  .wallet-icon {
+    font-size: 30px;
+    margin-bottom: 3px;
+    padding: 5px;
+  }
