@@ -2,7 +2,7 @@ import { DefaultSeo } from 'next-seo';
 import SEO from '@/next-seo.config';
 import { Wrapper } from '@/components';
 import { ContextProvider } from '@/utils/context';
-import Logo from '@/public/images/transparentlogo.png';
+import Logo from '@/public/images/websitelogo.png';
 import '@/styles/main.scss';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 

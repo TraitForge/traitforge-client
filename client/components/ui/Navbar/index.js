@@ -16,7 +16,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const router = useRouter();
 
   const handleNavLinkClick = () => {
-    setIsNavExpanded(false);
+    setIsNavExpanded(true);
   };
 
   const isActive = path => {
