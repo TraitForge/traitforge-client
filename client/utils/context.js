@@ -55,7 +55,7 @@ const fetchEthToUsdRate = async () => {
   } catch (error) {
     console.error('Error fetching ETH to USD rate:', error);
   }
-  return 10000;
+  return 10000; //10 seconds
 };
 
 useEffect(() => {
