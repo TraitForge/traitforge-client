@@ -283,6 +283,7 @@ const getEntitiesForForging = async () => {
         ownerEntities, 
         openModal,
         closeModal,
+        getUpcomingMints,
         getEntitiesForSale,
         getOwnersEntities,
         getEntitiesForForging,
