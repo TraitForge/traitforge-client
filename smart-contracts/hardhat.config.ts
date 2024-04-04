@@ -1,8 +1,10 @@
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-verify";
-import "@nomicfoundation/hardhat-toolbox";
-import dotenv from "dotenv";
+import { HardhatUserConfig } from 'hardhat/config';
+import '@nomicfoundation/hardhat-verify';
+import '@nomicfoundation/hardhat-toolbox';
+import dotenv from 'dotenv';
 dotenv.config();
+
+import './scripts/deployTasks';
 
 interface Environment {
   ETHEREUM_RPC_URL: string;
@@ -12,17 +14,17 @@ interface Environment {
 }
 
 const env: Environment = {
-  ETHEREUM_RPC_URL: process.env.ETHEREUM_RPC_URL ?? "",
-  SEPOLIA_RPC_URL: process.env.SEPOLIA_RPC_URL ?? "",
-  PRIVATE_KEY: process.env.PRIVATE_KEY ?? "",
-  ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY ?? "",
+  ETHEREUM_RPC_URL: process.env.ETHEREUM_RPC_URL ?? '',
+  SEPOLIA_RPC_URL: process.env.SEPOLIA_RPC_URL ?? '',
+  PRIVATE_KEY: process.env.PRIVATE_KEY ?? '',
+  ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY ?? '',
 };
 
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: "0.8.20",
+        version: '0.8.20',
         settings: {
           optimizer: {
             enabled: true,

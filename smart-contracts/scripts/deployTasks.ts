@@ -1,6 +1,5 @@
 import { task } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
-import { ethers } from 'hardhat';
 import {
   Airdrop,
   DAOFund,
@@ -12,6 +11,7 @@ import {
   Trait,
   TraitForgeNft,
 } from '../typechain-types';
+import { ethers } from 'ethers';
 
 task('deploy-all', 'Deploy all the contracts').setAction(async (_, hre) => {
   const token: Trait = await hre.run('deploy-token');
@@ -48,6 +48,7 @@ task('deploy-all', 'Deploy all the contracts').setAction(async (_, hre) => {
 task('deploy-token', 'Deploy Trait Token').setAction(async (_, hre) => {
   const name = 'TRAIT';
   const symbol = 'TRAIT';
+  const decimals = 18;
   const totalSupply = ethers.parseEther('1000000');
 
   try {
@@ -55,6 +56,7 @@ task('deploy-token', 'Deploy Trait Token').setAction(async (_, hre) => {
     const token = await hre.ethers.deployContract('Trait', [
       name,
       symbol,
+      decimals,
       totalSupply,
     ]);
     await token.waitForDeployment();
