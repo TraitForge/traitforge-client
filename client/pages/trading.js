@@ -10,6 +10,7 @@ const Marketplace = () => {
   const [selectedListing, setSelectedListing] = useState(null);
   const [sortOption, setSortOption] = useState('');
   const [filter, setFilter] = useState('All');
+  const [ownerEntities, setOwnerEntities] = useState([]);
   const { walletProvider } = useWeb3ModalProvider();
   
   const {
@@ -17,12 +18,16 @@ const Marketplace = () => {
     isOpen,
     getEntitiesForSale,
     entitiesForSale, 
-    getOwnersEntities,
+    getOwnersEntities 
   } = useContextState();
     
   useEffect(() => {
     getEntitiesForSale();
-    getOwnersEntities();
+    const loadOwnerEntities = async () => {
+      const entities = await getOwnersEntities();
+      setOwnerEntities(entities);
+    };
+    loadOwnerEntities().catch(console.error);
   }, [getEntitiesForSale, getOwnersEntities]);
 
   const buyEntity = async (tokenId, price) => {
@@ -83,7 +88,14 @@ const Marketplace = () => {
 
   const modalContent = (
     <div className='entityDisplay'>
-          <h1> Choose an Entity to list </h1>
+      <h1>Choose an Entity to list</h1>
+      <ul>
+        {ownerEntities && ownerEntities.map((entity, index) => (
+          <li key={index}>
+            {entity.name} - {entity.description}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 
@@ -103,7 +115,7 @@ const Marketplace = () => {
               src= "/images/sellButton.png"
               alt="sell place holder"
               className={styles.sellEntity}
-              onClick={() => openModal()}
+              onClick={() => openModal(modalContent)}
             />
             {isOpen && (
              <Modal>

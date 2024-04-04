@@ -18,6 +18,7 @@ const ContextProvider = ({ children }) => {
   const [entityPrice, setEntityPrice] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
+  const [ownerEntities, setOwnerEntities] = useState([]);
 
 //Modal State Trigger
 const openModal = (content) => {
@@ -174,29 +175,31 @@ useEffect(() => {
 
 // Fetch Entities From Wallet
 const getOwnersEntities = async (address, walletProvider) => {
-    if (!walletProvider || !address) return [];
-    const provider = new ethers.providers.Web3Provider(walletProvider);
-    const TraitForgeContract = new ethers.Contract(
-      contractsConfig.traitForgeNftAddress,
-      contractsConfig.traitForgeNftAbi,
-      provider
-    );
-  
-    try {
-      const balance = await TraitForgeContract.balanceOf(address);
-      let fetchedEntities = [];
-      for (let i = 0; i < balance; i++) {
-        const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
-        const tokenURI = await TraitForgeContract.tokenURI(tokenId);
-        fetchedEntities.push({ tokenId: tokenId.toString(), tokenURI });
-      }
-  
-      return fetchedEntities;
-    } catch (error) {
-      console.error("Error fetching NFTs:", error);
-      return [];
+  if (!walletProvider || !address) {
+      setOwnerEntities([]); // Clear previous state if conditions are not met
+      return;
+  }
+  const provider = new ethers.providers.Web3Provider(walletProvider);
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
+    provider
+  );
+  try {
+    const balance = await TraitForgeContract.balanceOf(address);
+    let fetchedEntities = [];
+    for (let i = 0; i < balance; i++) {
+      const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
+      const tokenURI = await TraitForgeContract.tokenURI(tokenId);
+      fetchedEntities.push({ tokenId: tokenId.toString(), tokenURI });
     }
-  };
+    setOwnerEntities(fetchedEntities); // Update state with fetched entities
+  } catch (error) {
+    console.error("Error fetching NFTs:", error);
+    setOwnerEntities([]); // Clear or set to a default state in case of error
+  } 
+  }
+
 
 // Entities Listed in Trading Contract
 const getEntitiesForSale = async () => {
@@ -277,6 +280,7 @@ const getEntitiesForForging = async () => {
         transactions,
         infuraProvider,
         upcomingMints,
+        ownerEntities, 
         openModal,
         closeModal,
         getEntitiesForSale,
