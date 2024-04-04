@@ -73,55 +73,28 @@
   
   .card-container {
     position: relative;
-    overflow: hidden;
     display: flex;
-    background-color: rgba(0, 255, 255, 0.146);
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: nowrap;
     justify-content: center;
     text-align: center;
-    height: 20rem;
     width: 100%;
     overflow-x: scroll;
+    cursor: pointer;
     white-space: nowrap;
+    overflow: hidden;
     margin-top: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
     font-family: 'Electrolize', sans-serif;
     font-weight: 400;
     font-style: normal;
-    border-image: linear-gradient(
-        45deg,
-        rgba(50, 255, 255, 0.874),
-        #4babff24,
-        #5cffff35
-      )
-      1;
     background-clip: padding-box;
     position: relative;
   }
   
-  .card-container::before,
-  .card-container::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    bottom: -2px;
-    left: -2px;
-    z-index: -1;
-    background: linear-gradient(
-      45deg,
-      rgba(121, 146, 255, 0.18),
-      rgba(106, 243, 255, 0.076),
-      rgba(97, 158, 255, 0.123),
-      rgba(255, 0, 0, 0.195)
-    );
-    background-size: 400% 400%;
-    animation: moveGradient 6s infinite linear;
-  }
   
-  @keyframes moveGradient {
+  /* @keyframes moveGradient {
     0% {
       background-position: 0% 50%;
     }
@@ -131,8 +104,8 @@
     100% {
       background-position: 0% 50%;
     }
-  }
-  @keyframes glitchEffect {
+  } */
+  /* @keyframes glitchEffect {
     0%,
     100% {
       clip-path: polygon(0% 0%, 100% 0%, 100% 25%, 0% 25%),
@@ -155,7 +128,7 @@
         polygon(0% 75%, 100% 75%, 100% 100%, 0% 100%);
       transform: translate(7px, 0);
     }
-  }
+  } */
   
   .card-container::before {
     animation: glitchEffect 0.7s infinite linear;
@@ -163,30 +136,23 @@
   
   .card-info {
     position: absolute;
-    bottom: 0;
     left: 0;
     font-size: 0.5em;
     right: 0;
-    background-color: rgba(0, 0, 0, 0);
     color: white;
+    top: 0;
     transition: transform 0.3s ease-in-out;
-    transform: translateY(0%);
+    transform: translateY(-100%);
     font-family: 'Electrolize', sans-serif;
     font-weight: 400;
     font-style: normal;
   }
   
-  .card-container:hover .card-info {
-    transform: translateY(0);
-    font-family: 'Electrolize', sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  }
   
   .card-info-always-visible {
     padding-bottom: 1px;
-    max-height: 100px;
-    background-color: rgba(38, 38, 38, 0.537);
+    padding: 9px 0;
+    background-color: rgba(0, 0, 0, 0.7);
     font-family: 'Electrolize', sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -202,21 +168,18 @@
   }
   
   .footer-top-level {
+    position: relative;
     border-top: 1px solid #0ff;
-    padding-top: 5px;
+    padding: 10px 0;
   }
   
   .card-image {
     width: 100%;
-    height: 72%;
-    object-fit: cover;
-    opacity: 90%;
+    object-fit: contain;
   }
   
   .card-number {
     font-size: 1.2rem;
-    margin-bottom: -8px;
-    padding-top: 2px;
   }
   
   .card-price {
@@ -249,22 +212,14 @@
     font-weight: 400;
     font-style: normal;
   }
+
+ 
+  .swiper {
+    padding: 0 100px;
+  }
   
   .custom-slider-arrow {
-    background-color: rgba(0, 255, 255, 0.307);
-    border-top: 2px solid #0ff;
-    border-bottom: 2px solid #0ff;
-    border-left: 0.5px solid #0ff;
-    border-right: 0.5px solid #0ff;
-    border-radius: 1px;
-    clip-path: polygon(
-      0 0,
-      calc(100% - 20px) 0,
-      100% 20px,
-      100% 100%,
-      20px 100%,
-      0 calc(100% - 20px)
-    );
+    z-index: 10;
     box-shadow: none;
     cursor: pointer;
     pointer-events: auto;
@@ -287,7 +242,7 @@
   }
   
   .custom-slider-arrow-left {
-    left: 10px;
+    left: 0px;
     font-size: 20px;
     color: #00fff7;
     padding-inline: 20px;
@@ -295,22 +250,34 @@
   }
   
   .custom-slider-arrow-right {
-    right: 10px;
+    right: 0px;
     font-size: 20px;
     color: #00fff7;
     padding-inline: 20px;
     padding-block: 10px;
   }
-  
-  .custom-slider-arrow.hide {
-    display: none;
+
+  .swiper-slide-active {
+    transform: scale(1.22) !important;
+    transition: all .3s ease-in !important;
   }
-  
+  .swiper {
+    padding: 20px 0 !important;
+    transition: all .3s ease-in !important;
+  }
+
+  .swiper-slide-prev,
+  .swiper-slide-next {
+    transform: scale(1.13) !important;
+    transition: all .3s ease-in !important; 
+  }
+
   ::-webkit-scrollbar {
     width: 0px;
     height: 0px;
   }
   
+
   @media (max-width: 500px) {
     .card-container {
       height: 9rem;

@@ -4,6 +4,8 @@ import { Wrapper } from '@/components';
 import '@/styles/main.scss';
 import { ContextProvider } from '@/utils/context';
 import "../styles/index.css"
+import "swiper/css";
+
 
 const App = ({ Component, pageProps }) => (
   <ContextProvider>

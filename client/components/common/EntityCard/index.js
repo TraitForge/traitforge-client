@@ -1,39 +1,44 @@
 import React from 'react';
+import Image from 'next/image';
 import { useContextState } from '@/utils/context';
 
-const EntityCard = ({ entity, index }) => {
-  // const { calculateEntityAttributes } = useContextState();
-  // const {
-  //   role,
-  //   forgePotential,
-  //   nukeFactor,
-  //   performanceFactor,
-  //   finalNukeFactor,
-  // } = calculateEntityAttributes(entity.entropy);
-  // const entityPrice = calculateEntityPrice(index);
+const EntityCard = ({ entity, index, calculateEntityPrice }) => {
+  const { calculateEntityAttributes } = useContextState();
+  const {
+    role,
+    forgePotential,
+    nukeFactor,
+    performanceFactor,
+    finalNukeFactor,
+  } = calculateEntityAttributes(entity.entropy);
+
+  const entityPrice = calculateEntityPrice(index);
 
   return (
-    <div className="card-container">
-      <img
-        loading="lazy"
-        src="/images/traitforgertransparent.png"
-        alt="Entity"
-        className="card-image"
-      />
-      <div className="card-info">
-        <div className="card-info-always-visible">
-          <h2 className="card-number">2/10,000</h2>
-          <h1 className="card-price">10ETH</h1>
-        </div>
-        <div className="card-info-on-hover">
-          <div className="footer-top-level">
-            <h3 className="card-name">Forge Potential: 2</h3>
-            <h2 className="card-parameters-h2">Nuke Factor: 2 %</h2>
-            <h2 className="card-parameters-h2">
-              Performance Factor
-            </h2>
+    <div className="card-container" style={{ backgroundImage: "url('/images/border.svg')", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundSize: "contain" }}>
+      <div className='w-full h-auto p-4'>
+        <Image
+          loading="lazy"
+          src="/images/traitforgertransparent.png"
+          alt="Entity"
+          className="card-image"
+          width={200}
+          height={300}
+        />
+      </div>
+      <div className="footer-top-level py-5">
+        <div className="card-info text-white">
+          <div className="card-info-always-visible">
+            <h4 className="card-number">{entity.id}/10,000</h4>
+            <h4 className="card-price">Price: {entityPrice} ETH</h4>
           </div>
         </div>
+        <h4 className="card-type">Role: {role}</h4>
+        <h4 className="card-name">Forge Potential: {forgePotential}</h4>
+        <h4 className="card-parameters-h2">Nuke Factor: {nukeFactor} %</h4>
+        <h4 className="card-parameters-h2">
+          Performance Factor: {performanceFactor}
+        </h4>
       </div>
     </div>
   );
