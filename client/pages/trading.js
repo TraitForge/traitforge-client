@@ -149,6 +149,7 @@ const Marketplace = () => {
           src="/images/sellButton.png"
           alt="sell place holder"
           onClick={() => listEntityForSale(selectedForSale)}
+          disabled={processing}
         />
       </div>
     );
@@ -255,6 +256,7 @@ const Marketplace = () => {
           onClick={() =>
             buyEntity(selectedListing.tokenId, selectedListing.price)
           }
+          disabled={processing}
         >
           {' '}
           Buy Entity{' '}

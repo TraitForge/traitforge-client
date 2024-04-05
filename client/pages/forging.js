@@ -220,6 +220,7 @@ const Forging = () => {
           alt="forge"
           className={styles.forgeButton}
           onClick={() => forgeEntity()}
+          disabled={processing}
         />
       </div>
 

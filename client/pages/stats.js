@@ -1,7 +1,9 @@
 import { TransactionsDisplay } from '@/components';
+import { useContextState } from '@/utils/context';
 import React, { useState, useEffect } from 'react';
 
 const Stats = () => {
+  const { subscribeToMintEvent } = useContextState();
   const [currentStat, setCurrentStat] = useState('addressWithMostEntities');
   const [stats, setStats] = useState({
     addressWithMostEntities: [],
