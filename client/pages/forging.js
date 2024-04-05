@@ -167,18 +167,18 @@ const ProcessingModal = ({ processing, text }) => {
         <div className={styles.selectedEntityPlaceholder}>
           <div className={styles.forgecardsrow}>
           {selectedFromPool ? (
-              <img
-              src="/images/PoolSelectCard.png"
-              alt="forge place holder"
-              className={styles.otherEntities}
-              onClick={scrollToEntityList}
-              />
-              ) : (
-          <EntityCard 
+        <EntityCard 
             entity={selectedFromPool} 
             onSelect={() => setSelectedFromPool(null)} 
-          />
-          )}
+        />
+    ) : (
+        <img
+            src="/images/PoolSelectCard.png"
+            alt="forge place holder"
+            className={styles.otherEntities}
+            onClick={scrollToEntityList}
+        />
+    )}
             <img src= "/images/claimentity.png" 
             alt="claim box" 
             />
