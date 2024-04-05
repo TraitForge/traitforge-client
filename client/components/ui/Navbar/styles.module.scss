@@ -4,19 +4,19 @@
 
 .logo {
   display: flex;
-  align-items: center; 
+  align-items: center;
 }
 
 .logo h1 {
   margin-right: 5px;
-  font-size: 1.5em; 
+  font-size: 1.5em;
   margin-left: 10px;
   color: #eaeaea;
 }
 
 .logo img {
-  height: 34px; 
-  width: auto; 
+  height: 34px;
+  width: auto;
   padding-bottom: 4px;
   z-index: 2;
 }
@@ -45,8 +45,6 @@
     color: white;
     text-decoration: none;
     transition: color 0.3s ease;
-
-    
   }
 }
 

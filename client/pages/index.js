@@ -1,12 +1,12 @@
 import { useContextState } from '@/utils/context';
 import { ethers } from 'ethers';
-import { contractsConfig } from '@/utils/contractsConfig'; 
+import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { LoadingSpinner, Slider, Button } from '@/components';
 
 const Home = () => {
   const { isLoading, setIsLoading, entityPrice } = useContextState();
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useWeb3ModalProvider();
 
   const mintEntityHandler = async () => {
     if (!walletProvider) {
@@ -20,12 +20,12 @@ const Home = () => {
       const userAddress = await signer.getAddress();
       const mintContract = new ethers.Contract(
         contractsConfig.traitForgeNftAddress,
-        contractsConfig.traitForgeNftAbi, 
-        signer);
-      const transaction = await mintContract.mintToken(
-        userAddress, 
-        { value: ethers.utils.parseEther(entityPrice),
-        gasLimit: ethers.utils.hexlify(1000000)
+        contractsConfig.traitForgeNftAbi,
+        signer
+      );
+      const transaction = await mintContract.mintToken(userAddress, {
+        value: ethers.utils.parseEther(entityPrice),
+        gasLimit: ethers.utils.hexlify(1000000),
       });
       await transaction.wait();
       alert('Entity minted successfully');
@@ -37,15 +37,27 @@ const Home = () => {
     }
   };
 
-  if (isLoading) return <LoadingSpinner />
+  if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="mint-container min-h-[100vh]" style={{backgroundImage: "url('/images/home.png')", backgroundPosition: "center", backgroundSize: "cover"}}>
+    <div
+      className="mint-container min-h-[100vh]"
+      style={{
+        backgroundImage: "url('/images/home.png')",
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+      }}
+    >
       <span className="mint-text">Mint your traitforge entity</span>
       <div className="w-full pb-10">
         <Slider />
       </div>
-      <Button onClick={mintEntityHandler} bg="#023340" borderColor="#0ADFDB" text="Mint For 0.01 ETH" />
+      <Button
+        onClick={mintEntityHandler}
+        bg="#023340"
+        borderColor="#0ADFDB"
+        text="Mint For 0.01 ETH"
+      />
     </div>
   );
 };

@@ -1,23 +1,21 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 import Spinner from '../LoadingSpinner';
 import EntityCard from '../EntityCard';
 import { useContextState } from '@/utils/context';
 
 const Slider = () => {
-  const { getUpcomingMints, isLoading } =
-    useContextState();
-  const [ref, setRef] = useState(0)
+  const { getUpcomingMints, isLoading } = useContextState();
+  const [ref, setRef] = useState(0);
 
-   useEffect(() => {
-     getUpcomingMints();
-   }, []);
+  useEffect(() => {
+    getUpcomingMints();
+  }, []);
 
-  const calculateEntityPrice = (index) => {
+  const calculateEntityPrice = index => {
     return (index * 0.01).toFixed(2);
   };
-
 
   if (isLoading) return <Spinner />;
 
@@ -50,23 +48,25 @@ const Slider = () => {
     },
   };
 
-  const handlePrev = useCallback(() => ref?.slidePrev())
-  const handleNext = useCallback(() => ref?.slideNext())
+  const handlePrev = useCallback(() => ref?.slidePrev());
+  const handleNext = useCallback(() => ref?.slideNext());
 
-  const entities = [{}, {}, {}, {}, {}, {}, {}]
+  const entities = [{}, {}, {}, {}, {}, {}, {}];
 
   return (
-    <div className='container relative'>
-      <div className='md:px-20 lg:px-24 xl:px-[180px] '>
-        <Swiper
-          {...sliderOption}
-          onSwiper={setRef}
-        >
-          {entities && entities.map((entity, index) => (
-            <SwiperSlide key={entity.id}>
-              <EntityCard entity={entity} index={index} calculateEntityPrice={calculateEntityPrice} />
-            </SwiperSlide>
-          ))}
+    <div className="container relative">
+      <div className="md:px-20 lg:px-24 xl:px-[180px] ">
+        <Swiper {...sliderOption} onSwiper={setRef}>
+          {entities &&
+            entities.map((entity, index) => (
+              <SwiperSlide key={entity.id}>
+                <EntityCard
+                  entity={entity}
+                  index={index}
+                  calculateEntityPrice={calculateEntityPrice}
+                />
+              </SwiperSlide>
+            ))}
         </Swiper>
       </div>
       <button

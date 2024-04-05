@@ -5,7 +5,8 @@ import { contractsConfig } from '@/utils/contractsConfig';
 import { useContextState } from '@/utils/context';
 
 const EntityCard = ({ entity, index }) => {
-  const { calculateEntityAttributes, entityPrice, infuraProvider } = useContextState();
+  const { calculateEntityAttributes, entityPrice, infuraProvider } =
+    useContextState();
   const [entropy, setEntropy] = useState(null);
 
   const getEntropy = async () => {
@@ -13,7 +14,6 @@ const EntityCard = ({ entity, index }) => {
       console.error('Infura provider is not set');
       return;
     }
-
     try {
       const provider = infuraProvider;
       const contract = new ethers.Contract(
@@ -25,25 +25,30 @@ const EntityCard = ({ entity, index }) => {
       setEntropy(entropyValue.toString());
     } catch (error) {
       console.error('Error fetching entropy:', error);
+      return null;
     }
   };
-  
+
   useEffect(() => {
     getEntropy();
-  }, [entity]); 
+  }, [entity]);
 
-  const {
-    role,
-    forgePotential,
-    performanceFactor,
-    finalNukeFactor,
-  } = calculateEntityAttributes(entropy);
+  const { role, forgePotential, performanceFactor, finalNukeFactor } =
+    calculateEntityAttributes(entropy);
 
-  const Price = entityPrice ? calculateEntityPrice(index) : "N/A";
+  const Price = entityPrice ? calculateEntityPrice(index) : 'N/A';
 
   return (
-    <div className="card-container" style={{ backgroundImage: "url('/images/border.svg')", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundSize: "contain" }}>
-      <div className='w-full h-auto p-4'>
+    <div
+      className="card-container"
+      style={{
+        backgroundImage: "url('/images/border.svg')",
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+      }}
+    >
+      <div className="w-full h-auto p-4">
         <Image
           loading="lazy"
           src="/images/traitforgertransparent.png"

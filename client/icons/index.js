@@ -1,2 +1,2 @@
-export { Logo } from './Logo'
-export { Wallter } from './Wallter'
+export { Logo } from './Logo';
+export { Wallter } from './Wallter';

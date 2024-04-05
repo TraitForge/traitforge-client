@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useContextState } from '@/utils/context';
-import { contractsConfig } from '@/utils/contractsConfig'; 
+import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
 import { LoadingSpinner, EntityCard, Modal } from '@/components';
@@ -11,7 +11,7 @@ const Forging = () => {
     openModal,
     getEntitiesForForging,
     ownerEntities,
-    entitiesForForging 
+    entitiesForForging,
   } = useContextState();
 
   const [modalContent, setModalContent] = useState(null);
@@ -23,17 +23,17 @@ const Forging = () => {
   const [selectedEntity, setSelectedEntity] = useState(null);
   const { walletProvider } = useWeb3ModalProvider();
 
-useEffect(() => {
-      getEntitiesForForging();
-}, [ getEntitiesForForging ]);
+  useEffect(() => {
+    getEntitiesForForging();
+  }, [getEntitiesForForging]);
 
-const openModalWithContent = (content) => {
+  const openModalWithContent = content => {
     setModalContent(content);
-    openModal(true); 
-};
- 
-const forgeEntity = async () => {
-    if (!walletProvider ) return;
+    openModal(true);
+  };
+
+  const forgeEntity = async () => {
+    if (!walletProvider) return;
     setProcessing(true);
     setProcessingText('Forging');
     try {
@@ -58,10 +58,10 @@ const forgeEntity = async () => {
     } catch (error) {
       console.error('Failed to Forge:', error);
     }
-};
+  };
 
-const ListToForgeEntity = async () => {
-    if (!walletProvider ) return;
+  const ListToForgeEntity = async () => {
+    if (!walletProvider) return;
     setProcessing(true);
     setProcessingText('Forging');
     try {
@@ -72,65 +72,74 @@ const ListToForgeEntity = async () => {
         contractsConfig.entityMergingContractAbi,
         signer
       );
-      const transaction = await forgeContract.listForBreeding(selectedEntity, fee);
+      const transaction = await forgeContract.listForBreeding(
+        selectedEntity,
+        fee
+      );
       await transaction.wait();
       console.log('Listed Successfully');
     } catch (error) {
       console.error('Failed to List Entity:', error);
     }
-};
+  };
 
-const EntityList = ({ entities, setSelectedFromPool }) => (
+  const EntityList = ({ entities, setSelectedFromPool }) => (
     <div className="breeder-items-list">
       {entities.map((entity, index) => (
-        <EntityCard key={entity.id} entity={entity} index={index} onClick={() => setSelectedFromPool(entity)} />
+        <EntityCard
+          key={entity.id}
+          entity={entity}
+          index={index}
+          onClick={() => setSelectedFromPool(entity)}
+        />
       ))}
     </div>
-);
+  );
 
-const modalContentToList = (
-  <>
-    <div className={styles.entityDisplay}>
-    <h1>LIST YOUR ENTITY</h1>
-    <ul>
-      {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
-      ownerEntities.map((entity, index) => (
-        <EntityCard 
-        key={index}
-        entity={entity} 
-        onSelect={() => setSelectedEntity(entity)}
-        />
-      ))
-    ) : (
-    <li>You don't own an Entity!</li>
-    )}
-    </ul>
-    </div>
-    {selectedEntity && (
+  const modalContentToList = (
     <>
-    <EntityCard entity={selectedEntity}/>
-    <ProcessingModal processing={processing} text={processingText} />
-   </>
-    )}
-  </>
-);
+      <div className={styles.entityDisplay}>
+        <h1>LIST YOUR ENTITY</h1>
+        <ul>
+          {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
+            ownerEntities.map((entity, index) => (
+              <EntityCard
+                key={index}
+                entity={entity}
+                onSelect={() => setSelectedEntity(entity)}
+              />
+            ))
+          ) : (
+            <li>You don't own an Entity!</li>
+          )}
+        </ul>
+      </div>
+      {selectedEntity && (
+        <>
+          <input type="number" step="0.0001" placeholder="Enter Your Fee" />
+          <EntityCard entity={selectedEntity} />
+          <ProcessingModal processing={processing} text={processingText} />
+        </>
+      )}
+    </>
+  );
 
-const modalContentToMerge = (
-  <div className={styles.entityDisplay}>
-    <h1>Select entity</h1>
-    <ul>
-    {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
-      ownerEntities.map((entity, index) => (
-      <EntityCard entity={entity} index={index}/>
-    ))
-  ) : (
-    <li>You don't own an Entity!</li>
-    )}
-    </ul>
-  </div>
-);
+  const modalContentToMerge = (
+    <div className={styles.entityDisplay}>
+      <h1>Select entity</h1>
+      <ul>
+        {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
+          ownerEntities.map((entity, index) => (
+            <EntityCard entity={entity} index={index} />
+          ))
+        ) : (
+          <li>You don't own an Entity!</li>
+        )}
+      </ul>
+    </div>
+  );
 
-const ProcessingModal = ({ processing, text }) => {
+  const ProcessingModal = ({ processing, text }) => {
     if (!processing) return null;
     return (
       <div className="processing-modal">
@@ -140,7 +149,7 @@ const ProcessingModal = ({ processing, text }) => {
         </div>
       </div>
     );
-};
+  };
 
   const getSortedEntities = () => {
     if (!sortOption) return entitiesForForging;
@@ -166,32 +175,30 @@ const ProcessingModal = ({ processing, text }) => {
         <h1>Forging Arena</h1>
         <div className={styles.selectedEntityPlaceholder}>
           <div className={styles.forgecardsrow}>
-          {selectedFromPool ? (
-        <EntityCard 
-            entity={selectedFromPool} 
-            onSelect={() => setSelectedFromPool(null)} 
-        />
-    ) : (
-        <img
-            src="/images/PoolSelectCard.png"
-            alt="forge place holder"
-            className={styles.otherEntities}
-            onClick={scrollToEntityList}
-        />
-    )}
-            <img src= "/images/claimentity.png" 
-            alt="claim box" 
-            />
+            {selectedFromPool ? (
+              <EntityCard
+                entity={selectedFromPool}
+                onSelect={() => setSelectedFromPool(null)}
+              />
+            ) : (
+              <img
+                src="/images/PoolSelectCard.png"
+                alt="forge place holder"
+                className={styles.otherEntities}
+                onClick={scrollToEntityList}
+              />
+            )}
+            <img src="/images/claimentity.png" alt="claim box" />
             <img
-              src= "/images/WalletSelectCard.png"
+              src="/images/WalletSelectCard.png"
               alt="forge place holder"
               className={styles.yourEntities}
               onClick={() => openModalWithContent(modalContentToMerge)}
             />
             {isOpen && (
-             <Modal background = '/images/forge-background.jpg'>
-          {modalContentToMerge}
-            </Modal>
+              <Modal background="/images/forge-background.jpg">
+                {modalContentToMerge}
+              </Modal>
             )}
           </div>
           {selectedEntity && (
@@ -209,7 +216,7 @@ const ProcessingModal = ({ processing, text }) => {
           )}
         </div>
         <img
-          src= "/images/forgebutton.png"
+          src="/images/forgebutton.png"
           alt="forge"
           className={styles.forgeButton}
           onClick={() => forgeEntity()}
@@ -226,9 +233,9 @@ const ProcessingModal = ({ processing, text }) => {
               List Your Forger
             </button>
             {isOpen && (
-             <Modal background = '/images/forge-background.jpg'>
-          {modalContent}
-            </Modal >
+              <Modal background="/images/forge-background.jpg">
+                {modalContent}
+              </Modal>
             )}
           </div>
           <div className={styles.rightItems}>
@@ -237,14 +244,12 @@ const ProcessingModal = ({ processing, text }) => {
               onChange={e => setSortOption(e.target.value)}
             >
               <option value="">Select Sorting Option</option>
-              <option value="priceLowHigh">Price: Low to High</option>
-              <option value="priceHighLow">Price: High to Low</option>
+              <option value="priceLowHigh">Fee: Low to High</option>
+              <option value="priceHighLow">Fee: High to Low</option>
             </select>
           </div>
         </div>
-        <EntityList
-          entities={sortedEntities}
-        />
+        <EntityList entities={sortedEntities} />
       </div>
     </div>
   );

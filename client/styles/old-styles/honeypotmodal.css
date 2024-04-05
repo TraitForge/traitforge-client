@@ -4,11 +4,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.203); 
+  background-color: rgba(0, 0, 0, 0.203);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100; 
+  z-index: 100;
   font-family: 'Bebas Neue', sans-serif;
 }
 
@@ -27,12 +27,12 @@
 }
 
 .close-button:hover {
-  color: rgb(85, 85, 85); 
+  color: rgb(85, 85, 85);
 }
 
 .modal-content {
-  background-color: #000; 
-  color: #ffffff; 
+  background-color: #000;
+  color: #ffffff;
   padding: 20px;
   border-radius: 3px;
   width: 60%;
@@ -40,8 +40,6 @@
   z-index: 11;
   font-family: 'Bebas Neue', sans-serif;
 }
-
-
 
 .nft-lists {
   display: flex;
@@ -65,13 +63,13 @@
   font-family: 'Bebas Neue', sans-serif;
 }
 
-.nft-items.selected{
+.nft-items.selected {
   box-shadow: 0px 0px 5px 2px #0ff;
 }
 
 .nft-items:hover {
   transform: scale(1.05);
-  background-color: #28282835; 
+  background-color: #28282835;
   z-index: 11;
 }
 
@@ -85,9 +83,8 @@
 }
 
 .error {
-  color: #ff0000; 
+  color: #ff0000;
 }
-
 
 .confirmation-modal {
   position: fixed;
@@ -132,5 +129,3 @@
     opacity: 1;
   }
 }
-
-  
