@@ -1,10 +1,11 @@
 import { useContextState } from '@/utils/context';
 import { ethers } from 'ethers';
+import { contractsConfig } from '@/utils/contractsConfig'; 
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { LoadingSpinner, Slider, Button } from '@/components';
 
 const Home = () => {
-  const { isLoading, setIsLoading } = useContextState();
+  const { isLoading, setIsLoading, entityPrice } = useContextState();
   const { walletProvider } = useWeb3ModalProvider()
 
   const mintEntityHandler = async () => {
@@ -17,7 +18,10 @@ const Home = () => {
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const userAddress = await signer.getAddress();
-      const mintContract = new ethers.Contract(MintAddress, MintAbi.abi, signer);
+      const mintContract = new ethers.Contract(
+        contractsConfig.traitForgeNftAddress,
+        contractsConfig.traitForgeNftAbi, 
+        signer);
       const transaction = await mintContract.mintToken(
         userAddress, 
         { value: ethers.utils.parseEther(entityPrice),

@@ -6,14 +6,13 @@ import EntityCard from '../EntityCard';
 import { useContextState } from '@/utils/context';
 
 const Slider = () => {
-  const { upcomingMints, subscribeToMintEvent, isLoading } =
+  const { getUpcomingMints, isLoading } =
     useContextState();
   const [ref, setRef] = useState(0)
 
-  // useEffect(() => {
-  //   upcomingMints();
-  //   subscribeToMintEvent();
-  // }, []);
+   useEffect(() => {
+     getUpcomingMints();
+   }, []);
 
   const calculateEntityPrice = (index) => {
     return (index * 0.01).toFixed(2);

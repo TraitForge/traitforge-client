@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from '@/styles/trading.module.scss';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { ethers } from 'ethers';
@@ -8,9 +8,11 @@ import { contractsConfig } from '@/utils/contractsConfig';
 
 const Marketplace = () => {
   const [selectedListing, setSelectedListing] = useState(null);
+  const [selectedForSale, setSelectedForSale] = useState(null);
   const [sortOption, setSortOption] = useState('');
   const [filter, setFilter] = useState('All');
   const [ownerEntities, setOwnerEntities] = useState([]);
+  const [isListModalOpen, setIsListModalOpen] = useState(false);
   const { walletProvider } = useWeb3ModalProvider();
   
   const {
@@ -39,11 +41,11 @@ const Marketplace = () => {
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
       const signer = ethersProvider.getSigner();
       const tradeContract = new ethers.Contract(
-        contractsConfig.tradeContractAddress,
-        contractsConfig.tradeContractAbi.abi, 
+        contractsConfig.entityTradingContractAddress,
+        contractsConfig.entityTradingAbi, 
         signer
       );
-      const transaction = await tradeContract.buyEntity(tokenId, price);
+      const transaction = await tradeContract.buyNFT(tokenId, price);
       await transaction.wait();
       alert("Entity purchased successfully!");
     } catch (error) {
@@ -52,11 +54,34 @@ const Marketplace = () => {
     }
   };
 
+  const listEntityForSale = async (tokenId, price) => {
+    if (!walletProvider) {
+      alert("Please connect your wallet first.");
+      return;
+    }
+    try {
+      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const signer = ethersProvider.getSigner();
+      const tradeContract = new ethers.Contract(
+        contractsConfig.entityTradingContractAddress,
+        contractsConfig.entityTradingAbi, 
+        signer
+      );
+      const transaction = await tradeContract.listNFTForSale(tokenId, price);
+      await transaction.wait();
+      alert("Entity purchased successfully!");
+    } catch (error) {
+      console.error("Purchase failed:", error);
+      alert("Purchase failed. Please try again.");
+    }
+  };
+
+
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
   };
 
-  const getSortedFilteredListings = () => {
+  const filteredAndSortedListings = useMemo(() => {
     let filtered = entitiesForSale.filter(listing => {
       if (filter === 'All') return true;
       if (filter === 'Forger') return listing.isForger;
@@ -84,12 +109,33 @@ const Marketplace = () => {
       default:
         return filtered;
     }
+  }, [entitiesForSale, filter, sortOption]);
+
+  const openListModal = () => {
+    setIsListModalOpen(true);
+  };
+  const closeListModal = () => {
+    setIsListModalOpen(false);
   };
 
-
-  const filteredAndSortedListings = getSortedFilteredListings();
-
-
+  const listModal = () => {
+    if (!isListModalOpen) return null;
+    return (
+      <div style={styles.listmodalcontainer}>
+        <button onClick={closeListModal}>Close</button>
+        <div style={styles.listmodalinput}>
+          <h2>set a price for your entity</h2>
+          <input type="number" step="0.0001" placeholder="Enter price in ETH" />
+        </div>
+        <EntityCard 
+          key={selectedListing.tokenId} 
+          entity={selectedListing}/>
+        <img src= "/images/sellButton.png"
+             alt="sell place holder" 
+             onClick={() => listEntityForSale(selectedForSale)}/>
+      </div>
+    );
+  };
 
 
   const modalContent = (
@@ -98,14 +144,18 @@ const Marketplace = () => {
       <ul>
         {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
           ownerEntities.map((entity, index) => (
-            <EntityCard className={styles.entitycard} key={index}>
-              {entity.name} - {entity.description}
-            </EntityCard>
+            <EntityCard entity={entity} 
+            key={index}
+            onSelect={() => {
+              setSelectedForSale(entity);
+              openListModal();
+            }}/>
           ))
         ) : (
           <li>You don't own an Entity!</li>
         )}
       </ul>
+      {isListModalOpen && listModal()}
     </div>
   );
   
@@ -150,7 +200,7 @@ const Marketplace = () => {
       </div>
 
       <div className={styles.listings}>
-        {filteredAndSortedListings.map((listing) => (
+      {filteredAndSortedListings.map((listing) => (
           <EntityCard 
               key={listing.tokenId} 
               entity={listing} 

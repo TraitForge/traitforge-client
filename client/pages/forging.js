@@ -16,22 +16,23 @@ const Forging = () => {
 
   const [modalContent, setModalContent] = useState(null);
   const entityList = useRef(null);
+  const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [sortOption, setSortOption] = useState('');
   const [processing, setProcessing] = useState(false);
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useWeb3ModalProvider();
 
-  useEffect(() => {
+useEffect(() => {
       getEntitiesForForging();
-  }, [ getEntitiesForForging ]);
+}, [ getEntitiesForForging ]);
 
-  const openModalWithContent = (content) => {
+const openModalWithContent = (content) => {
     setModalContent(content);
     openModal(true); 
-  };
+};
  
-  const forgeEntity = async () => {
+const forgeEntity = async () => {
     if (!walletProvider ) return;
     setProcessing(true);
     setProcessingText('Forging');
@@ -39,11 +40,11 @@ const Forging = () => {
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const forgeContract = new ethers.Contract(
-        contractsConfig.forgeContractAddress,
-        contractsConfig.forgeContractAbi,
+        contractsConfig.entityMergingAddress,
+        contractsConfig.entityMergingContractAbi,
         signer
       );
-      const transaction = await forgeContract.forgeEntity();
+      const transaction = await forgeContract.breedWithListed(Forger, Merger);
       await transaction.wait();
 
       setTimeout(() => {
@@ -55,53 +56,81 @@ const Forging = () => {
       }, 10000);
       console.log('Forged successfully');
     } catch (error) {
-      console.error('Failed to fetch entities:', error);
+      console.error('Failed to Forge:', error);
     }
-  };
+};
 
-  const EntityList = ({ entities, onEntitySelect }) => (
+const ListToForgeEntity = async () => {
+    if (!walletProvider ) return;
+    setProcessing(true);
+    setProcessingText('Forging');
+    try {
+      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const signer = await ethersProvider.getSigner();
+      const forgeContract = new ethers.Contract(
+        contractsConfig.entityMergingAddress,
+        contractsConfig.entityMergingContractAbi,
+        signer
+      );
+      const transaction = await forgeContract.listForBreeding(selectedEntity, fee);
+      await transaction.wait();
+      console.log('Listed Successfully');
+    } catch (error) {
+      console.error('Failed to List Entity:', error);
+    }
+};
+
+const EntityList = ({ entities, setSelectedFromPool }) => (
     <div className="breeder-items-list">
       {entities.map((entity, index) => (
-        <EntityCard key={entity.id} entity={entity} index={index} onClick={() => onEntitySelect(entity)} />
+        <EntityCard key={entity.id} entity={entity} index={index} onClick={() => setSelectedFromPool(entity)} />
       ))}
     </div>
-  );
+);
 
-  const modalContent1 = (
+const modalContentToList = (
+  <>
     <div className={styles.entityDisplay}>
-      <h1>LIST YOUR ENTITY</h1>
-      <ul>
-        {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
-          ownerEntities.map((entity, index) => (
-            <EntityCard className={styles.entitycard} key={index}>
-              {entity.name} - {entity.description}
-            </EntityCard>
-          ))
-        ) : (
-          <li>You don't own an Entity!</li>
-        )}
-      </ul>
+    <h1>LIST YOUR ENTITY</h1>
+    <ul>
+      {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
+      ownerEntities.map((entity, index) => (
+        <EntityCard 
+        key={index}
+        entity={entity} 
+        onSelect={() => setSelectedEntity(entity)}
+        />
+      ))
+    ) : (
+    <li>You don't own an Entity!</li>
+    )}
+    </ul>
     </div>
-  );
+    {selectedEntity && (
+    <>
+    <EntityCard entity={selectedEntity}/>
+    <ProcessingModal processing={processing} text={processingText} />
+   </>
+    )}
+  </>
+);
 
-  const modalContent2 = (
-    <div className={styles.entityDisplay}>
-      <h1>Select entity</h1>
-      <ul>
-        {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
-          ownerEntities.map((entity, index) => (
-            <EntityCard className={styles.entitycard} key={index}>
-              {entity.name} - {entity.description}
-            </EntityCard>
-          ))
-        ) : (
-          <li>You don't own an Entity!</li>
-        )}
-      </ul>
-    </div>
-  );
+const modalContentToMerge = (
+  <div className={styles.entityDisplay}>
+    <h1>Select entity</h1>
+    <ul>
+    {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
+      ownerEntities.map((entity, index) => (
+      <EntityCard entity={entity} index={index}/>
+    ))
+  ) : (
+    <li>You don't own an Entity!</li>
+    )}
+    </ul>
+  </div>
+);
 
-  const ProcessingModal = ({ processing, text }) => {
+const ProcessingModal = ({ processing, text }) => {
     if (!processing) return null;
     return (
       <div className="processing-modal">
@@ -111,7 +140,7 @@ const Forging = () => {
         </div>
       </div>
     );
-  };
+};
 
   const getSortedEntities = () => {
     if (!sortOption) return entitiesForForging;
@@ -131,23 +160,25 @@ const Forging = () => {
     entityList.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const openEntityToForge = (entity) => {
-    console.log('Opening entity for forging:', entity);
-    setSelectedEntity(entity);
-  };
-
   return (
     <div className={styles.forgingPage}>
       <div className={styles.forgeArenaContainer}>
         <h1>Forging Arena</h1>
         <div className={styles.selectedEntityPlaceholder}>
           <div className={styles.forgecardsrow}>
-            <img
-              src= "/images/PoolSelectCard.png"
+          {selectedFromPool ? (
+              <img
+              src="/images/PoolSelectCard.png"
               alt="forge place holder"
               className={styles.otherEntities}
               onClick={scrollToEntityList}
-            />
+              />
+              ) : (
+          <EntityCard 
+            entity={selectedFromPool} 
+            onSelect={() => setSelectedFromPool(null)} 
+          />
+          )}
             <img src= "/images/claimentity.png" 
             alt="claim box" 
             />
@@ -155,11 +186,11 @@ const Forging = () => {
               src= "/images/WalletSelectCard.png"
               alt="forge place holder"
               className={styles.yourEntities}
-              onClick={() => openModalWithContent(modalContent2)}
+              onClick={() => openModalWithContent(modalContentToMerge)}
             />
             {isOpen && (
              <Modal background = '/images/forge-background.jpg'>
-          {modalContent2}
+          {modalContentToMerge}
             </Modal>
             )}
           </div>
@@ -190,7 +221,7 @@ const Forging = () => {
           <div className={styles.leftItems}>
             <button
               className={styles.breedEntityButton}
-              onClick={() => openModalWithContent(modalContent1)}
+              onClick={() => openModalWithContent(modalContentToList)}
             >
               List Your Forger
             </button>
@@ -213,35 +244,8 @@ const Forging = () => {
         </div>
         <EntityList
           entities={sortedEntities}
-          openSelectEntity={openEntityToForge}
         />
       </div>
-
-      {selectedEntity && (
-        <div className={styles.detailedCard}>
-          <img
-            src={selectedEntity.image}
-            alt={`Entity ${selectedEntity.title}`}
-          />
-          <h5>{selectedEntity.title}</h5>
-          <p>Price: {selectedEntity.price} ETH</p>
-          <p>{selectedEntity.gender}</p>
-          <p>Nuke Factor: {selectedEntity.nukefactor}</p>
-          <button
-            className={styles.forgeButton}
-            onClick={() => forgeNewEntity(selectedEntity)}
-          >
-            Forge
-          </button>
-          <button
-            className={styles.closeButton}
-            onClick={() => setSelectedEntity(null)}
-          >
-            Close
-          </button>
-          <ProcessingModal processing={processing} text={processingText} />
-        </div>
-      )}
     </div>
   );
 };
