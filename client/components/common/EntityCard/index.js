@@ -7,7 +7,6 @@ const EntityCard = ({ entity, index, calculateEntityPrice }) => {
   const {
     role,
     forgePotential,
-    nukeFactor,
     performanceFactor,
     finalNukeFactor,
   } = calculateEntityAttributes(entity.entropy);
@@ -35,7 +34,7 @@ const EntityCard = ({ entity, index, calculateEntityPrice }) => {
         </div>
         <h4 className="card-name">Role: {role}</h4>
         <h4 className="card-name">Forge Potential: {forgePotential}</h4>
-        <h4 className="card-parameters-h2">Nuke Factor: {nukeFactor} %</h4>
+        <h4 className="card-parameters-h2">Nuke Factor: {finalNukeFactor} %</h4>
         <h4 className="card-parameters-h2">
           Performance Factor: {performanceFactor}
         </h4>

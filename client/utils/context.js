@@ -72,7 +72,22 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [fetchEthAmount]);
 
+//Calculate Entity Attributes
+function calculateEntityAttributes(entropy) {
+  const performanceFactor = entropy % 10;
+  const lastTwoDigits = entropy % 100;
+  const forgePotential = Math.floor(lastTwoDigits / 10);
+  const nukeFactor = Number((entropy / 40000).toFixed(1));
+  let role; 
+  const result = entropy % 3;
+  if (result === 0) {
+      role = "sire"; 
+  } else {
+      role = "breeder"; 
+  }
 
+  return { role, forgePotential, nukeFactor, performanceFactor };
+}
 //Entity Price For Mint
 useEffect(() => {
     const getLatestEntityPrice = async () => {
@@ -283,7 +298,9 @@ const getEntitiesForForging = async () => {
         ownerEntities, 
         openModal,
         closeModal,
+        setIsLoading,
         getUpcomingMints,
+        calculateEntityAttributes,
         getEntitiesForSale,
         getOwnersEntities,
         getEntitiesForForging,
