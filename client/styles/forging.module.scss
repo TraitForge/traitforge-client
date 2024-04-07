@@ -8,8 +8,9 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   align-items: center;
   justify-content: center;
   background: url('/images/forge-background.jpg') center / cover no-repeat;
+  background-attachment: fixed;  
   height: 140vh;
-  padding-bottom: 20vh;
+  padding-bottom: 20px;
 }
 
 .forgeArenaContainer {
