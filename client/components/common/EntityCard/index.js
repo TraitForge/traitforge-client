@@ -2,21 +2,29 @@ import React from 'react';
 import Image from 'next/image';
 import { useContextState } from '@/utils/context';
 
-const EntityCard = ({ entity, index, calculateEntityPrice }) => {
-  const { calculateEntityAttributes } = useContextState();
-  const {
-    role,
-    forgePotential,
-    nukeFactor,
-    performanceFactor,
-    finalNukeFactor,
-  } = calculateEntityAttributes(entity.entropy);
+const EntityCard = ({ entropy, index}) => {
+  const { calculateEntityAttributes } =
+    useContextState();
 
-  const entityPrice = calculateEntityPrice(index);
+  const { role, forgePotential, performanceFactor, nukeFactor } =
+    calculateEntityAttributes(entropy);
+
+  const calculateEntityPrice = index => {
+    return ((index +1) * 0.01).toFixed(2);
+  };
+  
 
   return (
-    <div className="card-container" style={{ backgroundImage: "url('/images/border.svg')", backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundSize: "contain" }}>
-      <div className='w-full h-auto p-4'>
+    <div
+      className="card-container"
+      style={{
+        backgroundImage: "url('/images/border.svg')",
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+      }}
+    >
+      <div className="w-full h-auto p-4">
         <Image
           loading="lazy"
           src="/images/traitforgertransparent.png"
@@ -28,12 +36,9 @@ const EntityCard = ({ entity, index, calculateEntityPrice }) => {
       </div>
       <div className="footer-top-level py-5">
         <div className="card-info text-white">
-          <div className="card-info-always-visible">
-            <h4 className="card-number">{entity.id}/10,000</h4>
-            <h4 className="card-price">Price: {entityPrice} ETH</h4>
-          </div>
+        <h4 className="card-price">Price: {calculateEntityPrice(index)} ETH</h4>
         </div>
-        <h4 className="card-name">Role: {role}</h4>
+        <h4 className="card-name">{role}</h4>
         <h4 className="card-name">Forge Potential: {forgePotential}</h4>
         <h4 className="card-parameters-h2">Nuke Factor: {nukeFactor} %</h4>
         <h4 className="card-parameters-h2">

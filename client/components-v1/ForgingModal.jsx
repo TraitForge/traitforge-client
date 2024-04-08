@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import '../styles/TradingForgingModal.css';
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
+import {
+  useWeb3ModalProvider,
+  useWeb3ModalAccount,
+} from '@web3modal/ethers5/react';
 import { ethers } from 'ethers';
 import forgeContractAbi from '../artifacts/contracts/EntityMerging.sol/EntityMerging.json';
 import { useEntities } from './OwnerEntityContext'; // Import useEntities from your context
@@ -16,17 +19,17 @@ const ForgingModal = ({ open, onClose, onSave }) => {
   const { isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
-  const handlePriceChange = (event) => {
+  const handlePriceChange = event => {
     setPrice(event.target.value);
     setError('');
   };
 
-  const handleEntitySelect = (tokenId) => {
+  const handleEntitySelect = tokenId => {
     setSelectedEntity(tokenId);
     setError('');
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async event => {
     event.preventDefault();
     if (!price) {
       setError('Please enter a price');
@@ -43,15 +46,22 @@ const ForgingModal = ({ open, onClose, onSave }) => {
     try {
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
       const signer = ethersProvider.getSigner();
-      const forgeContract = new ethers.Contract(forgeContractAddress, forgeContractAbi.abi, signer);
-      const transaction = await forgeContract.listEntityForForge(selectedEntity, ethers.utils.parseEther(price));
+      const forgeContract = new ethers.Contract(
+        forgeContractAddress,
+        forgeContractAbi.abi,
+        signer
+      );
+      const transaction = await forgeContract.listEntityForForge(
+        selectedEntity,
+        ethers.utils.parseEther(price)
+      );
       await transaction.wait();
 
       onSave({
         tokenId: selectedEntity,
         price: parseFloat(price),
       });
-      onClose(); 
+      onClose();
     } catch (error) {
       console.error('Failed to list Entity. Please try again.', error);
       setError('Failed to list Entity. Please try again.');
@@ -61,12 +71,14 @@ const ForgingModal = ({ open, onClose, onSave }) => {
   if (!open) return null;
 
   return (
-    <div className='overlay'>
-      <div className='modalContainer'>
-        <button className='closeBtn' onClick={onClose}>x</button>
+    <div className="overlay">
+      <div className="modalContainer">
+        <button className="closeBtn" onClick={onClose}>
+          x
+        </button>
         <header>List Your Entity for Forging</header>
 
-        <div className='nfts-display-container'>
+        <div className="nfts-display-container">
           {isLoading ? (
             <p>Loading...</p>
           ) : (
@@ -81,7 +93,7 @@ const ForgingModal = ({ open, onClose, onSave }) => {
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className='btnContainer'>
+        <form onSubmit={handleSubmit} className="btnContainer">
           <label>Set your Price:</label>
           <input
             type="text"
@@ -89,7 +101,9 @@ const ForgingModal = ({ open, onClose, onSave }) => {
             onChange={handlePriceChange}
             placeholder="Enter price in ETH"
           />
-          <button type="submit" className="btnPrimary">List For Forging</button>
+          <button type="submit" className="btnPrimary">
+            List For Forging
+          </button>
           {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
       </div>

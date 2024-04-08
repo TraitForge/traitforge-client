@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from '@/styles/honeypot.module.scss';
-import { Modal } from '@/components'; 
+import { Modal, EntityCard } from '@/components';
+import { appStore } from '@/utils/appStore';
+import { observer } from 'mobx-react';
 import { useContextState } from '@/utils/context';
 
-function HoneyPot() {
-  const {
-    openModal,
-    isOpen,
-    ownerEntities,
-    ethAmount,
-    usdAmount
-  } = useContextState();
+const HoneyPot = observer(() => {
+  const { openModal, isOpen, ethAmount, usdAmount } =
+    useContextState();
+    const { ownerEntities } = appStore;  
+
+  useEffect(() => {
+    appStore.getOwnersEntities();
+  }, []); 
 
   const modalContent = (
     <div className={styles.entityDisplay}>
@@ -40,14 +42,18 @@ function HoneyPot() {
         </div>
       </div>
 
-      <img src= "/images/nukebutton.png" className={styles.nukeButton} onClick={() => openModal()} />
+      <img
+        src="/images/nukebutton.png"
+        className={styles.nukeButton}
+        onClick={() => openModal(modalContent)}
+      />
       {isOpen && (
-             <Modal background = '/images/honeypot-background.jpg'>
+        <Modal background="/images/honeypot-background.jpg">
           {modalContent}
-            </Modal>
-            )}
+        </Modal>
+      )}
     </div>
   );
-}
+});
 
 export default HoneyPot;

@@ -3,13 +3,12 @@ import styles from './styles.module.scss';
 import { FaWallet } from 'react-icons/fa';
 
 export default function ConnectButton() {
-
-  const { open } = useWeb3Modal()
+  const { open } = useWeb3Modal();
 
   return (
-    <button className='flex items-center gap-x-8' onClick={() => open()}>
+    <button className="flex items-center gap-x-8" onClick={() => open()}>
       <FaWallet />
       <span>wallet</span>
     </button>
-  )
+  );
 }

@@ -1,9 +1,9 @@
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-import { expect } from "chai";
-import { ethers } from "hardhat";
-import { NukeFund, TraitForgeNft } from "../typechain-types";
+import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
+import { expect } from 'chai';
+import { ethers } from 'hardhat';
+import { NukeFund, TraitForgeNft } from '../typechain-types';
 
-describe("NukeFund", function () {
+describe('NukeFund', function () {
   let owner: HardhatEthersSigner,
     user1: HardhatEthersSigner,
     nukeFund: NukeFund,
@@ -14,19 +14,19 @@ describe("NukeFund", function () {
     [owner, user1] = await ethers.getSigners();
 
     // Assuming these addresses are already deployed and known
-    nukeFundAddress = "0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E"; // Correctly initialized
-    entropyGeneratorAddress = "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB"; // Assuming it's used somewhere in your setup
+    nukeFundAddress = '0xE6E340D132b5f46d1e472DebcD681B2aBc16e57E'; // Correctly initialized
+    entropyGeneratorAddress = '0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB'; // Assuming it's used somewhere in your setup
 
     // Here, nukeFund is fetched from a known address. If it's supposed to be dynamically deployed in the test, you need to deploy it first.
-    nukeFund = await ethers.getContractAt("NukeFund", nukeFundAddress, owner);
+    nukeFund = await ethers.getContractAt('NukeFund', nukeFundAddress, owner);
 
     // For erc721Contract, we should deploy it dynamically in tests where it's needed, unless it's also supposed to be a fixed address.
     // Deploying TraitForgeNft dynamically as part of the test setup for the first test
   });
 
-  it("should allow the owner to update the ERC721 contract address", async function () {
+  it('should allow the owner to update the ERC721 contract address', async function () {
     // Dynamically deploy a new instance of the TraitForgeNft contract
-    const TraitForgeNft = await ethers.getContractFactory("TraitForgeNft");
+    const TraitForgeNft = await ethers.getContractFactory('TraitForgeNft');
     const initialOwnerAddress = owner.address;
     nft = await TraitForgeNft.deploy(
       initialOwnerAddress,
@@ -37,30 +37,30 @@ describe("NukeFund", function () {
 
     // Assuming nukeFund is already deployed and you're setting the ERC721 address
     await expect(nukeFund.connect(owner).setTraitForgeNftContract(nft.address))
-      .to.emit(nukeFund, "TraitForgeNftAddressUpdated")
+      .to.emit(nukeFund, 'TraitForgeNftAddressUpdated')
       .withArgs(nft.address);
 
     expect(await nukeFund.nftContract()).to.equal(nft.address);
   });
 
-  it("should receive funds and distribute dev share", async function () {
+  it('should receive funds and distribute dev share', async function () {
     const initialFundBalance = await nukeFund.getFundBalance();
-    const devShare = ethers.utils.parseEther("0.1"); // 10% of the sent amount
+    const devShare = ethers.utils.parseEther('0.1'); // 10% of the sent amount
 
     await expect(() =>
-      user1.sendTransaction({ value: ethers.utils.parseEther("1") })
-    ).to.changeEtherBalance(nukeFund, ethers.utils.parseEther("0.9"));
+      user1.sendTransaction({ value: ethers.utils.parseEther('1') })
+    ).to.changeEtherBalance(nukeFund, ethers.utils.parseEther('0.9'));
 
     const newFundBalance = await nukeFund.getFundBalance();
     expect(newFundBalance).to.equal(
-      initialFundBalance.add(ethers.utils.parseEther("0.9"))
+      initialFundBalance.add(ethers.utils.parseEther('0.9'))
     );
 
     const devBalance = await ethers.provider.getBalance(nukeFund.devAddress);
     expect(devBalance).to.equal(devShare);
   });
 
-  it("should calculate the age of a token", async function () {
+  it('should calculate the age of a token', async function () {
     const tokenId = 1;
 
     // Mock token creation timestamp and entropy
@@ -72,21 +72,21 @@ describe("NukeFund", function () {
     await nft.setEntropy(tokenId, 12345);
 
     const age = await nukeFund.calculateAge(tokenId);
-    expect(age).to.be.a("number");
+    expect(age).to.be.a('number');
   });
 
   // Add more test cases as needed...
 
-  it("should nuke a token", async function () {
+  it('should nuke a token', async function () {
     const tokenId = 1;
 
     // Mint a token
     await nft
       .connect(owner)
-      .mintToken(owner.address, { value: ethers.utils.parseEther("0.01") });
+      .mintToken(owner.address, { value: ethers.utils.parseEther('0.01') });
 
     // Send some funds to the contract
-    await user1.sendTransaction({ value: ethers.utils.parseEther("1") });
+    await user1.sendTransaction({ value: ethers.utils.parseEther('1') });
 
     // Calculate nuke factor
     const nukeFactor = await nukeFund.calculateNukeFactor(tokenId);

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import '../styles/TradingForgingModal.css';
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react';
+import {
+  useWeb3ModalProvider,
+  useWeb3ModalAccount,
+} from '@web3modal/ethers5/react';
 import { ethers } from 'ethers';
 import { useEntities } from './OwnerEntityContext';
 import tradeContractAbi from '../artifacts/contracts/TradeEntities.sol/EntityTrading.json';
-import EntityCards from './EntityCards'; 
+import EntityCards from './EntityCards';
 
 const tradeContractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
@@ -16,17 +19,17 @@ const TradingModal = ({ open, onClose }) => {
   const { address, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
-  const handlePriceChange = (event) => {
+  const handlePriceChange = event => {
     setPrice(event.target.value);
     setError('');
   };
 
-  const handleEntitySelect = (entityId) => {
+  const handleEntitySelect = entityId => {
     setSelectedEntity(entityId);
     setError('');
   };
 
-  const listEntity = async (event) => {
+  const listEntity = async event => {
     event.preventDefault();
     if (!isConnected || !address) {
       setError('Wallet not connected');
@@ -44,9 +47,16 @@ const TradingModal = ({ open, onClose }) => {
     try {
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
       const signer = ethersProvider.getSigner();
-      const tradeContract = new ethers.Contract(tradeContractAddress, tradeContractAbi.abi, signer);
+      const tradeContract = new ethers.Contract(
+        tradeContractAddress,
+        tradeContractAbi.abi,
+        signer
+      );
 
-      const transaction = await tradeContract.listEntityForSale(selectedEntity, ethers.utils.parseEther(price));
+      const transaction = await tradeContract.listEntityForSale(
+        selectedEntity,
+        ethers.utils.parseEther(price)
+      );
       await transaction.wait();
 
       alert('Entity Listed Successfully!');
@@ -60,17 +70,19 @@ const TradingModal = ({ open, onClose }) => {
   if (!open) return null;
 
   return (
-    <div className='overlay'>
-      <div className='modalContainer'>
-        <button className='closeBtn' onClick={onClose}>x</button>
+    <div className="overlay">
+      <div className="modalContainer">
+        <button className="closeBtn" onClick={onClose}>
+          x
+        </button>
         <header>List Your Entity for Sale</header>
 
-        <div className='nfts-display-container'>
+        <div className="nfts-display-container">
           {isLoading ? (
             <Spinner />
           ) : entities.length > 0 ? (
             entities.map(entity => (
-              <EntityCards 
+              <EntityCards
                 key={entity.tokenId}
                 entity={entity}
                 isSelected={selectedEntity === entity.tokenId}
@@ -82,7 +94,7 @@ const TradingModal = ({ open, onClose }) => {
           )}
         </div>
 
-        <form onSubmit={listEntity} className='btnContainer'>
+        <form onSubmit={listEntity} className="btnContainer">
           <label>Set your Price for your Entity:</label>
           <input
             type="text"
@@ -90,7 +102,9 @@ const TradingModal = ({ open, onClose }) => {
             onChange={handlePriceChange}
             placeholder="Enter price in ETH"
           />
-          <button type="submit" className="btnPrimary">List For Sale</button>
+          <button type="submit" className="btnPrimary">
+            List For Sale
+          </button>
           {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
       </div>

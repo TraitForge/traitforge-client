@@ -1,33 +1,33 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const { expect } = require('chai');
+const { ethers } = require('hardhat');
 
-describe("EntityMerging", () => {
+describe('EntityMerging', () => {
   let entityMerging;
   let nft;
   let owner;
   let user1;
   let user2;
 
-  const BREEDING_FEE = ethers.utils.parseEther("1.0"); // 1 ETH
+  const BREEDING_FEE = ethers.utils.parseEther('1.0'); // 1 ETH
 
   before(async () => {
     [owner, user1, user2] = await ethers.getSigners();
 
     // Deploy TraitForgeNft contract
-    const TraitForgeNft = await ethers.getContractFactory("TraitForgeNft");
+    const TraitForgeNft = await ethers.getContractFactory('TraitForgeNft');
     nft = await TraitForgeNft.deploy();
     await nft.deployed();
 
     // Deploy EntityMerging contract
     const EntropyGenerator = await ethers.getContractFactory(
-      "EntropyGenerator"
+      'EntropyGenerator'
     );
     const entropyGenerator = await EntropyGenerator.deploy(nft.address);
     await entropyGenerator.deployed();
     await nft.setEntropyGenerator(entropyGenerator.address);
 
     // Deploy EntityMerging contract
-    const EntityMerging = await ethers.getContractFactory("EntityMerging");
+    const EntityMerging = await ethers.getContractFactory('EntityMerging');
     entityMerging = await EntityMerging.deploy(nft.address);
     await entityMerging.deployed();
     await nft.setEntityMergingContract(entityMerging.address);
@@ -35,26 +35,26 @@ describe("EntityMerging", () => {
     await nft.setNukeFundContract(user2.address);
 
     // Mint some tokens for testing
-    await nft.mintToken(owner.address, { value: ethers.utils.parseEther("1") });
-    await nft.mintToken(user1.address, { value: ethers.utils.parseEther("1") });
-    await nft.mintToken(user2.address, { value: ethers.utils.parseEther("1") });
+    await nft.mintToken(owner.address, { value: ethers.utils.parseEther('1') });
+    await nft.mintToken(user1.address, { value: ethers.utils.parseEther('1') });
+    await nft.mintToken(user2.address, { value: ethers.utils.parseEther('1') });
   });
 
-  describe("listForBreeding", () => {
-    it("should not allow non-owners to list a token for breeding", async () => {
+  describe('listForBreeding', () => {
+    it('should not allow non-owners to list a token for breeding', async () => {
       const tokenId = 0;
       const fee = BREEDING_FEE;
 
       await expect(
         entityMerging.connect(user1).listForBreeding(tokenId, fee)
-      ).to.be.revertedWith("Caller must own the token");
+      ).to.be.revertedWith('Caller must own the token');
 
       // Additional assertions as needed
     });
 
     // Add more test cases for listForBreeding as needed
 
-    it("should allow the owner to list a token for breeding", async () => {
+    it('should allow the owner to list a token for breeding', async () => {
       const tokenId = 0;
       const fee = BREEDING_FEE;
 
@@ -68,8 +68,8 @@ describe("EntityMerging", () => {
     });
   });
 
-  describe("breedWithListed", () => {
-    it("should not allow breeding with an unlisted forger token", async () => {
+  describe('breedWithListed', () => {
+    it('should not allow breeding with an unlisted forger token', async () => {
       const forgerTokenId = 0;
       const mergerTokenId = 1;
 
@@ -84,7 +84,7 @@ describe("EntityMerging", () => {
       // Additional assertions as needed
     });
 
-    it("should allow breeding with a listed token", async () => {
+    it('should allow breeding with a listed token', async () => {
       const forgerTokenId = 0;
       const mergerTokenId = 1;
 
@@ -102,7 +102,7 @@ describe("EntityMerging", () => {
 
       // Check event emissions
       expect(tx)
-        .to.emit(entityMerging, "FeePaid")
+        .to.emit(entityMerging, 'FeePaid')
         .withArgs(forgerTokenId, mergerTokenId, BREEDING_FEE);
 
       // Check balances

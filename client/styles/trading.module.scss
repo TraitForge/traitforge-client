@@ -1,4 +1,4 @@
-$primary-color: #FF7A00;
+$primary-color: #ff7a00;
 $background-color-modal: rgba(0, 0, 0, 0.5);
 $border-color-dropdown: rgba(255, 123, 0, 0.24);
 
@@ -8,11 +8,12 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   align-content: center;
   font-family: 'Bebas Neue', sans-serif;
   background: url('/images/marketplace-background.jpg') center / cover no-repeat;
-  height: 140vh;
-  padding-bottom: 20vh;
+  background-attachment: fixed;  
+  height: 100vh;
+  padding-bottom: 20px;
 
   .marketPageContainer {
-    background-color: rgba(0, 0, 0, 0.744);
+    background-color: rgba(0, 0, 0, 0.421);
     margin-top: 10vh;
     width: 90vw;
     border-radius: 10px;
@@ -26,14 +27,14 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
     flex-direction: column;
     border-bottom: 1px solid rgba(255, 255, 255, 0.427);
     position: relative;
-    
+
     .sellandfilterbutton {
-     display: flex;
-     flex-direction: column;
-     position: absolute;
-     right: 10px;
-     top: 0px;
-     align-items: center;
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      right: 10px;
+      top: 0px;
+      align-items: center;
     }
 
     .sellEntity {
@@ -71,35 +72,35 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
       cursor: pointer;
       font-size: 1em;
 
-      &.activeFilter, &:hover {
+      &.activeFilter,
+      &:hover {
         color: white;
         border-bottom: 2px solid rgb(255, 255, 255);
         margin-bottom: -1.5px;
       }
     }
   }
-    .tradeSortingDropdown {
-      justify-content: center;
-      font-size: 15px; 
-      border: 1px solid rgb(0, 147, 93);
-      border-radius: 8px;
-      background-color: rgba(221, 221, 221, 0.114);
-      color: rgb(228, 228, 228);
-      cursor: pointer;
-      padding: 3px; 
-    
-      &:hover,
-      &:focus {
-        border-color: rgb(0, 255, 162);
-        outline: none;
-      }
+  .tradeSortingDropdown {
+    justify-content: center;
+    font-size: 15px;
+    border: 1px solid rgb(0, 147, 93);
+    border-radius: 8px;
+    background-color: rgba(221, 221, 221, 0.114);
+    color: rgb(228, 228, 228);
+    cursor: pointer;
+    padding: 3px;
 
-      option {
-        background-color: #c9c9c9;
-        color: #333333;
-      }
-    
+    &:hover,
+    &:focus {
+      border-color: rgb(0, 255, 162);
+      outline: none;
     }
+
+    option {
+      background-color: #c9c9c9;
+      color: #333333;
+    }
+  }
 
   .listings {
     display: flex;
@@ -140,7 +141,6 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
       transform: scale(1.05);
     }
   }
-
 }
 
 .entityDisplay {
@@ -152,8 +152,8 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
 }
 
 .entityDisplay h1 {
- font-size: 1.5em;
- margin-bottom: 40px;
+  font-size: 1.5em;
+  margin-bottom: 40px;
 }
 
 @media (max-width: 1000px) {
