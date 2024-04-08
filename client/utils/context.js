@@ -102,7 +102,7 @@ const ContextProvider = ({ children }) => {
           infuraProvider
         );
         const mintPrice = await mintContract.calculateMintPrice();
-        const priceInEth = ethers.utils.formatEther(mintPrice);
+        const priceInEth = ethers.formatEther(mintPrice);
         setEntityPrice(priceInEth);
       } catch (error) {
         console.error('Error fetching entity price:', error);
@@ -110,9 +110,8 @@ const ContextProvider = ({ children }) => {
         setIsLoading(false);
       }
     };
-
     getLatestEntityPrice();
-  }, [infuraProvider]);
+  }, []);
 
   // Event Listener for Stats
   //const subscribeToMintEvent = () => {

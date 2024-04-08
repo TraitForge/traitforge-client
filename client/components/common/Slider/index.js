@@ -15,10 +15,6 @@ const Slider = observer(() => {
     appStore.getUpcomingMints();
   }, []); 
 
-  const calculateEntityPrice = index => {
-    return (index * 0.01).toFixed(2);
-  };
-
   if (isLoading) return <Spinner />;
 
   const sliderOption = {
@@ -27,7 +23,7 @@ const Slider = observer(() => {
       delay: 1000,
     },
     speed: 700,
-    centeredSlides: true,
+    centeredSlides: false,
     breakpoints: {
       // when window width is >= 320px
       320: {
@@ -45,7 +41,7 @@ const Slider = observer(() => {
       },
       1224: {
         slidesPerView: 5,
-        spaceBetween: 40,
+        spaceBetween: 0,
       },
     },
   };

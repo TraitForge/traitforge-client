@@ -16,14 +16,6 @@ body {
   padding-bottom: 10px;
 }
 
-.mint-button {
-  cursor: pointer;
-  width: 25%;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  margin-top: 5px;
-  margin-bottom: -40px;
-}
-
 .mint-button:hover {
   transform: scale(1.01);
 }

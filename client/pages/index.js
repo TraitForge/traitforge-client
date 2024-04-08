@@ -23,8 +23,35 @@ const Home = () => {
         contractsConfig.traitForgeNftAbi,
         signer
       );
-      const transaction = await mintContract.mintToken(userAddress, {
-        value: ethers.utils.parseEther(entityPrice),
+      const transaction = await mintContract.mintToken(userAddress,
+        { value: ethers.utils.parseEther(entityPrice)
+      });
+      await transaction.wait();
+      alert('Entity minted successfully');
+    } catch (error) {
+      console.error('Failed to mint entity:', error);
+      alert('Minting entity failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const mintBatchEntityHandler = async () => {
+    if (!walletProvider) {
+      alert('Please connect Wallet.');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const signer = await ethersProvider.getSigner();
+      const userAddress = await signer.getAddress();
+      const mintContract = new ethers.Contract(
+        contractsConfig.traitForgeNftAddress,
+        contractsConfig.traitForgeNftAbi,
+        signer
+      );
+      const transaction = await mintContract.mintBatchTokens(userAddress, {
         gasLimit: ethers.utils.hexlify(1000000),
       });
       await transaction.wait();
@@ -36,6 +63,7 @@ const Home = () => {
       setIsLoading(false);
     }
   };
+
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -56,7 +84,14 @@ const Home = () => {
         onClick={mintEntityHandler}
         bg="#023340"
         borderColor="#0ADFDB"
-        text="Mint For 0.01 ETH"
+        text={`Mint 1 For ${entityPrice} ETH`}
+        style={{ marginBottom: '20px' }}
+      />
+      <Button
+        onClick={mintBatchEntityHandler}
+        bg="#023340"
+        borderColor="#0ADFDB"
+        text={`Mint A Batch`}
       />
     </div>
   );
