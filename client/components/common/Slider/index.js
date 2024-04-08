@@ -1,17 +1,19 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
+import { appStore } from '@/utils/appStore';
+import { observer } from 'mobx-react';
 import Spinner from '../LoadingSpinner';
 import EntityCard from '../EntityCard';
 import { useContextState } from '@/utils/context';
 
-const Slider = () => {
-  const { getUpcomingMints, isLoading } = useContextState();
+const Slider = observer(() => {
+  const { isLoading } = useContextState();
+  const { upcomingMints } = appStore;  
   const [ref, setRef] = useState(0);
 
   useEffect(() => {
-    getUpcomingMints();
-  }, []);
+    appStore.getUpcomingMints();
+  }, []); 
 
   const calculateEntityPrice = index => {
     return (index * 0.01).toFixed(2);
@@ -20,7 +22,7 @@ const Slider = () => {
   if (isLoading) return <Spinner />;
 
   const sliderOption = {
-    loop: true,
+    loop: false,
     autoplay: {
       delay: 1000,
     },
@@ -51,23 +53,20 @@ const Slider = () => {
   const handlePrev = useCallback(() => ref?.slidePrev());
   const handleNext = useCallback(() => ref?.slideNext());
 
-  const entities = [{}, {}, {}, {}, {}, {}, {}];
-
   return (
     <div className="container relative">
       <div className="md:px-20 lg:px-24 xl:px-[180px] ">
-        <Swiper {...sliderOption} onSwiper={setRef}>
-          {entities &&
-            entities.map((entity, index) => (
-              <SwiperSlide key={entity.id}>
-                <EntityCard
-                  entity={entity}
-                  index={index}
-                  calculateEntityPrice={calculateEntityPrice}
-                />
-              </SwiperSlide>
-            ))}
+      <Swiper {...sliderOption} onSwiper={setRef}>
+          {upcomingMints.map((mint, index) => (
+            <SwiperSlide key={mint.id}>
+              <EntityCard
+                entropy={mint.entropy}
+                index={index}
+              />
+            </SwiperSlide>
+          ))}
         </Swiper>
+
       </div>
       <button
         onClick={handlePrev}
@@ -145,6 +144,6 @@ const Slider = () => {
       </button>
     </div>
   );
-};
+});
 
 export default Slider;

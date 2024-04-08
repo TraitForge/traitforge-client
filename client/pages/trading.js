@@ -4,33 +4,28 @@ import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { ethers } from 'ethers';
 import { EntityCard, Modal } from '@/components';
 import { useContextState } from '@/utils/context';
+import { appStore } from '@/utils/appStore';
+import { observer } from 'mobx-react';
 import { contractsConfig } from '@/utils/contractsConfig';
 
-const Marketplace = () => {
+const Marketplace = observer(() => {
   const [selectedListing, setSelectedListing] = useState(null);
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [sortOption, setSortOption] = useState('');
   const [filter, setFilter] = useState('All');
-  const [ownerEntities, setOwnerEntities] = useState([]);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const { walletProvider } = useWeb3ModalProvider();
 
   const {
     openModal,
     isOpen,
-    getEntitiesForSale,
-    entitiesForSale,
-    getOwnersEntities,
   } = useContextState();
+  const { entitiesForSale, ownerEntities } = appStore;  
 
   useEffect(() => {
-    getEntitiesForSale();
-    const loadOwnerEntities = async () => {
-      const entities = await getOwnersEntities();
-      setOwnerEntities(entities);
-    };
-    loadOwnerEntities().catch(console.error);
-  }, [getEntitiesForSale, getOwnersEntities]);
+    appStore.getEntitiesForSale();
+    appStore.getOwnersEntities();
+  }, []); 
 
   const buyEntity = async (tokenId, price) => {
     if (!walletProvider) {
@@ -264,6 +259,6 @@ const Marketplace = () => {
       )}
     </div>
   );
-};
+});
 
 export default Marketplace;

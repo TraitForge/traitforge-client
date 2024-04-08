@@ -11,20 +11,16 @@ import { JsonRpcProvider } from 'ethers/providers';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
-const infuraProvider = new JsonRpcProvider(); //contractsConfig.infuraRPCURL
+const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL); 
 
 const ContextProvider = ({ children }) => {
-  const [entitiesForSale, setEntitiesForSale] = useState([]);
   const [ethAmount, setEthAmount] = useState(0);
   const [usdAmount, setUsdAmount] = useState(0);
-  const [upcomingMints, setUpcomingMints] = useState([]);
-  const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
-  const [ownerEntities, setOwnerEntities] = useState([]);
 
   //Modal State Trigger
   const openModal = content => {
@@ -41,7 +37,7 @@ const ContextProvider = ({ children }) => {
     try {
       const nukeFundContract = new ethers.Contract(
         contractsConfig.NukeFundAddress,
-        contractsConfig.NukeFundAbi.abi,
+        contractsConfig.NukeFundAbi,
         infuraProvider
       );
       const balance = await nukeFundContract.getFundBalance();
@@ -80,18 +76,17 @@ const ContextProvider = ({ children }) => {
 
   //Calculate Entity Attributes
   function calculateEntityAttributes(entropy) {
-    const performanceFactor = entropy % 10;
-    const lastTwoDigits = entropy % 100;
+    const performanceFactor = entropy.toString() % 10;
+    const lastTwoDigits = entropy.toString() % 100;
     const forgePotential = Math.floor(lastTwoDigits / 10);
-    const nukeFactor = Number((entropy / 40000).toFixed(1));
+    const nukeFactor = Number((entropy / 40000).toFixed(3));
     let role;
-    const result = entropy % 3;
+    const result = entropy.toString() % 3;
     if (result === 0) {
-      role = 'sire';
+      role = 'Forger';
     } else {
-      role = 'breeder';
+      role = 'Merger';
     }
-
     return { role, forgePotential, nukeFactor, performanceFactor };
   }
 
@@ -118,42 +113,6 @@ const ContextProvider = ({ children }) => {
 
     getLatestEntityPrice();
   }, [infuraProvider]);
-
-  const getUpcomingMints = async () => {
-    if (!infuraProvider) return;
-    setIsLoading(true);
-    const contract = new ethers.Contract(
-      contractsConfig.entropyGeneratorContractAddress,
-      contractsConfig.entropyGeneratorContractAbi,
-      infuraProvider
-    );
-    let allEntropies = [];
-    for (
-      let slotIndex = 0;
-      slotIndex < contractsConfig.totalSlots;
-      slotIndex++
-    ) {
-      const batchPromises = [];
-      for (
-        let numberIndex = 0;
-        numberIndex < contractsConfig.valuesPerSlot;
-        numberIndex++
-      ) {
-        batchPromises.push(contract.getPublicEntropy(slotIndex, numberIndex));
-      }
-      const batchResults = await Promise.allSettled(batchPromises);
-      const processedBatch = batchResults.map(result =>
-        result.status === 'fulfilled' ? parseInt(result.value, 10) : 0
-      );
-      allEntropies = [...allEntropies, ...processedBatch];
-    }
-    const upcomingMints = allEntropies.slice(0, 150).map((entropy, index) => ({
-      id: index + 1,
-      entropy,
-    }));
-    setIsLoading(false);
-    setUpcomingMints(upcomingMints);
-  };
 
   // Event Listener for Stats
   //const subscribeToMintEvent = () => {
@@ -209,70 +168,6 @@ const ContextProvider = ({ children }) => {
   //};
   //}, [infuraProvider]);
 
-  // Fetch Entities From Wallet
-  const getOwnersEntities = async (address, walletProvider) => {
-    if (!walletProvider || !address) {
-      setOwnerEntities([]); // Clear previous state if conditions are not met
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(walletProvider);
-    const TraitForgeContract = new ethers.Contract(
-      contractsConfig.traitForgeNftAddress,
-      contractsConfig.traitForgeNftAbi,
-      provider
-    );
-    try {
-      const balance = await TraitForgeContract.balanceOf(address);
-      let fetchedEntities = [];
-      for (let i = 0; i < balance; i++) {
-        const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(
-          address,
-          i
-        );
-        const tokenURI = await TraitForgeContract.tokenURI(tokenId);
-        fetchedEntities.push({ tokenId: tokenId.toString(), tokenURI });
-      }
-      setOwnerEntities(fetchedEntities);
-    } catch (error) {
-      console.error('Error fetching NFTs:', error);
-      setOwnerEntities([]);
-    }
-  };
-
-  // Entities Listed in Trading Contract
-  const getEntitiesForSale = async () => {
-    if (!infuraProvider) return;
-    try {
-      const tradeContract = new ethers.Contract(
-        contractsConfig.tradeContractAddress,
-        contractsConfig.tradeContractAbi,
-        infuraProvider
-      );
-      const data = await tradeContract.fetchEntitiesForSale();
-      const entities = await Promise.all(data);
-      setEntitiesForSale(entities);
-    } catch (error) {
-      console.error('Failed to fetch entities for sale:', error);
-    }
-  };
-
-  // Entities Listed in Forging/Merging Contract
-  const getEntitiesForForging = async () => {
-    if (!infuraProvider) return;
-    try {
-      const contract = new ethers.Contract(
-        contractsConfig.forgeContractAddress,
-        contractsConfig.forgeContractAbi,
-        infuraProvider
-      );
-      const data = await contract.getAllEntitiesForMerging();
-      const entities = await Promise.all(data);
-      setEntitiesForForging(entities);
-    } catch (error) {
-      console.error('Failed to fetch entities for forging:', error);
-    }
-  };
-
   return (
     <AppContext.Provider
       value={{
@@ -282,21 +177,13 @@ const ContextProvider = ({ children }) => {
         usdAmount,
         entityPrice,
         isLoading,
-        entitiesForForging,
-        entitiesForSale,
         transactions,
         infuraProvider,
-        upcomingMints,
-        ownerEntities,
         openModal,
         //subscribeToMintEvent,
         closeModal,
         setIsLoading,
-        getUpcomingMints,
         calculateEntityAttributes,
-        getEntitiesForSale,
-        getOwnersEntities,
-        getEntitiesForForging,
       }}
     >
       {children}

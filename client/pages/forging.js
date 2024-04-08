@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useContextState } from '@/utils/context';
+import { appStore } from '@/utils/appStore';
+import { observer } from 'mobx-react';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
 import { LoadingSpinner, EntityCard, Modal } from '@/components';
 
-const Forging = () => {
+const Forging = observer(() => {
   const {
     isOpen,
     openModal,
-    getEntitiesForForging,
-    ownerEntities,
-    entitiesForForging,
   } = useContextState();
+  const { entitiesForForging, ownerEntities } = appStore;  
 
   const [modalContent, setModalContent] = useState(null);
   const entityList = useRef(null);
@@ -24,8 +24,9 @@ const Forging = () => {
   const { walletProvider } = useWeb3ModalProvider();
 
   useEffect(() => {
-    getEntitiesForForging();
-  }, [getEntitiesForForging]);
+    appStore.getEntitiesForForging();
+    appStore.getOwnersEntities();
+  }, []); 
 
   const openModalWithContent = content => {
     setModalContent(content);
@@ -254,6 +255,6 @@ const Forging = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Forging;
