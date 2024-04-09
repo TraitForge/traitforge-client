@@ -2,7 +2,6 @@ import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { Airdrop, Trait } from '../typechain-types';
-import { trait } from '../typechain-types/contracts';
 
 describe('Airdrop', function () {
   let owner: HardhatEthersSigner;
