@@ -8,40 +8,43 @@ import { useContextState } from '@/utils/context';
 
 const Slider = observer(() => {
   const { isLoading } = useContextState();
-  const { upcomingMints } = appStore;  
+  const { upcomingMints } = appStore;
   const [ref, setRef] = useState(0);
 
   useEffect(() => {
     appStore.getUpcomingMints();
-  }, []); 
+  }, []);
 
   if (isLoading) return <Spinner />;
 
   const sliderOption = {
-    loop: false,
+    loop: true,
     autoplay: {
       delay: 1000,
     },
     speed: 700,
-    centeredSlides: false,
     breakpoints: {
       // when window width is >= 320px
       320: {
         slidesPerView: 1.9,
         spaceBetween: 10,
+        centeredSlides: true,
       },
       // when window width is >= 640px
       769: {
         slidesPerView: 2,
         spaceBetween: 15,
+        centeredSlides: true,
       },
       1024: {
         slidesPerView: 3,
         spaceBetween: 30,
+        centeredSlides: true,
       },
       1224: {
         slidesPerView: 5,
-        spaceBetween: 0,
+        spaceBetween: 15,
+        centeredSlides: true,
       },
     },
   };
@@ -52,7 +55,7 @@ const Slider = observer(() => {
   return (
     <div className="container relative">
       <div className="md:px-20 lg:px-24 xl:px-[180px] ">
-      <Swiper {...sliderOption} onSwiper={setRef}>
+        <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>
           {upcomingMints.map((mint, index) => (
             <SwiperSlide key={mint.id}>
               <EntityCard
@@ -62,7 +65,6 @@ const Slider = observer(() => {
             </SwiperSlide>
           ))}
         </Swiper>
-
       </div>
       <button
         onClick={handlePrev}

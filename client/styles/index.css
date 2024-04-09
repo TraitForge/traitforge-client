@@ -99,13 +99,13 @@ padding-inline: 20px;
   font-style: normal;
 }
 
-.card-container:hover .card-info-on-hover {
+/* .card-container:hover .card-info-on-hover {
   display: block;
   padding: 2px;
   background-color: rgba(0, 0, 0, 0.5);
   font-family: 'Electrolize', sans-serif;
   font-style: normal;
-}
+} */
 
 .footer-top-level {
   position: relative;
