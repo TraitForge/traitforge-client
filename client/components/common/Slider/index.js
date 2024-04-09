@@ -41,7 +41,7 @@ const Slider = observer(() => {
       },
       1224: {
         slidesPerView: 5,
-        spaceBetween: 0,
+        spaceBetween: 20,
       },
     },
   };

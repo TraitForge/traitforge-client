@@ -36,12 +36,12 @@ const ContextProvider = ({ children }) => {
   const fetchEthAmount = useCallback(async () => {
     try {
       const nukeFundContract = new ethers.Contract(
-        contractsConfig.NukeFundAddress,
-        contractsConfig.NukeFundAbi,
+        contractsConfig.nukeContractAddress,
+        contractsConfig.nukeFundContractAbi,
         infuraProvider
       );
       const balance = await nukeFundContract.getFundBalance();
-      return ethers.utils.formatEther(balance);
+      return ethers.formatEther(balance);
     } catch (error) {
       console.error('Error fetching ETH amount from nuke fund:', error);
       return 0;
@@ -57,7 +57,7 @@ const ContextProvider = ({ children }) => {
     } catch (error) {
       console.error('Error fetching ETH to USD rate:', error);
     }
-    return null; //10 seconds
+    return null; 
   };
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const ContextProvider = ({ children }) => {
     const performanceFactor = entropy.toString() % 10;
     const lastTwoDigits = entropy.toString() % 100;
     const forgePotential = Math.floor(lastTwoDigits / 10);
-    const nukeFactor = Number((entropy / 40000).toFixed(3));
+    const nukeFactor = Number((entropy / 40000).toFixed(2));
     let role;
     const result = entropy.toString() % 3;
     if (result === 0) {

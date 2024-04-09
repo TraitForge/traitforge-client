@@ -15,22 +15,27 @@ const Home = () => {
     }
     setIsLoading(true);
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const ethersProvider =new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const userAddress = await signer.getAddress();
+      console.log(userAddress)
       const mintContract = new ethers.Contract(
         contractsConfig.traitForgeNftAddress,
         contractsConfig.traitForgeNftAbi,
         signer
       );
-      const transaction = await mintContract.mintToken(userAddress,
-        { value: ethers.utils.parseEther(entityPrice)
+      const mintPrice = await mintContract.calculateMintPrice();
+      console.log(mintPrice);
+      const transaction = await mintContract.mintToken(
+        userAddress,
+        { value: mintPrice,
+          gasLimit: 5000000,
       });
       await transaction.wait();
       alert('Entity minted successfully');
     } catch (error) {
       console.error('Failed to mint entity:', error);
-      alert('Minting entity failed');
+      alert('Minting entity failed: ${error.message}');
     } finally {
       setIsLoading(false);
     }
@@ -43,7 +48,7 @@ const Home = () => {
     }
     setIsLoading(true);
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const userAddress = await signer.getAddress();
       const mintContract = new ethers.Contract(
@@ -52,7 +57,7 @@ const Home = () => {
         signer
       );
       const transaction = await mintContract.mintBatchTokens(userAddress, {
-        gasLimit: ethers.utils.hexlify(1000000),
+        gasLimit: 5000000,
       });
       await transaction.wait();
       alert('Entity minted successfully');
@@ -74,6 +79,7 @@ const Home = () => {
         backgroundImage: "url('/images/home.png')",
         backgroundPosition: 'center',
         backgroundSize: 'cover',
+        backgroundAttachment: 'fixed'
       }}
     >
       <span className="mint-text">Mint your traitforge entity</span>

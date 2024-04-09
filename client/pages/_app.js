@@ -9,7 +9,7 @@ import Logo from '@/public/images/websitelogo.png';
 import '@/styles/main.scss';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
 
-const projectId = 'ce6b3d38d61ac9bfbea71e7dda0ba323';
+const projectId = '60db0656302510a26d3e49acc62e5473';
 
 const mainnet = {
   chainId: 11155111,

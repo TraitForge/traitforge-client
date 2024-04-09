@@ -33,7 +33,7 @@ const Marketplace = observer(() => {
       return;
     }
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = ethersProvider.getSigner();
       const tradeContract = new ethers.Contract(
         contractsConfig.entityTradingContractAddress,
@@ -55,7 +55,7 @@ const Marketplace = observer(() => {
       return;
     }
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = ethersProvider.getSigner();
       const tradeContract = new ethers.Contract(
         contractsConfig.entityTradingContractAddress,

@@ -38,7 +38,7 @@ const Forging = observer(() => {
     setProcessing(true);
     setProcessingText('Forging');
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const forgeContract = new ethers.Contract(
         contractsConfig.entityMergingAddress,
@@ -66,7 +66,7 @@ const Forging = observer(() => {
     setProcessing(true);
     setProcessingText('Forging');
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const forgeContract = new ethers.Contract(
         contractsConfig.entityMergingAddress,
