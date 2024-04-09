@@ -74,6 +74,10 @@ contract TraitForgeNft is
     burners[_account] = _value;
   }
 
+  function startAirdrop(uint256 amount) external onlyOwner {
+    airdropContract.startAirdrop(amount);
+  }
+
   // Function to increment the generation of tokens, restricted to the owner
   function incrementGeneration() public onlyOwner {
     require(
