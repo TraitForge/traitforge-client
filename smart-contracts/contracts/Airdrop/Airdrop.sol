@@ -23,7 +23,7 @@ contract Airdrop is IAirdrop, Ownable, ReentrancyGuard {
   function startAirdrop(uint256 amount) external onlyOwner {
     require(!started, 'Already started');
     require(amount > 0, 'Invalid amount');
-    traitToken.transferFrom(msg.sender, address(this), amount);
+    traitToken.transferFrom(tx.origin, address(this), amount);
     started = true;
     totalTokenAmount = amount;
   }
