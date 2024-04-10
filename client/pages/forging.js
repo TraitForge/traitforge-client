@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+
 import { useContextState } from '@/utils/context';
 import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
@@ -6,19 +7,18 @@ import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
 import { LoadingSpinner, EntityCard, Modal } from '@/components';
+import { Button } from '@/components';
+import { FongingArena } from '@/screens/forging/ForgingArena';
 
 const Forging = observer(() => {
-  const {
-    isOpen,
-    openModal,
-  } = useContextState();
-  const { entitiesForForging, ownerEntities } = appStore;  
+  const { isOpen, openModal } = useContextState();
+  const { entitiesForForging, ownerEntities } = appStore;
 
   const [modalContent, setModalContent] = useState(null);
   const entityList = useRef(null);
   const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [sortOption, setSortOption] = useState('');
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState(true);
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const { walletProvider } = useWeb3ModalProvider();
@@ -26,7 +26,7 @@ const Forging = observer(() => {
   useEffect(() => {
     appStore.getEntitiesForForging();
     appStore.getOwnersEntities();
-  }, []); 
+  }, []);
 
   const openModalWithContent = content => {
     setModalContent(content);
@@ -96,6 +96,8 @@ const Forging = observer(() => {
       ))}
     </div>
   );
+
+  const handleSelectedFromPool = () => setSelectedFromPool(nul);
 
   const modalContentToList = (
     <>
@@ -173,36 +175,13 @@ const Forging = observer(() => {
   return (
     <div className={styles.forgingPage}>
       <div className={styles.forgeArenaContainer}>
-        <h1>Forging Arena</h1>
-        <div className={styles.selectedEntityPlaceholder}>
-          <div className={styles.forgecardsrow}>
-            {selectedFromPool ? (
-              <EntityCard
-                entity={selectedFromPool}
-                onSelect={() => setSelectedFromPool(null)}
-              />
-            ) : (
-              <img
-                src="/images/PoolSelectCard.png"
-                alt="forge place holder"
-                className={styles.otherEntities}
-                onClick={scrollToEntityList}
-              />
-            )}
-            <img src="/images/claimentity.png" alt="claim box" />
-            <img
-              src="/images/WalletSelectCard.png"
-              alt="forge place holder"
-              className={styles.yourEntities}
-              onClick={() => openModalWithContent(modalContentToMerge)}
-            />
-            {isOpen && (
-              <Modal background="/images/forge-background.jpg">
-                {modalContentToMerge}
-              </Modal>
-            )}
-          </div>
-          {selectedEntity && (
+        <h1 className="text-[64px]">Forging Arena</h1>
+        <div className="py-20">
+          <FongingArena
+            handleSelectedFromPool={handleSelectedFromPool}
+            selectedFromPool={selectedFromPool}
+          />
+          {/* {selectedEntity && (
             <div className={styles.selectedEntity}>
               <img
                 src={selectedEntity.image}
@@ -210,22 +189,23 @@ const Forging = observer(() => {
               />
               <div>
                 <h5>{selectedEntity.title}</h5>
+                
                 <p>Price: {selectedEntity.price} ETH</p>
                 <p>Gender: {selectedEntity.gender}</p>
               </div>
             </div>
-          )}
+          )} */}
         </div>
-        <img
-          src="/images/forgebutton.png"
-          alt="forge"
-          className={styles.forgeButton}
-          onClick={() => forgeEntity()}
+        <Button
+          bg="rgba(31, 15, 0,0.6"
+          borderColor="#FD8D26"
+          text="forge entity"
+          onClick={forgeEntity}
           disabled={processing}
         />
       </div>
 
-      <div className={styles.entityListContainer} ref={entityList}>
+      {/* <div className={styles.entityListContainer} ref={entityList}>
         <div className={styles.breedSortingOptions}>
           <div className={styles.leftItems}>
             <button
@@ -252,7 +232,7 @@ const Forging = observer(() => {
           </div>
         </div>
         <EntityList entities={sortedEntities} />
-      </div>
+      </div> */}
     </div>
   );
 });

@@ -9,12 +9,12 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   justify-content: center;
   background: url('/images/forge-background.jpg') center / cover no-repeat;
   background-attachment: fixed;  
-  height: 140vh;
+  min-height: 100vh;
   padding-bottom: 20px;
 }
 
 .forgeArenaContainer {
-  margin-top: 120px;
+  padding-top: 74px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -30,6 +30,7 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
 
     .otherEntities,
     .yourEntities {
+      
       &:hover {
         transform: scale(1.02);
       }
