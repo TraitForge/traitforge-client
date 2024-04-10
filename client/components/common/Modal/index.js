@@ -2,8 +2,7 @@ import React from 'react';
 import styles from './styles.module.scss';
 import { useContextState } from '@/utils/context';
 
-const Modal = ({ children, background }) => {
-  const { isOpen, closeModal } = useContextState();
+const Modal = ({ children, background, isOpen, closeModal }) => {
   const modalStyle = background
     ? {
         backgroundImage: `url(${background})`,
