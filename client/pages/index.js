@@ -1,12 +1,16 @@
 import { useContextState } from '@/utils/context';
 import { ethers } from 'ethers';
+import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
+
 import { contractsConfig } from '@/utils/contractsConfig';
-import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { LoadingSpinner, Slider, Button } from '@/components';
 
 const Home = () => {
   const { isLoading, setIsLoading, entityPrice } = useContextState();
   const { walletProvider } = useWeb3ModalProvider();
+  const { address, chainId, isConnected } = useWeb3ModalAccount()
+
+  console.log(isConnected)
 
   const mintEntityHandler = async () => {
     if (!walletProvider) {
@@ -24,8 +28,9 @@ const Home = () => {
         signer
       );
       const transaction = await mintContract.mintToken(userAddress,
-        { value: ethers.utils.parseEther(entityPrice)
-      });
+        {
+          value: ethers.utils.parseEther(entityPrice)
+        });
       await transaction.wait();
       alert('Entity minted successfully');
     } catch (error) {
@@ -63,6 +68,7 @@ const Home = () => {
       setIsLoading(false);
     }
   };
+
 
 
   if (isLoading) return <LoadingSpinner />;

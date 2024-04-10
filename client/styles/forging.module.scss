@@ -24,63 +24,11 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
 }
 
 .entityListContainer {
-  background-color: rgba(0, 0, 0, 0.72);
+  background-color: rgba(0, 0, 0, 0.81);
   width: 80vw;
   height: 80vh;
-  border-radius: 10px;
-
-  .breedSortingOptions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 1em;
-    margin-top: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.427);
-    width: 100%;
-    position: relative;
-    top: 0;
-
-    .rightItems {
-      display: flex;
-      align-items: center;
-      position: absolute;
-      right: 20px;
-    }
-
-    .forgeSortingDropdown {
-      font-size: 0.65em;
-      margin-bottom: 5px;
-      border: 0.5px solid $border-color-dropdown;
-      border-radius: 8px;
-      background-color: rgba(15, 15, 15, 0.137);
-      color: rgb(232, 232, 232);
-      cursor: pointer;
-      align-self: flex-start;
-
-      &:hover,
-      &:focus {
-        border-color: $primary-color;
-        outline: none;
-      }
-    }
-  }
-
-  .breedEntityButton {
-    font-size: 1.2em;
-    color: #f0f0f0;
-    background-color: transparent;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    box-shadow: 0px 0px 1px 1px $primary-color;
-    margin-bottom: 15px;
-    padding: 2px 5px;
-
-    &:hover {
-      transform: scale(1.05);
-    }
-  }
+  border-radius: 30px;
+  padding: 40px 20px;
 }
 
 .processingModal {

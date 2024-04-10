@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaBars, FaTimes } from 'react-icons/fa';
 import styles from './styles.module.scss';
-import { Logo, Wallter } from '@/icons';
+import { Logo } from '@/icons';
 import ConnectButton from '@/components/ui/WalletButton';
 
 const links = [
@@ -33,21 +32,19 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
         {isNavExpanded ? <FaTimes /> : <FaBars />}
       </button> */}
       <nav
-        className={`container flex items-center justify-between ${
-          isNavExpanded ? styles.expanded : ''
-        }`}
+        className={`container flex items-center justify-between ${isNavExpanded ? styles.expanded : ''
+          }`}
       >
         <Link href="/" className="py-[13px] inline-block">
           <Logo />
         </Link>
-        <ul className="flex gap-x-[64px] max-md:hidden">
+        <ul className="flex gap-x-[20px] xl:gap-x-[64px] max-md:hidden">
           {links.map((link, index) => (
-            <li className="text-[32px] hover:border-b-[1px] border-b-[0px] border-solid border-white">
+            <li key={index} className="text-base flex items-center lg:text-[32px] hover:border-b-[1px] border-b-[0px] border-solid border-white">
               <Link
-                key={index}
                 href={link.url}
                 // className={`${isActive(link.url) ? styles.active : ''}`}
-                onClick={handleNavLinkClick}
+                // onClick={handleNavLinkClick}
                 className="text-white hover:text-primary"
               >
                 {link.text}

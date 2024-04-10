@@ -18,7 +18,7 @@ const Forging = observer(() => {
   const entityList = useRef(null);
   const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [sortOption, setSortOption] = useState('');
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState(true);
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const { walletProvider } = useWeb3ModalProvider();
@@ -140,6 +140,8 @@ const Forging = observer(() => {
     });
   };
 
+  console.log(isEntityListModalOpen);
+
   const sortedEntities = getSortedEntities();
 
   return (
@@ -153,7 +155,7 @@ const Forging = observer(() => {
             ownerEntities={ownerEntities}
             handleEntityListModal={handleEntityListModal}
           />
-          {selectedEntity && (
+          {/* {selectedEntity && (
             <div className={styles.selectedEntity}>
               <img
                 src={selectedEntity.image}
@@ -161,11 +163,12 @@ const Forging = observer(() => {
               />
               <div>
                 <h5>{selectedEntity.title}</h5>
+                
                 <p>Price: {selectedEntity.price} ETH</p>
                 <p>Gender: {selectedEntity.gender}</p>
               </div>
             </div>
-          )}
+          )}  */}
         </div>
         <Button
           text="forge entity"
@@ -176,11 +179,13 @@ const Forging = observer(() => {
         />
       </div>
       {isEntityListModalOpen && (
-        <Modal isOpen={isEntityListModalOpen}>
+        <Modal
+          isOpen={isEntityListModalOpen}
+          closeModal={() => setIsEntityListModalOpen(false)}
+        >
           <SelectEntityList
             sortedEntities={sortedEntities}
             handleSelectedFromPool={handleSelectedFromPool}
-            closeModal={handleEntityListModal}
           />
         </Modal>
       )}

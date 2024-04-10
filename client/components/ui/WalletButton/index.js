@@ -1,14 +1,13 @@
 import { useWeb3Modal } from '@web3modal/ethers/react';
-import styles from './styles.module.scss';
 import { FaWallet } from 'react-icons/fa';
 
 export default function ConnectButton() {
   const { open } = useWeb3Modal();
 
   return (
-    <button className="flex items-center gap-x-8" onClick={() => open()}>
+    <button className="flex items-center gap-x-4 xl:gap-x-8" onClick={() => open()}>
       <FaWallet />
-      <span>wallet</span>
+      <span className='text-base lg:text-[32px]'>wallet</span>
     </button>
   );
 }
