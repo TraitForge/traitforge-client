@@ -49,6 +49,8 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   align-items: center;
   flex-direction: column;
   margin-top: 50px;
+  min-height: 400px;
+  min-width: 400px;
 }
 
 .entityDisplay h1 {

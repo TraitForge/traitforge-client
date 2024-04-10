@@ -34,7 +34,6 @@ export const FongingArena = ({
           // onSelect={handleSelectedFromPool}
         />
       ) : (
-        // TODO: add click event for opening entity list
         <div
           className="flex justify-center item-center cursor-pointer h-full"
           onClick={handleEntityListModal}
@@ -70,7 +69,11 @@ export const FongingArena = ({
         />
       </div>
       {isModalOpen && (
-        <Modal background="/images/forge-background.jpg">
+        <Modal
+          isOpen={isModalOpen}
+          closeModal={() => setIsModalOpen(false)}
+          background="/images/forge-background.jpg"
+        >
           {modalContentToMerge}
         </Modal>
       )}

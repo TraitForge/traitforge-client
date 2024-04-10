@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
-import { LoadingSpinner, EntityCard, Button, Modal } from '@/components';
+import { LoadingSpinner,  Button, Modal } from '@/components';
 
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { FongingArena } from '@/screens/forging/ForgingArena';
@@ -13,24 +13,17 @@ import { FongingArena } from '@/screens/forging/ForgingArena';
 const Forging = observer(() => {
   const { entitiesForForging, ownerEntities } = appStore;
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
-
-  const [modalContent, setModalContent] = useState(null);
-  const entityList = useRef(null);
+  const { walletProvider } = useWeb3ModalProvider();
   const [selectedFromPool, setSelectedFromPool] = useState(null);
-  const [sortOption, setSortOption] = useState('');
   const [processing, setProcessing] = useState(true);
+
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
-  const { walletProvider } = useWeb3ModalProvider();
-
-  console.log(isEntityListModalOpen);
 
   useEffect(() => {
     appStore.getEntitiesForForging();
     appStore.getOwnersEntities();
   }, []);
-
-  const openModalWithContent = content => setModalContent(content);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
 
@@ -88,34 +81,6 @@ const Forging = observer(() => {
     }
   };
 
-  // const modalContentToList = (
-  //   <>
-  //     <div className={styles.entityDisplay}>
-  //       <h1>LIST YOUR ENTITY</h1>
-  //       <ul>
-  //         {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
-  //           ownerEntities.map((entity, index) => (
-  //             <EntityCard
-  //               key={index}
-  //               entity={entity}
-  //               onSelect={() => setSelectedEntity(entity)}
-  //             />
-  //           ))
-  //         ) : (
-  //           <li>You don't own an Entity!</li>
-  //         )}
-  //       </ul>
-  //     </div>
-  //     {selectedEntity && (
-  //       <>
-  //         <input type="number" step="0.0001" placeholder="Enter Your Fee" />
-  //         <EntityCard entity={selectedEntity} />
-  //         <ProcessingModal processing={processing} text={processingText} />
-  //       </>
-  //     )}
-  //   </>
-  // );
-
   const ProcessingModal = ({ processing, text }) => {
     if (!processing) return null;
     return (
@@ -128,21 +93,7 @@ const Forging = observer(() => {
     );
   };
 
-  const getSortedEntities = () => {
-    if (!sortOption) return entitiesForForging;
-    return entitiesForForging.sort((a, b) => {
-      if (sortOption === 'priceLowHigh') {
-        return parseFloat(a.price) - parseFloat(b.price);
-      } else if (sortOption === 'priceHighLow') {
-        return parseFloat(b.price) - parseFloat(a.price);
-      }
-      return 0;
-    });
-  };
-
-  console.log(isEntityListModalOpen);
-
-  const sortedEntities = getSortedEntities();
+  
 
   return (
     <div className={styles.forgingPage}>
@@ -151,7 +102,6 @@ const Forging = observer(() => {
         <div className="py-20">
           <FongingArena
             selectedFromPool={selectedFromPool}
-            openModalWithContent={openModalWithContent}
             ownerEntities={ownerEntities}
             handleEntityListModal={handleEntityListModal}
           />
@@ -184,7 +134,7 @@ const Forging = observer(() => {
           closeModal={() => setIsEntityListModalOpen(false)}
         >
           <SelectEntityList
-            sortedEntities={sortedEntities}
+            entitiesForForging={entitiesForForging}
             handleSelectedFromPool={handleSelectedFromPool}
           />
         </Modal>
