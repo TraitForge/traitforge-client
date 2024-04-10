@@ -12,6 +12,7 @@ import {
   TraitForgeNft,
 } from '../typechain-types';
 import { ethers } from 'ethers';
+import { UNISWAP_ROUTER } from '../consts';
 
 task('deploy-all', 'Deploy all the contracts').setAction(async (_, hre) => {
   const token: Trait = await hre.run('deploy-token');
@@ -28,7 +29,9 @@ task('deploy-all', 'Deploy all the contracts').setAction(async (_, hre) => {
   });
   const devFund: DevFund = await hre.run('deploy-dev-fund');
   const airdrop: Airdrop = await hre.run('deploy-airdrop');
-  const daoFund: DAOFund = await hre.run('deploy-dao-fund');
+  const daoFund: DAOFund = await hre.run('deploy-dao-fund', {
+    token: await token.getAddress(),
+  });
   const nukeFund: NukeFund = await hre.run('deploy-nuke-fund', {
     nft: await nft.getAddress(),
     devFund: await devFund.getAddress(),
@@ -43,6 +46,7 @@ task('deploy-all', 'Deploy all the contracts').setAction(async (_, hre) => {
   await entityTrading.setNukeFundAddress(await nukeFund.getAddress());
   await entityMerging.setNukeFundAddress(await nukeFund.getAddress());
   await airdrop.setTraitToken(await token.getAddress());
+  await airdrop.transferOwnership(await nft.getAddress());
 });
 
 task('deploy-token', 'Deploy Trait Token').setAction(async (_, hre) => {
@@ -166,7 +170,7 @@ task('deploy-dao-fund', 'Deploy DAOFund')
       console.log('Deploying DAOFund...');
       const daoFund = await hre.ethers.deployContract('DAOFund', [
         taskArguments.token,
-        '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+        UNISWAP_ROUTER.sepolia,
       ]);
       await daoFund.waitForDeployment();
       console.log('Contract deployed to:', await daoFund.getAddress());
