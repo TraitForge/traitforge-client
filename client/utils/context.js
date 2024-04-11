@@ -16,7 +16,7 @@ const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 const ContextProvider = ({ children }) => {
   const [ethAmount, setEthAmount] = useState('0');
   const [usdAmount, setUsdAmount] = useState('0');
-  const [priceInEth, setPriceInEth] = useState(null);
+  const [entityPrice, setPriceInEth] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -104,9 +104,9 @@ const ContextProvider = ({ children }) => {
           infuraProvider
         );
         const mintPrice = await mintContract.calculateMintPrice();
-        const priceInEth = ethers.formatEther(mintPrice);
-        setPriceInEth(priceInEth);
-        console.log(priceInEth);
+        const entityPrice = ethers.formatEther(mintPrice);
+        setPriceInEth(entityPrice);
+        console.log(entityPrice);
       } catch (error) {
         console.error('Error fetching entity price:', error);
       } finally {
@@ -177,7 +177,7 @@ const ContextProvider = ({ children }) => {
         modalContent,
         ethAmount,
         usdAmount,
-        priceInEth,
+        entityPrice,
         isLoading,
         transactions,
         infuraProvider,

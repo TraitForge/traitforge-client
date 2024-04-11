@@ -88,7 +88,7 @@ const Home = () => {
         onClick={mintEntityHandler}
         bg="#023340"
         borderColor="#0ADFDB"
-        text={`Mint 1 For ${priceInEth} ETH`}
+        text={`Mint 1 For ${entityPrice} ETH`}
         style={{ marginBottom: '20px' }}
       />
       <Button
