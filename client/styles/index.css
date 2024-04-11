@@ -12,10 +12,6 @@
   }
 }
 
-.swiper-wrapper {
-padding-inline: 20px;
-}
-
 .slider-container {
   position: relative;
 }
@@ -193,7 +189,7 @@ h3,
 }
 
 .swiper-slide-active {
-  transform: scale(1.22) !important;
+  transform: scale(1.12) !important;
   transition: all 0.3s ease-in !important;
 }
 .swiper {
@@ -203,8 +199,14 @@ h3,
 
 .swiper-slide-prev,
 .swiper-slide-next {
-  transform: scale(1.13) !important;
+  transform: scale(1.05) !important;
   transition: all 0.3s ease-in !important;
+}
+
+.swiper-slide {
+  transition: all 0.3s ease-in !important; 
+  display: flex !important;
+  justify-content: center !important;;
 }
 
 ::-webkit-scrollbar {
@@ -230,12 +232,7 @@ h3,
   .card-gender {
     font-size: 0.8rem;
   }
-
-  .card-parameters-h2,
-  .params {
-    display: none;
-  }
-
+  
   .slider-text-h1 {
     margin-left: 5px;
   }

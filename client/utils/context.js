@@ -11,7 +11,7 @@ import { JsonRpcProvider } from 'ethers/providers';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
-const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL); 
+const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 
 const ContextProvider = ({ children }) => {
   const [ethAmount, setEthAmount] = useState(0);
@@ -19,18 +19,6 @@ const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalContent, setModalContent] = useState(null);
-
-  //Modal State Trigger
-  const openModal = content => {
-    setModalContent(content);
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
@@ -73,22 +61,6 @@ const ContextProvider = ({ children }) => {
 
     return () => clearInterval(interval);
   }, [fetchEthAmount]);
-
-  //Calculate Entity Attributes
-  function calculateEntityAttributes(entropy) {
-    const performanceFactor = entropy.toString() % 10;
-    const lastTwoDigits = entropy.toString() % 100;
-    const forgePotential = Math.floor(lastTwoDigits / 10);
-    const nukeFactor = Number((entropy / 40000).toFixed(3));
-    let role;
-    const result = entropy.toString() % 3;
-    if (result === 0) {
-      role = 'Forger';
-    } else {
-      role = 'Merger';
-    }
-    return { role, forgePotential, nukeFactor, performanceFactor };
-  }
 
   //Entity Price For Mint
   useEffect(() => {
@@ -170,19 +142,14 @@ const ContextProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        isOpen,
-        modalContent,
         ethAmount,
         usdAmount,
         entityPrice,
         isLoading,
         transactions,
         infuraProvider,
-        openModal,
         //subscribeToMintEvent,
-        closeModal,
         setIsLoading,
-        calculateEntityAttributes,
       }}
     >
       {children}

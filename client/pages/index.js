@@ -1,6 +1,6 @@
 import { useContextState } from '@/utils/context';
 import { ethers } from 'ethers';
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
+import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 
 import { contractsConfig } from '@/utils/contractsConfig';
 import { LoadingSpinner, Slider, Button } from '@/components';
@@ -24,10 +24,9 @@ const Home = () => {
         contractsConfig.traitForgeNftAbi,
         signer
       );
-      const transaction = await mintContract.mintToken(userAddress,
-        {
-          value: ethers.utils.parseEther(entityPrice)
-        });
+      const transaction = await mintContract.mintToken(userAddress, {
+        value: ethers.utils.parseEther(entityPrice),
+      });
       await transaction.wait();
       alert('Entity minted successfully');
     } catch (error) {
@@ -66,8 +65,6 @@ const Home = () => {
     }
   };
 
-
-
   if (isLoading) return <LoadingSpinner />;
 
   return (
@@ -80,7 +77,7 @@ const Home = () => {
       }}
     >
       <span className="mint-text">Mint your traitforge entity</span>
-      <div className="w-full pb-10">
+      <div className="w-full pb-10 flex justify-center">
         <Slider />
       </div>
       <Button

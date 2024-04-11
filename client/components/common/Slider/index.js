@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
+
 import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
 import Spinner from '../LoadingSpinner';
-import EntityCard from '../EntityCard';
-import { useContextState } from '@/utils/context';
+import { EntityCard } from '../EntityCard';
 
 const Slider = observer(() => {
-  const { isLoading } = useContextState();
-  const { upcomingMints } = appStore;
+  const { upcomingMints, isLoading } = appStore;
   const [ref, setRef] = useState(0);
 
   useEffect(() => {
@@ -26,48 +25,56 @@ const Slider = observer(() => {
     breakpoints: {
       // when window width is >= 320px
       320: {
-        slidesPerView: 1.9,
-        spaceBetween: 10,
+        slidesPerView: 1.3,
+        spaceBetween: 0,
         centeredSlides: true,
       },
       // when window width is >= 640px
       769: {
         slidesPerView: 2,
-        spaceBetween: 15,
+        spaceBetween: 0,
         centeredSlides: true,
       },
       1024: {
         slidesPerView: 3,
-        spaceBetween: 30,
+        spaceBetween: 0,
         centeredSlides: true,
       },
       1224: {
+        slidesPerView: 3,
+        spaceBetween: 0,
+        centeredSlides: true,
+      },
+      1440: {
         slidesPerView: 5,
-        spaceBetween: 15,
+        spaceBetween: 0,
         centeredSlides: true,
       },
     },
   };
 
-  const handlePrev = useCallback(() => ref?.slidePrev());
-  const handleNext = useCallback(() => ref?.slideNext());
+  // const handlePrev = ref?.slidePrev();
+  // const handleNext = ref?.slideNext();
 
   return (
-    <div className="container relative">
-      <div className="md:px-20 lg:px-24 xl:px-[180px] ">
-        <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>
-          {upcomingMints.map((mint, index) => (
-            <SwiperSlide key={mint.id}>
-              <EntityCard
-                entropy={mint.entropy}
-                index={index}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+    <div className="w-[90%] mx-auto relative">
+      <div className="md:px-20 lg:px-24 xl:px-[100px] ">
+        {upcomingMints.length > 0 && (
+          <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>
+            {upcomingMints.map((mint, index) => (
+              <SwiperSlide key={mint.id}>
+                <EntityCard
+                  borderType="blue"
+                  entropy={mint.entropy}
+                  index={index}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
       </div>
       <button
-        onClick={handlePrev}
+        onClick={() => ref?.slidePrev()}
         className={`custom-slider-arrow custom-slider-arrow-left hidden md:block`}
       >
         <svg
@@ -104,7 +111,7 @@ const Slider = observer(() => {
         </svg>
       </button>
       <button
-        onClick={handleNext}
+        onClick={() => ref?.slideNext()}
         className={`absolute top-1/2 right-0 custom-slider-arrow custom-slider-arrow-right hidden md:block`}
       >
         <svg
