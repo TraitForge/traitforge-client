@@ -66,45 +66,70 @@ const config = {
       '#bb00ff', // Bright Purple
       '#6200ff', // Neon Indigo
       '#00eaff', // Bright Cyan
-      '#6e6e6e', // Brighter Gray
-      '#9e9ea0', // Light Slate Gray
+      '#c05bb6', // Bright Purple
+      '#add8e6', // Light Blue
     ],
     colorOptions2: [
       '#00a6a6', // Bright Teal
       '#00dada', // Neon Turquoise
       '#007acc', // Bright Metallic Blue
-      '#007f7f', // Bright Slate Gray
+      '#ff00ff', // Neon Pink
       '#6a74ff', // Bright Independence Blue
-      '#bcbef0', // Light Cool Gray
+      '#7200ff', // Neon Purple
       '#ff4066', // Neon Carmine Red
       '#ff2055', // Bright Red
       '#00ffea', // Bright Skobeloff Green
       '#a0ffec', // Light Blue Green
-    ],
-    colorOptions3: [
-      '#55555d', // Bright Graphite
-      '#7a7abc', // Bright Slate Blue
-      '#9191a1', // Light Gunmetal Gray
-      '#535353', // Bright Off Black
+  ],
+  colorOptions3: [
+      '#ff007f', // Neon Fuchsia
+      '#7a00fc', // Bright Violet
+      '#00ff00', // Neon Green
+      '#ff1493', // Deep Pink
       '#5578ff', // Neon Stormy Blue
-      '#78a0a1', // Bright Steel Gray
-      '#768798', // Light Cadet Gray
-      '#757575', // Bright Dark Gray
-      '#4d4d4d', // Bright Almost Black
-      '#5f617a', // Bright Shadow Blue
-    ],
-    colorOptions4: [
+      '#00ffff', // Bright Aqua
+      '#ff69b4', // Hot Pink
+      '#800080', // Purple
+      '#ba55d3', // Medium Orchid
+      '#5f617a', // Bright Shadow Blue (kept for some balance)
+  ],
+  colorOptions4: [
       '#00bdbd', // Bright Cyan
       '#14ffec', // Neon Cyan
       '#2a8eff', // Bright Blue
-      '#242850', // Bright Night
-      '#3f5066', // Bright Storm Gray
-      '#e0e1e2', // Bright Silver
+      '#ff4500', // Orange Red
+      '#ff00ff', // Magenta
+      '#e0e1e2', // Bright Silver (kept for futuristic touch)
       '#7072ff', // Neon Periwinkle
-      '#64666a', // Bright Gunmetal
-      '#606060', // Bright Charcoal
+      '#32cd32', // Lime Green
+      '#9400d3', // Dark Violet
       '#1f2433', // Deep Space Blue (brightened slightly)
-    ],
+  ],
+  characterColorOptions1: [
+    '#80dcdc', // Light Cyan
+    '#aaffff', // Light Neon Cyan
+    '#add6ff', // Light Bright Blue
+    '#ff9980', // Light Orange Red
+    '#ff80ff', // Light Magenta
+    '#f0f1f2', // Very Light Silver
+    '#b0a2ff', // Light Neon Periwinkle
+    '#9ae69e', // Light Lime Green
+    '#c77aff', // Light Dark Violet
+    '#5f6573', // Light Deep Space Blue
+  ],
+  characterColorOptions2: [
+    '#80dcdc', // Light Cyan
+    '#aaffff', // Light Neon Cyan
+    '#add6ff', // Light Bright Blue
+    '#ff9980', // Light Orange Red
+    '#ff80ff', // Light Magenta
+    '#f0f1f2', // Very Light Silver
+    '#b0a2ff', // Light Neon Periwinkle
+    '#9ae69e', // Light Lime Green
+    '#c77aff', // Light Dark Violet
+    '#5f6573', // Light Deep Space Blue
+  ],
+
   },
 };
 

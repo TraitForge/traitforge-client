@@ -2,13 +2,13 @@ import sharp from 'sharp';
 import path from 'path';
 import varConfig from './variablesConfig';
 
-export const composeIMG = async (entityEntropy, entityGeneration) => {
+export const composeIMG = async (paddedEntropy,  entityGeneration) => {
   try {
-    const baseCharacterBuffer = await baseCharacterImg(entityGeneration);
+    const baseCharacterBuffer = await baseCharacterImg(entityGeneration, paddedEntropy);
     console.log('Base Character Buffer Length:', baseCharacterBuffer.length);
 
     const variablesImgBuffer = await variablesLayer(
-      entityEntropy,
+      paddedEntropy,
       entityGeneration
     );
     console.log('Variables Image Buffer Length:', variablesImgBuffer.length);
@@ -23,7 +23,7 @@ export const composeIMG = async (entityEntropy, entityGeneration) => {
         width: 2100,
         height: 2100,
         channels: 4,
-        background: { r: 0, g: 0, b: 0, alpha: 0 },
+        background: { r: 173, g: 216, b: 230, alpha: 1 },
       },
     })
       .composite([
@@ -40,48 +40,48 @@ export const composeIMG = async (entityEntropy, entityGeneration) => {
   }
 };
 
-const variablesLayer = async (entityEntropy, entityGeneration) => {
+const variablesLayer = async (paddedEntropy, entityGeneration) => {
   console.log(
-    `variablesLayer - entityEntropy: ${entityEntropy}, entityGeneration: ${entityGeneration}`
+    `variablesLayer - entityEntropy: ${paddedEntropy}, entityGeneration: ${entityGeneration}`
   );
-  const entropy = entityEntropy ? entityEntropy.toString() : '';
+  const entropy = paddedEntropy ? paddedEntropy.toString() : '';
   const generation = entityGeneration ? entityGeneration.toString() : '';
 
-  const optionIndex1 = parseInt(entropy[0]) % varConfig.varOptions1.length;
-  const optionIndex2 = parseInt(entropy[1]) % varConfig.varOptions2.length;
-  const optionIndex3 = parseInt(entropy[2]) % varConfig.varOptions3.length;
-  const optionIndex4 = parseInt(entropy[3]) % varConfig.varOptions4.length;
+  const optionIndex1 = parseInt(entropy[0]) % varConfig.varOptions.varOptions1.length;
+  const optionIndex2 = parseInt(entropy[1]) % varConfig.varOptions.varOptions2.length;
+  const optionIndex3 = parseInt(entropy[2]) % varConfig.varOptions.varOptions3.length;
+  const optionIndex4 = parseInt(entropy[3]) % varConfig.varOptions.varOptions4.length;
 
   console.log(`Entropy: ${entropy}`);
   console.log(`Entropy length: ${entropy.length}`);
 
   const color1 =
-    colorOptions1[
-      parseInt(entropy[entropy.length - 2]) % varConfig.colorOptions1.length
+    varConfig.colorOptions.colorOptions1[
+      parseInt(entropy[entropy.length - 2]) % varConfig.colorOptions.colorOptions1.length
     ];
   const color2 =
-    colorOptions2[
-      parseInt(entropy[entropy.length - 1]) % varConfig.colorOptions2.length
+    varConfig.colorOptions.colorOptions2[
+      parseInt(entropy[entropy.length - 1]) % varConfig.colorOptions.colorOptions2.length
     ];
   const color3 =
-    colorOptions3[
-      parseInt(entropy[entropy.length - 2]) % varConfig.colorOptions3.length
+    varConfig.colorOptions.colorOptions3[
+      parseInt(entropy[entropy.length - 2]) % varConfig.colorOptions.colorOptions3.length
     ];
   const color4 =
-    colorOptions4[
-      parseInt(entropy[entropy.length - 1]) % varConfig.colorOptions4.length
+    varConfig.colorOptions.colorOptions4[
+      parseInt(entropy[entropy.length - 1]) % varConfig.colorOptions.colorOptions4.length
     ];
 
   console.log(
-    `color1: ${color1}, color2: ${color2}, color3: ${color3}, color4: %{color4}`
+    `color1: ${color1}, color2: ${color2}, color3: ${color3}, color4: ${color4}`
   );
 
   let varImage1 = await tintImage(
     path.join(
       varConfig.variablesPath,
       generation,
-      varConfig.varPath1,
-      `${varOptions1[optionIndex1]}.png`
+      varConfig.varPaths.varPath1,
+      `${varConfig.varOptions.varOptions1[optionIndex1]}.png`
     ),
     color1
   );
@@ -89,8 +89,8 @@ const variablesLayer = async (entityEntropy, entityGeneration) => {
     path.join(
       varConfig.variablesPath,
       generation,
-      varConfig.varPath2,
-      `${varOptions2[optionIndex2]}.png`
+      varConfig.varPaths.varPath2,
+      `${varConfig.varOptions.varOptions2[optionIndex2]}.png`
     ),
     color2
   );
@@ -98,8 +98,8 @@ const variablesLayer = async (entityEntropy, entityGeneration) => {
     path.join(
       varConfig.variablesPath,
       generation,
-      varConfig.varPath3,
-      `${varOptions3[optionIndex3]}.png`
+      varConfig.varPaths.varPath3,
+      `${varConfig.varOptions.varOptions3[optionIndex3]}.png`
     ),
     color3
   );
@@ -107,8 +107,8 @@ const variablesLayer = async (entityEntropy, entityGeneration) => {
     path.join(
       varConfig.variablesPath,
       generation,
-      varConfig.varPath4,
-      `${varOptions4[optionIndex4]}.png`
+      varConfig.varPaths.varPath4,
+      `${varConfig.varOptions.varOptions4[optionIndex4]}.png`
     ),
     color4
   );
@@ -133,75 +133,73 @@ const variablesLayer = async (entityEntropy, entityGeneration) => {
 
 const baseCharacterImg = async (
   entityGeneration,
+  paddedEntropy,
   overlayBuffer = null,
   offsetX = 0,
   offsetY = 0
 ) => {
   const generation = entityGeneration.toString();
   const imagePath = path.join(
-    variablesPath,
+    varConfig.variablesPath,
     generation,
     `baseCharacter_${generation}.png`
   );
+
+  const entropyIndexWhite = paddedEntropy.length - 2;
+  const entropyIndexGrey = paddedEntropy.length - 3;
+  const hexColorWhite = varConfig.colorOptions.characterColorOptions1[parseInt(paddedEntropy[entropyIndexWhite]) % varConfig.colorOptions.characterColorOptions1.length];
+  const hexColorGrey = varConfig.colorOptions.characterColorOptions2[parseInt(paddedEntropy[entropyIndexGrey]) % varConfig.colorOptions.characterColorOptions2.length];
+
   let baseCharacter = sharp(imagePath);
+
+  baseCharacter = await tintImage(imagePath, hexColorWhite, hexColorGrey);
+
   if (overlayBuffer) {
-    baseCharacter = await baseCharacter.composite([
+    baseCharacter = sharp(await baseCharacter.toBuffer()).composite([
       { input: overlayBuffer, top: offsetY, left: offsetX },
     ]);
   }
-  return baseCharacter.toBuffer();
+
+  return baseCharacter;
 };
 
+
 const tintImage = async (imagePath, hexColorWhite, hexColorGrey) => {
+  const rgbWhite = hexToRgb(hexColorWhite || '#ffffff'); 
+  const rgbGrey = hexToRgb(hexColorGrey || '#808080'); 
+
   const originalImage = sharp(imagePath);
-  hexColorWhite = hexColorWhite ? hexColorWhite.toString() : '';
-  hexColorGrey = hexColorGrey ? hexColorGrey.toString() : '';
-  const rgbWhite = hexToRgb(hexColorWhite);
-  const rgbGrey = hexToRgb(hexColorGrey);
-
-  const { data, info } = await originalImage
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  const { r: tintRWhite, g: tintGWhite, b: tintBWhite } = rgbWhite;
-  const { r: tintRGrey, g: tintGGrey, b: tintBGrey } = rgbGrey;
+  const { data, info } = await originalImage.raw().toBuffer({ resolveWithObject: true });
 
   for (let i = 0; i < data.length; i += 4) {
-    const isWhiteOrNearWhite =
-      data[i] > 230 && data[i + 1] > 230 && data[i + 2] > 230;
-    const isGrey =
-      Math.abs(data[i] - data[i + 1]) < 30 &&
-      Math.abs(data[i + 1] - data[i + 2]) < 30 &&
-      Math.abs(data[i] - data[i + 2]) < 30 &&
-      data[i] >= 100 &&
-      data[i] <= 230 &&
-      data[i + 1] >= 100 &&
-      data[i + 1] <= 230 &&
-      data[i + 2] >= 100 &&
-      data[i + 2] <= 230;
+    const isWhiteOrNearWhite = data[i] > 230 && data[i + 1] > 230 && data[i + 2] > 230;
+    const isGrey = Math.abs(data[i] - data[i + 1]) < 30 && 
+          Math.abs(data[i + 1] - data[i + 2]) < 30 && 
+          Math.abs(data[i] - data[i + 2]) < 30 &&
+          data[i] >= 10 && data[i] <= 230 &&
+          data[i + 1] >= 10 && data[i + 1] <= 230 &&
+          data[i + 2] >= 10 && data[i + 2] <= 230;
 
     if (isWhiteOrNearWhite) {
-      data[i] = tintRWhite;
-      data[i + 1] = tintGWhite;
-      data[i + 2] = tintBWhite;
+      data[i] = rgbWhite.r;
+      data[i + 1] = rgbWhite.g;
+      data[i + 2] = rgbWhite.b;
     } else if (isGrey) {
-      data[i] = tintRGrey;
-      data[i + 1] = tintGGrey;
-      data[i + 2] = tintBGrey;
+      data[i] = rgbGrey.r;
+      data[i + 1] = rgbGrey.g;
+      data[i + 2] = rgbGrey.b;
     }
   }
 
-  const tintedImage = await sharp(data, {
+  return sharp(data, {
     raw: {
       width: info.width,
       height: info.height,
       channels: info.channels,
     },
   })
-    .png()
-    .toBuffer();
-
-  return tintedImage;
+  .png()
+  .toBuffer();
 };
 
 const hexToRgb = hex => {
