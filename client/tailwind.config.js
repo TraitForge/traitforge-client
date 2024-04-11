@@ -12,6 +12,7 @@ module.exports = {
     extend: {
       colors: {
         primary: '#58DCDE',
+        "neutral-100": "CECECE"
       },
       container: {
         center: true,

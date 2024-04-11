@@ -9,7 +9,7 @@ export const Button = ({ text, bg, borderColor, ...alt }) => (
       height="92"
       fill="none"
       viewBox="0 0 408 92"
-      className="abol"
+      className="w-full h-full"
     >
       <path
         fill={borderColor}
