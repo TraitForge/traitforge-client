@@ -8,9 +8,6 @@ import { LoadingSpinner, Slider, Button } from '@/components';
 const Home = () => {
   const { isLoading, setIsLoading, entityPrice } = useContextState();
   const { walletProvider } = useWeb3ModalProvider();
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-
-  console.log(isConnected)
 
   const mintEntityHandler = async () => {
     if (!walletProvider) {

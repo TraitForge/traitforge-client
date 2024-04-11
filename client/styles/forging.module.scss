@@ -23,14 +23,6 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   }
 }
 
-.entityListContainer {
-  background-color: rgba(0, 0, 0, 0.81);
-  width: 80vw;
-  height: 80vh;
-  border-radius: 30px;
-  padding: 40px 20px;
-}
-
 .processingModal {
   position: fixed;
   top: 0;
@@ -41,19 +33,4 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   justify-content: center;
   align-items: center;
   background-color: $background-color-modal;
-}
-
-.entityDisplay {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 50px;
-  min-height: 400px;
-  min-width: 400px;
-}
-
-.entityDisplay h1 {
-  font-size: 1.5em;
-  margin-bottom: 40px;
 }

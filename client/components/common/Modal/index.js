@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 
 import styles from './styles.module.scss';
 
-const Modal = ({ children, background, isOpen, closeModal }) => {
+const Modal = ({ children, background, isOpen, closeModal, modalClasses }) => {
   const modalStyle = background
     ? {
         backgroundImage: `url(${background})`,
@@ -13,7 +13,10 @@ const Modal = ({ children, background, isOpen, closeModal }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className={styles.modalOverlay} onClick={closeModal}>
+    <div
+      className={`${styles.modalOverlay} ${modalClasses}`}
+      onClick={closeModal}
+    >
       <div
         style={modalStyle}
         onClick={e => e.stopPropagation()}

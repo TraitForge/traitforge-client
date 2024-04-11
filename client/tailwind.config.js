@@ -10,13 +10,14 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      "bebas-neue": ['Bebas Neue',...defaultTheme.fontFamily.sans],
-    },  
+      'bebas-neue': ['Bebas Neue', ...defaultTheme.fontFamily.sans],
+    },
     extend: {
-      
       colors: {
         primary: '#58DCDE',
-        "neutral-100": "CECECE"
+        'neutral-100': '#CECECE',
+        'neon-orange': '#FD8D26',
+        'dark-81': 'rgba(0, 0, 0, 0.81)',
       },
       container: {
         center: true,

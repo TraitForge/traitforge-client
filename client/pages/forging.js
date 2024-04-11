@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
-import { LoadingSpinner,  Button, Modal } from '@/components';
+import { Button, Modal } from '@/components';
 
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { FongingArena } from '@/screens/forging/ForgingArena';
@@ -13,9 +13,9 @@ import { FongingArena } from '@/screens/forging/ForgingArena';
 const Forging = observer(() => {
   const { entitiesForForging, ownerEntities } = appStore;
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
-  const { walletProvider } = useWeb3ModalProvider();
   const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [processing, setProcessing] = useState(true);
+  const { walletProvider } = useWeb3ModalProvider();
 
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
@@ -81,20 +81,6 @@ const Forging = observer(() => {
     }
   };
 
-  const ProcessingModal = ({ processing, text }) => {
-    if (!processing) return null;
-    return (
-      <div className="processing-modal">
-        <div className="modal-content">
-          <LoadingSpinner />
-          <p>{text}</p>
-        </div>
-      </div>
-    );
-  };
-
-  
-
   return (
     <div className={styles.forgingPage}>
       <div className={styles.forgeArenaContainer}>
@@ -105,20 +91,6 @@ const Forging = observer(() => {
             ownerEntities={ownerEntities}
             handleEntityListModal={handleEntityListModal}
           />
-          {/* {selectedEntity && (
-            <div className={styles.selectedEntity}>
-              <img
-                src={selectedEntity.image}
-                alt={`Entity ${selectedEntity.title}`}
-              />
-              <div>
-                <h5>{selectedEntity.title}</h5>
-                
-                <p>Price: {selectedEntity.price} ETH</p>
-                <p>Gender: {selectedEntity.gender}</p>
-              </div>
-            </div>
-          )}  */}
         </div>
         <Button
           text="forge entity"
@@ -132,6 +104,7 @@ const Forging = observer(() => {
         <Modal
           isOpen={isEntityListModalOpen}
           closeModal={() => setIsEntityListModalOpen(false)}
+          modalClasses="items-end pb-4"
         >
           <SelectEntityList
             entitiesForForging={entitiesForForging}

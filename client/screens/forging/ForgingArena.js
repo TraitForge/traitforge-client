@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import styles from '@/styles/forging.module.scss';
 import { Modal } from '@/components';
+import { WalletEntityModal } from './WalletEntityModal';
+import { EntityCard } from '@/components';
 
 export const FongingArena = ({
   selectedFromPool,
@@ -11,26 +12,12 @@ export const FongingArena = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const modalContentToMerge = (
-    <div className={styles.entityDisplay}>
-      <h1>Select entity</h1>
-      <ul>
-        {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
-          ownerEntities.map((entity, index) => (
-            <EntityCard entity={entity} index={index} />
-          ))
-        ) : (
-          <li>You don't own an Entity!</li>
-        )}
-      </ul>
-    </div>
-  );
-
   return (
     <div className="grid grid-cols-3 max-w-[1440px] px-[200px] gap-x-[111px]">
       {selectedFromPool ? (
         <EntityCard
           entity={selectedFromPool}
+          borderType="orange"
           // onSelect={handleSelectedFromPool}
         />
       ) : (
@@ -74,7 +61,7 @@ export const FongingArena = ({
           closeModal={() => setIsModalOpen(false)}
           background="/images/forge-background.jpg"
         >
-          {modalContentToMerge}
+          <WalletEntityModal ownerEntities={ownerEntities} />
         </Modal>
       )}
     </div>

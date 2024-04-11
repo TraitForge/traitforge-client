@@ -2,7 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 import { useContextState } from '@/utils/context';
 
-const EntityCard = ({ entropy, index }) => {
+import orangeBorder from '@/public/images/orangeborder.png';
+import blueBorder from '@/public/images/border.svg';
+
+export const EntityCard = ({ entropy, index, borderType = 'blue' }) => {
   const { calculateEntityAttributes } = useContextState();
 
   const { role, forgePotential, performanceFactor, nukeFactor } =
@@ -12,18 +15,33 @@ const EntityCard = ({ entropy, index }) => {
     return ((index + 1) * 0.01).toFixed(2);
   };
 
+  let activeBorder;
+
+  switch (borderType) {
+    case 'orange':
+      activeBorder = orangeBorder;
+      break;
+    case 'blue':
+      activeBorder = blueBorder;
+      break;
+    default:
+      activeBorder = orangeBorder;
+      break;
+  }
 
   return (
     <div
-      className="card-container"
+      className="card-container "
       style={{
-        backgroundImage: "url('/images/border.svg')",
+        backgroundImage: `url("${activeBorder.src}")`,
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain',
+        width: orangeBorder.width,
+        height: orangeBorder.height,
       }}
     >
-      <div className="w-full h-auto p-5">
+      <div className="w-full h-full px-10 pt-10">
         <Image
           loading="lazy"
           src="/images/traitforgertransparent.png"
@@ -33,7 +51,7 @@ const EntityCard = ({ entropy, index }) => {
           height={300}
         />
       </div>
-      <div className="footer-top-level py-5">
+      <div className="py-5 mb-5 h-full">
         <div className="card-info text-white">
           <h4 className="card-price">{calculateEntityPrice(index)} ETH</h4>
         </div>
@@ -47,5 +65,3 @@ const EntityCard = ({ entropy, index }) => {
     </div>
   );
 };
-
-export default EntityCard;

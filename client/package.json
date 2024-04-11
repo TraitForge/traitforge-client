@@ -31,6 +31,7 @@
     "axios": "^1.6.8",
     "canvas-confetti": "^1.9.2",
     "chart.js": "^4.4.2",
+    "classnames": "^2.5.1",
     "ethers": "^6.11.1",
     "graphql": "^16.8.1",
     "jquery": "^3.7.1",
