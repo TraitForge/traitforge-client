@@ -42,7 +42,7 @@ const EntityCard = ({ entropy, index}) => {
         <h4 className="card-name">Forge Potential: {forgePotential}</h4>
         <h4 className="card-parameters-h2">Nuke Factor: {nukeFactor} %</h4>
         <h4 className="card-parameters-h2">
-          Performance Factor: {performanceFactor}
+          Performance Factor: {performanceFactor}x
         </h4>
       </div>
     </div>

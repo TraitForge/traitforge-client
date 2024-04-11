@@ -28,6 +28,7 @@
     "@web3modal/wallet": "4.1.1",
     "alchemy-sdk": "^3.2.0",
     "autoprefixer": "^10.4.19",
+    "aws-sdk": "^2.1597.0",
     "axios": "^1.6.8",
     "canvas-confetti": "^1.9.2",
     "chart.js": "^4.4.2",

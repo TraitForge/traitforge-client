@@ -25,8 +25,9 @@ const Forging = observer(() => {
 
   useEffect(() => {
     appStore.getEntitiesForForging();
-    appStore.getOwnersEntities();
+    appStore.getOwnersEntities('0x225b791581185B73Eb52156942369843E8B0Eec7');
   }, []); 
+
 
   const openModalWithContent = content => {
     setModalContent(content);

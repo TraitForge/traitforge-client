@@ -5,7 +5,7 @@ import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { LoadingSpinner, Slider, Button } from '@/components';
 
 const Home = () => {
-  const { isLoading, setIsLoading, entityPrice } = useContextState();
+  const { isLoading, setIsLoading, priceInEth } = useContextState();
   const { walletProvider } = useWeb3ModalProvider();
 
   const mintEntityHandler = async () => {
@@ -24,11 +24,9 @@ const Home = () => {
         contractsConfig.traitForgeNftAbi,
         signer
       );
-      const mintPrice = await mintContract.calculateMintPrice();
-      console.log(mintPrice);
       const transaction = await mintContract.mintToken(
         userAddress,
-        { value: mintPrice,
+        { value: priceInEth,
           gasLimit: 5000000,
       });
       await transaction.wait();
@@ -90,7 +88,7 @@ const Home = () => {
         onClick={mintEntityHandler}
         bg="#023340"
         borderColor="#0ADFDB"
-        text={`Mint 1 For ${entityPrice} ETH`}
+        text={`Mint 1 For ${priceInEth} ETH`}
         style={{ marginBottom: '20px' }}
       />
       <Button
