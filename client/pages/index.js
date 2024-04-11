@@ -1,11 +1,12 @@
 import { useContextState } from '@/utils/context';
 import { ethers } from 'ethers';
+
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { LoadingSpinner, Slider, Button } from '@/components';
 
 const Home = () => {
-  const { isLoading, setIsLoading, priceInEth } = useContextState();
+  const { isLoading, setIsLoading, entityPrice, openModal } = useContextState();
   const { walletProvider } = useWeb3ModalProvider();
 
   const mintEntityHandler = async () => {
@@ -24,11 +25,10 @@ const Home = () => {
         contractsConfig.traitForgeNftAbi,
         signer
       );
-      const transaction = await mintContract.mintToken(
-        userAddress,
-        { value: priceInEth,
-          gasLimit: 5000000,
-      });
+      const transaction = await mintContract.mintToken(userAddress,
+        {
+          value: ethers.utils.parseEther(entityPrice)
+        });
       await transaction.wait();
       alert('Entity minted successfully');
     } catch (error) {
