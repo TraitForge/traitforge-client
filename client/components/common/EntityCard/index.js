@@ -11,7 +11,14 @@ const EntityCard = ({ entropy, index }) => {
   const calculateEntityPrice = index => {
     return ((index + 1) * 0.01).toFixed(2);
   };
-
+  const calculateUri = (entropy, generation) => {
+    console.log(entropy);
+    const paddedEntropy = entropy.toString().padStart(6, '0');
+    return `${paddedEntropy}_${generation}`;
+  };
+  const uri = calculateUri(entropy, 1); 
+  console.log(uri);
+  
 
   return (
     <div
@@ -26,7 +33,7 @@ const EntityCard = ({ entropy, index }) => {
       <div className="w-full h-auto p-5">
         <Image
           loading="lazy"
-          src="/images/traitforgertransparent.png"
+          src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="Entity"
           className="card-image"
           width={200}

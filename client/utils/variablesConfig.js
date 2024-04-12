@@ -91,7 +91,7 @@ const config = {
       '#ff69b4', // Hot Pink
       '#800080', // Purple
       '#ba55d3', // Medium Orchid
-      '#5f617a', // Bright Shadow Blue (kept for some balance)
+      '#5f617a', // Bright Shadow Blue 
   ],
   colorOptions4: [
       '#00bdbd', // Bright Cyan
@@ -99,11 +99,11 @@ const config = {
       '#2a8eff', // Bright Blue
       '#ff4500', // Orange Red
       '#ff00ff', // Magenta
-      '#e0e1e2', // Bright Silver (kept for futuristic touch)
+      '#e0e1e2', // Bright Silver
       '#7072ff', // Neon Periwinkle
       '#32cd32', // Lime Green
       '#9400d3', // Dark Violet
-      '#1f2433', // Deep Space Blue (brightened slightly)
+      '#1f2433', // Deep Space Blue 
   ],
   characterColorOptions1: [
     '#80dcdc', // Light Cyan
@@ -129,7 +129,6 @@ const config = {
     '#c77aff', // Light Dark Violet
     '#5f6573', // Light Deep Space Blue
   ],
-
   },
 };
 
