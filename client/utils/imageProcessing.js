@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import path from 'path';
 import varConfig from './variablesConfig';
 
-export const composeIMG = async (paddedEntropy,  entityGeneration) => {
+export const composeIMG = async (paddedEntropy,  entityGeneration, intensity) => {
   console.log(paddedEntropy, entityGeneration);
   try {
     const baseCharacterBuffer = await baseCharacterImg(entityGeneration, paddedEntropy);
@@ -255,3 +255,5 @@ const hexToRgb = hex => {
   const b = bigint & 255;
   return { r, g, b };
 };
+
+

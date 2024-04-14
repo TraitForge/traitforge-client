@@ -25,10 +25,11 @@ async function startProcessing() {
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
         }
+    entityGeneration++
 }
 
-async function processImage(paddedEntropy, entityGeneration) {
-    const imageBuffer = await composeIMG(paddedEntropy,  entityGeneration);
+async function processImage(paddedEntropy, entityGeneration, intensity) {
+    const imageBuffer = await composeIMG(paddedEntropy,  entityGeneration, intensity);
     if (imageBuffer) {
         const uri = await generateUri(paddedEntropy,  entityGeneration);
         const fileName = `${uri}`;
