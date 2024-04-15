@@ -28,8 +28,8 @@ async function startProcessing() {
     entityGeneration++
 }
 
-async function processImage(paddedEntropy, entityGeneration, intensity) {
-    const imageBuffer = await composeIMG(paddedEntropy,  entityGeneration, intensity);
+async function processImage(paddedEntropy, entityGeneration) {
+    const imageBuffer = await composeIMG(paddedEntropy,  entityGeneration);
     if (imageBuffer) {
         const uri = await generateUri(paddedEntropy,  entityGeneration);
         const fileName = `${uri}`;

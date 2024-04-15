@@ -58,52 +58,51 @@ const config = {
   },
   colorOptions: {
     colorOptions1: [
-      '#db00ff', // Neon Violet
-      '#003cff', // Neon Blue
-      '#00f2ff', // Bright Cyan
-      '#4cFF00', // Neon Green
-      '#b100ff', // Neon Purple
-      '#bb00ff', // Bright Purple
-      '#6200ff', // Neon Indigo
-      '#00eaff', // Bright Cyan
-      '#c05bb6', // Bright Purple
-      '#add8e6', // Light Blue
+      "#7a00fc", // Bright Violet
+      "#00dada", // Neon Turquoise
+      "#ff4066", // Neon Carmine Red
+      "#ff4500", // Orange Red
+      "#00f2ff", // Bright Cyan
+      "#FCEE0C", // Aureolin
+      "#800080", // Purple
+      "#6a74ff", // Bright Independence Blue
+      "#ff007f", // Neon Fuchsia
+      "#c05bb6"  // Bright Purple
     ],
     colorOptions2: [
-      '#00a6a6', // Bright Teal
-      '#00dada', // Neon Turquoise
-      '#007acc', // Bright Metallic Blue
-      '#ff00ff', // Neon Pink
-      '#6a74ff', // Bright Independence Blue
-      '#7200ff', // Neon Purple
-      '#ff4066', // Neon Carmine Red
-      '#ff2055', // Bright Red
-      '#00ffea', // Bright Skobeloff Green
-      '#a0ffec', // Light Blue Green
+      "#00eaff", // Bright Cyan
+      "#ff1493", // Deep Pink
+      "#4cFF00", // Neon Green
+      "#14ffec", // Neon Cyan
+      "#00bdbd", // Bright Cyan
+      "#32cd32", // Lime Green
+      "#007acc", // Bright Metallic Blue
+      "#6200ff", // Neon Indigo
+      "#2a8eff", // Bright Blue
+      "#bb00ff"  // Bright Purple
   ],
   colorOptions3: [
-      '#ff007f', // Neon Fuchsia
-      '#7a00fc', // Bright Violet
-      '#00ff00', // Neon Green
-      '#ff1493', // Deep Pink
-      '#5578ff', // Neon Stormy Blue
-      '#00ffff', // Bright Aqua
-      '#ff69b4', // Hot Pink
-      '#800080', // Purple
-      '#ba55d3', // Medium Orchid
-      '#5f617a', // Bright Shadow Blue 
+      "#a0ffec", // Light Blue Green
+      "#b100ff", // Neon Purple
+      "#00a6a6", // Bright Teal
+      "#5f617a", // Bright Shadow Blue
+      "#00ffea", // Bright Skobeloff Green
+      "#5578ff", // Neon Stormy Blue
+      "#00ff00", // Neon Green
+      "#ff2055", // Bright Red
+      "#e0e1e2", // Bright Silver
+      "#003cff"  // Neon Blue
   ],
   colorOptions4: [
-      '#00bdbd', // Bright Cyan
-      '#14ffec', // Neon Cyan
-      '#2a8eff', // Bright Blue
-      '#ff4500', // Orange Red
-      '#ff00ff', // Magenta
-      '#e0e1e2', // Bright Silver
-      '#7072ff', // Neon Periwinkle
-      '#32cd32', // Lime Green
-      '#9400d3', // Dark Violet
-      '#1f2433', // Deep Space Blue 
+      "##ff1111", // Spicy Red
+      "#7072ff", // Neon Periwinkle
+      "#add8e6", // Light Blue
+      "#00ffff", // Bright Aqua
+      "#ff00ff", // Magenta
+      "#7200ff", // Neon Purple
+      "#db00ff", // Neon Violet
+      "#ba55d3", // Medium Orchid
+      "#ff69b4"  // Hot Pink 
   ],
   characterColorOptions1: [
     '#80dcdc', // Light Cyan

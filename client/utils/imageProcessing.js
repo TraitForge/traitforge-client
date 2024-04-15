@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import path from 'path';
 import varConfig from './variablesConfig';
 
-export const composeIMG = async (paddedEntropy,  entityGeneration, intensity) => {
+export const composeIMG = async (paddedEntropy,  entityGeneration) => {
   console.log(paddedEntropy, entityGeneration);
   try {
     const baseCharacterBuffer = await baseCharacterImg(entityGeneration, paddedEntropy);
@@ -58,11 +58,11 @@ const variablesLayer = async (paddedEntropy, entityGeneration) => {
 
   const color1 =
     varConfig.colorOptions.colorOptions1[
-      parseInt(entropy[entropy.length - 2]) % varConfig.colorOptions.colorOptions1.length
+      parseInt(entropy[entropy.length - 1]) % varConfig.colorOptions.colorOptions1.length
     ];
   const color2 =
     varConfig.colorOptions.colorOptions2[
-      parseInt(entropy[entropy.length - 1]) % varConfig.colorOptions.colorOptions2.length
+      parseInt(entropy[entropy.length - 4]) % varConfig.colorOptions.colorOptions2.length
     ];
   const color3 =
     varConfig.colorOptions.colorOptions3[
@@ -70,7 +70,7 @@ const variablesLayer = async (paddedEntropy, entityGeneration) => {
     ];
   const color4 =
     varConfig.colorOptions.colorOptions4[
-      parseInt(entropy[entropy.length - 1]) % varConfig.colorOptions.colorOptions4.length
+      parseInt(entropy[entropy.length - 3]) % varConfig.colorOptions.colorOptions4.length
     ];
 
   console.log(
@@ -102,7 +102,7 @@ const variablesLayer = async (paddedEntropy, entityGeneration) => {
       varConfig.varPaths.varPath3,
       `${varConfig.varOptions.varOptions3[optionIndex3]}.png`
     ),
-    color3, color1
+    color2, color1
   );
   let varImage4 = await tintVariables(
     path.join(
@@ -151,7 +151,7 @@ const baseCharacterImg = async (
 
   const hexColorWhite = varConfig.colorOptions.characterColorOptions1[parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions1.length];
   const hexColorGrey = varConfig.colorOptions.characterColorOptions2[parseInt(entropy[2]) % varConfig.colorOptions.characterColorOptions2.length];
-  console.log(`White color index: ${parseInt(entropy[1]) % varConfig.colorOptions.characterColorOptions1.length}, Color: ${hexColorWhite}`);
+  console.log(`White color index: ${parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions1.length}, Color: ${hexColorWhite}`);
   console.log(`Grey color index: ${parseInt(entropy[2]) % varConfig.colorOptions.characterColorOptions2.length}, Color: ${hexColorGrey}`);
   let baseCharacter = sharp(imagePath);
   console.log('initiating tint with colors:', hexColorWhite, hexColorGrey)
