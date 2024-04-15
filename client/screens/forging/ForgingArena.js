@@ -1,8 +1,3 @@
-import Image from 'next/image';
-
-import { Modal } from '@/components';
-import { WalletEntityModal } from './WalletEntityModal';
-import { EntityCard } from '@/components';
 import { ArenaCenter } from './ArenaCenter';
 import { ArenaItem } from './ArenaItem';
 

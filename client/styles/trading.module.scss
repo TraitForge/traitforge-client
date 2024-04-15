@@ -3,144 +3,45 @@ $background-color-modal: rgba(0, 0, 0, 0.5);
 $border-color-dropdown: rgba(255, 123, 0, 0.24);
 
 .tradingPage {
-  display: flex;
-  justify-content: center;
-  align-content: center;
   font-family: 'Bebas Neue', sans-serif;
   background: url('/images/marketplace-background.jpg') center / cover no-repeat;
-  background-attachment: fixed;  
+  background-attachment: fixed;
   height: 100vh;
   padding-bottom: 20px;
 
-  .marketPageContainer {
-    background-color: rgba(0, 0, 0, 0.421);
-    margin-top: 10vh;
-    width: 90vw;
-    border-radius: 10px;
-  }
+  // .listings {
+  //   display: flex;
+  //   flex-wrap: wrap;
+  //   gap: 20px;
+  //   justify-content: center;
 
-  .tradingTopButtons {
-    margin-top: 20px;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.427);
-    position: relative;
+  //   .entityCard {
+  //     background: black;
+  //     border: 1px solid #ddd;
+  //     border-radius: 8px;
+  //     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  //     width: 200px;
+  //     margin-bottom: 20px;
 
-    .sellandfilterbutton {
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      right: 10px;
-      top: 0px;
-      align-items: center;
-    }
+  //     &:hover {
+  //       transform: scale(1.05);
+  //     }
 
-    .sellEntity {
-      color: #f0f0f0;
-      padding-inline: 15px;
-      border-radius: 1px;
-      border: none;
-      cursor: pointer;
-      max-width: 70%;
-      transition: background-color 0.3s, box-shadow 0.3s;
-      margin-bottom: 20px;
-      &:hover {
-        transform: scale(1.02);
-      }
-    }
-  }
+  //     .cardContent {
+  //       padding: 15px;
+  //       color: white;
 
-  .tradingfilters {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 1em;
-    margin-top: 70px;
-    width: 95%;
-    position: relative;
-    top: 0;
+  //       .cardTitle {
+  //         font-size: 1.2em;
+  //       }
 
-    button {
-      color: #bdbdbd;
-      text-decoration: none;
-      padding: 0rem 2rem;
-      transition: color 0.3s ease;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1em;
-
-      &.activeFilter,
-      &:hover {
-        color: white;
-        border-bottom: 2px solid rgb(255, 255, 255);
-        margin-bottom: -1.5px;
-      }
-    }
-  }
-  .tradeSortingDropdown {
-    justify-content: center;
-    font-size: 15px;
-    border: 1px solid rgb(0, 147, 93);
-    border-radius: 8px;
-    background-color: rgba(221, 221, 221, 0.114);
-    color: rgb(228, 228, 228);
-    cursor: pointer;
-    padding: 3px;
-
-    &:hover,
-    &:focus {
-      border-color: rgb(0, 255, 162);
-      outline: none;
-    }
-
-    option {
-      background-color: #c9c9c9;
-      color: #333333;
-    }
-  }
-
-  .listings {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-
-    .entityCard {
-      background: black;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      width: 200px;
-      margin-bottom: 20px;
-
-      &:hover {
-        transform: scale(1.05);
-      }
-
-      .cardContent {
-        padding: 15px;
-        color: white;
-
-        .cardTitle {
-          font-size: 1.2em;
-        }
-
-        .cardText {
-          margin-top: 10px;
-          font-size: 0.9em;
-        }
-      }
-    }
-  }
-
-  .buyButton {
-    &:hover {
-      transform: scale(1.05);
-    }
-  }
+  //       .cardText {
+  //         margin-top: 10px;
+  //         font-size: 0.9em;
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 .entityDisplay {
