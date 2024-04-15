@@ -2,27 +2,32 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 
 import styles from './styles.module.scss';
-import { useContextState } from '@/utils/context';
 
-const Modal = ({ children, background }) => {
-  const { isOpen, closeModal } = useContextState();
-
+const Modal = ({ children, background, isOpen, closeModal, modalClasses }) => {
   const modalStyle = background
     ? {
-      backgroundImage: `url(${background})`,
-      backgroundPosition: 'center',
-      backgroundSize: 'contain',
-      backgroundRepeat: 'no-repeat',
-    }
+        backgroundImage: `url(${background})`,
+      }
     : {};
 
   if (!isOpen) return null;
 
   return createPortal(
-    <div className={styles.modalOverlay} onClick={closeModal}>
-      <div style={modalStyle} onClick={e => e.stopPropagation()} className="relative w-[100%] lg:w-[900px]">
+    <div
+      className={`${styles.modalOverlay} ${modalClasses}`}
+      onClick={closeModal}
+    >
+      <div
+        style={modalStyle}
+        onClick={e => e.stopPropagation()}
+        className={`relative bg-center bg-no-repeat bg-contain md:bg-cover`}
+      >
         {children}
-        <button aria-label='close modal button' className={styles.closebutton} onClick={closeModal}>
+        <button
+          aria-label="close modal button"
+          className={styles.closebutton}
+          onClick={closeModal}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

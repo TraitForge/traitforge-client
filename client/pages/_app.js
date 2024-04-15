@@ -28,7 +28,6 @@ const metadata = {
 
 const ethersConfig = defaultConfig({
   metadata,
-
   enableEIP6963: true,
   enableInjected: true,
   enableCoinbase: true,
