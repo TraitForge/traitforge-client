@@ -16,10 +16,8 @@ const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 const ContextProvider = ({ children }) => {
   const [ethAmount, setEthAmount] = useState('0');
   const [usdAmount, setUsdAmount] = useState('0');
-  const [entityPrice, setPriceInEth] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
-<<<<<<< HEAD
   const [isOpen, setIsOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
@@ -32,9 +30,7 @@ const ContextProvider = ({ children }) => {
   const closeModal = () => {
     setIsOpen(false);
   };
-=======
   const [entityPrice, setEntityPrice] = useState(null);
->>>>>>> 03e7f01c6380cc82d7ac49f974c8f4a7c7d578f3
 
   const fetchEthAmount = async () => {
     try {
@@ -80,7 +76,6 @@ const ContextProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [fetchEthAmount, fetchEthToUsdRate]);
 
-<<<<<<< HEAD
   //Calculate Entity Attributes
   function calculateEntityAttributes(entropy) {
     const performanceFactor = entropy.toString() % 10;
@@ -97,8 +92,6 @@ const ContextProvider = ({ children }) => {
     return { role, forgePotential, nukeFactor, performanceFactor };
   }
 
-=======
->>>>>>> 03e7f01c6380cc82d7ac49f974c8f4a7c7d578f3
   //Entity Price For Mint
   useEffect(() => {
     const getLatestEntityPrice = async () => {

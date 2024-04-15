@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
 import { calculateEntityAttributes } from '@/utils/utils';
@@ -12,8 +11,8 @@ export const EntityCard = ({
   borderType = 'blue',
   wrapperClass,
 }) => {
-  // const { role, forgePotential, performanceFactor, nukeFactor } =
-  //   calculateEntityAttributes(entropy);
+    const { role, forgePotential, performanceFactor, nukeFactor } =
+    calculateEntityAttributes(entropy);
 
   const calculateEntityPrice = index => {
     return ((index + 1) * 0.01).toFixed(2);
@@ -39,7 +38,6 @@ export const EntityCard = ({
   }
 
   const wrapperClasses = classNames('mx-5 card-container', wrapperClass);
->>>>>>> 03e7f01c6380cc82d7ac49f974c8f4a7c7d578f3
 
   return (
     <div
@@ -67,18 +65,12 @@ export const EntityCard = ({
         <div className="card-info text-white">
           <h4 className="card-price">wecewc ETH</h4>
         </div>
-<<<<<<< HEAD
         <h4 className="card-name">{role}</h4>
         <h4 className="card-name">Forge Potential: {forgePotential}</h4>
         <h4 className="card-parameters-h2">Nuke Factor: {nukeFactor} %</h4>
         <h4 className="card-parameters-h2">
           Performance Factor: {performanceFactor}x
         </h4>
-=======
-        <h4 className="card-name">Forge Potential: </h4>
-        <h4 className="card-parameters-h2">Nuke Factor: %</h4>
-        <h4 className="card-parameters-h2">Performance Factor:</h4>
->>>>>>> 03e7f01c6380cc82d7ac49f974c8f4a7c7d578f3
       </div>
     </div>
   );
