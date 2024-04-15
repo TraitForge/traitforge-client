@@ -8,7 +8,7 @@ import styles from '@/styles/forging.module.scss';
 import { Button, Modal } from '@/components';
 
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
-import { FongingArena } from '@/screens/forging/ForgingArena';
+import { ForgingArena } from '@/screens/forging/ForgingArena';
 
 const Forging = observer(() => {
   const { entitiesForForging, ownerEntities } = appStore;
@@ -86,7 +86,7 @@ const Forging = observer(() => {
       <div className={styles.forgeArenaContainer}>
         <h1 className="text-[64px]">Forging Arena</h1>
         <div className="py-20">
-          <FongingArena
+          <ForgingArena
             selectedFromPool={selectedFromPool}
             ownerEntities={ownerEntities}
             handleEntityListModal={handleEntityListModal}

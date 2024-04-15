@@ -6,7 +6,7 @@ import { EntityCard } from '@/components';
 import { ArenaCenter } from './ArenaCenter';
 import { ArenaItem } from './ArenaItem';
 
-export const FongingArena = ({
+export const ForgingArena = ({
   selectedFromPool,
   ownerEntities,
   handleEntityListModal,
