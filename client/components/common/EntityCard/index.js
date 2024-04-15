@@ -11,8 +11,8 @@ export const EntityCard = ({
   borderType = 'blue',
   wrapperClass,
 }) => {
-    const { role, forgePotential, performanceFactor, nukeFactor } =
-    calculateEntityAttributes(entropy);
+   // const { role, forgePotential, performanceFactor, nukeFactor } =
+   // calculateEntityAttributes(entropy);
 
   const calculateEntityPrice = index => {
     return ((index + 1) * 0.01).toFixed(2);

@@ -22,16 +22,6 @@ const Forging = observer(() => {
 
   useEffect(() => {
     appStore.getEntitiesForForging();
-<<<<<<< HEAD
-    appStore.getOwnersEntities('0x225b791581185B73Eb52156942369843E8B0Eec7');
-  }, []); 
-
-
-  const openModalWithContent = content => {
-    setModalContent(content);
-    openModal(true);
-  };
-=======
     appStore.getOwnersEntities();
   }, []);
 
@@ -39,7 +29,6 @@ const Forging = observer(() => {
 
   const handleEntityListModal = () =>
     setIsEntityListModalOpen(prevState => !prevState);
->>>>>>> 03e7f01c6380cc82d7ac49f974c8f4a7c7d578f3
 
   const forgeEntity = async () => {
     if (!walletProvider) return;
