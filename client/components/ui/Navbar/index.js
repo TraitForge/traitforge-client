@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaBars, FaTimes } from 'react-icons/fa';
 import styles from './styles.module.scss';
 import { Logo } from '@/icons';
 import ConnectButton from '@/components/ui/WalletButton';

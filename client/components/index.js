@@ -7,5 +7,5 @@ export { default as LoadingSpinner } from './common/LoadingSpinner';
 export { default as TransactionsDisplay } from './common/TransactionsDisplay';
 
 export { Button } from './common/buttons/Button';
-export { default as EntityCard } from './common/EntityCard';
+export { EntityCard } from './common/EntityCard';
 export { default as Modal } from './common/Modal';
