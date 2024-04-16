@@ -9,14 +9,14 @@ import Logo from '@/public/images/websitelogo.png';
 import '@/styles/main.scss';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
 
-const projectId = 'ce6b3d38d61ac9bfbea71e7dda0ba323';
+const projectId = '60db0656302510a26d3e49acc62e5473';
 
-const mainnet = {
+const testnet = {
   chainId: 11155111,
   name: 'Sepolia',
   currency: 'ETH',
   explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://sepolia.infura.io/v3/517662d1a2904cc2aa434013fccebeab',
+  rpcUrl: 'https://sepolia.infura.io/v3/bc15b785e15745beaaea0b9c42ae34fa',
 };
 
 const metadata = {
@@ -36,7 +36,7 @@ const ethersConfig = defaultConfig({
 
 createWeb3Modal({
   ethersConfig,
-  chains: [mainnet],
+  chains: [testnet],
   projectId,
   enableAnalytics: true,
 });
