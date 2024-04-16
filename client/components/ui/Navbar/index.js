@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import classNames from 'classnames';
+
 import styles from './styles.module.scss';
 import { Logo } from '@/icons';
 import ConnectButton from '@/components/ui/WalletButton';
@@ -15,13 +17,12 @@ const links = [
 const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const router = useRouter();
 
-  const handleNavLinkClick = () => {
-    setIsNavExpanded(true);
-  };
-
-  const isActive = path => {
-    return router.pathname === path;
-  };
+  const commonClasses = `text-base flex items-center text-white py-6 lg:text-[32px] lg:text-[32px] relative after:absolute after:bottom-0 after:left-0 after:w-full hover:after:h-[2px] after:h-[0px]`;
+  const activeClasses = classNames(commonClasses, {
+    'after:bg-neon-orange hover:text-neon-orange': router.asPath === '/forging',
+    'after:bg-neon-green hover:text-neon-green': router.asPath === '/trading',
+    'after:bg-primary hover:text-primary': router.asPath === '/',
+  });
 
   return (
     <header className={styles.nav}>
@@ -32,21 +33,17 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
         {isNavExpanded ? <FaTimes /> : <FaBars />}
       </button> */}
       <nav
-        className={`container flex items-center justify-between ${isNavExpanded ? styles.expanded : ''
-          }`}
+        className={`container flex items-center justify-between ${
+          isNavExpanded ? styles.expanded : ''
+        }`}
       >
-        <Link href="/" className="py-[13px] inline-block">
+        <Link href="/" className="inline-block">
           <Logo />
         </Link>
         <ul className="flex gap-x-[20px] xl:gap-x-[64px] max-md:hidden">
           {links.map((link, index) => (
-            <li key={index} className="text-base flex items-center lg:text-[32px] hover:border-b-[1px] border-b-[0px] border-solid border-white">
-              <Link
-                href={link.url}
-                // className={`${isActive(link.url) ? styles.active : ''}`}
-                // onClick={handleNavLinkClick}
-                className="text-white hover:text-primary"
-              >
+            <li key={index}>
+              <Link className={activeClasses} href={link.url}>
                 {link.text}
               </Link>
             </li>
