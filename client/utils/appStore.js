@@ -58,26 +58,34 @@ class AppStore {
         this.isLoading = false;
     }
 
-    async getOwnersEntities(address, walletProvider) {
-        if (!walletProvider || !address) {
+    async getOwnersEntities(address) {
+        if (!address) {
             this.ownerEntities = [];
+            console.log(address);
             return;
         }
-        const provider = new ethers.providers.Web3Provider(walletProvider);
+        
         const TraitForgeContract = new ethers.Contract(
             contractsConfig.traitForgeNftAddress,
             contractsConfig.traitForgeNftAbi,
-            provider
+            this.infuraProvider
         );
+    
         try {
             const balance = await TraitForgeContract.balanceOf(address);
-            let fetchedEntities = [];
+            const fetchPromises = [];
+            console.log(`Balance for address ${address}: ${balance}`);
+
+    
             for (let i = 0; i < balance; i++) {
-                const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
-                const tokenURI = await TraitForgeContract.tokenURI(tokenId);
-                fetchedEntities.push({ tokenId: tokenId.toString(), tokenURI });
+                fetchPromises.push((async () => {
+                    const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
+                    const tokenURI = await TraitForgeContract.tokenURI(tokenId);
+                    return { tokenId: tokenId.toString(), tokenURI };
+                })());
             }
-            this.ownerEntities = fetchedEntities;
+    
+            this.ownerEntities = await Promise.all(fetchPromises);
         } catch (error) {
             console.error('Error fetching NFTs:', error);
             this.ownerEntities = [];
