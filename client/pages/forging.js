@@ -10,6 +10,7 @@ import { Button, Modal } from '@/components';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { ForgingArena } from '@/screens/forging/ForgingArena';
 
+
 const Forging = observer(() => {
   const { entitiesForForging, ownerEntities } = appStore;
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
