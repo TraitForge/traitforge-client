@@ -14,23 +14,6 @@ const HoneyPot = observer(() => {
     appStore.getOwnersEntities();
   }, []);
 
-  const modalContent = (
-    <div className={styles.entityDisplay}>
-      <h1>NUKE YOUR ENTITY</h1>
-      <ul>
-        {Array.isArray(ownerEntities) && ownerEntities.length > 0 ? (
-          ownerEntities.map((entity, index) => (
-            <EntityCard className={styles.entitycard} key={index}>
-              {entity.name} - {entity.description}
-            </EntityCard>
-          ))
-        ) : (
-          <li>You don't own an Entity!</li>
-        )}
-      </ul>
-    </div>
-  );
-
   return (
     <div className={styles.honeyPotContainer}>
       <h1>The HoneyPot</h1>
@@ -47,11 +30,6 @@ const HoneyPot = observer(() => {
         className={styles.nukeButton}
         onClick={() => setIsOpen(true)}
       />
-      {isOpen && (
-        <Modal background="/images/honeypot-background.jpg">
-          {modalContent}
-        </Modal>
-      )}
     </div>
   );
 });

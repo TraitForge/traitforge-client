@@ -8,7 +8,8 @@ import styles from '@/styles/forging.module.scss';
 import { Button, Modal } from '@/components';
 
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
-import { FongingArena } from '@/screens/forging/ForgingArena';
+import { ForgingArena } from '@/screens/forging/ForgingArena';
+
 
 const Forging = observer(() => {
   const { entitiesForForging, ownerEntities } = appStore;
@@ -35,7 +36,7 @@ const Forging = observer(() => {
     setProcessing(true);
     setProcessingText('Forging');
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const forgeContract = new ethers.Contract(
         contractsConfig.entityMergingAddress,
@@ -63,7 +64,7 @@ const Forging = observer(() => {
     setProcessing(true);
     setProcessingText('Forging');
     try {
-      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const forgeContract = new ethers.Contract(
         contractsConfig.entityMergingAddress,
@@ -86,7 +87,7 @@ const Forging = observer(() => {
       <div className={styles.forgeArenaContainer}>
         <h1 className="text-[64px]">Forging Arena</h1>
         <div className="py-20">
-          <FongingArena
+          <ForgingArena
             selectedFromPool={selectedFromPool}
             ownerEntities={ownerEntities}
             handleEntityListModal={handleEntityListModal}
