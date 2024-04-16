@@ -11,6 +11,7 @@ module.exports = {
   theme: {
     fontFamily: {
       'bebas-neue': ['Bebas Neue', ...defaultTheme.fontFamily.sans],
+      electrolize: ['Electrolize', ...defaultTheme.fontFamily.sans],
     },
     extend: {
       colors: {
@@ -18,6 +19,7 @@ module.exports = {
         'neutral-100': '#CECECE',
         'neon-orange': '#FD8D26',
         'dark-81': 'rgba(0, 0, 0, 0.81)',
+        'neon-green': '#0EEB81',
       },
       container: {
         center: true,

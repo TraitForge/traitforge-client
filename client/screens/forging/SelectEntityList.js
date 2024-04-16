@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import cls from 'classnames';
 
-import { EntityListHeader } from './EntityListHeader';
 import { EntityCard } from '@/components';
+import { FiltersHeader } from '@/components';
 
 export const SelectEntityList = ({
   entitiesForForging,
@@ -32,7 +31,11 @@ export const SelectEntityList = ({
         <h3 className="text-center pb-10 text-[40px] uppercase font-bebas-neue">
           Select entity
         </h3>
-        <EntityListHeader sortOption={sortOption} handleSort={handleSort} />
+        <FiltersHeader
+          sortOption={sortOption}
+          handleSort={handleSort}
+          color="orange"
+        />
       </div>
       <div className="grid grid-col-5">
         {sortedEntities?.map((entity, index) => (

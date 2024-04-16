@@ -9,3 +9,5 @@ export { default as TransactionsDisplay } from './common/TransactionsDisplay';
 export { Button } from './common/buttons/Button';
 export { EntityCard } from './common/EntityCard';
 export { default as Modal } from './common/Modal';
+
+export { FiltersHeader } from './common/FiltersHeader';

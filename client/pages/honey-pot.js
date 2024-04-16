@@ -7,8 +7,8 @@ import { useContextState } from '@/utils/context';
 
 const HoneyPot = observer(() => {
   const [isOpen, setIsOpen] = useState(false);
-  const { ownerEntities } = appStore;
   const { ethAmount, usdAmount } = useContextState();
+  const { ownerEntities } = appStore;
 
   useEffect(() => {
     appStore.getOwnersEntities();
