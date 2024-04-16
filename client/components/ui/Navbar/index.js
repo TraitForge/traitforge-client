@@ -17,11 +17,23 @@ const links = [
 const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
   const router = useRouter();
 
-  const commonClasses = `text-base flex items-center text-white py-6 lg:text-[32px] lg:text-[32px] relative after:absolute after:bottom-0 after:left-0 after:w-full hover:after:h-[2px] after:h-[0px]`;
-  const activeClasses = classNames(commonClasses, {
+  const commonClasses = `text-base flex items-center py-6 lg:text-[32px] lg:text-[32px] relative after:absolute after:bottom-0 after:left-0 after:w-full hover:after:h-[2px] after:h-[0px]`;
+  const navLinkClasses = classNames(commonClasses, {
     'after:bg-neon-orange hover:text-neon-orange': router.asPath === '/forging',
     'after:bg-neon-green hover:text-neon-green': router.asPath === '/trading',
+    'after:bg-neon-purple hover:text-neon-purple':
+      router.asPath === '/honey-pot',
+    'after:bg-neon-green-yellow hover:text-neon-green-yellow':
+      router.asPath === '/stats',
     'after:bg-primary hover:text-primary': router.asPath === '/',
+  });
+
+  const activeClass = classNames({
+    'text-neon-orange': router.asPath === '/forging',
+    'text-neon-green': router.asPath === '/trading',
+    'text-neon-purple': router.asPath === '/honey-pot',
+    'text-neon-green-yellow': router.asPath === '/stats',
+    'text-primary': router.asPath === '/',
   });
 
   return (
@@ -43,7 +55,10 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
         <ul className="flex gap-x-[20px] xl:gap-x-[64px] max-md:hidden">
           {links.map((link, index) => (
             <li key={index}>
-              <Link className={activeClasses} href={link.url}>
+              <Link
+                className={`${navLinkClasses} ${link.url === router.asPath && activeClass}`}
+                href={link.url}
+              >
                 {link.text}
               </Link>
             </li>

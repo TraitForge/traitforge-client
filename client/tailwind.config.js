@@ -20,12 +20,31 @@ module.exports = {
         'neon-orange': '#FD8D26',
         'dark-81': 'rgba(0, 0, 0, 0.81)',
         'neon-green': '#0EEB81',
+        'neon-purple': '#FC62FF',
+        'neon-green-yellow': '#AAFF3E',
       },
       container: {
         center: true,
         padding: {
           DEFAULT: '1.25rem',
         },
+      },
+      fontSize: {
+        ...defaultTheme.fontSize,
+        // 24px/400
+        large: [
+          '1.5rem',
+          {
+            fontWeight: '400',
+          },
+        ],
+        // 24px/400
+        'extra-large': [
+          '4rem',
+          {
+            fontWeight: '400',
+          },
+        ],
       },
       screens: {
         ...defaultTheme.screens,
