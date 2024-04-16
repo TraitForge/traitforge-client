@@ -7,13 +7,15 @@ export const ArenaItem = ({
   image,
   selectedFromPool,
   selectedFromWallet,
+  btnLabel,
 }) => {
   if (selectedFromPool || selectedFromWallet)
     return <EntityCard entity={selectedFromPool} borderType="orange" />;
 
   return (
-    <div
-      className="flex items-center justify-center cursor-pointer h-full"
+    <button
+      aria-label={btnLabel}
+      className="flex items-center justify-center cursor-pointer h-auto"
       onClick={handleEntityListModal}
     >
       <Image
@@ -23,6 +25,6 @@ export const ArenaItem = ({
         height={500}
         className="w-full h-full"
       />
-    </div>
+    </button>
   );
 };

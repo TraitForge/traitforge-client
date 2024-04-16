@@ -3,7 +3,6 @@ import styles from '@/styles/trading.module.scss';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { ethers } from 'ethers';
 import { EntityCard, Modal } from '@/components';
-import { useContextState } from '@/utils/context';
 import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
 import { contractsConfig } from '@/utils/contractsConfig';
@@ -15,17 +14,14 @@ const Marketplace = observer(() => {
   const [filter, setFilter] = useState('All');
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const { walletProvider } = useWeb3ModalProvider();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const {
-    openModal,
-    isOpen,
-  } = useContextState();
-  const { entitiesForSale, ownerEntities } = appStore;  
+  const { entitiesForSale, ownerEntities } = appStore;
 
   useEffect(() => {
     appStore.getEntitiesForSale();
     appStore.getOwnersEntities();
-  }, []); 
+  }, []);
 
   const buyEntity = async (tokenId, price) => {
     if (!walletProvider) {
@@ -202,7 +198,7 @@ const Marketplace = observer(() => {
               src="/images/sellButton.png"
               alt="sell place holder"
               className={styles.sellEntity}
-              onClick={() => openModal()}
+              onClick={() => setIsOpen(true)}
             />
             {isOpen && (
               <Modal background="/images/marketplace-background.jpg">
