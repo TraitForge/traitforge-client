@@ -1,0 +1,28 @@
+.cardContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius: 10px;
+  font-family: 'Electrolize', sans-serif;
+  font-style: normal;
+  position: relative;
+
+  .cardInfo {
+    position: absolute;
+    left: 0;
+    font-size: 24px;
+    right: 0;
+    color: white;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(-100%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-style: normal;
+    padding: 10px 0;
+  }
+}

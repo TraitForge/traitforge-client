@@ -50,7 +50,7 @@ export const WalletModal = () => {
             </svg>
             <div>
               <p className="text-neutral-100  text-base">ETH</p>
-              <span className="text-white text-[24px]">989889898</span>
+              <span className="text-white text-large">989889898</span>
             </div>
           </div>
           <div className="flex items-center gap-x-2.5">
@@ -59,7 +59,7 @@ export const WalletModal = () => {
             </span>
             <div>
               <p className="text-neutral-100  text-base">Wallet Address</p>
-              <span className="text-white text-[24px]">989889898</span>
+              <span className="text-white text-large">989889898</span>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@ export const WalletModal = () => {
             style={{ marginBottom: '40px' }}
           />
         </div>
-        <p className="text-sm md:text-[24px] text-white pb-8 md:mb-20">
+        <p className="text-sm md:text-large text-white pb-8 md:mb-20">
           You have no entities listed.
         </p>
       </div>

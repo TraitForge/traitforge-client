@@ -10,7 +10,6 @@ import { Button, Modal } from '@/components';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { ForgingArena } from '@/screens/forging/ForgingArena';
 
-
 const Forging = observer(() => {
   const { entitiesForForging, ownerEntities } = appStore;
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
@@ -85,7 +84,7 @@ const Forging = observer(() => {
   return (
     <div className={styles.forgingPage}>
       <div className={styles.forgeArenaContainer}>
-        <h1 className="text-[64px]">Forging Arena</h1>
+        <h1 className="text-extra-large">Forging Arena</h1>
         <div className="py-20">
           <ForgingArena
             selectedFromPool={selectedFromPool}

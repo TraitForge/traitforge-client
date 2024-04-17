@@ -7,7 +7,7 @@ export const FiltersHeader = ({ handleSort, sortOption, color }) => {
   });
 
   return (
-    <div className="flex items-center uppercase gap-x-6 pt-6 text-[24px]">
+    <div className="flex items-center uppercase gap-x-6 pt-6 text-large">
       <button
         className={`${sortOption === 'all' ? activeClasses : null} relative px-6 pb-3`}
         onClick={() => handleSort('all')}

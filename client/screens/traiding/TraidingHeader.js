@@ -44,7 +44,7 @@ export const TraidingHeader = ({ handleStep, step }) => {
             </svg>
           </button>
         )}
-        <h1 className="text-[64px]">
+        <h1 className="text-extra-large">
           {step === 'one' ? 'Marketplace' : 'Sell Your entity'}
         </h1>
         {step === 'one' && (

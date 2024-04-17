@@ -4,18 +4,12 @@ import classNames from 'classnames';
 
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
-import { calculateEntityAttributes } from '@/utils/utils';
-import styles from './styles.module.scss';
 
-export const EntityCard = ({
-  entropy,
+export const MarketplaceEntityCard = ({
   index,
   borderType = 'blue',
   wrapperClass,
 }) => {
-  const { role, forgePotential, performanceFactor, nukeFactor } =
-    calculateEntityAttributes(entropy);
-
   const calculateEntityPrice = index => {
     return ((index + 1) * 0.01).toFixed(2);
   };
@@ -29,9 +23,15 @@ export const EntityCard = ({
     case 'blue':
       activeBorder = blueBorder;
       break;
+    case 'green':
+      activeBorder = blueBorder;
+      break;
   }
 
-  const wrapperClasses = classNames('mx-5', styles.cardContainer, wrapperClass);
+  const wrapperClasses = classNames(
+    'card-container flex flex-col',
+    wrapperClass
+  );
 
   return (
     <div
@@ -41,26 +41,22 @@ export const EntityCard = ({
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain',
+        width: activeBorder.width,
       }}
     >
-      <div className="w-full h-full px-5 pt-5 3xl:px-10 3xl:pt-10">
+      <div className="w-full flex justify-center">
         <Image
           loading="lazy"
           src="/images/traitforgertransparent.png"
           alt="Entity"
-          className="z-[-1]"
+          className="card-image scale-75"
           width={200}
           height={300}
         />
       </div>
-      <div className="py-5 mb-5 h-full text-[18px]">
-        <div className={styles.cardInfo}>
-          <h4 className="">{calculateEntityPrice(index)} ETH</h4>
-        </div>
-        {/* <h4 className="card-name">{role}</h4> */}
-        <h4 className="">Forge Potential: {forgePotential}</h4>
-        <h4 className="">Nuke Factor: {nukeFactor} %</h4>
-        <h4 className="">Performance Factor: {performanceFactor}</h4>
+      <div className="py-5 mb-5 px-5 flex-1">
+        <h4 className="text-lg text-neon-green uppercase">Entity name #3468</h4>
+        <p className="text-[18px] text-neutral-100">Breed count: 3</p>
       </div>
     </div>
   );
