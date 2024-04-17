@@ -19,7 +19,6 @@ const Home = () => {
       const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const userAddress = await signer.getAddress();
-      console.log(userAddress);
       const mintContract = new ethers.Contract(
         contractsConfig.traitForgeNftAddress,
         contractsConfig.traitForgeNftAbi,
