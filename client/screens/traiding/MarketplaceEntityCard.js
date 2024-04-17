@@ -28,7 +28,10 @@ export const MarketplaceEntityCard = ({
       break;
   }
 
-  const wrapperClasses = classNames('card-container', wrapperClass);
+  const wrapperClasses = classNames(
+    'card-container flex flex-col',
+    wrapperClass
+  );
 
   return (
     <div
@@ -41,7 +44,7 @@ export const MarketplaceEntityCard = ({
         width: activeBorder.width,
       }}
     >
-      <div className="w-full h-full ">
+      <div className="w-full flex justify-center">
         <Image
           loading="lazy"
           src="/images/traitforgertransparent.png"
@@ -51,7 +54,7 @@ export const MarketplaceEntityCard = ({
           height={300}
         />
       </div>
-      <div className="py-5 mb-5 h-full px-5">
+      <div className="py-5 mb-5 px-5 flex-1">
         <h4 className="text-lg text-neon-green uppercase">Entity name #3468</h4>
         <p className="text-[18px] text-neutral-100">Breed count: 3</p>
       </div>

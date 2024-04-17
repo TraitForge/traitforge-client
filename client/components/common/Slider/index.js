@@ -53,9 +53,6 @@ const Slider = observer(() => {
     },
   };
 
-  // const handlePrev = ref?.slidePrev();
-  // const handleNext = ref?.slideNext();
-
   return (
     <div className="w-[90%] mx-auto relative">
       <div className="md:px-20 lg:px-24 xl:px-[100px] ">
