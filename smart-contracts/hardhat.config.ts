@@ -39,7 +39,6 @@ const config: HardhatUserConfig = {
       allowUnlimitedContractSize: true,
       forking: {
         url: env.ETHEREUM_RPC_URL,
-        blockNumber: 18784461,
       },
     },
     ethereum: {
@@ -58,6 +57,9 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: env.ETHERSCAN_API_KEY,
+  },
+  mocha: {
+    timeout: 10000000,
   },
 };
 

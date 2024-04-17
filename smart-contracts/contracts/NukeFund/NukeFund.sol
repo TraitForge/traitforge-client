@@ -35,12 +35,15 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     fund += remainingFund; // Update the fund balance
 
     if (!airdropContract.airdropStarted()) {
-      devAddress.transfer(devShare); // Transfer dev's share
+      (bool success, ) = devAddress.call{ value: devShare }('');
+      require(success, 'ETH send failed');
       emit DevShareDistributed(devShare);
     } else if (!airdropContract.daoFundAllowed()) {
-      payable(owner()).transfer(devShare);
+      (bool success, ) = payable(owner()).call{ value: devShare }('');
+      require(success, 'ETH send failed');
     } else {
-      daoAddress.transfer(devShare); // Transfer dev's share
+      (bool success, ) = daoAddress.call{ value: devShare }('');
+      require(success, 'ETH send failed');
       emit DevShareDistributed(devShare);
     }
 

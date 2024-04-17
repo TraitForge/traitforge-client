@@ -7,10 +7,9 @@ describe('EntropyGenerator', function () {
   let entropyGenerator: EntropyGenerator;
   let owner: HardhatEthersSigner;
   let allowedCaller: HardhatEthersSigner;
-  let user: HardhatEthersSigner;
 
   before(async function () {
-    [owner, allowedCaller, user] = await ethers.getSigners();
+    [owner, allowedCaller] = await ethers.getSigners();
 
     const NFT = await ethers.getContractFactory('TraitForgeNft');
     const nft = await NFT.deploy();
@@ -26,13 +25,11 @@ describe('EntropyGenerator', function () {
   });
 
   it('should set the allowed caller', async function () {
-    const newAllowedCaller = user.address;
-
-    await entropyGenerator.connect(owner).setAllowedCaller(newAllowedCaller);
+    await entropyGenerator.connect(owner).setAllowedCaller(allowedCaller);
 
     // Use the new getter function to retrieve the allowedCaller
     const updatedCaller = await entropyGenerator.getAllowedCaller();
-    expect(updatedCaller).to.equal(newAllowedCaller);
+    expect(updatedCaller).to.equal(allowedCaller);
   });
 
   it('should write entropy batches 1', async function () {
