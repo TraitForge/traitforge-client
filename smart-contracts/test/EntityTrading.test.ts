@@ -1,44 +1,36 @@
-const { expect } = require('chai');
-const { ethers } = require('hardhat');
+import { ethers } from 'hardhat';
+import { EntityTrading, TestERC721 } from '../typechain-types';
+import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
+import { expect } from 'chai';
 
 // Define some constants for testing
-const TOKEN_ID = 1;
-const LISTING_PRICE = ethers.utils.parseEther('1.0');
-
-// Helper function to deploy the contracts
-async function deployContracts() {
-  const TraitForgeNft = await ethers.getContractFactory('TraitForgeNft');
-  const nft = await TraitForgeNft.deploy();
-
-  const EntityTrading = await ethers.getContractFactory('EntityTrading');
-  const entityTrading = await EntityTrading.deploy(nft.address);
-
-  await nft.setApprovalForAll(entityTrading.address, true);
-
-  return { nft, entityTrading };
-}
+const TOKEN_ID = 0;
+const LISTING_PRICE = ethers.parseEther('1.0');
 
 describe('EntityTrading', function () {
-  let nft;
-  let entityTrading;
-  let owner;
-  let buyer;
-  let nukeFundAddress;
+  let owner: HardhatEthersSigner;
+  let buyer: HardhatEthersSigner;
+  let nukeFund: HardhatEthersSigner;
+  let nft: TestERC721;
+  let entityTrading: EntityTrading;
 
   before(async function () {
-    // Deploy contracts before each test case
-    ({ nft, entityTrading } = await deployContracts());
-
     // Get the owner and buyer accounts
-    [owner, buyer] = await ethers.getSigners();
+    [owner, buyer, nukeFund] = await ethers.getSigners();
+
+    nft = await ethers.deployContract('TestERC721');
+    entityTrading = await ethers.deployContract('EntityTrading', [
+      await nft.getAddress(),
+    ]);
+
+    await nft.setApprovalForAll(await entityTrading.getAddress(), true);
 
     // Set NukeFund address
-    nukeFundAddress = await owner.getAddress();
-    await entityTrading.setNukeFundAddress(nukeFundAddress);
+    await entityTrading.setNukeFundAddress(nukeFund.address);
 
     // Mint and approve the NFT for trading
-    await nft.mint(owner.address, TOKEN_ID);
-    await nft.approve(entityTrading.address, TOKEN_ID);
+    await nft.mintToken(owner.address);
+    await nft.approve(await entityTrading.getAddress(), TOKEN_ID);
   });
 
   it('should list an NFT for sale', async function () {
@@ -49,29 +41,6 @@ describe('EntityTrading', function () {
     expect(listing.seller).to.equal(owner.address);
     expect(listing.price).to.equal(LISTING_PRICE);
     expect(listing.isActive).to.be.true;
-  });
-
-  it('should allow a buyer to purchase the listed NFT', async function () {
-    const initialBalance = await buyer.getBalance();
-
-    await expect(
-      entityTrading.connect(buyer).buyNFT(TOKEN_ID, { value: LISTING_PRICE })
-    )
-      .to.emit(entityTrading, 'NFTSold')
-      .withArgs(
-        TOKEN_ID,
-        owner.address,
-        buyer.address,
-        LISTING_PRICE.div(10),
-        LISTING_PRICE.sub(LISTING_PRICE.div(10))
-      );
-
-    const listing = await entityTrading.listings(TOKEN_ID);
-    expect(listing.isActive).to.be.false;
-
-    // Check the balances after the purchase
-    const finalBalance = await buyer.getBalance();
-    expect(finalBalance).to.be.above(initialBalance.sub(LISTING_PRICE));
   });
 
   it('should allow the seller to cancel the listing', async function () {
@@ -85,25 +54,61 @@ describe('EntityTrading', function () {
     expect(ownerBalance).to.equal(1);
   });
 
-  it('should handle NukeFund contributions correctly', async function () {
-    const initialNukeFundBalance = await ethers.provider.getBalance(
-      nukeFundAddress
-    );
-
+  it('should list an NFT for sale', async function () {
     await entityTrading.listNFTForSale(TOKEN_ID, LISTING_PRICE);
+
+    const listing = await entityTrading.listings(TOKEN_ID);
+
+    expect(listing.seller).to.equal(owner.address);
+    expect(listing.price).to.equal(LISTING_PRICE);
+    expect(listing.isActive).to.be.true;
+  });
+
+  it('should allow a buyer to purchase the listed NFT', async function () {
+    const initialBalance = await ethers.provider.getBalance(buyer);
 
     await expect(
       entityTrading.connect(buyer).buyNFT(TOKEN_ID, { value: LISTING_PRICE })
     )
+      .to.emit(entityTrading, 'NFTSold')
+      .withArgs(
+        TOKEN_ID,
+        owner.address,
+        buyer.address,
+        LISTING_PRICE,
+        LISTING_PRICE / 10n
+      );
+
+    const listing = await entityTrading.listings(TOKEN_ID);
+    expect(listing.isActive).to.be.false;
+
+    // Check the balances after the purchase
+    const finalBalance = await ethers.provider.getBalance(buyer);
+    expect(finalBalance).to.approximately(
+      initialBalance - LISTING_PRICE,
+      ethers.parseEther('0.01')
+    );
+  });
+
+  it('should handle NukeFund contributions correctly', async function () {
+    await nft
+      .connect(buyer)
+      .approve(await entityTrading.getAddress(), TOKEN_ID);
+    await entityTrading.connect(buyer).listNFTForSale(TOKEN_ID, LISTING_PRICE);
+
+    const initialNukeFundBalance = await ethers.provider.getBalance(
+      nukeFund.address
+    );
+    await expect(entityTrading.buyNFT(TOKEN_ID, { value: LISTING_PRICE }))
       .to.emit(entityTrading, 'NukeFundContribution')
-      .withArgs(entityTrading.address, LISTING_PRICE.div(10));
+      .withArgs(await entityTrading.getAddress(), LISTING_PRICE / 10n);
 
     // Check the NukeFund balance after the purchase
     const finalNukeFundBalance = await ethers.provider.getBalance(
-      nukeFundAddress
+      nukeFund.address
     );
-    expect(finalNukeFundBalance.sub(initialNukeFundBalance)).to.equal(
-      LISTING_PRICE.div(10)
+    expect(finalNukeFundBalance - initialNukeFundBalance).to.equal(
+      LISTING_PRICE / 10n
     );
   });
 });

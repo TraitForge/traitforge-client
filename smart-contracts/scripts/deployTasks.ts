@@ -12,7 +12,7 @@ import {
   TraitForgeNft,
 } from '../typechain-types';
 import { ethers } from 'ethers';
-import { UNISWAP_ROUTER } from '../consts';
+import { DEPLOYED_CONTRACTS, UNISWAP_ROUTER } from '../consts';
 
 task('deploy-all', 'Deploy all the contracts').setAction(async (_, hre) => {
   const token: Trait = await hre.run('deploy-token');
@@ -191,8 +191,8 @@ task('deploy-nuke-fund', 'Deploy NukeFund')
       console.log('Deploying NukeFund...');
       const nukeFund = await hre.ethers.deployContract('NukeFund', [
         taskArguments.nft,
-        taskArguments.devFund,
         taskArguments.airdrop,
+        taskArguments.devFund,
         taskArguments.daoFund,
       ]);
       await nukeFund.waitForDeployment();
@@ -203,3 +203,30 @@ task('deploy-nuke-fund', 'Deploy NukeFund')
     }
     return null;
   });
+
+task('issue-fix', 'Issue fix').setAction(async (_, hre) => {
+  const nukeFund: NukeFund = await hre.run('deploy-nuke-fund', {
+    nft: DEPLOYED_CONTRACTS.sepolia.TraitForgeNft,
+    devFund: DEPLOYED_CONTRACTS.sepolia.DevFund,
+    airdrop: DEPLOYED_CONTRACTS.sepolia.Airdrop,
+    daoFund: DEPLOYED_CONTRACTS.sepolia.DAOFund,
+  });
+
+  const nft = await hre.ethers.getContractAt(
+    'TraitForgeNft',
+    DEPLOYED_CONTRACTS.sepolia.TraitForgeNft
+  );
+  await nft.setNukeFundContract(await nukeFund.getAddress());
+
+  const entityTrading: EntityTrading = await hre.ethers.getContractAt(
+    'EntityTrading',
+    DEPLOYED_CONTRACTS.sepolia.EntityTrading
+  );
+  await entityTrading.setNukeFundAddress(await nukeFund.getAddress());
+
+  const entityMerging: EntityMerging = await hre.ethers.getContractAt(
+    'EntityMerging',
+    DEPLOYED_CONTRACTS.sepolia.EntityMerging
+  );
+  await entityMerging.setNukeFundAddress(await nukeFund.getAddress());
+});
