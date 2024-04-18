@@ -3,19 +3,19 @@ import { Button } from '@/components';
 export const TraidingHeader = ({ handleStep, step }) => {
   return (
     <>
-      <div className="relative">
+      <div className="relative max-md:flex max-md:flex-col max-md:items-center ">
         {step !== 'one' && (
           <button
-            className="absolute left-0  top-1/2 -translate-y-1/2"
+            className="absolute left-0  top-1/2 -translate-y-1/2 max-md:w-[40px] max-md:h-auto"
             onClick={() => handleStep(step === 'three' ? 'two' : 'one')}
           >
-            {' '}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="59"
               height="78"
               fill="none"
               viewBox="0 0 84 65"
+              className="w-full h-full"
             >
               <path
                 fill="#0EEB81"
@@ -44,11 +44,11 @@ export const TraidingHeader = ({ handleStep, step }) => {
             </svg>
           </button>
         )}
-        <h1 className="text-extra-large">
+        <h1 className="text-[36px] md:text-extra-large">
           {step === 'one' ? 'Marketplace' : 'Sell Your entity'}
         </h1>
         {step === 'one' && (
-          <div className="absolute right-0  top-1/2 -translate-y-1/2 w-[265px]">
+          <div className="md:absolute right-0 top-1/2 md:translate-y-[-50%] w-[265px]">
             <Button
               borderColor="#0EEB81"
               bg="rba(8, 30, 14,0.8)"

@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
+import { ethers } from 'ethers';
+import { observer } from 'mobx-react';
 
 import styles from '@/styles/trading.module.scss';
-import { ethers } from 'ethers';
 import { EntityCard } from '@/components';
 import { appStore } from '@/utils/appStore';
-import { observer } from 'mobx-react';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { FiltersHeader } from '@/components';
-import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
+// import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
   const [selectedForSale, setSelectedForSale] = useState(null);
@@ -84,7 +84,8 @@ const Marketplace = observer(() => {
 
   const filteredAndSortedListings = useMemo(() => {
     let filtered = entitiesForSale.filter(listing => {
-      if (generationFilter && listing.generation !== generationFilter) return false;
+      if (generationFilter && listing.generation !== generationFilter)
+        return false;
       if (sortOption === 'all') return true;
       if (sortOption === 'forger') return listing.isForger;
       if (sortOption === 'merger') return !listing.isForger;
@@ -99,7 +100,6 @@ const Marketplace = observer(() => {
     return filtered;
   }, [sortOption, generationFilter, sortingFilter, entitiesForSale]);
 
-
   const handleStep = step => setStep(step);
 
   let content;
@@ -110,24 +110,28 @@ const Marketplace = observer(() => {
       break;
     case 'two':
       content = (
-        <div className="grid grid-cols-5 gap-x-[40px]">content goes here</div>
+        <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
+          content goes here
+        </div>
       );
       break;
     default:
       content = (
         <>
           <div className="flex justify-between items-center border-b mb-12">
-          <FiltersHeader
-          sortOption={sortOption}
-          handleSort={handleSort}
-          color="green"
-          handleFilterChange={(selectedOption, type) => handleFilterChange(selectedOption, type)}
-          generationFilter={generationFilter}
-          sortingFilter={sortingFilter}
-        />
+            <FiltersHeader
+              sortOption={sortOption}
+              handleSort={handleSort}
+              color="green"
+              handleFilterChange={(selectedOption, type) =>
+                handleFilterChange(selectedOption, type)
+              }
+              generationFilter={generationFilter}
+              sortingFilter={sortingFilter}
+            />
           </div>
           <div className="overflow-y-auto flex-1">
-            <div className="grid grid-cols-5 gap-x-[15px] gap-y-">
+            <div className="grid grid-col-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
               {filteredAndSortedListings.map(listing => (
                 <EntityCard
                   key={listing.tokenId}
@@ -143,7 +147,7 @@ const Marketplace = observer(() => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="container pt-[134px] flex flex-col h-full">
+      <div className="container pt-16 md:pt-[134px] flex flex-col h-full">
         <TraidingHeader
           sortOption={sortOption}
           handleSort={handleSort}

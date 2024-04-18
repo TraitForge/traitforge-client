@@ -29,12 +29,6 @@ body {
   justify-content: center;
 }
 
-.mint-text {
-  text-align: center;
-  font-size: 4vw;
-  padding-bottom: 10px;
-}
-
 .page-container {
   height: 100vh;
   background: url('/images/stats-bg.png') center / cover no-repeat;
@@ -45,19 +39,16 @@ body {
     align-items: flex-start;
     border-bottom: 1px solid rgba(255, 255, 255, 0.427);
     position: relative;
-    margin-bottom: 26px;
 
     button {
       color: #cecece;
       text-decoration: none;
       text-align: center;
-      padding: 0rem 1.5rem;
       transition: color 0.3s ease;
       background: none;
       border: none;
       cursor: pointer;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 32px;
 
       &.active {
         color: #aaff3e;

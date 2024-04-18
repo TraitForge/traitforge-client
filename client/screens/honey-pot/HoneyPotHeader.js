@@ -3,7 +3,7 @@ export const HoneyPotHeader = ({ step, handleStep }) => {
     <div className="relative container">
       {step === 'two' && (
         <button
-          className="absolute left-0  top-1/2 -translate-y-1/2"
+          className="absolute left-0  top-1/2 -translate-y-1/2 max-md:w-10 max-md:h-auto"
           onClick={handleStep}
         >
           <svg
@@ -12,6 +12,7 @@ export const HoneyPotHeader = ({ step, handleStep }) => {
             height="78"
             fill="none"
             viewBox="0 0 84 65"
+            className="w-full h-full"
           >
             <path
               fill="#FC62FF"
@@ -40,7 +41,9 @@ export const HoneyPotHeader = ({ step, handleStep }) => {
           </svg>
         </button>
       )}
-      <h1>{step === 'one' ? 'The HoneyPot' : 'nuke entity'}</h1>
+      <h1 className="text-[36px] md:text-extra-large">
+        {step === 'one' ? 'The HoneyPot' : 'nuke entity'}
+      </h1>
     </div>
   );
 };

@@ -21,14 +21,16 @@ export const StatisticsList = ({ currentStat, stats }) => {
       {currentStat === 'transactionsDisplay' ? (
         <TransactionsDisplay />
       ) : (
-        <div className="stats-container2 overflow-y-scroll flex-1">
+        <div className="stats-container2 overflow-y-scroll flex-1 max-md:bg-dark-81 max-md:px-2">
           <ul className="flex flex-col gap-6">
             {stats[currentStat].length > 0 ? (
               stats[currentStat].map((item, index) => (
-                <li className="listli text-large flex" key={index}>
-                  <p className="basis-2/12">{formatRanking(index + 1)}</p>
+                <li className="listli md:text-large flex text-base" key={index}>
+                  <p className="basis-1/12 md:basis-2/12">
+                    {formatRanking(index + 1)}
+                  </p>
                   <p className="basis-7/12 text-left">{item.address}</p>
-                  <p className="basis-3/12">{item.value}</p>
+                  <p className="basis-4/12 md:basis-3/12">{item.value}</p>
                 </li>
               ))
             ) : (
