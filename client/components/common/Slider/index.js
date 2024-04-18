@@ -17,7 +17,7 @@ const Slider = observer(() => {
   if (isLoading) return <Spinner />;
 
   const sliderOption = {
-    loop: true,
+    loop: false,
     autoplay: {
       delay: 1000,
     },
@@ -27,28 +27,28 @@ const Slider = observer(() => {
       320: {
         slidesPerView: 1.3,
         spaceBetween: 0,
-        centeredSlides: true,
+        centeredSlides: false,
       },
       // when window width is >= 640px
       769: {
         slidesPerView: 2,
         spaceBetween: 0,
-        centeredSlides: true,
+        centeredSlides: false,
       },
       1024: {
         slidesPerView: 3,
         spaceBetween: 0,
-        centeredSlides: true,
+        centeredSlides: false,
       },
       1224: {
         slidesPerView: 3,
         spaceBetween: 0,
-        centeredSlides: true,
+        centeredSlides: false,
       },
       1440: {
         slidesPerView: 5,
         spaceBetween: 0,
-        centeredSlides: true,
+        centeredSlides: false,
       },
     },
   };

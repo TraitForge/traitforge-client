@@ -15,12 +15,23 @@ import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard'
 const Marketplace = observer(() => {
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [sortOption, setSortOption] = useState('all');
+  const [generationFilter, setGenerationFilter] = useState('');
+  const [sortingFilter, setSortingFilter] = useState('');
+
   const { walletProvider } = useWeb3ModalProvider();
   const [step, setStep] = useState('one');
 
   const { ownerEntities, entitiesForSale } = appStore;
 
   const handleSort = type => setSortOption(type);
+
+  const handleFilterChange = (selectedOption, type) => {
+    if (type === 'generation') {
+      setGenerationFilter(selectedOption.value);
+    } else if (type === 'sorting') {
+      setSortingFilter(selectedOption.value);
+    }
+  };
 
   useEffect(() => {
     appStore.getEntitiesForSale();
@@ -73,13 +84,21 @@ const Marketplace = observer(() => {
 
   const filteredAndSortedListings = useMemo(() => {
     let filtered = entitiesForSale.filter(listing => {
+      if (generationFilter && listing.generation !== generationFilter) return false;
       if (sortOption === 'all') return true;
       if (sortOption === 'forger') return listing.isForger;
       if (sortOption === 'merger') return !listing.isForger;
-      return false;
+      return true;
     });
+    if (sortingFilter === 'price_low_to_high') {
+      filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (sortingFilter === 'price_high_to_low') {
+      filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    }
+
     return filtered;
-  }, [sortOption]);
+  }, [sortOption, generationFilter, sortingFilter, entitiesForSale]);
+
 
   const handleStep = step => setStep(step);
 
@@ -98,11 +117,14 @@ const Marketplace = observer(() => {
       content = (
         <>
           <div className="flex justify-between items-center border-b mb-12">
-            <FiltersHeader
-              handleSort={handleSort}
-              sortOption={sortOption}
-              color="green"
-            />
+          <FiltersHeader
+          sortOption={sortOption}
+          handleSort={handleSort}
+          color="green"
+          handleFilterChange={(selectedOption, type) => handleFilterChange(selectedOption, type)}
+          generationFilter={generationFilter}
+          sortingFilter={sortingFilter}
+        />
           </div>
           <div className="overflow-y-auto flex-1">
             <div className="grid grid-cols-5 gap-x-[15px] gap-y-">

@@ -1,29 +1,37 @@
 import { useState } from 'react';
+import { EntityCard, FiltersHeader } from '@/components';
 
-import { EntityCard } from '@/components';
-import { FiltersHeader } from '@/components';
-
-export const SelectEntityList = ({
-  entitiesForForging,
-  handleSelectedFromPool,
-}) => {
+export const SelectEntityList = ({ entitiesForForging, handleSelectedFromPool }) => {
   const [sortOption, setSortOption] = useState('all');
-
-  const getSortedEntities = () => {
-    if (sortOption === 'all') return entitiesForForging;
-    return entitiesForForging.sort((a, b) => {
-      if (sortOption === 'priceLowHigh') {
-        return parseFloat(a.price) - parseFloat(b.price);
-      } else if (sortOption === 'priceHighLow') {
-        return parseFloat(b.price) - parseFloat(a.price);
-      }
-      return 0;
-    });
-  };
-
-  const sortedEntities = getSortedEntities();
+  const [generationFilter, setGenerationFilter] = useState('');
+  const [sortingFilter, setSortingFilter] = useState('');
 
   const handleSort = type => setSortOption(type);
+
+  const handleFilterChange = (selectedOption, type) => {
+    if (type === 'generation') {
+      setGenerationFilter(selectedOption.value);
+    } else if (type === 'sorting') {
+      setSortingFilter(selectedOption.value);
+    }
+  };  
+
+  const getFilteredEntities = () => {
+    const filteredEntities = generationFilter
+      ? [...entitiesForForging].filter(entity => entity.generation.toString() === generationFilter)
+      : [...entitiesForForging]; 
+  
+    return filteredEntities.sort((a, b) => {
+      if (sortingFilter === 'price_high_to_low') {
+        return parseFloat(b.price) - parseFloat(a.price);
+      } else if (sortingFilter === 'price_low_to_high') {
+        return parseFloat(a.price) - parseFloat(b.price);
+      }
+    });
+  };
+  
+
+  const filteredEntities = getFilteredEntities();
 
   return (
     <div className="bg-dark-81 w-[80vw] h-[85vh] 2xl:w-[70vw] rounded-[30px] py-10 px-5 flex flex-col">
@@ -35,11 +43,14 @@ export const SelectEntityList = ({
           sortOption={sortOption}
           handleSort={handleSort}
           color="orange"
+          handleFilterChange={(selectedOption, type) => handleFilterChange(selectedOption, type)}
+          generationFilter={generationFilter}
+          sortingFilter={sortingFilter}
         />
       </div>
       <div className="flex-1 overflow-y-scroll">
         <div className="grid grid-cols-5 gap-x-[15px] gap-y-10">
-          {sortedEntities?.map((entity, index) => (
+          {filteredEntities.map((entity, index) => (
             <EntityCard
               key={entity.id}
               entity={entity}
