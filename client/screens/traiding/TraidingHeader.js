@@ -3,7 +3,7 @@ import { Button } from '@/components';
 export const TraidingHeader = ({ handleStep, step }) => {
   return (
     <>
-      <div className="relative max-md:flex max-md:flex-col max-md:items-center">
+      <div className="relative max-md:flex max-md:flex-col max-md:items-center ">
         {step !== 'one' && (
           <button
             className="absolute left-0  top-1/2 -translate-y-1/2 max-md:w-[40px] max-md:h-auto"
@@ -48,7 +48,7 @@ export const TraidingHeader = ({ handleStep, step }) => {
           {step === 'one' ? 'Marketplace' : 'Sell Your entity'}
         </h1>
         {step === 'one' && (
-          <div className="md:absolute md:right-0  md:top-1/2 -md:translate-y-1/2 w-[265px]">
+          <div className="md:absolute right-0 top-1/2 md:translate-y-[-50%] w-[265px]">
             <Button
               borderColor="#0EEB81"
               bg="rba(8, 30, 14,0.8)"
