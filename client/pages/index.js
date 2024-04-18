@@ -77,23 +77,27 @@ const Home = () => {
         backgroundAttachment: 'fixed',
       }}
     >
-      <span className="mint-text">Mint your traitforge entity</span>
+      <span className="text-[36px] mb-2.5 text-center md:text-extra-large">
+        Mint your traitforge entity
+      </span>
       <div className="w-full pb-10 flex justify-center">
         <Slider />
       </div>
-      <Button
-        onClick={mintEntityHandler}
-        bg="#023340"
-        borderColor="#0ADFDB"
-        text={`Mint 1 For ${entityPrice} ETH`}
-        style={{ marginBottom: '20px' }}
-      />
-      <Button
-        onClick={mintBatchEntityHandler}
-        bg="#023340"
-        borderColor="#0ADFDB"
-        text={`Mint A Batch`}
-      />
+      <div className="max-md:px-5 flex flex-col">
+        <Button
+          onClick={mintEntityHandler}
+          bg="#023340"
+          borderColor="#0ADFDB"
+          text={`Mint 1 For ${entityPrice} ETH`}
+          style={{ marginBottom: '20px' }}
+        />
+        <Button
+          onClick={mintBatchEntityHandler}
+          bg="#023340"
+          borderColor="#0ADFDB"
+          text={`Mint A Batch`}
+        />
+      </div>
     </div>
   );
 };

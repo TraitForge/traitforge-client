@@ -4,7 +4,7 @@ import { EntityCard } from '@/components';
 
 export const ArenaCenter = ({ areEntitiesForged }) => {
   return (
-    <div className="flex items-center justify-center h-full  relative">
+    <div className="hidden md:flex items-center justify-center h-full  relative">
       <Image
         src="/images/claimentity.png"
         alt="claim box"

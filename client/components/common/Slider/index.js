@@ -25,7 +25,12 @@ const Slider = observer(() => {
     breakpoints: {
       // when window width is >= 320px
       320: {
-        slidesPerView: 1.3,
+        slidesPerView: 1.8,
+        spaceBetween: 0,
+        centeredSlides: true,
+      },
+      520: {
+        slidesPerView: 2.2,
         spaceBetween: 0,
         centeredSlides: true,
       },
@@ -54,7 +59,7 @@ const Slider = observer(() => {
   };
 
   return (
-    <div className="w-[90%] mx-auto relative">
+    <div className="w-full md:w-[90%] md:mx-auto relative">
       <div className="md:px-20 lg:px-24 xl:px-[100px] ">
         {upcomingMints.length > 0 && (
           <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>

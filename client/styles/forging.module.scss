@@ -10,27 +10,13 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
   background: url('/images/forge-background.jpg') center / cover no-repeat;
   background-attachment: fixed;
   min-height: 100vh;
-  padding-bottom: 20px;
 }
 
 .forgeArenaContainer {
   margin-top: 74px;
 
-  .forgecardsrow {
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
+  @media (max-width:768px) {
+    margin-top: 25px;
+    padding-bottom: 30px;
   }
-}
-
-.processingModal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: $background-color-modal;
 }

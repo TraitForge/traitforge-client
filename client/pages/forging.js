@@ -84,21 +84,22 @@ const Forging = observer(() => {
   return (
     <div className={styles.forgingPage}>
       <div className={styles.forgeArenaContainer}>
-        <h1 className="text-extra-large">Forging Arena</h1>
-        <div className="py-20">
+        <h1 className="text-[36px] md:text-extra-large">Forging Arena</h1>
+        <div className="py-7 md:py-10 3xl:py-20">
           <ForgingArena
             selectedFromPool={selectedFromPool}
             ownerEntities={ownerEntities}
             handleEntityListModal={handleEntityListModal}
           />
         </div>
-        <Button
-          text="forge entity"
-          bg="rgba(31, 15, 0,0.6)"
-          borderColor="#FD8D26"
-          disabled={processing}
-          onClick={forgeEntity}
-        />
+        <div className="max-md:px-5">
+          <Button
+            text="forge entity"
+            bg="rgba(31, 15, 0,0.6)"
+            borderColor="#FD8D26"
+            disabled={processing}
+          />
+        </div>
       </div>
       {isEntityListModalOpen && (
         <Modal
