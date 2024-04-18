@@ -22,8 +22,8 @@ const HoneyPot = observer(() => {
         {step === 'one' ? (
           <HoneyPotBody handleStep={() => setStep('two')} />
         ) : (
-          <div className="overflow-y-scroll flex-1">
-            <div className="grid grid-cols-5 px-20 gap-x-[15px] gap-y-10">
+          <div className="overflow-y-scroll flex-1 pt-8">
+            <div className="grid grid-cols-3 lg:grid-cols-5 lg:px-20 gap-x-[15px] gap-y-5 md:gap-y-10">
               <MarketplaceEntityCard />
               <MarketplaceEntityCard />
               <MarketplaceEntityCard />

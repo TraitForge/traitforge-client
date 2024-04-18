@@ -23,13 +23,6 @@
   height: 20vh;
 }
 
-
-
-
-
-
-
-
 .swiper {
   padding: 0 100px;
 }
@@ -58,7 +51,7 @@
 }
 
 .custom-slider-arrow-left {
-  left: 0px;
+  left: -30px;
   font-size: 20px;
   color: #00fff7;
   padding-inline: 20px;
@@ -66,7 +59,7 @@
 }
 
 .custom-slider-arrow-right {
-  right: 0px;
+  right: -30px;
   font-size: 20px;
   color: #00fff7;
   padding-inline: 20px;

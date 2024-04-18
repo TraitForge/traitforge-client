@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import classNames from 'classnames';
 
 import { EntityCard } from '@/components';
 
@@ -8,14 +9,20 @@ export const ArenaItem = ({
   selectedFromPool,
   selectedFromWallet,
   btnLabel,
+  className,
 }) => {
   if (selectedFromPool || selectedFromWallet)
     return <EntityCard entity={selectedFromPool} borderType="orange" />;
 
+  const buttonWrapper = classNames(
+    'items-center justify-center cursor-pointer h-auto',
+    className
+  );
+
   return (
     <button
       aria-label={btnLabel}
-      className="flex items-center justify-center cursor-pointer h-auto"
+      className={buttonWrapper}
       onClick={handleEntityListModal}
     >
       <Image

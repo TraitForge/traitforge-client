@@ -41,7 +41,6 @@ export const MarketplaceEntityCard = ({
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain',
-        width: activeBorder.width,
       }}
     >
       <div className="w-full flex justify-center">
@@ -54,9 +53,13 @@ export const MarketplaceEntityCard = ({
           height={300}
         />
       </div>
-      <div className="py-5 mb-5 px-5 flex-1">
-        <h4 className="text-lg text-neon-green uppercase">Entity name #3468</h4>
-        <p className="text-[18px] text-neutral-100">Breed count: 3</p>
+      <div className="md:py-5 mb-5 px-5 flex-1">
+        <h4 className="text-xs md:text-lg text-neon-green uppercase">
+          Entity name #3468
+        </h4>
+        <p className="text-xs md:text-[18px] text-neutral-100">
+          Breed count: 3
+        </p>
       </div>
     </div>
   );
