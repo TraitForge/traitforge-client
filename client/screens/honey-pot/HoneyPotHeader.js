@@ -40,7 +40,7 @@ export const HoneyPotHeader = ({ step, handleStep }) => {
           </svg>
         </button>
       )}
-      <h1>{step === 'one' ? 'The HoneyPotp' : 'nuke entity'}</h1>
+      <h1>{step === 'one' ? 'The HoneyPot' : 'nuke entity'}</h1>
     </div>
   );
 };
