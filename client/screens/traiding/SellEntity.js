@@ -5,7 +5,7 @@ import styles from '@/styles/trading.module.scss';
 export const SellEntity = ({ selectedForSale }) => {
   return (
     <div className="bg-dark-81 w-1/2 mx-auto pt-10 pb-[50px] px-[100px] flex flex-col rounded-[20px] items-center">
-      <h3 className="text-[24px] font-electrolize mb-8">
+      <h3 className="text-large font-electrolize mb-8">
         Set a price for your entity:
       </h3>
       <input

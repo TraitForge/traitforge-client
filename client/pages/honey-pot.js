@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
+
 import styles from '@/styles/honeypot.module.scss';
-import { Modal, EntityCard } from '@/components';
 import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
-import { useContextState } from '@/utils/context';
+import { HoneyPotHeader } from '@/screens/honey-pot/HoneyPotHeader';
+import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
+import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 
 const HoneyPot = observer(() => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { ethAmount, usdAmount } = useContextState();
   const { ownerEntities } = appStore;
+  const [step, setStep] = useState('one');
 
   useEffect(() => {
     appStore.getOwnersEntities();
@@ -16,20 +17,30 @@ const HoneyPot = observer(() => {
 
   return (
     <div className={styles.honeyPotContainer}>
-      <h1>The HoneyPot</h1>
-
-      <div className={styles.frameContainer}>
-        <div className={styles.ethAmount}>
-          <h1>{ethAmount} ETH</h1>
-          <p>≈ ${usdAmount} USD</p>
-        </div>
+      <div className="container  flex flex-col h-full">
+        <HoneyPotHeader step={step} handleStep={() => setStep('one')} />
+        {step === 'one' ? (
+          <HoneyPotBody handleStep={() => setStep('two')} />
+        ) : (
+          <div className="overflow-y-scroll flex-1">
+            <div className="grid grid-cols-5 px-20 gap-x-[15px] gap-y-10">
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+              <MarketplaceEntityCard />
+            </div>
+          </div>
+        )}
       </div>
-
-      <img
-        src="/images/nukebutton.png"
-        className={styles.nukeButton}
-        onClick={() => setIsOpen(true)}
-      />
     </div>
   );
 });

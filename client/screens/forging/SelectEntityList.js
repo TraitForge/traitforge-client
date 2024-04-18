@@ -21,8 +21,8 @@ export const SelectEntityList = ({ entitiesForForging, handleSelectedFromPool })
   const filteredEntities = getFilteredEntities();
 
   return (
-    <div className="bg-dark-81 w-[80vw] h-[85vh] 2xl:w-[70vw] rounded-[30px] py-10 px-5">
-      <div className="border-b border-white">
+    <div className="bg-dark-81 w-[80vw] h-[85vh] 2xl:w-[70vw] rounded-[30px] py-10 px-5 flex flex-col">
+      <div className="border-b border-white mb-10">
         <h3 className="text-center pb-10 text-[40px] uppercase font-bebas-neue">
           Select entity
         </h3>
@@ -34,15 +34,17 @@ export const SelectEntityList = ({ entitiesForForging, handleSelectedFromPool })
           generationFilter={generationFilter}
         />
       </div>
-      <div className="grid grid-cols-5 gap-4">
-        {filteredEntities.map((entity, index) => (
-          <EntityCard
-            key={entity.id}
-            entity={entity}
-            index={index}
-            onClick={() => handleSelectedFromPool(entity)}
-          />
-        ))}
+      <div className="flex-1 overflow-y-scroll">
+        <div className="grid grid-cols-5 gap-x-[15px] gap-y-10">
+          {sortedEntities?.map((entity, index) => (
+            <EntityCard
+              key={entity.id}
+              entity={entity}
+              index={index}
+              onClick={() => handleSelectedFromPool(entity)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

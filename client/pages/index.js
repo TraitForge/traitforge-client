@@ -16,10 +16,9 @@ const Home = () => {
     }
     setIsLoading(true);
     try {
-      const ethersProvider =new ethers.BrowserProvider(walletProvider);
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const userAddress = await signer.getAddress();
-      console.log(userAddress)
       const mintContract = new ethers.Contract(
         contractsConfig.traitForgeNftAddress,
         contractsConfig.traitForgeNftAbi,
@@ -70,12 +69,12 @@ const Home = () => {
 
   return (
     <div
-      className="mint-container min-h-[100vh]"
+      className="mint-container h-[100vh]"
       style={{
         backgroundImage: "url('/images/home.png')",
         backgroundPosition: 'center',
         backgroundSize: 'cover',
-        backgroundAttachment: 'fixed'
+        backgroundAttachment: 'fixed',
       }}
     >
       <span className="mint-text">Mint your traitforge entity</span>
