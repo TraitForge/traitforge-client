@@ -3,13 +3,14 @@ import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 
 import styles from '@/styles/trading.module.scss';
 import { ethers } from 'ethers';
-import { EntityCard, Modal } from '@/components';
+import { EntityCard } from '@/components';
 import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { FiltersHeader } from '@/components';
+import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
   const [selectedForSale, setSelectedForSale] = useState(null);
@@ -96,21 +97,23 @@ const Marketplace = observer(() => {
     default:
       content = (
         <>
-          <div className="flex justify-between items-center border-b">
+          <div className="flex justify-between items-center border-b mb-12">
             <FiltersHeader
               handleSort={handleSort}
               sortOption={sortOption}
               color="green"
             />
           </div>
-          <div className="grid grid-cols-5 gap-x-[40px]">
-            {filteredAndSortedListings.map(listing => (
-              <EntityCard
-                key={listing.tokenId}
-                entity={listing}
-                onSelect={() => setSelectedListing(listing)}
-              />
-            ))}
+          <div className="overflow-y-auto flex-1">
+            <div className="grid grid-cols-5 gap-x-[15px] gap-y-">
+              {filteredAndSortedListings.map(listing => (
+                <EntityCard
+                  key={listing.tokenId}
+                  entity={listing}
+                  onSelect={() => setSelectedListing(listing)}
+                />
+              ))}
+            </div>
           </div>
         </>
       );
@@ -118,7 +121,7 @@ const Marketplace = observer(() => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="container pt-[134px]">
+      <div className="container pt-[134px] flex flex-col h-full">
         <TraidingHeader
           sortOption={sortOption}
           handleSort={handleSort}

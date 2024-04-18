@@ -1,64 +1,33 @@
 .honeyPotContainer {
   color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   height: 100vh;
-  width: 100vw;
   font-family: 'Bebas Neue', sans-serif;
   background: url('/images/honeypot-background.jpg') center / cover no-repeat;
-  background-attachment: fixed;  
-}
+  background-attachment: fixed;
+  padding-top: 104px;
+  padding-bottom: 24px;
 
-.honeyPotContainer h1 {
-  z-index: 1;
-  font-size: 1.5em;
-}
-
-.frameContainer {
-  background-image: url('/images/honeypotcontainer.png');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: 420px;
-  height: 420px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px auto;
-}
-
-.ethAmount {
-  width: 20%;
-  font-size: 1.2em;
-  background-color: rgba(37, 0, 69, 0.19);
-  border-radius: 4px;
-  padding: 10px;
-}
-
-.nukeButton {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  margin-bottom: 100px;
-  margin-top: 10px;
-  width: 30%;
-
-  &:hover {
-    transform: scale(1.01);
+  h1 {
+    z-index: 1;
+    font-size: 64px;
   }
-}
+  .frameContainer {
+    background-image: url('/images/honeypotcontainer.png');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 384px;
+    min-height: 304px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 20px auto;
 
-.entityDisplay {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 50px;
-}
-
-.entityDisplay h1 {
-  font-size: 1.5em;
-  margin-bottom: 40px;
+    @media (max-width: 756px) {
+      max-width: 384px;
+      width: 100%;
+      max-height: 384px;
+    }
+  }
 }

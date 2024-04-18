@@ -23,84 +23,12 @@
   height: 20vh;
 }
 
-.card-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: center;
-  text-align: center;
-  width: 90%;
-  overflow-x: scroll;
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  margin-top: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  font-family: 'Electrolize', sans-serif;
-  font-style: normal;
-  position: relative;
-}
-
-.card-container::before {
-  animation: glitchEffect 0.7s infinite linear;
-}
-
-.card-info {
-  position: absolute;
-  left: 0;
-  font-size: 0.5em;
-  right: 0;
-  color: white;
-  transition: transform 0.3s ease-in-out;
-  transform: translateY(-100%);
-  font-family: 'Electrolize', sans-serif;
-  font-style: normal;
-}
 
 
-.footer-top-level {
-  position: relative;
-  padding: 10px 0;
-}
 
-.card-image {
-  width: 100%;
-  object-fit: contain;
-}
 
-.card-number {
-  font-size: 1.2rem;
-}
 
-.card-price {
-  font-size: 1.2rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  font-family: 'Electrolize', sans-serif;
-  font-style: normal;
-  margin-bottom: 0px;
-}
 
-.card-name,
-.card-parameters-h2,
-h3,
-.params {
-  font-size: 1rem;
-  line-height: 0.9;
-  margin-bottom: 2px;
-  padding: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  width: 100%;
-  font-family: 'Electrolize', sans-serif;
-  font-style: normal;
-}
 
 .swiper {
   padding: 0 100px;
