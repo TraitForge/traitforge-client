@@ -6,7 +6,8 @@ export const FiltersHeader = ({
   sortOption,
   color,
   handleFilterChange,
-  generationFilter
+  generationFilter,
+  sortingFilter
 }) => {
   const commonClasses = "after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px]";
   const activeClasses = classNames(commonClasses, {
@@ -14,12 +15,18 @@ export const FiltersHeader = ({
     'after:bg-neon-green': color === 'green',
   });
 
-  const options = [
-    { value: '', label: 'All Generations' },
+  const genOptions = [
+    { value: '', label: 'All Gens' },
     ...Array.from({ length: 10 }, (_, index) => ({
       value: index + 1,
       label: `Gen ${index + 1}`
     }))
+  ];
+
+  const sortingOptions = [
+    { value: '', label: 'All' },
+    { value: 'price_high_to_low', label: 'Price: High to Low' },
+    { value: 'price_low_to_high', label: 'Price: Low to High' }
   ];
 
   const borderColor = color === 'orange' ? '#ff7a00' : color === 'green' ? '#4CAF50' : '#ccc';
@@ -54,6 +61,7 @@ export const FiltersHeader = ({
     })
   };
 
+  console.log('Props in FiltersHeader:', { handleSort, sortOption, color, handleFilterChange, generationFilter, sortingFilter });
 
   return (
     <div className="flex w-full items-center uppercase gap-x-6 pt-6 text-[24px]">
@@ -68,12 +76,18 @@ export const FiltersHeader = ({
       ))}
       <div className="flex-1"> 
         <div className="flex gap-x-6 text-[20px] justify-end">
-          <Select 
-            options={options}
-            onChange={handleFilterChange}
-            value={options.find(option => option.value === generationFilter)}
-            styles={customStyles}
-          />
+        <Select 
+          options={genOptions}
+          onChange={(option) => handleFilterChange(option, 'generation')}
+          value={genOptions.find(option => option.value === generationFilter)}
+          styles={customStyles}
+        />
+        <Select 
+          options={sortingOptions}
+          onChange={(option) => handleFilterChange(option, 'sorting')}
+          value={sortingOptions.find(option => option.value === sortingFilter)}
+          styles={customStyles}
+        />
         </div>
       </div>
     </div>
