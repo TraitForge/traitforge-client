@@ -23,9 +23,13 @@ describe('TraitForgeNft', function () {
 
     it('setEntityMerginContract', async function () {});
 
-    it('setDAOFundAddress', async function () {});
-
     it('setEntropyGenerator', async function () {});
+
+    it('setAirdropContract', async function () {});
+
+    it('setBurner', async function () {});
+
+    it('incrementGeneration', async function () {});
   });
 
   describe('Minting', function () {
@@ -45,12 +49,16 @@ describe('TraitForgeNft', function () {
   describe('Breeding', function () {
     it('getTokenEntropy', async function () {});
 
-    it('getTokenAge', async function () {});
+    it('getEntropiesForTokens', async function () {});
 
-    it('fetchEntropies', async function () {});
+    it('getTokenAge', async function () {});
 
     it('isForger', async function () {});
 
     it('should breed successfully', async function () {});
+  });
+
+  describe('Burn', function () {
+    it('should burn successfully', async function () {});
   });
 });

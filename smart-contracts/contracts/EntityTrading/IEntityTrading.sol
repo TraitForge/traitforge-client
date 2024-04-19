@@ -7,7 +7,6 @@ interface IEntityTrading {
     uint256 price; // Price of the NFT in wei
     bool isActive; // flag to check if the listing is active
   }
-
   event NFTListed(
     uint256 indexed tokenId,
     address indexed seller,
@@ -33,4 +32,13 @@ interface IEntityTrading {
   function buyNFT(uint256 tokenId) external payable;
 
   function cancelListing(uint256 tokenId) external;
+
+  function fetchListedEntities()
+    external
+    view
+    returns (
+      uint256[] memory tokenIds,
+      address[] memory sellers,
+      uint256[] memory prices
+    );
 }

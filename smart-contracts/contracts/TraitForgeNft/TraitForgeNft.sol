@@ -34,6 +34,7 @@ contract TraitForgeNft is
   mapping(uint256 => uint256) public tokenEntropy;
   mapping(uint256 => uint256) public generationMintCounts;
   mapping(address => bool) public burners;
+  mapping(uint256 => uint256) public tokenGenerations;
 
   uint256 private _tokenIds;
   uint256 private totalSupplyCount;
@@ -81,10 +82,11 @@ contract TraitForgeNft is
   // Function to increment the generation of tokens, restricted to the owner
   function incrementGeneration() public onlyOwner {
     require(
-      currentGeneration >= MAX_TOKENS_PER_GEN,
+      generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN,
       'Generation limit not yet reached'
     );
     currentGeneration++;
+    generationMintCounts[currentGeneration] = 0;
     emit GenerationIncremented(currentGeneration);
   }
 
@@ -115,7 +117,7 @@ contract TraitForgeNft is
   function breed(
     uint256 parent1Id,
     uint256 parent2Id,
-    string memory baseTokenURI
+    string memory
   ) external payable nonReentrant returns (uint256) {
     entityMergingContract.breedWithListed{ value: msg.value }(
       parent1Id,
@@ -134,7 +136,7 @@ contract TraitForgeNft is
     uint256 newEntropy = (forgerEntropy + mergerEntropy) / 2;
 
     // Mint the new entity
-    uint256 newTokenId = _mintNewEntity(newEntropy, baseTokenURI);
+    uint256 newTokenId = _mintNewEntity(newEntropy);
 
     // Update generation and circulation
     currentGeneration++;
@@ -152,33 +154,57 @@ contract TraitForgeNft is
     return price;
   }
 
-  function mintToken(address to) public payable nonReentrant {
-    uint256 currentMintPrice = calculateMintPrice();
-    require(
-      msg.value >= currentMintPrice,
-      'Insufficient ETH sent; transaction reverted.'
-    );
-    require(
-      generationMintCounts[currentGeneration] < MAX_TOKENS_PER_GEN,
-      'Current generation is full. Wait for next generation.'
-    );
-
-    uint256 entropyValue = entropyGenerator.getNextEntropy();
-    uint256 newItemId = _tokenIds;
-    _tokenIds++;
-
+  function _mintInternal(address to) internal returns (uint256, uint256) {
+    if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
+      incrementGeneration();
+    }
+    uint256 newItemId = _tokenIds++;
     _mint(to, newItemId);
+    uint256 entropyValue = entropyGenerator.getNextEntropy();
 
     tokenCreationTimestamps[newItemId] = block.timestamp;
     tokenEntropy[newItemId] = entropyValue;
+    tokenGenerations[newItemId] = currentGeneration;
     generationMintCounts[currentGeneration]++;
 
-    distributeFunds(msg.value);
-    if (!airdropContract.airdropStarted()) {
-      airdropContract.setUserAmount(msg.sender, msg.value);
-    }
+    return (newItemId, entropyValue);
+  }
 
-    emit Minted(to, newItemId, entropyValue);
+  function mintToken() public payable nonReentrant {
+    uint256 mintPrice = calculateMintPrice();
+    require(msg.value >= mintPrice, 'Insufficient ETH send for minting.');
+
+    _mintInternal(msg.sender);
+    emit Minted(msg.sender, _tokenIds - 1, tokenEntropy[_tokenIds - 1]);
+
+    uint256 excessPayment = msg.value - mintPrice;
+    if (excessPayment > 0) {
+      (bool refundSuccess, ) = msg.sender.call{ value: excessPayment }('');
+      require(refundSuccess, 'Refund of excess payment failed.');
+    }
+    distributeFunds(mintPrice);
+  }
+
+  function mintWithBudget() public payable nonReentrant {
+    uint256 mintPrice = calculateMintPrice();
+    uint256 amountMinted = 0;
+    uint256 budgetLeft = msg.value;
+
+    while (budgetLeft >= mintPrice && _tokenIds < MAX_TOKENS_PER_GEN) {
+      _mintInternal(msg.sender);
+      amountMinted++;
+      budgetLeft -= mintPrice;
+      mintPrice = calculateMintPrice();
+    }
+    if (budgetLeft > 0) {
+      (bool refundSuccess, ) = msg.sender.call{ value: budgetLeft }('');
+      require(refundSuccess, 'Refund failed.');
+    }
+    emit MintWithBudgetCompleted(
+      msg.sender,
+      amountMinted,
+      msg.value - budgetLeft
+    );
   }
 
   function getTokenCreationTimestamp(
@@ -197,63 +223,24 @@ contract TraitForgeNft is
     return roleIndicator == 0; // Adjust logic as needed
   }
 
-  function calculateTokenParamters(
-    uint256 tokenId
-  )
-    public
-    view
-    returns (
-      uint256 finalNukeFactor,
-      bool isForgerResult,
-      uint8 forgePotential,
-      uint256 performanceFactor
-    )
-  {
-    require(
-      ownerOf(tokenId) != address(0),
-      'ERC721: query for nonexistant token'
-    );
-
-    uint256 entropy = tokenEntropy[tokenId];
-    uint256 ageInSeconds = block.timestamp - tokenCreationTimestamps[tokenId];
-    uint256 ageInDays = ageInSeconds / 86400; // 24 * 60 * 60
-
-    //finalNukeFactor calcualtion
-    uint256 initalNukeFactor = entropy / 4;
-    finalNukeFactor = ((ageInDays * 250) / 10000) + initalNukeFactor;
-
-    // is forger gender
-    isForgerResult = (entropy % 3) == 0;
-
-    // forge potential
-    forgePotential = uint8((entropy / 10000) % 10);
-
-    // perfomance factor
-    uint256 daysOld = (block.timestamp - tokenCreationTimestamps[tokenId]) /
-      86400;
-    performanceFactor = (daysOld * (entropy % 10)) / 365;
-
-    return (finalNukeFactor, isForgerResult, forgePotential, performanceFactor);
-  }
-
   function burn(uint256 tokenId) external onlyBurner {
     _burn(tokenId);
   }
 
-  function _mintNewEntity(
-    uint256 entropy,
-    string memory baseTokenURI
-  ) private returns (uint256) {
+  function _mintNewEntity(uint256 entropy) private returns (uint256) {
+    if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
+      incrementGeneration();
+    }
+
     totalSupplyCount++;
     uint256 newTokenId = totalSupplyCount;
     _mint(msg.sender, newTokenId);
-    _setTokenURI(
-      newTokenId,
-      string(
-        abi.encodePacked(baseTokenURI, Strings.toString(newTokenId), '.json')
-      )
-    );
+
     tokenEntropy[newTokenId] = entropy;
+    tokenGenerations[newTokenId] = currentGeneration;
+    generationMintCounts[currentGeneration]++;
+
+    emit NewEntityMinted(msg.sender, newTokenId, entropy, currentGeneration);
     return newTokenId;
   }
 
@@ -265,5 +252,9 @@ contract TraitForgeNft is
     require(success, 'ETH send failed');
 
     emit FundsDistributedToNukeFund(nukeFundAddress, totalAmount);
+  }
+
+  function totalSupply() public view returns (uint256) {
+    return totalSupplyCount;
   }
 }

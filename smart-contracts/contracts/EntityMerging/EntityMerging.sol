@@ -8,7 +8,6 @@ import '../TraitForgeNft/ITraitForgeNft.sol';
 
 contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
   uint256 private _currentTokenId = 0;
-
   ITraitForgeNft public nftContract;
   address payable public nukeFundAddress;
 
@@ -26,6 +25,32 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
     address payable _nukeFundAddress
   ) external onlyOwner {
     nukeFundAddress = _nukeFundAddress;
+  }
+
+  function fetchListings() public view returns (ListingInfo[] memory) {
+    uint256 totalListed = 0;
+
+    for (uint256 i = 1; i <= _currentTokenId; i++) {
+      if (listings[i].isListed) {
+        totalListed++;
+      }
+    }
+
+    ListingInfo[] memory listedEntities = new ListingInfo[](totalListed);
+    uint256 counter = 0;
+
+    for (uint256 i = 1; i <= _currentTokenId; i++) {
+      if (listings[i].isListed) {
+        listedEntities[counter] = ListingInfo(
+          i,
+          listings[i].isListed,
+          listings[i].fee
+        );
+        counter++;
+      }
+    }
+
+    return listedEntities;
   }
 
   function listForBreeding(uint256 tokenId, uint256 fee) public {
