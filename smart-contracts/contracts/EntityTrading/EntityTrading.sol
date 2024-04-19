@@ -102,4 +102,43 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
     require(success, 'Failed to send Ether to NukeFund');
     emit NukeFundContribution(address(this), amount);
   }
+
+  function fetchListedEntities()
+    external
+    view
+    returns (
+      uint256[] memory tokenIds,
+      address[] memory sellers,
+      uint256[] memory prices
+    )
+  {
+    uint256 totalListings = _getActiveListingCount();
+    tokenIds = new uint256[](totalListings);
+    sellers = new address[](totalListings);
+    prices = new uint256[](totalListings);
+
+    uint256 currentIndex = 0;
+    for (uint256 i = 0; i < _getNextTokenId(); i++) {
+      if (listings[i].isActive) {
+        tokenIds[currentIndex] = i;
+        sellers[currentIndex] = listings[i].seller;
+        prices[currentIndex] = listings[i].price;
+        currentIndex++;
+      }
+    }
+  }
+
+  function _getActiveListingCount() private view returns (uint256) {
+    uint256 count = 0;
+    for (uint256 i = 0; i < _getNextTokenId(); i++) {
+      if (listings[i].isActive) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  function _getNextTokenId() private view returns (uint256) {
+    return nftContract.totalSupply();
+  }
 }

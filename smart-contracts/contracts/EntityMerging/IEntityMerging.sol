@@ -7,6 +7,12 @@ interface IEntityMerging {
     uint fee;
   }
 
+  struct ListingInfo {
+    uint256 Listing;
+    bool isListed;
+    uint fee;
+  }
+
   event ListedForBreeding(uint256 tokenId, uint256 fee);
   event EntityMerged(
     uint256 indexed newTokenid,
@@ -28,4 +34,6 @@ interface IEntityMerging {
   ) external payable returns (uint256);
 
   function cancelListingForBreeding(uint256 tokenId) external;
+
+  function fetchListings() external view returns (ListingInfo[] memory);
 }

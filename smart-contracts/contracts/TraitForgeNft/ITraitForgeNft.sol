@@ -10,11 +10,22 @@ interface ITraitForgeNft is IERC721 {
     uint256 indexed itemId,
     uint256 entropyValue
   );
+  event NewEntityMinted(
+    address owner,
+    uint256 tokenId,
+    uint256 entropy,
+    uint256 generation
+  );
+  event MintWithBudgetCompleted(
+    address indexed minter,
+    uint256 amountMinted,
+    uint256 refundAmount
+  );
   event GenerationIncremented(uint256 newGeneration);
   event FundsDistributedToNukeFund(address indexed to, uint256 amount);
   event Entitybred(
     uint256 indexed newTokenId,
-    uint256 parent1id,
+    uint256 parent1Id,
     uint256 parent2Id,
     uint256 newEntropy
   );
@@ -48,7 +59,9 @@ interface ITraitForgeNft is IERC721 {
 
   function calculateMintPrice() external view returns (uint256);
 
-  function mintToken(address to) external payable;
+  function mintToken() external payable;
+
+  function mintWithBudget() external payable;
 
   function getTokenCreationTimestamp(
     uint256 tokenId
@@ -56,17 +69,7 @@ interface ITraitForgeNft is IERC721 {
 
   function isForger(uint256 tokenId) external view returns (bool);
 
-  function calculateTokenParamters(
-    uint256 tokenId
-  )
-    external
-    view
-    returns (
-      uint256 finalNukeFactor,
-      bool isForgerResult,
-      uint8 forgePotential,
-      uint256 performanceFactor
-    );
-
   function burn(uint256 tokenId) external;
+
+  function totalSupply() external view returns (uint256);
 }

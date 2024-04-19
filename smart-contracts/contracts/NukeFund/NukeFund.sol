@@ -102,9 +102,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     uint256 entropy = nftContract.getTokenEntropy(tokenId); // Corrected line
     // Assume this is stored within NukeFund or accessible somehow
     // Use getTokenAge from the ERC721 contract (ICustomERC721) to get the age in seconds
-    uint256 ageInSeconds = nftContract.getTokenAge(tokenId);
-
-    uint256 ageInDays = ageInSeconds / (24 * 60 * 60); // convert age from seconds to days
+    uint256 ageInDays = calculateAge(tokenId);
     uint256 initialNukeFactor = entropy / 4; // calcualte initalNukeFactor based on entropy
 
     uint256 finalNukeFactor = ((ageInDays * 250) / 10000) + initialNukeFactor;
