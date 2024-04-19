@@ -22,14 +22,15 @@ const ContextProvider = ({ children }) => {
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
+    if(!infuraProvider) return;
     try {
       const nukeFundContract = new ethers.Contract(
-        contractsConfig.NukeFundAddress,
-        contractsConfig.NukeFundAbi,
+        contractsConfig.nukeContractAddress,
+        contractsConfig.nukeFundContractAbi,
         infuraProvider
       );
       const balance = await nukeFundContract.getFundBalance();
-      return ethers.utils.formatEther(balance);
+      return ethers.formatEther(balance);
     } catch (error) {
       console.error('Error fetching ETH amount from nuke fund:', error);
       return 0;
@@ -57,7 +58,7 @@ const ContextProvider = ({ children }) => {
         setEthAmount(Number(amount).toFixed(2));
         setUsdAmount(Number(usdValue).toFixed(2));
       }
-    }, 30000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [fetchEthAmount]);

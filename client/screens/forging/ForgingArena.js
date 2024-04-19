@@ -3,8 +3,8 @@ import { ArenaItem } from './ArenaItem';
 
 export const ForgingArena = ({
   selectedFromPool,
-  ownerEntities,
   handleEntityListModal,
+  handleOwnerEntityList,
   // TODO:add this latter
   areEntitiesForged = false,
   selectedFromWallet,
@@ -27,14 +27,14 @@ export const ForgingArena = ({
       />
       <ArenaCenter areEntitiesForged={areEntitiesForged} />
       <ArenaItem
-        handleEntityListModal={handleEntityListModal}
+        handleEntityListModal={handleOwnerEntityList}
         image="/images/WalletSelectCard.png"
         selectedFromWallet={selectedFromWallet}
         btnLabel="select entity from wallet button"
         className="hidden md:flex"
       />
       <ArenaItem
-        handleEntityListModal={handleEntityListModal}
+        handleEntityListModal={handleOwnerEntityList}
         image="/images/walletSelectCardSm.png"
         selectedFromWallet={selectedFromWallet}
         btnLabel="select entity from wallet button"

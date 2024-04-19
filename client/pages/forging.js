@@ -8,11 +8,14 @@ import styles from '@/styles/forging.module.scss';
 import { Button, Modal } from '@/components';
 
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
+import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
 import { ForgingArena } from '@/screens/forging/ForgingArena';
 
 const Forging = observer(() => {
   const { entitiesForForging, ownerEntities } = appStore;
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
+  const [generationFilter, setGenerationFilter] = useState('');
+  const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
   const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [processing, setProcessing] = useState(true);
   const { walletProvider } = useWeb3ModalProvider();
@@ -26,9 +29,14 @@ const Forging = observer(() => {
   }, []);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
+  const handleSelectedFromWallet = entity => setSelectedFromWallet(entity);
 
   const handleEntityListModal = () =>
     setIsEntityListModalOpen(prevState => !prevState);
+
+    const handleOwnerEntityList = () => 
+    setIsOwnerListOpen(prevState => !prevState);
+
 
   const forgeEntity = async () => {
     if (!walletProvider) return;
@@ -56,6 +64,7 @@ const Forging = observer(() => {
     } catch (error) {
       console.error('Failed to Forge:', error);
     }
+    setGenerationFilter('')
   };
 
   const ListToForgeEntity = async () => {
@@ -90,6 +99,7 @@ const Forging = observer(() => {
             selectedFromPool={selectedFromPool}
             ownerEntities={ownerEntities}
             handleEntityListModal={handleEntityListModal}
+            handleOwnerEntityList={handleOwnerEntityList}
           />
         </div>
         <div className="max-md:px-5">
@@ -110,9 +120,26 @@ const Forging = observer(() => {
           <SelectEntityList
             entitiesForForging={entitiesForForging}
             handleSelectedFromPool={handleSelectedFromPool}
+            generationFilter={generationFilter}
+            setGenerationFilter={setGenerationFilter}
           />
         </Modal>
       )}
+      {isOwnerListOpen && (
+        <Modal
+         isOpen={isOwnerListOpen}
+         closeModal={() => setIsOwnerListOpen(false)}
+         modalClasses="items-end pb-4"
+        >
+        <WalletEntityModal
+        ownerEntities={ownerEntities} 
+        filterType="merger"
+        handleSelectedFromWallet={handleSelectedFromWallet}
+        generationFilter={generationFilter}
+        setGenerationFilter={setGenerationFilter}
+         />
+        </Modal>
+)}
     </div>
   );
 });

@@ -18,14 +18,14 @@ const Home = () => {
     try {
       const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
-      const userAddress = await signer.getAddress();
       const mintContract = new ethers.Contract(
         contractsConfig.traitForgeNftAddress,
         contractsConfig.traitForgeNftAbi,
         signer
       );
-      const transaction = await mintContract.mintToken(userAddress, {
-        value: ethers.utils.parseEther(entityPrice),
+      const transaction = await mintContract.mintToken({
+        value: ethers.parseEther(entityPrice),
+        gasLimit: 5000000
       });
       await transaction.wait();
       alert('Entity minted successfully');
@@ -46,13 +46,13 @@ const Home = () => {
     try {
       const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
-      const userAddress = await signer.getAddress();
       const mintContract = new ethers.Contract(
         contractsConfig.traitForgeNftAddress,
         contractsConfig.traitForgeNftAbi,
         signer
       );
-      const transaction = await mintContract.mintBatchTokens(userAddress, {
+      const transaction = await mintContract.mintWithBudget({
+        value: ethers.parseEther('0.4'),
         gasLimit: 5000000,
       });
       await transaction.wait();
