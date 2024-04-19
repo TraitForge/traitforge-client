@@ -25,7 +25,8 @@ const Home = () => {
         signer
       );
       const transaction = await mintContract.mintToken(userAddress, {
-        value: ethers.utils.parseEther(entityPrice),
+        value: ethers.parseEther(entityPrice),
+        gasLimit: 5000000
       });
       await transaction.wait();
       alert('Entity minted successfully');
@@ -52,7 +53,8 @@ const Home = () => {
         contractsConfig.traitForgeNftAbi,
         signer
       );
-      const transaction = await mintContract.mintBatchTokens(userAddress, {
+      const transaction = await mintContract.mintWithBudget(userAddress, {
+        //needs value arg
         gasLimit: 5000000,
       });
       await transaction.wait();
