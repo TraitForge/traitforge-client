@@ -8,6 +8,7 @@ export const FiltersHeader = ({
   handleFilterChange,
   generationFilter,
   sortingFilter,
+  hideSortingSelect,
   filterOptions = ['all', 'forgers', 'mergers']
 }) => {
 
@@ -84,12 +85,14 @@ export const FiltersHeader = ({
             value={genOptions.find(option => option.value === generationFilter)}
             styles={customStyles}
           />
+          {!hideSortingSelect && (
           <Select 
             options={sortingOptions}
             onChange={(option) => handleFilterChange(option, 'sorting')}
             value={sortingOptions.find(option => option.value === sortingFilter)}
             styles={customStyles}
           />
+          )}
         </div>
       </div>
     </div>
