@@ -7,8 +7,10 @@ export const FiltersHeader = ({
   color,
   handleFilterChange,
   generationFilter,
-  sortingFilter
+  sortingFilter,
+  filterOptions = ['all', 'forgers', 'mergers']
 }) => {
+
   const commonClasses = "after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px]";
   const activeClasses = classNames(commonClasses, {
     'after:bg-neon-orange': color === 'orange',
@@ -65,7 +67,7 @@ export const FiltersHeader = ({
 
   return (
     <div className="flex w-full items-center uppercase gap-x-6 pt-6 text-[24px]">
-      {['all', 'forgers', 'mergers'].map(type => (
+      {filterOptions.map(type => (
         <button
           key={type}
           className={`${sortOption === type ? activeClasses : ''} relative px-6 pb-3`}
@@ -76,18 +78,18 @@ export const FiltersHeader = ({
       ))}
       <div className="flex-1"> 
         <div className="flex gap-x-6 text-[20px] justify-end">
-        <Select 
-          options={genOptions}
-          onChange={(option) => handleFilterChange(option, 'generation')}
-          value={genOptions.find(option => option.value === generationFilter)}
-          styles={customStyles}
-        />
-        <Select 
-          options={sortingOptions}
-          onChange={(option) => handleFilterChange(option, 'sorting')}
-          value={sortingOptions.find(option => option.value === sortingFilter)}
-          styles={customStyles}
-        />
+          <Select 
+            options={genOptions}
+            onChange={(option) => handleFilterChange(option, 'generation')}
+            value={genOptions.find(option => option.value === generationFilter)}
+            styles={customStyles}
+          />
+          <Select 
+            options={sortingOptions}
+            onChange={(option) => handleFilterChange(option, 'sorting')}
+            value={sortingOptions.find(option => option.value === sortingFilter)}
+            styles={customStyles}
+          />
         </div>
       </div>
     </div>

@@ -4,9 +4,10 @@ import { EntityCard, FiltersHeader } from '@/components';
 export const SelectEntityList = ({
   entitiesForForging,
   handleSelectedFromPool,
+  generationFilter,
+  setGenerationFilter
 }) => {
-  const [sortOption, setSortOption] = useState('all');
-  const [generationFilter, setGenerationFilter] = useState('');
+  const [sortOption, setSortOption] = useState('forgers');
   const [sortingFilter, setSortingFilter] = useState('');
 
   const handleSort = type => setSortOption(type);
@@ -20,19 +21,19 @@ export const SelectEntityList = ({
   };
 
   const getFilteredEntities = () => {
-    const filteredEntities = generationFilter
-      ? [...entitiesForForging].filter(
-          entity => entity.generation.toString() === generationFilter
-        )
-      : [...entitiesForForging];
-
-    return filteredEntities.sort((a, b) => {
-      if (sortingFilter === 'price_high_to_low') {
-        return parseFloat(b.price) - parseFloat(a.price);
-      } else if (sortingFilter === 'price_low_to_high') {
-        return parseFloat(a.price) - parseFloat(b.price);
-      }
-    });
+    let filteredEntities = entitiesForForging.filter(entity => entity.type === 'forger');
+  
+    if (generationFilter) {
+      filteredEntities = filteredEntities.filter(entity => entity.generation.toString() === generationFilter);
+    }
+  
+    if (sortingFilter === 'price_high_to_low') {
+      filteredEntities.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    } else if (sortingFilter === 'price_low_to_high') {
+      filteredEntities.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    }
+  
+    return filteredEntities;
   };
 
   const filteredEntities = getFilteredEntities();
@@ -52,6 +53,7 @@ export const SelectEntityList = ({
           }
           generationFilter={generationFilter}
           sortingFilter={sortingFilter}
+          filterOptions={['forgers']}
         />
       </div>
       <div className="flex-1 overflow-y-scroll">
