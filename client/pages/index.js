@@ -52,7 +52,7 @@ const Home = () => {
         signer
       );
       const transaction = await mintContract.mintWithBudget({
-        value: ethers.parseEther('0.4'),
+        value: ethers.parseEther('0.08'),
         gasLimit: 5000000,
       });
       await transaction.wait();

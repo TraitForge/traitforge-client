@@ -57,7 +57,7 @@ export const EntityCard = ({
         <div className={styles.cardInfo}>
           <h4 className="">{calculateEntityPrice(index)} ETH</h4>
         </div>
-        {/* <h4 className="card-name">{role}</h4> */}
+        <h4 className="card-name">{role}</h4> 
         <h4 className="">Forge Potential: {forgePotential}</h4>
         <h4 className="">Nuke Factor: {nukeFactor} %</h4>
         <h4 className="">Performance Factor: {performanceFactor}</h4>

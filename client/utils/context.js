@@ -58,7 +58,7 @@ const ContextProvider = ({ children }) => {
         setEthAmount(Number(amount).toFixed(2));
         setUsdAmount(Number(usdValue).toFixed(2));
       }
-    }, 3000);
+    }, 30000);
 
     return () => clearInterval(interval);
   }, [fetchEthAmount]);
