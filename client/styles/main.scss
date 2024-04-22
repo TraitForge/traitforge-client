@@ -11,14 +11,63 @@ body {
   font-family: 'Bebas Neue', sans-serif;
 }
 
-.mint-text {
-  text-align: center;
-  font-size: 4vw;
-  padding-bottom: 10px;
+.mint-entity-header{
+  animation: glitch 0.5s linear infinite;
 }
 
-.mint-button:hover {
-  transform: scale(1.01);
+@keyframes glitch{
+  2%,64%{
+    transform: translate(1px,0) skew(0deg);
+  }
+  4%,60%{
+    transform: translate(-1px,0) skew(0deg);
+  }
+  62%{
+    transform: translate(0,0) skew(2deg); 
+  }
+}
+
+.mint-entity-header:before,
+.mint-entity-header:after{
+  content: attr(title);
+  position: absolute;
+  left: 0;
+}
+
+.mint-entity-header:before{
+  animation: glitchTop 1s linear infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+
+@keyframes glitchTop{
+  2%,64%{
+    transform: translate(1px,-1px);
+  }
+  4%,60%{
+    transform: translate(-1px,1px);
+  }
+  62%{
+    transform: translate(4px,-1px) skew(-3deg); 
+  }
+}
+
+.mint-entity-header:after{
+  animation: glitchBottom 1.5s linear infinite;
+  clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+  -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+}
+
+@keyframes glitchBottom{
+  2%,64%{
+    transform: translate(-1px,0);
+  }
+  4%,60%{
+    transform: translate(-1px,0);
+  }
+  62%{
+    transform: translate(-3px,2px) skew(3deg); 
+  }
 }
 
 .mint-container {

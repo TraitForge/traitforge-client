@@ -30,6 +30,7 @@ const ContextProvider = ({ children }) => {
         infuraProvider
       );
       const balance = await nukeFundContract.getFundBalance();
+      console.log(balance)
       return ethers.formatEther(balance);
     } catch (error) {
       console.error('Error fetching ETH amount from nuke fund:', error);
@@ -46,7 +47,7 @@ const ContextProvider = ({ children }) => {
     } catch (error) {
       console.error('Error fetching ETH to USD rate:', error);
     }
-    return null; //10 seconds
+    return null;
   };
 
   useEffect(() => {
@@ -55,10 +56,10 @@ const ContextProvider = ({ children }) => {
       const rate = await fetchEthToUsdRate();
       if (amount && rate) {
         const usdValue = amount * rate;
-        setEthAmount(Number(amount).toFixed(2));
-        setUsdAmount(Number(usdValue).toFixed(2));
+        setEthAmount(Number(amount).toFixed(5));
+        setUsdAmount(Number(usdValue).toFixed(5));
       }
-    }, 3000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [fetchEthAmount]);

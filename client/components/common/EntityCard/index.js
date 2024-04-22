@@ -10,15 +10,18 @@ import styles from './styles.module.scss';
 export const EntityCard = ({
   entropy,
   index,
+  price,
   borderType = 'blue',
   wrapperClass,
 }) => {
   const { role, forgePotential, performanceFactor, nukeFactor } =
     calculateEntityAttributes(entropy);
 
-  const calculateEntityPrice = index => {
-    return ((index + 1) * 0.01).toFixed(2);
+  const calculateUri = (entropy, generation) => {
+    const paddedEntropy = entropy.toString().padStart(6, '0');
+    return `${paddedEntropy}_${generation}`;
   };
+  const uri = calculateUri(entropy, 1); 
 
   let activeBorder;
 
@@ -46,7 +49,7 @@ export const EntityCard = ({
       <div className="w-full h-full px-5 pt-5 3xl:px-10 3xl:pt-10">
         <Image
           loading="lazy"
-          src="/images/traitforgertransparent.png"
+          src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="Entity"
           className="z-[-1]"
           width={200}
@@ -55,9 +58,9 @@ export const EntityCard = ({
       </div>
       <div className="py-5 mb-5 h-full text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
-          <h4 className="">{calculateEntityPrice(index)} ETH</h4>
+          <h4 className="">{price} ETH</h4>
         </div>
-        {/* <h4 className="card-name">{role}</h4> */}
+        <h4 className="card-name">{role}</h4> 
         <h4 className="">Forge Potential: {forgePotential}</h4>
         <h4 className="">Nuke Factor: {nukeFactor} %</h4>
         <h4 className="">Performance Factor: {performanceFactor}</h4>
