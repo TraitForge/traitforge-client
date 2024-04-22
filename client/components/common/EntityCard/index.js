@@ -10,24 +10,18 @@ import styles from './styles.module.scss';
 export const EntityCard = ({
   entropy,
   index,
+  price,
   borderType = 'blue',
   wrapperClass,
 }) => {
   const { role, forgePotential, performanceFactor, nukeFactor } =
     calculateEntityAttributes(entropy);
 
-  const calculateEntityPrice = index => {
-    return ((index + 1) * 0.01).toFixed(2);
-  };
-
-  // temporary uri logic
   const calculateUri = (entropy, generation) => {
-    console.log(entropy);
     const paddedEntropy = entropy.toString().padStart(6, '0');
     return `${paddedEntropy}_${generation}`;
   };
   const uri = calculateUri(entropy, 1); 
-  console.log(uri);
 
   let activeBorder;
 
@@ -64,7 +58,7 @@ export const EntityCard = ({
       </div>
       <div className="py-5 mb-5 h-full text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
-          <h4 className="">{calculateEntityPrice(index)} ETH</h4>
+          <h4 className="">{price} ETH</h4>
         </div>
         <h4 className="card-name">{role}</h4> 
         <h4 className="">Forge Potential: {forgePotential}</h4>

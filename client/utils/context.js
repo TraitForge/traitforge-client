@@ -47,7 +47,7 @@ const ContextProvider = ({ children }) => {
     } catch (error) {
       console.error('Error fetching ETH to USD rate:', error);
     }
-    return null; //10 seconds
+    return null;
   };
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const ContextProvider = ({ children }) => {
         setEthAmount(Number(amount).toFixed(5));
         setUsdAmount(Number(usdValue).toFixed(5));
       }
-    }, 8000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [fetchEthAmount]);
