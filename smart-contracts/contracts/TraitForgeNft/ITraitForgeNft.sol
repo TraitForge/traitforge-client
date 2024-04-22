@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+import '@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol';
 
-interface ITraitForgeNft is IERC721 {
+interface ITraitForgeNft is IERC721Enumerable {
   // Events for logging contract activities
   event Minted(
     address indexed minter,
@@ -26,16 +26,31 @@ interface ITraitForgeNft is IERC721 {
   );
   event NukeFundContractUpdated(address nukeFundAddress);
 
-  // Function to set the nuke fund contract address, restricted to the owner
   function setNukeFundContract(address payable _nukeFundAddress) external;
 
-  // Function to set the entity merging (breeding) contract address, restricted to the owner
   function setEntityMergingContract(address _entityMergingAddress) external;
 
   function setEntropyGenerator(address _entropyGeneratorAddress) external;
 
-  // Function to increment the generation of tokens, restricted to the owner
-  function incrementGeneration() external;
+  function setAirdropContract(address _airdrop) external;
+
+  function setBurner(address _account, bool _value) external;
+
+  function startAirdrop(uint256 amount) external;
+
+  function burn(uint256 tokenId) external;
+
+  function breed(
+    uint256 parent1Id,
+    uint256 parent2Id,
+    string memory baseTokenURI
+  ) external payable returns (uint256);
+
+  function mintToken() external payable;
+
+  function mintWithBudget() external payable;
+
+  function calculateMintPrice() external view returns (uint256);
 
   function getTokenEntropy(uint256 tokenId) external view returns (uint256);
 
@@ -46,25 +61,9 @@ interface ITraitForgeNft is IERC721 {
 
   function getTokenAge(uint256 tokenId) external view returns (uint256);
 
-  function breed(
-    uint256 parent1Id,
-    uint256 parent2Id,
-    string memory baseTokenURI
-  ) external payable returns (uint256);
-
-  function calculateMintPrice() external view returns (uint256);
-
-  function mintToken() external payable;
-
-  function mintWithBudget() external payable;
-
   function getTokenCreationTimestamp(
     uint256 tokenId
   ) external view returns (uint256);
 
   function isForger(uint256 tokenId) external view returns (bool);
-
-  function burn(uint256 tokenId) external;
-
-  function totalSupply() external view returns (uint256);
 }
