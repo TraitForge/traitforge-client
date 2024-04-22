@@ -20,6 +20,15 @@ export const EntityCard = ({
     return ((index + 1) * 0.01).toFixed(2);
   };
 
+  // temporary uri logic
+  const calculateUri = (entropy, generation) => {
+    console.log(entropy);
+    const paddedEntropy = entropy.toString().padStart(6, '0');
+    return `${paddedEntropy}_${generation}`;
+  };
+  const uri = calculateUri(entropy, 1); 
+  console.log(uri);
+
   let activeBorder;
 
   switch (borderType) {
@@ -46,7 +55,7 @@ export const EntityCard = ({
       <div className="w-full h-full px-5 pt-5 3xl:px-10 3xl:pt-10">
         <Image
           loading="lazy"
-          src="/images/traitforgertransparent.png"
+          src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="Entity"
           className="z-[-1]"
           width={200}
