@@ -21,7 +21,7 @@ export const EntityCard = ({
     const paddedEntropy = entropy.toString().padStart(6, '0');
     return `${paddedEntropy}_${generation}`;
   };
-  const uri = calculateUri(entropy, 1); 
+  const uri = calculateUri(entropy, 1);
 
   let activeBorder;
 
@@ -60,7 +60,7 @@ export const EntityCard = ({
         <div className={styles.cardInfo}>
           <h4 className="">{price} ETH</h4>
         </div>
-        <h4 className="card-name">{role}</h4> 
+        <h4 className="card-name">{role}</h4>
         <h4 className="">Forge Potential: {forgePotential}</h4>
         <h4 className="">Nuke Factor: {nukeFactor} %</h4>
         <h4 className="">Performance Factor: {performanceFactor}</h4>

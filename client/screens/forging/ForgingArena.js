@@ -10,13 +10,14 @@ export const ForgingArena = ({
   selectedFromWallet,
 }) => {
   return (
-    <div className="flex flex-col max-md:gap-y-20 md:grid md:grid-cols-3 max-w-[1440px] md:px-[100px] lg:px-[150px] xl:px-[200px] lg:gap-x-[80px] 3xl:gap-x-[111px]">
+    <div className="flex flex-col max-md:gap-y-10 md:grid md:grid-cols-3 max-w-[1440px] md:px-[100px] lg:px-[150px] xl:px-[200px] lg:gap-x-[80px] 3xl:gap-x-[111px]">
       <ArenaItem
         handleEntityListModal={handleEntityListModal}
         image="/images/PoolSelectCard.png"
         selectedFromPool={selectedFromPool}
         btnLabel="select entity fro the pool button"
         className="hidden md:flex"
+        bottomImage="/images/rock-left.png"
       />
       <ArenaItem
         handleEntityListModal={handleEntityListModal}
@@ -24,6 +25,7 @@ export const ForgingArena = ({
         selectedFromPool={selectedFromPool}
         btnLabel="select entity fro the pool button"
         className="flex md:hidden"
+        bottomImage="/images/rock-left.png"
       />
       <ArenaCenter areEntitiesForged={areEntitiesForged} />
       <ArenaItem
@@ -32,6 +34,7 @@ export const ForgingArena = ({
         selectedFromWallet={selectedFromWallet}
         btnLabel="select entity from wallet button"
         className="hidden md:flex"
+        bottomImage="/images/rock-right.png"
       />
       <ArenaItem
         handleEntityListModal={handleOwnerEntityList}
@@ -39,6 +42,7 @@ export const ForgingArena = ({
         selectedFromWallet={selectedFromWallet}
         btnLabel="select entity from wallet button"
         className="flex md:hidden"
+        bottomImage="/images/rock-right.png"
       />
     </div>
   );
