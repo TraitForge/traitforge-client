@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
-import { ethers } from 'ethers';
 import { observer } from 'mobx-react';
 
 import styles from '@/styles/trading.module.scss';
@@ -10,6 +9,7 @@ import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { FiltersHeader } from '@/components';
 import { useContextState } from '@/utils/context';
+import { createContract } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
@@ -37,12 +37,10 @@ const Marketplace = observer(() => {
       return;
     }
     try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = ethersProvider.getSigner();
-      const tradeContract = new ethers.Contract(
+      const tradeContract = await createContract(
+        walletProvider,
         contractsConfig.entityTradingContractAddress,
-        contractsConfig.entityTradingAbi,
-        signer
+        contractsConfig.entityTradingAbi
       );
       const transaction = await tradeContract.buyNFT(tokenId, price);
       await transaction.wait();
@@ -59,12 +57,10 @@ const Marketplace = observer(() => {
       return;
     }
     try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = ethersProvider.getSigner();
-      const tradeContract = new ethers.Contract(
+      const tradeContract = await createContract(
+        walletProvider,
         contractsConfig.entityTradingContractAddress,
-        contractsConfig.entityTradingAbi,
-        signer
+        contractsConfig.entityTradingAbi
       );
       const transaction = await tradeContract.listNFTForSale(tokenId, price);
       await transaction.wait();
