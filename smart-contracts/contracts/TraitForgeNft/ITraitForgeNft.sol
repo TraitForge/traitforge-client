@@ -16,11 +16,6 @@ interface ITraitForgeNft is IERC721 {
     uint256 entropy,
     uint256 generation
   );
-  event MintWithBudgetCompleted(
-    address indexed minter,
-    uint256 amountMinted,
-    uint256 refundAmount
-  );
   event GenerationIncremented(uint256 newGeneration);
   event FundsDistributedToNukeFund(address indexed to, uint256 amount);
   event Entitybred(
