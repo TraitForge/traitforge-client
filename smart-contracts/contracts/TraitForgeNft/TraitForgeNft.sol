@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
+import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './ITraitForgeNft.sol';
@@ -11,7 +11,7 @@ import '../Airdrop/IAirdrop.sol';
 
 contract TraitForgeNft is
   ITraitForgeNft,
-  ERC721URIStorage,
+  ERC721Enumerable,
   ReentrancyGuard,
   Ownable
 {
@@ -37,7 +37,6 @@ contract TraitForgeNft is
   mapping(uint256 => uint256) public tokenGenerations;
 
   uint256 private _tokenIds;
-  uint256 private totalSupplyCount;
 
   modifier onlyBurner() {
     require(burners[msg.sender], 'Caller is not burner');
@@ -79,39 +78,8 @@ contract TraitForgeNft is
     airdropContract.startAirdrop(amount);
   }
 
-  // Function to increment the generation of tokens, restricted to the owner
-  function incrementGeneration() public onlyOwner {
-    require(
-      generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN,
-      'Generation limit not yet reached'
-    );
-    currentGeneration++;
-    generationMintCounts[currentGeneration] = 0;
-    emit GenerationIncremented(currentGeneration);
-  }
-
-  function getTokenEntropy(uint256 tokenId) public view returns (uint256) {
-    require(
-      ownerOf(tokenId) != address(0),
-      'ERC721: query for nonexistent token'
-    );
-    return tokenEntropy[tokenId];
-  }
-
-  function getEntropiesForTokens(
-    uint256 forgerTokenId,
-    uint256 mergerTokenId
-  ) public view returns (uint256 forgerEntropy, uint256 mergerEntropy) {
-    forgerEntropy = getTokenEntropy(forgerTokenId);
-    mergerEntropy = getTokenEntropy(mergerTokenId);
-  }
-
-  function getTokenAge(uint256 tokenId) public view returns (uint256) {
-    require(
-      ownerOf(tokenId) != address(0),
-      'ERC721: query for nonexistent token'
-    );
-    return block.timestamp - tokenCreationTimestamps[tokenId];
+  function burn(uint256 tokenId) external onlyBurner {
+    _burn(tokenId);
   }
 
   function breed(
@@ -147,35 +115,6 @@ contract TraitForgeNft is
     return newTokenId;
   }
 
-  function calculateMintPrice() public view returns (uint256) {
-    uint256 currentGenMintCount = generationMintCounts[currentGeneration];
-    uint256 priceIncrease = PRICE_INCREMENT * currentGenMintCount;
-    uint256 price = START_PRICE + priceIncrease;
-    return price;
-  }
-
-  function _mintInternal(address to, uint256 mintPrice) internal {
-    if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
-      incrementGeneration();
-    }
-    uint256 newItemId = _tokenIds++;
-    _mint(to, newItemId);
-    uint256 entropyValue = entropyGenerator.getNextEntropy();
-
-    tokenCreationTimestamps[newItemId] = block.timestamp;
-    tokenEntropy[newItemId] = entropyValue;
-    tokenGenerations[newItemId] = currentGeneration;
-    generationMintCounts[currentGeneration]++;
-
-    if (!airdropContract.airdropStarted()) {
-      airdropContract.setUserAmount(to, mintPrice);
-    }
-
-    emit Minted(msg.sender, newItemId, entropyValue);
-
-    distributeFunds(mintPrice);
-  }
-
   function mintToken() public payable nonReentrant {
     uint256 mintPrice = calculateMintPrice();
     require(msg.value >= mintPrice, 'Insufficient ETH send for minting.');
@@ -206,6 +145,37 @@ contract TraitForgeNft is
     }
   }
 
+  function calculateMintPrice() public view returns (uint256) {
+    uint256 currentGenMintCount = generationMintCounts[currentGeneration];
+    uint256 priceIncrease = PRICE_INCREMENT * currentGenMintCount;
+    uint256 price = START_PRICE + priceIncrease;
+    return price;
+  }
+
+  function getTokenEntropy(uint256 tokenId) public view returns (uint256) {
+    require(
+      ownerOf(tokenId) != address(0),
+      'ERC721: query for nonexistent token'
+    );
+    return tokenEntropy[tokenId];
+  }
+
+  function getEntropiesForTokens(
+    uint256 forgerTokenId,
+    uint256 mergerTokenId
+  ) public view returns (uint256 forgerEntropy, uint256 mergerEntropy) {
+    forgerEntropy = getTokenEntropy(forgerTokenId);
+    mergerEntropy = getTokenEntropy(mergerTokenId);
+  }
+
+  function getTokenAge(uint256 tokenId) public view returns (uint256) {
+    require(
+      ownerOf(tokenId) != address(0),
+      'ERC721: query for nonexistent token'
+    );
+    return block.timestamp - tokenCreationTimestamps[tokenId];
+  }
+
   function getTokenCreationTimestamp(
     uint256 tokenId
   ) public view returns (uint256) {
@@ -222,17 +192,34 @@ contract TraitForgeNft is
     return roleIndicator == 0; // Adjust logic as needed
   }
 
-  function burn(uint256 tokenId) external onlyBurner {
-    _burn(tokenId);
+  function _mintInternal(address to, uint256 mintPrice) internal {
+    if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
+      _incrementGeneration();
+    }
+    uint256 newItemId = _tokenIds++;
+    _mint(to, newItemId);
+    uint256 entropyValue = entropyGenerator.getNextEntropy();
+
+    tokenCreationTimestamps[newItemId] = block.timestamp;
+    tokenEntropy[newItemId] = entropyValue;
+    tokenGenerations[newItemId] = currentGeneration;
+    generationMintCounts[currentGeneration]++;
+
+    if (!airdropContract.airdropStarted()) {
+      airdropContract.setUserAmount(to, mintPrice);
+    }
+
+    emit Minted(msg.sender, newItemId, entropyValue);
+
+    _distributeFunds(mintPrice);
   }
 
   function _mintNewEntity(uint256 entropy) private returns (uint256) {
     if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
-      incrementGeneration();
+      _incrementGeneration();
     }
 
-    totalSupplyCount++;
-    uint256 newTokenId = totalSupplyCount;
+    uint256 newTokenId = _tokenIds++;
     _mint(msg.sender, newTokenId);
 
     tokenEntropy[newTokenId] = entropy;
@@ -243,17 +230,23 @@ contract TraitForgeNft is
     return newTokenId;
   }
 
+  function _incrementGeneration() private {
+    require(
+      generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN,
+      'Generation limit not yet reached'
+    );
+    currentGeneration++;
+    generationMintCounts[currentGeneration] = 0;
+    emit GenerationIncremented(currentGeneration);
+  }
+
   // distributes funds to nukeFund contract, where its then distrubted 10% dev 90% nukeFund
-  function distributeFunds(uint256 totalAmount) private {
+  function _distributeFunds(uint256 totalAmount) private {
     require(address(this).balance >= totalAmount, 'Insufficient balance');
 
     (bool success, ) = nukeFundAddress.call{ value: totalAmount }('');
     require(success, 'ETH send failed');
 
     emit FundsDistributedToNukeFund(nukeFundAddress, totalAmount);
-  }
-
-  function totalSupply() public view returns (uint256) {
-    return totalSupplyCount;
   }
 }
