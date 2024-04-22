@@ -10,28 +10,35 @@ export const ArenaItem = ({
   selectedFromWallet,
   btnLabel,
   className,
+  bottomImage,
 }) => {
   if (selectedFromPool || selectedFromWallet)
     return <EntityCard entity={selectedFromPool} borderType="orange" />;
 
-  const buttonWrapper = classNames(
-    'items-center justify-center cursor-pointer h-auto',
-    className
-  );
+  const buttonWrapper = classNames('flex flex-col gap-y-5', className);
 
   return (
-    <button
-      aria-label={btnLabel}
-      className={buttonWrapper}
-      onClick={handleEntityListModal}
-    >
+    <div className={buttonWrapper}>
+      <button
+        aria-label={btnLabel}
+        className="items-center justify-center cursor-pointer h-auto"
+        onClick={handleEntityListModal}
+      >
+        <Image
+          src={image}
+          alt="forge place holder"
+          width={400}
+          height={500}
+          className="w-full h-full"
+        />
+      </button>
       <Image
-        src={image}
+        src={bottomImage}
         alt="forge place holder"
         width={400}
         height={500}
-        className="w-full h-full"
+        className="w-full h-[100px] scale-[1.1] md:scale-[1.35]"
       />
-    </button>
+    </div>
   );
 };
