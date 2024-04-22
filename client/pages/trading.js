@@ -5,23 +5,21 @@ import { observer } from 'mobx-react';
 
 import styles from '@/styles/trading.module.scss';
 import { EntityCard } from '@/components';
-import { appStore } from '@/utils/appStore';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { FiltersHeader } from '@/components';
+import { useContextState } from '@/utils/context';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
+  const { entitiesForSale } = useContextState();
+  const { walletProvider } = useWeb3ModalProvider();
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
-
-  const { walletProvider } = useWeb3ModalProvider();
   const [step, setStep] = useState('one');
-
-  const { ownerEntities, entitiesForSale } = appStore;
 
   const handleSort = type => setSortOption(type);
 
@@ -32,11 +30,6 @@ const Marketplace = observer(() => {
       setSortingFilter(selectedOption.value);
     }
   };
-
-  useEffect(() => {
-    appStore.getEntitiesForSale();
-    appStore.getOwnersEntities();
-  }, []);
 
   const buyEntity = async (tokenId, price) => {
     if (!walletProvider) {
@@ -83,7 +76,7 @@ const Marketplace = observer(() => {
   };
 
   const filteredAndSortedListings = useMemo(() => {
-    let filtered = entitiesForSale.filter(listing => {
+    let filtered = entitiesForSale?.filter(listing => {
       if (generationFilter && listing.generation !== generationFilter)
         return false;
       if (sortOption === 'all') return true;
@@ -132,7 +125,7 @@ const Marketplace = observer(() => {
           </div>
           <div className="overflow-y-auto flex-1">
             <div className="grid grid-col-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
-              {filteredAndSortedListings.map(listing => (
+              {filteredAndSortedListings?.map(listing => (
                 <EntityCard
                   key={listing.tokenId}
                   entity={listing}

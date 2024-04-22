@@ -65,15 +65,6 @@ export const FiltersHeader = ({
     }),
   };
 
-  console.log('Props in FiltersHeader:', {
-    handleSort,
-    sortOption,
-    color,
-    handleFilterChange,
-    generationFilter,
-    sortingFilter,
-  });
-
   return (
     <div className="flex w-full items-center uppercase pt-6">
       <div className="flex  gap-x-2 md:gap-x-6  text-[24px]">
