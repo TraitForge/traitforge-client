@@ -154,7 +154,7 @@ contract TraitForgeNft is
     return price;
   }
 
-  function _mintInternal(address to) internal returns (uint256, uint256) {
+  function _mintInternal(address to, uint256 mintPrice) internal {
     if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
       incrementGeneration();
     }
@@ -167,22 +167,22 @@ contract TraitForgeNft is
     tokenGenerations[newItemId] = currentGeneration;
     generationMintCounts[currentGeneration]++;
 
-    return (newItemId, entropyValue);
+    emit Minted(msg.sender, newItemId, entropyValue);
+
+    distributeFunds(mintPrice);
   }
 
   function mintToken() public payable nonReentrant {
     uint256 mintPrice = calculateMintPrice();
     require(msg.value >= mintPrice, 'Insufficient ETH send for minting.');
 
-    _mintInternal(msg.sender);
-    emit Minted(msg.sender, _tokenIds - 1, tokenEntropy[_tokenIds - 1]);
+    _mintInternal(msg.sender, mintPrice);
 
     uint256 excessPayment = msg.value - mintPrice;
     if (excessPayment > 0) {
       (bool refundSuccess, ) = msg.sender.call{ value: excessPayment }('');
       require(refundSuccess, 'Refund of excess payment failed.');
     }
-    distributeFunds(mintPrice);
   }
 
   function mintWithBudget() public payable nonReentrant {
@@ -191,7 +191,7 @@ contract TraitForgeNft is
     uint256 budgetLeft = msg.value;
 
     while (budgetLeft >= mintPrice && _tokenIds < MAX_TOKENS_PER_GEN) {
-      _mintInternal(msg.sender);
+      _mintInternal(msg.sender, mintPrice);
       amountMinted++;
       budgetLeft -= mintPrice;
       mintPrice = calculateMintPrice();
@@ -200,11 +200,6 @@ contract TraitForgeNft is
       (bool refundSuccess, ) = msg.sender.call{ value: budgetLeft }('');
       require(refundSuccess, 'Refund failed.');
     }
-    emit MintWithBudgetCompleted(
-      msg.sender,
-      amountMinted,
-      msg.value - budgetLeft
-    );
   }
 
   function getTokenCreationTimestamp(
