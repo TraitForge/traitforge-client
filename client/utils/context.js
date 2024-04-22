@@ -8,6 +8,7 @@ import React, {
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { JsonRpcProvider } from 'ethers/providers';
+import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
@@ -19,6 +20,10 @@ const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
+  const [ownerEntities, setOwnerEntities] = useState([]);
+
+  const { walletProvider } = useWeb3ModalProvider();
+  const { address } = useWeb3ModalAccount();
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
@@ -87,6 +92,43 @@ const ContextProvider = ({ children }) => {
     getLatestEntityPrice();
   }, []);
 
+  const getOwnersEntities = useCallback(async () => {
+    if (!walletProvider || !address) {
+      console.log('addres', address);
+        console.log('Wallet provider or address is not set.');
+        setOwnerEntities([]);
+        return;
+    }
+
+    const TraitForgeContract = new ethers.Contract(
+        contractsConfig.traitForgeNftAddress,
+        contractsConfig.traitForgeNftAbi,
+        walletProvider
+    );
+
+    try {
+        const balance = await TraitForgeContract.balanceOf(address);
+        const fetchPromises = [];
+        console.log(`Balance for address ${address}: ${balance}`);
+
+        for (let i = 0; i < balance; i++) {
+            fetchPromises.push(
+                (async () => {
+                    const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
+                    const entropy = await TraitForgeContract.getTokenEntropy(tokenId);
+                    return { tokenId: tokenId.toString(), entropy };
+                })()
+            );
+        }
+
+        const entities = await Promise.all(fetchPromises);
+        setOwnerEntities(entities);
+    } catch (error) {
+        console.error('Error fetching NFTs:', error);
+        setOwnerEntities([]);
+    }
+}, [walletProvider, address]);
+
   // Event Listener for Stats
   //const subscribeToMintEvent = () => {
   //if (!infuraProvider) return;
@@ -150,8 +192,10 @@ const ContextProvider = ({ children }) => {
         isLoading,
         transactions,
         infuraProvider,
+        ownerEntities,
         //subscribeToMintEvent,
         setIsLoading,
+        getOwnersEntities
       }}
     >
       {children}

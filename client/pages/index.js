@@ -81,7 +81,7 @@ const Home = () => {
         backgroundAttachment: 'fixed',
       }}
     >
-      <span title="Mint Your Traitforge Entity" className="mint-entity-header text-[36px] mb-2.5 text-center md:text-extra-large">
+      <span title="Mint Your Traitforge Entity" className="headers text-[36px] mb-2.5 text-center md:text-extra-large">
         Mint your traitforge entity
       </span>
       <div className="w-full pb-10 flex justify-center">

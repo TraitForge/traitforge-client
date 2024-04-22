@@ -7,12 +7,14 @@ import styles from '@/styles/trading.module.scss';
 import { EntityCard } from '@/components';
 import { appStore } from '@/utils/appStore';
 import { contractsConfig } from '@/utils/contractsConfig';
+import { useContextState } from '@/utils/context';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { FiltersHeader } from '@/components';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
+  const { ownerEntities, getOwnersEntities } = useContextState();
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
@@ -21,7 +23,7 @@ const Marketplace = observer(() => {
   const { walletProvider } = useWeb3ModalProvider();
   const [step, setStep] = useState('one');
 
-  const { ownerEntities, entitiesForSale } = appStore;
+  const { entitiesForSale } = appStore;
 
   const handleSort = type => setSortOption(type);
 
@@ -34,8 +36,8 @@ const Marketplace = observer(() => {
   };
 
   useEffect(() => {
+    getOwnersEntities();
     appStore.getEntitiesForSale();
-    appStore.getOwnersEntities();
   }, []);
 
   const buyEntity = async (tokenId, price) => {
@@ -111,7 +113,13 @@ const Marketplace = observer(() => {
     case 'two':
       content = (
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
-          content goes here
+          {ownerEntities.map(entity => (
+                <EntityCard 
+                key={entity.tokenId} 
+                tokenId={entity.tokenId}
+                entropy={entropy} 
+                />
+            ))}
         </div>
       );
       break;

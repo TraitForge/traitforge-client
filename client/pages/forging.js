@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
+import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
@@ -12,7 +13,8 @@ import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
 import { ForgingArena } from '@/screens/forging/ForgingArena';
 
 const Forging = observer(() => {
-  const { entitiesForForging, ownerEntities } = appStore;
+  const { entitiesForForging } = appStore;
+  const { ownerEntities, getOwnersEntities } = useContextState();
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [generationFilter, setGenerationFilter] = useState('');
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
@@ -24,8 +26,8 @@ const Forging = observer(() => {
   const [selectedEntity, setSelectedEntity] = useState(null);
 
   useEffect(() => {
+    getOwnersEntities();
     appStore.getEntitiesForForging();
-    appStore.getOwnersEntities();
   }, []);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);

@@ -9,7 +9,7 @@ import styles from './styles.module.scss';
 
 export const EntityCard = ({
   entropy,
-  index,
+  tokenId,
   price,
   borderType = 'blue',
   wrapperClass,
@@ -22,6 +22,7 @@ export const EntityCard = ({
     return `${paddedEntropy}_${generation}`;
   };
   const uri = calculateUri(entropy, 1); 
+
 
   let activeBorder;
 
@@ -50,7 +51,7 @@ export const EntityCard = ({
         <Image
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
-          alt="Entity"
+          alt="IMG"
           className="z-[-1]"
           width={200}
           height={300}
@@ -60,6 +61,7 @@ export const EntityCard = ({
         <div className={styles.cardInfo}>
           <h4 className="">{price} ETH</h4>
         </div>
+        <h4 className="card-name">{tokenId}</h4> 
         <h4 className="card-name">{role}</h4> 
         <h4 className="">Forge Potential: {forgePotential}</h4>
         <h4 className="">Nuke Factor: {nukeFactor} %</h4>

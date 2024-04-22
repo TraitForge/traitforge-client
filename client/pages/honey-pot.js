@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 import styles from '@/styles/honeypot.module.scss';
-import { appStore } from '@/utils/appStore';
+import { useContextState } from '@/utils/context';
 import { observer } from 'mobx-react';
 import { HoneyPotHeader } from '@/screens/honey-pot/HoneyPotHeader';
-import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
+import { EntityCard } from '@/components';
 import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 
 const HoneyPot = observer(() => {
-  const { ownerEntities } = appStore;
+  const { ownerEntities, getOwnersEntities } = useContextState();
   const [step, setStep] = useState('one');
 
   useEffect(() => {
-    appStore.getOwnersEntities();
+    getOwnersEntities();
   }, []);
 
   return (
@@ -24,19 +24,13 @@ const HoneyPot = observer(() => {
         ) : (
           <div className="overflow-y-scroll flex-1 pt-8">
             <div className="grid grid-cols-3 lg:grid-cols-5 lg:px-20 gap-x-[15px] gap-y-5 md:gap-y-10">
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
-              <MarketplaceEntityCard />
+            {ownerEntities.map(entity => (
+                <EntityCard 
+                key={entity.tokenId} 
+                tokenId={entity.tokenId}
+                entropy={entropy} 
+                />
+            ))}
             </div>
           </div>
         )}
