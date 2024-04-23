@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import { ethers } from 'ethers';
 import axios from 'axios';
+import { appStore } from '@/utils/appStore';
+
 import { JsonRpcProvider } from 'ethers/providers';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { contractsConfig } from './contractsConfig';
@@ -20,6 +22,13 @@ const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
+  const { entitiesForForging, ownerEntities, entitiesForSale } = appStore;
+
+  useEffect(() => {
+    appStore.getEntitiesForForging();
+    appStore.getOwnersEntities();
+    appStore.getEntitiesForSale();
+  }, []);
   const [ownerEntities, setOwnerEntities] = useState([]);
   const [address, setAddress] = useState('');
 
@@ -27,7 +36,7 @@ const ContextProvider = ({ children }) => {
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
-    if(!infuraProvider) return;
+    if (!infuraProvider) return;
     try {
       const nukeFundContract = new ethers.Contract(
         contractsConfig.nukeContractAddress,
@@ -35,7 +44,6 @@ const ContextProvider = ({ children }) => {
         infuraProvider
       );
       const balance = await nukeFundContract.getFundBalance();
-      console.log(balance)
       return ethers.formatEther(balance);
     } catch (error) {
       console.error('Error fetching ETH amount from nuke fund:', error);
@@ -197,7 +205,6 @@ const ContextProvider = ({ children }) => {
         ownerEntities,
         //subscribeToMintEvent,
         setIsLoading,
-        getOwnersEntities
       }}
     >
       {children}

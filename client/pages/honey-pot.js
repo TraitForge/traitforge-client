@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
 import styles from '@/styles/honeypot.module.scss';
-import { useContextState } from '@/utils/context';
+import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
 import { HoneyPotHeader } from '@/screens/honey-pot/HoneyPotHeader';
 import { EntityCard } from '@/components';
 import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
+import { useContextState } from '@/utils/context';
 
 const HoneyPot = observer(() => {
   const { ownerEntities, getOwnersEntities } = useContextState();
   const [step, setStep] = useState('one');
 
   useEffect(() => {
-    getOwnersEntities();
+    appStore.getOwnersEntities();
   }, []);
 
   return (

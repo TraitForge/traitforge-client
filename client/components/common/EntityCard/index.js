@@ -19,7 +19,7 @@ export const EntityCard = ({
   const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;
   };
-  const uri = calculateUri(entropy, 1); 
+  const uri = calculateUri(entropy, 1);
 
   const { role, forgePotential, performanceFactor, nukeFactor } =
   calculateEntityAttributes(paddedEntropy);
@@ -62,7 +62,6 @@ export const EntityCard = ({
         <div className={styles.cardInfo}>
           <h4 className="">{price} ETH</h4>
         </div>
-        <h4 className="card-name">{tokenId}</h4> 
         <h4 className="card-name">{role}</h4> 
         <h4 className="">Forge Potential: {forgePotential}</h4>
         <h4 className="">Nuke Factor: {nukeFactor} %</h4>

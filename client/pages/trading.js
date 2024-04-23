@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
-import { ethers } from 'ethers';
 import { observer } from 'mobx-react';
 
 import styles from '@/styles/trading.module.scss';
 import { EntityCard } from '@/components';
-import { appStore } from '@/utils/appStore';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useContextState } from '@/utils/context';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { FiltersHeader } from '@/components';
+import { useContextState } from '@/utils/context';
+import { createContract } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
@@ -19,11 +19,9 @@ const Marketplace = observer(() => {
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
-
-  const { walletProvider } = useWeb3ModalProvider();
   const [step, setStep] = useState('one');
 
-  const { entitiesForSale } = appStore;
+  const { ownerEntities, entitiesForSale } = appStore;
 
   const handleSort = type => setSortOption(type);
 
@@ -36,8 +34,8 @@ const Marketplace = observer(() => {
   };
 
   useEffect(() => {
-    getOwnersEntities();
     appStore.getEntitiesForSale();
+    appStore.getOwnersEntities();
   }, []);
 
   const buyEntity = async (tokenId, price) => {
@@ -46,12 +44,10 @@ const Marketplace = observer(() => {
       return;
     }
     try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = ethersProvider.getSigner();
-      const tradeContract = new ethers.Contract(
+      const tradeContract = await createContract(
+        walletProvider,
         contractsConfig.entityTradingContractAddress,
-        contractsConfig.entityTradingAbi,
-        signer
+        contractsConfig.entityTradingAbi
       );
       const transaction = await tradeContract.buyNFT(tokenId, price);
       await transaction.wait();
@@ -68,12 +64,10 @@ const Marketplace = observer(() => {
       return;
     }
     try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = ethersProvider.getSigner();
-      const tradeContract = new ethers.Contract(
+      const tradeContract = await createContract(
+        walletProvider,
         contractsConfig.entityTradingContractAddress,
-        contractsConfig.entityTradingAbi,
-        signer
+        contractsConfig.entityTradingAbi
       );
       const transaction = await tradeContract.listNFTForSale(tokenId, price);
       await transaction.wait();
@@ -85,7 +79,7 @@ const Marketplace = observer(() => {
   };
 
   const filteredAndSortedListings = useMemo(() => {
-    let filtered = entitiesForSale.filter(listing => {
+    let filtered = entitiesForSale?.filter(listing => {
       if (generationFilter && listing.generation !== generationFilter)
         return false;
       if (sortOption === 'all') return true;
@@ -140,7 +134,7 @@ const Marketplace = observer(() => {
           </div>
           <div className="overflow-y-auto flex-1">
             <div className="grid grid-col-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
-              {filteredAndSortedListings.map(listing => (
+              {filteredAndSortedListings?.map(listing => (
                 <EntityCard
                   key={listing.tokenId}
                   entity={listing}

@@ -1,58 +1,52 @@
 import { useState } from 'react';
-import { useContextState } from '@/utils/context';
 import { ethers } from 'ethers';
-import { useWeb3ModalProvider } from '@web3modal/ethers/react';
+import { useWeb3ModalProvider, useWeb3Modal } from '@web3modal/ethers/react';
 
+import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
-import { LoadingSpinner, Slider, Button, BudgetModal } from '@/components';
+import { Slider, Button, BudgetModal, LoadingSpinner } from '@/components';
+import { createContract } from '@/utils/utils';
 
 const Home = () => {
   const { isLoading, setIsLoading, entityPrice } = useContextState();
-  const { walletProvider } = useWeb3ModalProvider();
   const [isModalOpen, setModalOpen] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState('');
 
+  const { open } = useWeb3Modal();
+  const { walletProvider } = useWeb3ModalProvider();
+
   const mintEntityHandler = async () => {
-    if (!walletProvider) {
-      alert('Please connect Wallet.');
-      return;
-    }
+    if (!walletProvider) return open();
     setIsLoading(true);
+
     try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-      const mintContract = new ethers.Contract(
+      const mintContract = await createContract(
+        walletProvider,
         contractsConfig.traitForgeNftAddress,
-        contractsConfig.traitForgeNftAbi,
-        signer
+        contractsConfig.traitForgeNftAbi
       );
       const transaction = await mintContract.mintToken({
         value: ethers.parseEther(entityPrice),
-        gasLimit: 5000000
+        gasLimit: 5000000,
       });
       await transaction.wait();
       alert('Entity minted successfully');
     } catch (error) {
       console.error('Failed to mint entity:', error);
-      alert('Minting entity failed: ${error.message}');
+      alert(`Minting entity failed: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   const mintBatchEntityHandler = async () => {
-    if (!walletProvider) {
-      alert('Please connect Wallet.');
-      return;
-    }
+    if (!walletProvider) return open();
     setIsLoading(true);
     try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-      const mintContract = new ethers.Contract(
+      const mintContract = await createContract(
+        walletProvider,
         contractsConfig.traitForgeNftAddress,
-        contractsConfig.traitForgeNftAbi,
-        signer
+        contractsConfig.traitForgeNftAbi
       );
       const transaction = await mintContract.mintWithBudget({
         value: ethers.parseEther(budgetAmount),
@@ -69,7 +63,12 @@ const Home = () => {
     }
   };
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading)
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <LoadingSpinner />
+      </div>
+    );
 
   return (
     <div
@@ -81,7 +80,10 @@ const Home = () => {
         backgroundAttachment: 'fixed',
       }}
     >
-      <span title="Mint Your Traitforge Entity" className="headers text-[36px] mb-2.5 text-center md:text-extra-large">
+      <span
+        title="Mint Your Traitforge Entity"
+        className="mint-entity-header text-[36px] mb-2.5 text-center md:text-extra-large"
+      >
         Mint your traitforge entity
       </span>
       <div className="w-full pb-10 flex justify-center">
