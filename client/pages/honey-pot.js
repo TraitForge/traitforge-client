@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
 import styles from '@/styles/honeypot.module.scss';
-import { appStore } from '@/utils/appStore';
-import { observer } from 'mobx-react';
 import { HoneyPotHeader } from '@/screens/honey-pot/HoneyPotHeader';
 import { EntityCard } from '@/components';
 import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 import { useContextState } from '@/utils/context';
 
-const HoneyPot = observer(() => {
+const HoneyPot = () => {
   const { ownerEntities, getOwnersEntities } = useContextState();
   const [step, setStep] = useState('one');
 
   useEffect(() => {
-    appStore.getOwnersEntities();
+  getOwnersEntities();
   }, []);
 
   return (
@@ -29,7 +27,7 @@ const HoneyPot = observer(() => {
                 <EntityCard 
                 key={entity.tokenId} 
                 tokenId={entity.tokenId}
-                entropy={entropy} 
+                entropy={entity.entropy} 
                 />
             ))}
             </div>
@@ -38,6 +36,6 @@ const HoneyPot = observer(() => {
       </div>
     </div>
   );
-});
+};
 
 export default HoneyPot;

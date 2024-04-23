@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { ethers } from 'ethers';
 import axios from 'axios';
-import { appStore } from '@/utils/appStore';
 
 import { JsonRpcProvider } from 'ethers/providers';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
@@ -22,13 +21,6 @@ const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
-  const { entitiesForForging, ownerEntities, entitiesForSale } = appStore;
-
-  useEffect(() => {
-    appStore.getEntitiesForForging();
-    appStore.getOwnersEntities();
-    appStore.getEntitiesForSale();
-  }, []);
   const [ownerEntities, setOwnerEntities] = useState([]);
   const [address, setAddress] = useState('');
 
@@ -205,6 +197,7 @@ const ContextProvider = ({ children }) => {
         ownerEntities,
         //subscribeToMintEvent,
         setIsLoading,
+        getOwnersEntities
       }}
     >
       {children}

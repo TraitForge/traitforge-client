@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { observer } from 'mobx-react';
-
+import { appStore } from '@/utils/appStore';
 import styles from '@/styles/trading.module.scss';
 import { EntityCard } from '@/components';
 import { contractsConfig } from '@/utils/contractsConfig';
@@ -9,7 +9,6 @@ import { useContextState } from '@/utils/context';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { FiltersHeader } from '@/components';
-import { useContextState } from '@/utils/context';
 import { createContract } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
@@ -21,7 +20,7 @@ const Marketplace = observer(() => {
   const [sortingFilter, setSortingFilter] = useState('');
   const [step, setStep] = useState('one');
 
-  const { ownerEntities, entitiesForSale } = appStore;
+  const { entitiesForSale, getEntitiesForSale } = appStore;
 
   const handleSort = type => setSortOption(type);
 
@@ -35,7 +34,7 @@ const Marketplace = observer(() => {
 
   useEffect(() => {
     appStore.getEntitiesForSale();
-    appStore.getOwnersEntities();
+    getOwnersEntities();
   }, []);
 
   const buyEntity = async (tokenId, price) => {

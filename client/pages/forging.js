@@ -6,12 +6,11 @@ import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
 import { Button, Modal } from '@/components';
-
+import { appStore } from '@/utils/appStore';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
 import { ForgingArena } from '@/screens/forging/ForgingArena';
 import { createContract } from '@/utils/utils';
-import { useContextState } from '@/utils/context';
 
 const Forging = observer(() => {
   const { entitiesForForging } = appStore;
@@ -22,14 +21,13 @@ const Forging = observer(() => {
   const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [processing, setProcessing] = useState(true);
   const { walletProvider } = useWeb3ModalProvider();
-  const { entitiesForForging, ownerEntities } = useContextState();
 
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
 
   useEffect(() => {
     appStore.getEntitiesForForging();
-    appStore.getOwnersEntities();
+    getOwnersEntities();
   }, []);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
