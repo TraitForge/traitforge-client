@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
@@ -10,23 +9,20 @@ import { Button, Modal } from '@/components';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
 import { ForgingArena } from '@/screens/forging/ForgingArena';
+import { createContract } from '@/utils/utils';
+import { useContextState } from '@/utils/context';
 
 const Forging = observer(() => {
-  const { entitiesForForging, ownerEntities } = appStore;
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [generationFilter, setGenerationFilter] = useState('');
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
   const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [processing, setProcessing] = useState(true);
   const { walletProvider } = useWeb3ModalProvider();
+  const { entitiesForForging, ownerEntities } = useContextState();
 
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
-
-  useEffect(() => {
-    appStore.getEntitiesForForging();
-    appStore.getOwnersEntities();
-  }, []);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
   const handleSelectedFromWallet = entity => setSelectedFromWallet(entity);
@@ -34,25 +30,22 @@ const Forging = observer(() => {
   const handleEntityListModal = () =>
     setIsEntityListModalOpen(prevState => !prevState);
 
-    const handleOwnerEntityList = () => 
+  const handleOwnerEntityList = () =>
     setIsOwnerListOpen(prevState => !prevState);
 
-
   const forgeEntity = async () => {
-    if (!walletProvider) return;
     setProcessing(true);
     setProcessingText('Forging');
     try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-      const forgeContract = new ethers.Contract(
+      const forgeContract = await createContract(
+        walletProvider,
         contractsConfig.entityMergingAddress,
-        contractsConfig.entityMergingContractAbi,
-        signer
+        contractsConfig.entityMergingContractAbi
       );
       const transaction = await forgeContract.breedWithListed(Forger, Merger);
       await transaction.wait();
 
+      // TODO: remove this latter
       setTimeout(() => {
         setProcessingText('Merging');
         setTimeout(() => {
@@ -64,20 +57,17 @@ const Forging = observer(() => {
     } catch (error) {
       console.error('Failed to Forge:', error);
     }
-    setGenerationFilter('')
+    setGenerationFilter('');
   };
 
   const ListToForgeEntity = async () => {
-    if (!walletProvider) return;
     setProcessing(true);
     setProcessingText('Forging');
     try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-      const forgeContract = new ethers.Contract(
+      const forgeContract = await createContract(
+        walletProvider,
         contractsConfig.entityMergingAddress,
-        contractsConfig.entityMergingContractAbi,
-        signer
+        contractsConfig.entityMergingContractAbi
       );
       const transaction = await forgeContract.listForBreeding(
         selectedEntity,
@@ -127,19 +117,19 @@ const Forging = observer(() => {
       )}
       {isOwnerListOpen && (
         <Modal
-         isOpen={isOwnerListOpen}
-         closeModal={() => setIsOwnerListOpen(false)}
-         modalClasses="items-end pb-4"
+          isOpen={isOwnerListOpen}
+          closeModal={() => setIsOwnerListOpen(false)}
+          modalClasses="items-end pb-4"
         >
-        <WalletEntityModal
-        ownerEntities={ownerEntities} 
-        filterType="merger"
-        handleSelectedFromWallet={handleSelectedFromWallet}
-        generationFilter={generationFilter}
-        setGenerationFilter={setGenerationFilter}
-         />
+          <WalletEntityModal
+            ownerEntities={ownerEntities}
+            filterType="merger"
+            handleSelectedFromWallet={handleSelectedFromWallet}
+            generationFilter={generationFilter}
+            setGenerationFilter={setGenerationFilter}
+          />
         </Modal>
-)}
+      )}
     </div>
   );
 });

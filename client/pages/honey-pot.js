@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
 import styles from '@/styles/honeypot.module.scss';
-import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
 import { HoneyPotHeader } from '@/screens/honey-pot/HoneyPotHeader';
 import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
+import { useContextState } from '@/utils/context';
 
 const HoneyPot = observer(() => {
-  const { ownerEntities } = appStore;
+  const { ownerEntities } = useContextState();
   const [step, setStep] = useState('one');
-
-  useEffect(() => {
-    appStore.getOwnersEntities();
-  }, []);
 
   return (
     <div className={styles.honeyPotContainer}>
