@@ -1,28 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import { observer } from 'mobx-react';
+import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
 import { Button, Modal } from '@/components';
-
+import { appStore } from '@/utils/appStore';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
 import { ForgingArena } from '@/screens/forging/ForgingArena';
 import { createContract } from '@/utils/utils';
-import { useContextState } from '@/utils/context';
 
 const Forging = observer(() => {
+  const { entitiesForForging } = appStore;
+  const { ownerEntities, getOwnersEntities } = useContextState();
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [generationFilter, setGenerationFilter] = useState('');
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
   const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [processing, setProcessing] = useState(true);
   const { walletProvider } = useWeb3ModalProvider();
-  const { entitiesForForging, ownerEntities } = useContextState();
 
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
+
+  useEffect(() => {
+    appStore.getEntitiesForForging();
+    getOwnersEntities();
+  }, []);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
   const handleSelectedFromWallet = entity => setSelectedFromWallet(entity);

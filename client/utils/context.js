@@ -7,9 +7,9 @@ import React, {
 } from 'react';
 import { ethers } from 'ethers';
 import axios from 'axios';
-import { appStore } from '@/utils/appStore';
 
 import { JsonRpcProvider } from 'ethers/providers';
+import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
@@ -21,13 +21,10 @@ const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
-  const { entitiesForForging, ownerEntities, entitiesForSale } = appStore;
+  const [ownerEntities, setOwnerEntities] = useState([]);
+  const [address, setAddress] = useState('');
 
-  useEffect(() => {
-    appStore.getEntitiesForForging();
-    appStore.getOwnersEntities();
-    appStore.getEntitiesForSale();
-  }, []);
+  const { walletProvider } = useWeb3ModalProvider();
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
@@ -95,6 +92,44 @@ const ContextProvider = ({ children }) => {
     getLatestEntityPrice();
   }, []);
 
+  const getOwnersEntities = useCallback(async () => {
+    if (!walletProvider) {
+        console.log('Wallet provider is not set.');
+        setOwnerEntities([]);
+        return;
+    }
+    try {
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
+      const signer = await ethersProvider.getSigner();
+      const address = await signer.getAddress();
+        const TraitForgeContract = new ethers.Contract(
+          contractsConfig.traitForgeNftAddress,
+          contractsConfig.traitForgeNftAbi,
+          ethersProvider
+      );
+        const balance = await TraitForgeContract.balanceOf(address);
+        const fetchPromises = [];
+        console.log(`Balance for address ${address}: ${balance}`);
+
+        for (let i = 0; i < balance; i++) {
+            fetchPromises.push(
+                (async () => {
+                    const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
+                    const entropy = await TraitForgeContract.getTokenEntropy(tokenId);
+                    console.log(tokenId, entropy);
+                    return { tokenId: tokenId.toString(), entropy };
+                })()
+            );
+        }
+
+        const entities = await Promise.all(fetchPromises);
+        setOwnerEntities(entities);
+    } catch (error) {
+        console.error('Error fetching NFTs:', error);
+        setOwnerEntities([]);
+    }
+}, [walletProvider, address]);
+
   // Event Listener for Stats
   //const subscribeToMintEvent = () => {
   //if (!infuraProvider) return;
@@ -153,16 +188,16 @@ const ContextProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         ethAmount,
+        address,
         usdAmount,
         entityPrice,
         isLoading,
         transactions,
         infuraProvider,
+        ownerEntities,
         //subscribeToMintEvent,
         setIsLoading,
-        entitiesForForging,
-        ownerEntities,
-        entitiesForSale,
+        getOwnersEntities
       }}
     >
       {children}

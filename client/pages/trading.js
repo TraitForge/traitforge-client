@@ -1,25 +1,26 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { observer } from 'mobx-react';
-
+import { appStore } from '@/utils/appStore';
 import styles from '@/styles/trading.module.scss';
 import { EntityCard } from '@/components';
 import { contractsConfig } from '@/utils/contractsConfig';
+import { useContextState } from '@/utils/context';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { FiltersHeader } from '@/components';
-import { useContextState } from '@/utils/context';
 import { createContract } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
-  const { entitiesForSale } = useContextState();
-  const { walletProvider } = useWeb3ModalProvider();
+  const { ownerEntities, getOwnersEntities } = useContextState();
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const [step, setStep] = useState('one');
+
+  const { entitiesForSale, getEntitiesForSale } = appStore;
 
   const handleSort = type => setSortOption(type);
 
@@ -30,6 +31,11 @@ const Marketplace = observer(() => {
       setSortingFilter(selectedOption.value);
     }
   };
+
+  useEffect(() => {
+    appStore.getEntitiesForSale();
+    getOwnersEntities();
+  }, []);
 
   const buyEntity = async (tokenId, price) => {
     if (!walletProvider) {
@@ -100,7 +106,13 @@ const Marketplace = observer(() => {
     case 'two':
       content = (
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
-          content goes here
+          {ownerEntities.map(entity => (
+                <EntityCard 
+                key={entity.tokenId} 
+                tokenId={entity.tokenId}
+                entropy={entity.entropy} 
+                />
+            ))}
         </div>
       );
       break;
