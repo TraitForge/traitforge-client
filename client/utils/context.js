@@ -8,7 +8,7 @@ import React, {
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { JsonRpcProvider } from 'ethers/providers';
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
+import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { contractsConfig } from './contractsConfig';
 
 const AppContext = createContext();
@@ -21,9 +21,9 @@ const ContextProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
   const [ownerEntities, setOwnerEntities] = useState([]);
+  const [address, setAddress] = useState('');
 
   const { walletProvider } = useWeb3ModalProvider();
-  const { address } = useWeb3ModalAccount();
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
@@ -93,20 +93,20 @@ const ContextProvider = ({ children }) => {
   }, []);
 
   const getOwnersEntities = useCallback(async () => {
-    if (!walletProvider || !address) {
-      console.log('addres', address);
-        console.log('Wallet provider or address is not set.');
+    if (!walletProvider) {
+        console.log('Wallet provider is not set.');
         setOwnerEntities([]);
         return;
     }
-
-    const TraitForgeContract = new ethers.Contract(
-        contractsConfig.traitForgeNftAddress,
-        contractsConfig.traitForgeNftAbi,
-        walletProvider
-    );
-
     try {
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
+      const signer = await ethersProvider.getSigner();
+      const address = await signer.getAddress();
+        const TraitForgeContract = new ethers.Contract(
+          contractsConfig.traitForgeNftAddress,
+          contractsConfig.traitForgeNftAbi,
+          ethersProvider
+      );
         const balance = await TraitForgeContract.balanceOf(address);
         const fetchPromises = [];
         console.log(`Balance for address ${address}: ${balance}`);
@@ -116,6 +116,7 @@ const ContextProvider = ({ children }) => {
                 (async () => {
                     const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
                     const entropy = await TraitForgeContract.getTokenEntropy(tokenId);
+                    console.log(tokenId, entropy);
                     return { tokenId: tokenId.toString(), entropy };
                 })()
             );
@@ -187,6 +188,7 @@ const ContextProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         ethAmount,
+        address,
         usdAmount,
         entityPrice,
         isLoading,

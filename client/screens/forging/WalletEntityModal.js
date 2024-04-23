@@ -16,6 +16,7 @@ export const WalletEntityModal = ({ ownerEntities, generationFilter, setGenerati
   };
 
   const getFilteredEntities = () => {
+    
     let filteredEntities = ownerEntities.filter(entity => entity.type === 'merger');
   
     if (generationFilter) {
@@ -58,6 +59,7 @@ export const WalletEntityModal = ({ ownerEntities, generationFilter, setGenerati
             <EntityCard
               key={entity.id}
               entity={entity}
+              entropy={entity.entropy}
               index={index}
               onClick={() => handleSelectedFromWallet(entity)}
             />

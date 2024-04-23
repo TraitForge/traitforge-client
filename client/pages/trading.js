@@ -117,7 +117,7 @@ const Marketplace = observer(() => {
                 <EntityCard 
                 key={entity.tokenId} 
                 tokenId={entity.tokenId}
-                entropy={entropy} 
+                entropy={entity.entropy} 
                 />
             ))}
         </div>

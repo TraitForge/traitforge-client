@@ -9,19 +9,20 @@ import styles from './styles.module.scss';
 
 export const EntityCard = ({
   entropy,
+  entity,
   tokenId,
   price,
   borderType = 'blue',
   wrapperClass,
 }) => {
-  const { role, forgePotential, performanceFactor, nukeFactor } =
-    calculateEntityAttributes(entropy);
-
-  const calculateUri = (entropy, generation) => {
-    const paddedEntropy = entropy.toString().padStart(6, '0');
+  const paddedEntropy = entropy.toString().padStart(6, '0');
+  const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;
   };
   const uri = calculateUri(entropy, 1); 
+
+  const { role, forgePotential, performanceFactor, nukeFactor } =
+  calculateEntityAttributes(paddedEntropy);
 
 
   let activeBorder;
