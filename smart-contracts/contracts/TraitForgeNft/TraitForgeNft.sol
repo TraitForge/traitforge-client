@@ -35,6 +35,7 @@ contract TraitForgeNft is
   mapping(uint256 => uint256) public generationMintCounts;
   mapping(address => bool) public burners;
   mapping(uint256 => uint256) public tokenGenerations;
+  mapping(uint256 => address) public initialOwners;
 
   uint256 private _tokenIds;
 
@@ -79,6 +80,10 @@ contract TraitForgeNft is
   }
 
   function burn(uint256 tokenId) external onlyBurner {
+    if (!airdropContract.airdropStarted()) {
+      uint256 entropy = getTokenEntropy(tokenId);
+      airdropContract.subUserAmount(initialOwners[tokenId], entropy);
+    }
     _burn(tokenId);
   }
 
@@ -204,9 +209,10 @@ contract TraitForgeNft is
     tokenEntropy[newItemId] = entropyValue;
     tokenGenerations[newItemId] = currentGeneration;
     generationMintCounts[currentGeneration]++;
+    initialOwners[newItemId] = to;
 
     if (!airdropContract.airdropStarted()) {
-      airdropContract.setUserAmount(to, mintPrice);
+      airdropContract.addUserAmount(to, entropyValue);
     }
 
     emit Minted(msg.sender, newItemId, entropyValue);
@@ -225,6 +231,11 @@ contract TraitForgeNft is
     tokenEntropy[newTokenId] = entropy;
     tokenGenerations[newTokenId] = currentGeneration;
     generationMintCounts[currentGeneration]++;
+    initialOwners[newTokenId] = msg.sender;
+
+    if (!airdropContract.airdropStarted()) {
+      airdropContract.addUserAmount(msg.sender, entropy);
+    }
 
     emit NewEntityMinted(msg.sender, newTokenId, entropy, currentGeneration);
     return newTokenId;
