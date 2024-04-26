@@ -12,7 +12,9 @@ interface IAirdrop {
 
   function daoFundAllowed() external view returns (bool);
 
-  function setUserAmount(address user, uint256 amount) external;
+  function addUserAmount(address user, uint256 amount) external;
+
+  function subUserAmount(address user, uint256 amount) external;
 
   function claim() external;
 }

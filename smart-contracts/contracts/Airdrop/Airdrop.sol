@@ -42,10 +42,17 @@ contract Airdrop is IAirdrop, Ownable, ReentrancyGuard {
     return daoAllowed;
   }
 
-  function setUserAmount(address user, uint256 amount) external onlyOwner {
+  function addUserAmount(address user, uint256 amount) external onlyOwner {
     require(!started, 'Already started');
     userInfo[user] += amount;
     totalValue += amount;
+  }
+
+  function subUserAmount(address user, uint256 amount) external onlyOwner {
+    require(!started, 'Already started');
+    require(userInfo[user] >= amount, 'Invalid amount');
+    userInfo[user] -= amount;
+    totalValue -= amount;
   }
 
   function claim() external nonReentrant {
