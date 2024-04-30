@@ -42,9 +42,6 @@ export const composeIMG = async (paddedEntropy,  entityGeneration) => {
 };
 
 const variablesLayer = async (paddedEntropy, entityGeneration) => {
-  console.log(
-    `variablesLayer - entityEntropy: ${paddedEntropy}, entityGeneration: ${entityGeneration}`
-  );
   const entropy = paddedEntropy ? paddedEntropy.toString() : '';
   const generation = entityGeneration ? entityGeneration.toString() : '';
 
@@ -56,26 +53,32 @@ const variablesLayer = async (paddedEntropy, entityGeneration) => {
   console.log(`Entropy: ${entropy}`);
   console.log(`Entropy length: ${entropy.length}`);
 
+  const color1ArrayIndex = parseInt(entropy[5]); 
+  const color2ArrayIndex = parseInt(entropy[4]);
+  const color3ArrayIndex = parseInt(entropy[3]); 
+  const color4ArrayIndex = parseInt(entropy[2]); 
+ console.log('color1ArrayIndex:', color1ArrayIndex, 'color2ArrayIndex:', color2ArrayIndex, 'color3ArrayIndex:', color3ArrayIndex, 'color4ArrayIndex:', color4ArrayIndex)
   const color1 =
-    varConfig.colorOptions.colorOptions1[
-      parseInt(entropy[entropy.length - 1]) % varConfig.colorOptions.colorOptions1.length
-    ];
-  const color2 =
-    varConfig.colorOptions.colorOptions2[
-      parseInt(entropy[entropy.length - 4]) % varConfig.colorOptions.colorOptions2.length
-    ];
-  const color3 =
-    varConfig.colorOptions.colorOptions3[
-      parseInt(entropy[entropy.length - 2]) % varConfig.colorOptions.colorOptions3.length
-    ];
-  const color4 =
-    varConfig.colorOptions.colorOptions4[
-      parseInt(entropy[entropy.length - 3]) % varConfig.colorOptions.colorOptions4.length
-    ];
+  varConfig.colorOptions[`colorOptions${color1ArrayIndex}`][
+    parseInt(entropy[5]) % varConfig.colorOptions[`colorOptions${color1ArrayIndex}`].length
+  ];
+const color2 =
+  varConfig.colorOptions[`colorOptions${color2ArrayIndex}`][
+    parseInt(entropy[4]) % varConfig.colorOptions[`colorOptions${color2ArrayIndex}`].length
+  ];
+const color3 =
+  varConfig.colorOptions[`colorOptions${color3ArrayIndex}`][
+    parseInt(entropy[3]) % varConfig.colorOptions[`colorOptions${color3ArrayIndex}`].length
+  ];
+const color4 =
+  varConfig.colorOptions[`colorOptions${color4ArrayIndex}`][
+    parseInt(entropy[2]) % varConfig.colorOptions[`colorOptions${color4ArrayIndex}`].length
+  ];
 
   console.log(
     `color1: ${color1}, color2: ${color2}, color3: ${color3}, color4: ${color4}`
   );
+
 
   let varImage1 = await tintVariables(
     path.join(
