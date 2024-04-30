@@ -82,7 +82,7 @@ const Home = () => {
     >
       <span
         title="Mint Your Traitforge Entity"
-        className="mint-entity-header text-[36px] mb-2.5 text-center md:text-extra-large"
+        className="headers text-[36px] mb-2.5 text-center md:text-extra-large"
       >
         Mint your traitforge entity
       </span>

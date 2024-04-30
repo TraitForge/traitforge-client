@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
 import { calculateEntityAttributes } from '@/utils/utils';
@@ -19,7 +18,7 @@ export const EntityCard = ({
   const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;
   };
-  const uri = calculateUri(entropy, 1);
+  const uri = calculateUri(entropy, 3);
 
   const { role, forgePotential, performanceFactor, nukeFactor } =
   calculateEntityAttributes(paddedEntropy);
