@@ -205,28 +205,15 @@ task('deploy-nuke-fund', 'Deploy NukeFund')
   });
 
 task('issue-fix', 'Issue fix').setAction(async (_, hre) => {
-  const nukeFund: NukeFund = await hre.run('deploy-nuke-fund', {
+  const entityMerging: EntityMerging = await hre.run('deploy-entity-merging', {
     nft: DEPLOYED_CONTRACTS.sepolia.TraitForgeNft,
-    devFund: DEPLOYED_CONTRACTS.sepolia.DevFund,
-    airdrop: DEPLOYED_CONTRACTS.sepolia.Airdrop,
-    daoFund: DEPLOYED_CONTRACTS.sepolia.DAOFund,
   });
 
   const nft = await hre.ethers.getContractAt(
     'TraitForgeNft',
     DEPLOYED_CONTRACTS.sepolia.TraitForgeNft
   );
-  await nft.setNukeFundContract(await nukeFund.getAddress());
+  await nft.setEntityMergingContract(await entityMerging.getAddress());
 
-  const entityTrading: EntityTrading = await hre.ethers.getContractAt(
-    'EntityTrading',
-    DEPLOYED_CONTRACTS.sepolia.EntityTrading
-  );
-  await entityTrading.setNukeFundAddress(await nukeFund.getAddress());
-
-  const entityMerging: EntityMerging = await hre.ethers.getContractAt(
-    'EntityMerging',
-    DEPLOYED_CONTRACTS.sepolia.EntityMerging
-  );
-  await entityMerging.setNukeFundAddress(await nukeFund.getAddress());
+  await entityMerging.setNukeFundAddress(DEPLOYED_CONTRACTS.sepolia.NukeFund);
 });
