@@ -178,10 +178,10 @@ const tintCharacter = async (imagePath, hexColorWhite, hexColorGrey) => {
   const { data, info } = await originalImage.raw().toBuffer({ resolveWithObject: true });
 
   for (let i = 0; i < data.length; i += 4) {
-    const isWhiteOrNearWhite = data[i] > 230 && data[i + 1] > 230 && data[i + 2] > 230;
-    const isPureGrey = data[i] === data[i + 1] && data[i + 1] === data[i + 2];
+    const isPureWhite = data[i] === 255 && data[i + 1] === 255 && data[i + 2] === 255;
+    const isPureGrey = data[i] === data[i + 1] && data[i + 1] === data[i + 2] && data[i] !== 0 && data[i] !== 255;
 
-    if (isWhiteOrNearWhite) {
+    if (isPureWhite) {
       data[i] = rgbWhite.r;
       data[i + 1] = rgbWhite.g;
       data[i + 2] = rgbWhite.b;
@@ -191,6 +191,7 @@ const tintCharacter = async (imagePath, hexColorWhite, hexColorGrey) => {
       data[i + 2] = rgbGrey.b;
     }
   }
+
 
   return sharp(data, {
     raw: {
@@ -210,10 +211,10 @@ const tintVariables = async (imagePath, firstColor, secondColor) => {
   const { data, info } = await originalImage.raw().toBuffer({ resolveWithObject: true });
 
   for (let i = 0; i < data.length; i += 4) {
-    const isWhiteOrNearWhite = data[i] > 230 && data[i + 1] > 230 && data[i + 2] > 230;
-    const isPureGrey = data[i] === data[i + 1] && data[i + 1] === data[i + 2];
+    const isPureWhite = data[i] === 255 && data[i + 1] === 255 && data[i + 2] === 255;
+    const isPureGrey = data[i] === data[i + 1] && data[i + 1] === data[i + 2] && data[i] !== 0 && data[i] !== 255;
 
-    if (isWhiteOrNearWhite) {
+    if (isPureWhite) {
       data[i] = rgbWhite.r;
       data[i + 1] = rgbWhite.g;
       data[i + 2] = rgbWhite.b;
