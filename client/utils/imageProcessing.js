@@ -21,8 +21,8 @@ export const composeIMG = async (paddedEntropy,  entityGeneration) => {
 
     const composedImage = await sharp({
       create: {
-        width: 2100,
-        height: 2100,
+        width: 2048,
+        height: 2048,
         channels: 4,
         background: { r: 173, g: 216, b: 230, alpha: 1 },
       },
@@ -119,8 +119,8 @@ const color4 =
 
   let baseImage = sharp({
     create: {
-      width: 2100,
-      height: 2100,
+      width: 2048,
+      height: 2048,
       channels: 4,
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     },
@@ -169,29 +169,23 @@ const baseCharacterImg = async (
   return baseCharacter;
 };
 
-
 const tintCharacter = async (imagePath, hexColorWhite, hexColorGrey) => {
   console.log('Tinting character with colors:', hexColorWhite, hexColorGrey);
-  const rgbWhite = hexToRgb(hexColorWhite); 
-  const rgbGrey = hexToRgb(hexColorGrey); 
+  const rgbWhite = hexToRgb(hexColorWhite);
+  const rgbGrey = hexToRgb(hexColorGrey);
 
   const originalImage = sharp(imagePath);
   const { data, info } = await originalImage.raw().toBuffer({ resolveWithObject: true });
 
   for (let i = 0; i < data.length; i += 4) {
     const isWhiteOrNearWhite = data[i] > 230 && data[i + 1] > 230 && data[i + 2] > 230;
-    const isGrey = Math.abs(data[i] - data[i + 1]) < 30 && 
-          Math.abs(data[i + 1] - data[i + 2]) < 30 && 
-          Math.abs(data[i] - data[i + 2]) < 30 &&
-          data[i] >= 10 && data[i] <= 230 &&
-          data[i + 1] >= 10 && data[i + 1] <= 230 &&
-          data[i + 2] >= 10 && data[i + 2] <= 230;
+    const isPureGrey = data[i] === data[i + 1] && data[i + 1] === data[i + 2];
 
     if (isWhiteOrNearWhite) {
       data[i] = rgbWhite.r;
       data[i + 1] = rgbWhite.g;
       data[i + 2] = rgbWhite.b;
-    } else if (isGrey) {
+    } else if (isPureGrey) {
       data[i] = rgbGrey.r;
       data[i + 1] = rgbGrey.g;
       data[i + 2] = rgbGrey.b;
@@ -204,38 +198,31 @@ const tintCharacter = async (imagePath, hexColorWhite, hexColorGrey) => {
       height: info.height,
       channels: info.channels,
     },
-  })
-  .png()
-  .toBuffer();
+  }).png().toBuffer();
 };
 
 const tintVariables = async (imagePath, firstColor, secondColor) => {
-  const rgbWhite = hexToRgb(firstColor); 
-  const rgbGrey = hexToRgb(secondColor);  
+  console.log('Tinting character with colors:', firstColor, secondColor);
+  const rgbWhite = hexToRgb(firstColor);
+  const rgbGrey = hexToRgb(secondColor);
 
   const originalImage = sharp(imagePath);
   const { data, info } = await originalImage.raw().toBuffer({ resolveWithObject: true });
 
   for (let i = 0; i < data.length; i += 4) {
     const isWhiteOrNearWhite = data[i] > 230 && data[i + 1] > 230 && data[i + 2] > 230;
-    const isGrey = Math.abs(data[i] - data[i + 1]) < 30 && 
-          Math.abs(data[i + 1] - data[i + 2]) < 30 && 
-          Math.abs(data[i] - data[i + 2]) < 30 &&
-          data[i] >= 10 && data[i] <= 230 &&
-          data[i + 1] >= 10 && data[i + 1] <= 230 &&
-          data[i + 2] >= 10 && data[i + 2] <= 230;
+    const isPureGrey = data[i] === data[i + 1] && data[i + 1] === data[i + 2];
 
     if (isWhiteOrNearWhite) {
       data[i] = rgbWhite.r;
       data[i + 1] = rgbWhite.g;
       data[i + 2] = rgbWhite.b;
-    } else if (isGrey) {
+    } else if (isPureGrey) {
       data[i] = rgbGrey.r;
       data[i + 1] = rgbGrey.g;
       data[i + 2] = rgbGrey.b;
     }
   }
-
 
   return sharp(data, {
     raw: {
@@ -243,12 +230,8 @@ const tintVariables = async (imagePath, firstColor, secondColor) => {
       height: info.height,
       channels: info.channels,
     },
-  })
-  .png()
-  .toBuffer();
+  }).png().toBuffer();
 };
-
-
 
 const hexToRgb = hex => {
   hex = hex.replace(/^#/, '');
@@ -258,5 +241,3 @@ const hexToRgb = hex => {
   const b = bigint & 255;
   return { r, g, b };
 };
-
-

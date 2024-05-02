@@ -60,7 +60,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
         </ul>
         <div className="flex justify-center gap-x-6">
           <ConnectButton />
-          <button className="block lg:hidden">
+          <button className="block lg:hidden ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="28"

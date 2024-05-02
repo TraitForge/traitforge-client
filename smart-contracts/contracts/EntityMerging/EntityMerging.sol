@@ -94,10 +94,10 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
     uint256 mergerEntropy = nftContract.getTokenEntropy(mergerTokenId);
     uint8 mergerForgePotential = uint8((mergerEntropy / 10000) % 10); // Extract the 5th digit from the entropy
     breedingCounts[mergerTokenId]++;
-    if (breedingCounts[mergerTokenId] > mergerForgePotential) {
-      nftContract.burn(mergerTokenId); // Burn the merger token if exceeded forge potential
-      return 0; // Handle the burning case as needed
-    }
+    require(
+      breedingCounts[mergerTokenId] <= mergerForgePotential,
+      'mergePotential insufficient'
+    );
 
     uint256 devFee = breedingFee / 10;
     uint256 forgerShare = breedingFee - devFee;
