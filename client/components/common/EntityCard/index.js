@@ -18,7 +18,7 @@ export const EntityCard = ({
   const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;
   };
-  const uri = calculateUri(entropy, 3);
+  const uri = calculateUri(entropy, 4);
 
   const { role, forgePotential, performanceFactor, nukeFactor } =
   calculateEntityAttributes(paddedEntropy);
