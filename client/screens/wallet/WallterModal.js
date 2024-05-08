@@ -6,22 +6,24 @@ import {
 } from '@web3modal/ethers/react';
 
 import { Button, Modal } from '@/components';
+import { useEffect } from 'react';
 
 export const WalletModal = ({ isOpen, closeModal }) => {
-  const { address, chainId } = useWeb3ModalAccount();
+  const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
-  // async function getBalance() {
-  //   if (!isConnected) throw Error('User disconnected')
-
-  //   const ethersProvider = new BrowserProvider(walletProvider)
-  //   const signer = await ethersProvider.getSigner()
-  //   // The Contract object
-  //   const USDTContract = new Contract(USDTAddress, USDTAbi, signer)
-  //   const USDTBalance = await USDTContract.balanceOf(address)
-
-  //   console.log(formatUnits(USDTBalance, 18))
-  // }
+  useEffect(() => {
+    // const getbalance = async () => {
+    //   if (!isConnected) throw Error('User disconnected');
+    //   const ethersProvider = new BrowserProvider(walletProvider);
+    //   const signer = await ethersProvider.getSigner();
+    //   // The Contract object
+    //   const USDTContract = new Contract(USDTAddress, USDTAbi, signer);
+    //   const USDTBalance = await USDTContract.balanceOf(address);
+    //   console.log(formatUnits(USDTBalance, 18));
+    // };
+    // getbalance();
+  }, []);
 
   return (
     <Modal
