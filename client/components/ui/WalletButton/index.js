@@ -9,11 +9,10 @@ export default function ConnectButton() {
   const { isConnected } = useWeb3ModalAccount();
   const { open } = useWeb3Modal();
 
-  console.log(isOpen);
-
   return (
     <>
       <button
+        aria-label="wallet connect button"
         className="flex items-center gap-x-4 xl:gap-x-8"
         onClick={() => {
           isConnected ? setIsOpen(true) : open();
