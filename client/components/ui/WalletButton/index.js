@@ -12,7 +12,7 @@ export default function ConnectButton() {
   return (
     <>
       <button
-        aria-label="wallet connect button"
+        aria-label="connect wallet button"
         className="flex items-center gap-x-4 xl:gap-x-8"
         onClick={() => {
           isConnected ? setIsOpen(true) : open();
