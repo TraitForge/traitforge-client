@@ -1,11 +1,36 @@
 import Image from 'next/image';
 import { FaWallet } from 'react-icons/fa';
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from '@web3modal/ethers/react';
 
-import { Button } from '@/components';
+import { Button, Modal } from '@/components';
+import { useEffect } from 'react';
 
-export const WalletModal = () => {
+export const WalletModal = ({ isOpen, closeModal }) => {
+  const { address, chainId, isConnected } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
+
+  useEffect(() => {
+    // const getbalance = async () => {
+    //   if (!isConnected) throw Error('User disconnected');
+    //   const ethersProvider = new BrowserProvider(walletProvider);
+    //   const signer = await ethersProvider.getSigner();
+    //   // The Contract object
+    //   const USDTContract = new Contract(USDTAddress, USDTAbi, signer);
+    //   const USDTBalance = await USDTContract.balanceOf(address);
+    //   console.log(formatUnits(USDTBalance, 18));
+    // };
+    // getbalance();
+  }, []);
+
   return (
-    <Modal background="/images/modal-bg.png">
+    <Modal
+      isOpen={isOpen}
+      closeModal={closeModal}
+      background="/images/modal-bg.png"
+    >
       <div className="flex justify-center items-center flex-col">
         <h3 className="pt-10 text-[18px] md:text-[36px] pb-3 ">Wallet</h3>
         <Image
@@ -59,11 +84,11 @@ export const WalletModal = () => {
             </span>
             <div>
               <p className="text-neutral-100  text-base">Wallet Address</p>
-              <span className="text-white text-large">989889898</span>
+              <span className="text-white text-large">{address}</span>
             </div>
           </div>
         </div>
-        <div className="w-1/2 mx-auto">
+        <div className="w-1/2 mx-auto flex justify-center">
           <Button
             bg="#023340"
             borderColor="#0ADFDB"
