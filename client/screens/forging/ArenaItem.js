@@ -10,7 +10,6 @@ export const ArenaItem = ({
   selectedFromWallet,
   btnLabel,
   className,
-  bottomImage,
 }) => {
   if (selectedFromPool || selectedFromWallet)
     return <EntityCard entity={selectedFromPool} borderType="orange" />;
@@ -32,13 +31,6 @@ export const ArenaItem = ({
           className="w-full h-full"
         />
       </button>
-      <Image
-        src={bottomImage}
-        alt="forge place holder"
-        width={400}
-        height={500}
-        className="w-full h-[100px] scale-[1.1] md:scale-[1.35]"
-      />
     </div>
   );
 };
