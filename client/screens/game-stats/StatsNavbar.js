@@ -19,7 +19,7 @@ export const StatsNavbar = ({ currentStat, handleCurrentStats }) => {
           <button
             key={key}
             onClick={() => handleCurrentStats(key)}
-            className={`${currentStat === key ? 'active' : ''} max-md:py-3 px-2 md:px-6 text-base md:text-[32px]`}
+            className={`${currentStat === key ? 'active' : ''} max-md:py-3 py-4 px-2 md:px-6 text-base md:text-[32px]`}
           >
             {title}
           </button>

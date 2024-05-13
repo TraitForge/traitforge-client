@@ -1,33 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { appStore } from '@/utils/appStore';
 import { observer } from 'mobx-react';
 import { useContextState } from '@/utils/context';
 import Spinner from '../LoadingSpinner';
 import { EntityCard } from '../EntityCard';
 
 const Slider = observer(() => {
-  const { upcomingMints, isLoading } = appStore;
-  const { entityPrice } = useContextState();
+  const { entityPrice, upcomingMints } = useContextState();
   const [ref, setRef] = useState(0);
-
-  useEffect(() => {
-    const priceToIndex = Math.floor(entityPrice * 100);
-    const startSlot = Math.floor(priceToIndex / 13);
-    const startNumberIndex = priceToIndex % 13;
-    appStore.getUpcomingMints(startSlot, startNumberIndex);
-  }, [entityPrice]);
 
   const getEntityPrice = (entityPrice, index) => {
     const numericPrice = Number(entityPrice);
     const increment = index * 0.01;
     const calculatedPrice = (numericPrice + increment).toFixed(2);
     return calculatedPrice;
-};
-
-  if (isLoading) return <Spinner />;
-
+  };
 
   const sliderOption = {
     loop: false,
@@ -77,17 +65,18 @@ const Slider = observer(() => {
         {upcomingMints.length > 0 && (
           <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>
             {upcomingMints.map((mint, index) => {
-              const price = getEntityPrice(entityPrice, index); 
+              const price = getEntityPrice(entityPrice, index);
               return (
-              <SwiperSlide key={mint.id}>
-                <EntityCard
-                  borderType="blue"
-                  entropy={mint.entropy}
-                  index={index}
-                  price={price}
-                />
-              </SwiperSlide>
-              )})}
+                <SwiperSlide key={mint.id}>
+                  <EntityCard
+                    borderType="blue"
+                    entropy={mint.entropy}
+                    index={index}
+                    price={price}
+                  />
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         )}
       </div>
