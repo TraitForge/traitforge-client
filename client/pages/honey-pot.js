@@ -7,12 +7,8 @@ import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 import { useContextState } from '@/utils/context';
 
 const HoneyPot = () => {
-  const { ownerEntities, getOwnersEntities } = useContextState();
+  const { ownerEntities } = useContextState();
   const [step, setStep] = useState('one');
-
-  useEffect(() => {
-  getOwnersEntities();
-  }, []);
 
   return (
     <div className={styles.honeyPotContainer}>
@@ -23,13 +19,13 @@ const HoneyPot = () => {
         ) : (
           <div className="overflow-y-scroll flex-1 pt-8">
             <div className="grid grid-cols-3 lg:grid-cols-5 lg:px-20 gap-x-[15px] gap-y-5 md:gap-y-10">
-            {ownerEntities.map(entity => (
-                <EntityCard 
-                key={entity.tokenId} 
-                tokenId={entity.tokenId}
-                entropy={entity.entropy} 
+              {ownerEntities.map(entity => (
+                <EntityCard
+                  key={entity.tokenId}
+                  tokenId={entity.tokenId}
+                  entropy={entity.entropy}
                 />
-            ))}
+              ))}
             </div>
           </div>
         )}
