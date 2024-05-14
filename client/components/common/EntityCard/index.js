@@ -1,28 +1,42 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
-import { calculateEntityAttributes } from '@/utils/utils';
+import { calculateEntityAttributes, getEntityEntropy } from '@/utils/utils';
 import styles from './styles.module.scss';
 
 export const EntityCard = ({
   entropy,
   entity,
   tokenId,
+  listing,
   price,
   borderType = 'blue',
   wrapperClass,
 }) => {
-  const paddedEntropy = entropy.toString().padStart(6, '0');
-  const calculateUri = (paddedEntropy, generation) => {
-    return `${paddedEntropy}_${generation}`;
+  const [localEntropy, setLocalEntropy] = useState(entropy || entity?.entropy);
+
+ useEffect(() => {
+    if (!localEntropy && listing) {
+      getEntityEntropy(listing)
+        .then(fetchedEntropy => {
+          setLocalEntropy(fetchedEntropy.toString());
+        })
+        .catch(error => {
+          console.error('Failed to fetch entropy:', error);
+        });
+    }
+  }, [localEntropy, listing]);
+
+  const paddedEntropy = localEntropy?.toString().padStart(6, '0');
+  const calculateUri = (entropy, generation) => {
+    return `${entropy}_${generation}`;
   };
-  const uri = calculateUri(entropy, 4);
+  const uri = calculateUri(paddedEntropy, 4);
 
   const { role, forgePotential, performanceFactor, nukeFactor } =
-  calculateEntityAttributes(paddedEntropy);
-
+    calculateEntityAttributes(paddedEntropy);
 
   let activeBorder;
 

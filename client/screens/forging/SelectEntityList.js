@@ -58,12 +58,12 @@ export const SelectEntityList = ({
       </div>
       <div className="flex-1 overflow-y-scroll">
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 md:gap-y-10">
-          {filteredEntities?.map((entity, index) => (
+          {filteredEntities?.map((listing, index) => (
             <EntityCard
-              key={entity.id}
-              entity={entity}
+              key={listing.id}
+              entity={listing}
               index={index}
-              onClick={() => handleSelectedFromPool(entity)}
+              onClick={() => handleSelectedFromPool(listing)}
             />
           ))}
         </div>

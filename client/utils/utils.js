@@ -2,13 +2,13 @@ import { ethers } from 'ethers';
 
 import { contractsConfig } from './contractsConfig';
 
-export function calculateEntityAttributes(entropy) {
-  const performanceFactor = entropy.toString() % 10;
-  const lastTwoDigits = entropy.toString() % 100;
+export function calculateEntityAttributes(paddedEntropy) {
+  const performanceFactor = paddedEntropy.toString() % 10;
+  const lastTwoDigits = paddedEntropy.toString() % 100;
   const forgePotential = Math.floor(lastTwoDigits / 10);
-  const nukeFactor = Number((entropy / 40000).toFixed(3));
+  const nukeFactor = Number((paddedEntropy / 40000).toFixed(3));
   let role;
-  const result = entropy.toString() % 3;
+  const result = paddedEntropy.toString() % 3;
   if (result === 0) {
     role = 'Forger';
   } else {
@@ -26,11 +26,11 @@ export async function createContract(walletProvider, address, abi) {
 
 export const getEntitiesHook = async infuraProvider => {
   const contract = new ethers.Contract(
-    contractsConfig.forgeContractAddress,
-    contractsConfig.forgeContractAbi,
+    contractsConfig.entityMergingAddress,
+    contractsConfig.entityMergingContractAbi,
     infuraProvider
   );
-  const data = await contract.getAllEntitiesForMerging();
+  const data = await contract.fetchListings();
   const entitiesForForging = await Promise.all(data);
   return entitiesForForging;
 };
@@ -80,11 +80,11 @@ export const getUpcomingMintsHook = async (
 };
 export const getEntitiesForSaleHook = async infuraProvider => {
   const tradeContract = new ethers.Contract(
-    contractsConfig.tradeContractAddress,
-    contractsConfig.tradeContractAbi,
+    contractsConfig.entityTradingContractAddress,
+    contractsConfig.entityTradingAbi,
     infuraProvider
   );
-  const data = await tradeContract.fetchEntitiesForSale();
+  const data = await tradeContract.fetchListedEntities();
   const entitiesForSale = await Promise.all(data);
   return entitiesForSale;
 };
@@ -117,4 +117,15 @@ export const getOwnersEntitiesHook = async walletProvider => {
   const entities = await Promise.all(fetchPromises);
 
   return entities;
+};
+
+export const getEntityEntropy = async (listing, infuraProvider) => {
+  const ethersProvider = new ethers.providers.JsonRpcProvider(infuraProvider);
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,  
+    contractsConfig.traitForgeNftAbi,     
+    ethersProvider
+  );
+  const entityEntropy = await TraitForgeContract.getTokenEntropy(listing);
+  return entityEntropy;
 };
