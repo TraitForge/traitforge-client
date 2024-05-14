@@ -11,6 +11,12 @@ import axios from 'axios';
 import { JsonRpcProvider } from 'ethers/providers';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { contractsConfig } from './contractsConfig';
+import {
+  getEntitiesHook,
+  getUpcomingMintsHook,
+  getEntitiesForSaleHook,
+  getOwnersEntitiesHook,
+} from './utils';
 
 const AppContext = createContext();
 const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
@@ -19,12 +25,77 @@ const ContextProvider = ({ children }) => {
   const [ethAmount, setEthAmount] = useState(0);
   const [usdAmount, setUsdAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [transactions, setTransactions] = useState([]);
   const [entityPrice, setEntityPrice] = useState(null);
   const [ownerEntities, setOwnerEntities] = useState([]);
   const [address, setAddress] = useState('');
+  const [entitiesForSale, setEntitiesForSale] = useState([]);
+  const [upcomingMints, setUpcomingMints] = useState([]);
+  const [entitiesForForging, setEntitiesForForging] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
   const { walletProvider } = useWeb3ModalProvider();
+
+  const getUpcomingMints = async (startSlot = 0, startNumberIndex = 0) => {
+    if (!infuraProvider) return;
+    setIsLoading(true);
+    const { allEntropies, maxCount } = await getUpcomingMintsHook(
+      startSlot,
+      startNumberIndex,
+      infuraProvider
+    );
+
+    setUpcomingMints(
+      allEntropies.slice(0, maxCount).map((entropy, index) => ({
+        id: startSlot * 13 + index + 1,
+        entropy,
+      }))
+    );
+    setIsLoading(false);
+  };
+
+  const getEntitiesForSale = async () => {
+    if (!infuraProvider) return;
+
+    try {
+      const entitiesForSale = await getEntitiesForSaleHook(infuraProvider);
+      setEntitiesForSale(entitiesForSale);
+    } catch (error) {
+      console.error('Failed to fetch entities for sale:', error);
+      setEntitiesForSale([]);
+    }
+  };
+
+  const getEntitiesForForging = async () => {
+    if (!infuraProvider) return;
+
+    try {
+      const entitiesForForging = await getEntitiesHook(infuraProvider);
+      setEntitiesForForging(entitiesForForging);
+    } catch (error) {
+      console.error('Failed to fetch entities for forging:', error);
+      setEntitiesForForging([]);
+    }
+  };
+
+  const getOwnersEntities = useCallback(async () => {
+    if (!walletProvider) {
+      alert('Please connect your wallet first.');
+      setOwnerEntities([]);
+      return;
+    }
+    try {
+      const entities = await getOwnersEntitiesHook(walletProvider);
+
+      setOwnerEntities(entities);
+    } catch (error) {
+      console.error('Error fetching NFTs:', error);
+      setOwnerEntities([]);
+    }
+  }, [walletProvider]);
+
+  useEffect(() => {
+    getOwnersEntities();
+  }, [walletProvider]);
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
@@ -46,9 +117,9 @@ const ContextProvider = ({ children }) => {
   const fetchEthToUsdRate = async () => {
     try {
       const response = await axios.get(
-        'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
+        'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms=USD'
       );
-      return response.data.ethereum.usd;
+      return response.data.ETH.USD;
     } catch (error) {
       console.error('Error fetching ETH to USD rate:', error);
     }
@@ -64,10 +135,10 @@ const ContextProvider = ({ children }) => {
         setEthAmount(Number(amount).toFixed(5));
         setUsdAmount(Number(usdValue).toFixed(5));
       }
-    }, 10000);
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [fetchEthAmount]);
+  }, [fetchEthAmount, fetchEthToUsdRate]);
 
   //Entity Price For Mint
   useEffect(() => {
@@ -92,43 +163,15 @@ const ContextProvider = ({ children }) => {
     getLatestEntityPrice();
   }, []);
 
-  const getOwnersEntities = useCallback(async () => {
-    if (!walletProvider) {
-        console.log('Wallet provider is not set.');
-        setOwnerEntities([]);
-        return;
+  // get upcoming mints when we got entity price
+  useEffect(() => {
+    if (entityPrice) {
+      const priceToIndex = Math.floor(entityPrice * 100);
+      const startSlot = Math.floor(priceToIndex / 13);
+      const startNumberIndex = priceToIndex % 13;
+      getUpcomingMints(startSlot, startNumberIndex);
     }
-    try {
-      const ethersProvider = new ethers.BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-      const address = await signer.getAddress();
-        const TraitForgeContract = new ethers.Contract(
-          contractsConfig.traitForgeNftAddress,
-          contractsConfig.traitForgeNftAbi,
-          ethersProvider
-      );
-        const balance = await TraitForgeContract.balanceOf(address);
-        const fetchPromises = [];
-        console.log(`Balance for address ${address}: ${balance}`);
-
-        for (let i = 0; i < balance; i++) {
-            fetchPromises.push(
-                (async () => {
-                    const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(address, i);
-                    const entropy = await TraitForgeContract.getTokenEntropy(tokenId);
-                    console.log(tokenId, entropy);
-                    return { tokenId: tokenId.toString(), entropy };
-                })()
-            );
-        }
-
-        const entities = await Promise.all(fetchPromises);
-        setOwnerEntities(entities);
-    } catch (error) {
-        console.error('Error fetching NFTs:', error);
-        setOwnerEntities([]);
-    }
-}, [walletProvider, address]);
+  }, [entityPrice]);
 
   // Event Listener for Stats
   //const subscribeToMintEvent = () => {
@@ -195,9 +238,13 @@ const ContextProvider = ({ children }) => {
         transactions,
         infuraProvider,
         ownerEntities,
-        //subscribeToMintEvent,
         setIsLoading,
-        getOwnersEntities
+        getOwnersEntities,
+        upcomingMints,
+        entitiesForForging,
+        getEntitiesForForging,
+        entitiesForSale,
+        getEntitiesForSale,
       }}
     >
       {children}

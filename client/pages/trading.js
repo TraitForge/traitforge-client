@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { observer } from 'mobx-react';
-import { appStore } from '@/utils/appStore';
+
 import styles from '@/styles/trading.module.scss';
 import { EntityCard } from '@/components';
 import { contractsConfig } from '@/utils/contractsConfig';
@@ -13,14 +12,13 @@ import { createContract } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
-  const { ownerEntities, getOwnersEntities } = useContextState();
+  const { ownerEntities, entitiesForSale, getEntitiesForSale } =
+    useContextState();
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const [step, setStep] = useState('one');
-
-  const { entitiesForSale, getEntitiesForSale } = appStore;
 
   const handleSort = type => setSortOption(type);
 
@@ -33,8 +31,7 @@ const Marketplace = observer(() => {
   };
 
   useEffect(() => {
-    appStore.getEntitiesForSale();
-    getOwnersEntities();
+    getEntitiesForSale();
   }, []);
 
   const buyEntity = async (tokenId, price) => {
@@ -107,12 +104,12 @@ const Marketplace = observer(() => {
       content = (
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
           {ownerEntities.map(entity => (
-                <EntityCard 
-                key={entity.tokenId} 
-                tokenId={entity.tokenId}
-                entropy={entity.entropy} 
-                />
-            ))}
+            <EntityCard
+              key={entity.tokenId}
+              tokenId={entity.tokenId}
+              entropy={entity.entropy}
+            />
+          ))}
         </div>
       );
       break;
