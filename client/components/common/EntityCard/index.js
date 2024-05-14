@@ -14,6 +14,7 @@ export const EntityCard = ({
   borderType = 'blue',
   wrapperClass,
 }) => {
+  
   const paddedEntropy = entropy.toString().padStart(6, '0');
   const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;

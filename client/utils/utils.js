@@ -26,11 +26,11 @@ export async function createContract(walletProvider, address, abi) {
 
 export const getEntitiesHook = async infuraProvider => {
   const contract = new ethers.Contract(
-    contractsConfig.forgeContractAddress,
-    contractsConfig.forgeContractAbi,
+    contractsConfig.entityMergingAddress,
+    contractsConfig.entityMergingContractAbi,
     infuraProvider
   );
-  const data = await contract.getAllEntitiesForMerging();
+  const data = await contract.fetchListings();
   const entitiesForForging = await Promise.all(data);
   return entitiesForForging;
 };
@@ -80,11 +80,11 @@ export const getUpcomingMintsHook = async (
 };
 export const getEntitiesForSaleHook = async infuraProvider => {
   const tradeContract = new ethers.Contract(
-    contractsConfig.tradeContractAddress,
-    contractsConfig.tradeContractAbi,
+    contractsConfig.entityTradingContractAddress,
+    contractsConfig.entityTradingAbi,
     infuraProvider
   );
-  const data = await tradeContract.fetchEntitiesForSale();
+  const data = await tradeContract.fetchListedEntities();
   const entitiesForSale = await Promise.all(data);
   return entitiesForSale;
 };
