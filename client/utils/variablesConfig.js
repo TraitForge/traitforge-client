@@ -130,17 +130,17 @@ const config = {
       "#FF2FC0"  // Ultra Pink
     ],
     colorOptions6: [
-      "#0D5C47", // Cyberpunk Teal Green
-      "#106653", // Dark Teal Green
-      "#13715F", // Deep Teal Green
-      "#167C6B", // Rich Teal Green
-      "#198777", // Vivid Teal Green
-      "#1C9283", // Bright Teal Green
-      "#1F9D8F", // Electric Teal Green
-      "#22A89B", // Neon Teal Green
-      "#25B3A7", // Fluorescent Teal Green
-      "#28BEB3"  // Ultra Teal Green
-    ],
+      "#FF007F", // Cyberpunk Hot Pink
+      "#FF1493", // Deep Pink
+      "#FF69B4", // Hot Pink
+      "#FF85B3", // Bright Pink
+      "#FF99CC", // Light Hot Pink
+      "#FFB6C1", // Light Pink
+      "#FFC0CB", // Neon Pink
+      "#FFD1DC", // Vivid Pink
+      "#FFE4E1", // Bright Light Pink
+      "#FFE4E5"  // Ultra Light Pink
+    ],    
     colorOptions7: [
       "#660033", // Cyberpunk Burgundy
       "#71003B", // Dark Burgundy
@@ -183,7 +183,7 @@ const config = {
       '#6690CC', // Darker and More Saturated Bright Blue
       '#CC6A40', // Darker and More Saturated Orange Red
       '#CC66CC', // Darker and More Saturated Magenta
-      '#B8BABC', // Darker and More Saturated Very Light Silver
+      '#00CED1', // Dark Turquoise
       '#8070CC', // Darker and More Saturated Neon Periwinkle
       '#800000', // Darker and More Saturated Maroon
       '#8E4ACC', // Darker and More Saturated Dark Violet
@@ -195,7 +195,7 @@ const config = {
       '#4C6C99', // Even Darker version of Darker and More Saturated Bright Blue
       '#994730', // Even Darker version of Darker and More Saturated Orange Red
       '#993C99', // Even Darker version of Darker and More Saturated Magenta
-      '#8C8C90', // Even Darker version of Darker and More Saturated Very Light Silver
+      '#008B8B', // Dark Cyan
       '#604D99', // Even Darker version of Darker and More Saturated Neon Periwinkle
       '#5B0000', // Even Darker version of Darker and More Saturated Maroon
       '#663399', // Even Darker version of Darker and More Saturated Dark Violet

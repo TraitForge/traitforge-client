@@ -120,7 +120,7 @@ export const getOwnersEntitiesHook = async walletProvider => {
 };
 
 export const getEntityEntropy = async (listing, infuraProvider) => {
-  const ethersProvider = new ethers.providers.JsonRpcProvider(infuraProvider);
+  const ethersProvider = new ethers.JsonRpcProvider(infuraProvider);
   const TraitForgeContract = new ethers.Contract(
     contractsConfig.traitForgeNftAddress,  
     contractsConfig.traitForgeNftAbi,     

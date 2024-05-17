@@ -147,8 +147,6 @@ const baseCharacterImg = async (
     `baseCharacter_${generation}.png`
   );
 
-  console.log(`Looking for image at: ${imagePath}`);
-
   const hexColorWhite = varConfig.colorOptions.characterColorOptions1[parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions1.length];
   const hexColorGrey = varConfig.colorOptions.characterColorOptions2[parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions2.length];
   let baseCharacter = sharp(imagePath);

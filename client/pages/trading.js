@@ -32,6 +32,7 @@ const Marketplace = observer(() => {
 
   useEffect(() => {
     getEntitiesForSale();
+    console.log(entitiesForSale);
   }, []);
 
   const buyEntity = async (tokenId, price) => {
@@ -74,24 +75,6 @@ const Marketplace = observer(() => {
     }
   };
 
-  const filteredAndSortedListings = useMemo(() => {
-    let filtered = entitiesForSale?.filter(listing => {
-      if (generationFilter && listing.generation !== generationFilter)
-        return false;
-      if (sortOption === 'all') return true;
-      if (sortOption === 'forger') return listing.isForger;
-      if (sortOption === 'merger') return !listing.isForger;
-      return true;
-    });
-    if (sortingFilter === 'price_low_to_high') {
-      filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    } else if (sortingFilter === 'price_high_to_low') {
-      filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    }
-
-    return filtered;
-  }, [sortOption, generationFilter, sortingFilter, entitiesForSale]);
-
   const handleStep = step => setStep(step);
 
   let content;
@@ -106,8 +89,9 @@ const Marketplace = observer(() => {
           {ownerEntities.map(entity => (
             <EntityCard
               key={entity.tokenId}
-              tokenId={entity.tokenId}
               entropy={entity.entropy}
+              entity={entity.tokenId}
+              onSelect={() => setSelectedForSale(entity)}
             />
           ))}
         </div>
@@ -117,23 +101,13 @@ const Marketplace = observer(() => {
       content = (
         <>
           <div className="flex justify-between items-center border-b mb-12">
-            <FiltersHeader
-              sortOption={sortOption}
-              handleSort={handleSort}
-              color="green"
-              handleFilterChange={(selectedOption, type) =>
-                handleFilterChange(selectedOption, type)
-              }
-              generationFilter={generationFilter}
-              sortingFilter={sortingFilter}
-            />
           </div>
           <div className="overflow-y-auto flex-1">
             <div className="grid grid-col-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
-              {filteredAndSortedListings?.map(listing => (
+              {entitiesForSale?.map(listing => (
                 <EntityCard
                   key={listing.tokenId}
-                  entity={listing}
+                  entity={listing.tokenId}
                   onSelect={() => setSelectedListing(listing)}
                 />
               ))}
