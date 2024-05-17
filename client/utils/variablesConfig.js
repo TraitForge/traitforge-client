@@ -190,16 +190,16 @@ colorOptions9: [
     '#5f6573', // Light Deep Space Blue
   ],
   characterColorOptions2: [
-    '#80dcdc', // Light Cyan
-    '#aaffff', // Light Neon Cyan
-    '#add6ff', // Light Bright Blue
-    '#ff9980', // Light Orange Red
-    '#ff80ff', // Light Magenta
-    '#f0f1f2', // Very Light Silver
-    '#b0a2ff', // Light Neon Periwinkle
-    '#9ae69e', // Light Lime Green
-    '#c77aff', // Light Dark Violet
-    '#5f6573', // Light Deep Space Blue
+    '#4a8a8a', // Darker version of Light Cyan
+    '#66cccc', // Darker version of Light Neon Cyan
+    '#6699cc', // Darker version of Light Bright Blue
+    '#cc664d', // Darker version of Light Orange Red
+    '#cc4dcc', // Darker version of Light Magenta
+    '#b0b1b3', // Darker version of Very Light Silver
+    '#6659cc', // Darker version of Light Neon Periwinkle
+    '#5a8a5e', // Darker version of Light Lime Green
+    '#764dcc', // Darker version of Light Dark Violet
+    '#394048', // Darker version of Light Deep Space Blue
   ],
   },
 };

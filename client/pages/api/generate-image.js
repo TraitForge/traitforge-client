@@ -12,7 +12,7 @@ async function startProcessing() {
         new JsonRpcProvider(contractsConfig.infuraRPCURL)
     );
     console.log('starting fetch');
-    const entityGeneration = 4;
+    const entityGeneration = 1;
         for (let slotIndex = 0; slotIndex < 770; slotIndex++) {
             for (let numberIndex = 0; numberIndex < 13; numberIndex++) {
                 try {

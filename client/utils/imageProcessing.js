@@ -21,8 +21,8 @@ export const composeIMG = async (paddedEntropy,  entityGeneration) => {
 
     const composedImage = await sharp({
       create: {
-        width: 2048,
-        height: 2048,
+        width: 3000,
+        height: 3000,
         channels: 4,
         background: { r: 173, g: 216, b: 230, alpha: 1 },
       },
@@ -119,8 +119,8 @@ const color4 =
 
   let baseImage = sharp({
     create: {
-      width: 2048,
-      height: 2048,
+      width: 3000,
+      height: 3000,
       channels: 4,
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     },
@@ -153,7 +153,7 @@ const baseCharacterImg = async (
   console.log(`Looking for image at: ${imagePath}`);
 
   const hexColorWhite = varConfig.colorOptions.characterColorOptions1[parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions1.length];
-  const hexColorGrey = varConfig.colorOptions.characterColorOptions2[parseInt(entropy[2]) % varConfig.colorOptions.characterColorOptions2.length];
+  const hexColorGrey = varConfig.colorOptions.characterColorOptions2[parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions2.length];
   console.log(`White color index: ${parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions1.length}, Color: ${hexColorWhite}`);
   console.log(`Grey color index: ${parseInt(entropy[2]) % varConfig.colorOptions.characterColorOptions2.length}, Color: ${hexColorGrey}`);
   let baseCharacter = sharp(imagePath);
