@@ -74,6 +74,14 @@ const color4 =
   varConfig.colorOptions[`colorOptions${color4ArrayIndex}`][
     parseInt(entropy[2]) % varConfig.colorOptions[`colorOptions${color4ArrayIndex}`].length
   ];
+  const color5 =
+  varConfig.colorOptions2[`colorOptions${color3ArrayIndex}`][
+    parseInt(entropy[3]) % varConfig.colorOptions2[`colorOptions${color3ArrayIndex}`].length
+  ];
+const color6 =
+  varConfig.colorOptions2[`colorOptions${color4ArrayIndex}`][
+    parseInt(entropy[2]) % varConfig.colorOptions2[`colorOptions${color4ArrayIndex}`].length
+  ];
 
   console.log(
     `color1: ${color1}, color2: ${color2}, color3: ${color3}, color4: ${color4}`
@@ -87,7 +95,7 @@ const color4 =
       varConfig.varPaths.varPath1,
       `${varConfig.varOptions.varOptions1[optionIndex1]}.png`
     ),
-    color1, color4
+    color1, color5
   );
   let varImage2 = await tintVariables(
     path.join(
@@ -96,7 +104,7 @@ const color4 =
       varConfig.varPaths.varPath2,
       `${varConfig.varOptions.varOptions2[optionIndex2]}.png`
     ),
-    color4, color3
+    color2, color6
   );
   let varImage3 = await tintVariables(
     path.join(
@@ -105,7 +113,7 @@ const color4 =
       varConfig.varPaths.varPath3,
       `${varConfig.varOptions.varOptions3[optionIndex3]}.png`
     ),
-    color2, color1
+    color3, color5
   );
   let varImage4 = await tintVariables(
     path.join(
@@ -114,7 +122,7 @@ const color4 =
       varConfig.varPaths.varPath4,
       `${varConfig.varOptions.varOptions4[optionIndex4]}.png`
     ),
-    color2, color4
+    color4, color6
   );
 
   let baseImage = sharp({

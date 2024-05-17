@@ -58,150 +58,194 @@ const config = {
   },
   colorOptions: {
     colorOptions0: [
-      "#FF007F",  // Fully Saturated Neon Pink
-      "#FF0E87",  // Adjust hue slightly for each step
-      "#FF1D8F",
-      "#FF2C97",
-      "#FF3B9F",
-      "#FF4AA7",
-      "#FF59AF",
-      "#FF68B7",
-      "#FF77BF",
-      "#FF86C7"
+      "#9C00B3", // Cyberpunk Purple
+      "#A500BC", // Slightly Lighter Purple
+      "#AE00C5", // Rich Purple
+      "#B700CE", // Deep Purple
+      "#C000D7", // Vivid Purple
+      "#C900E0", // Electric Purple
+      "#D200E9", // Bright Purple
+      "#DB00F2", // Fluorescent Purple
+      "#E400FB", // Neon Purple
+      "#ED04FF"  // Ultra Purple
     ],
-  colorOptions1:[
-    "#0070FF",  // Fully Saturated Electric Blue
-    "#1A7FFF",
-    "#338EFF",
-    "#4D9DFF",
-    "#66ACFF",
-    "#7FBBFF",
-    "#99CAFF",
-    "#B2D9FF",
-    "#CCE8FF",
-    "#E5F7FF"
-  ],
-  colorOptions2: [
-    "#B0DE09",  // Fully Saturated Acid Green
-    "#BCE61A",
-    "#C7EE2C",
-    "#D3F63D",
-    "#DEFF4F",
-    "#EAFF60",
-    "#F5FF71",
-    "#FFFF83",
-    "#FFFF94",
-    "#FFFFA6"
-  ],
-  colorOptions3: [
-    "#6A0DAD",  // Fully Saturated Deep Purple
-    "#791ABC",
-    "#8828CB",
-    "#9735DA",
-    "#A643E9",
-    "#B550F8",
-    "#C45EFF",
-    "#D36DFF",
-    "#E17BFF",
-    "#F08AFF"
-  ],
-  colorOptions4: [
-    "#FFD300",  // Fully Saturated Cyber Yellow
-    "#FFE01A",
-    "#FFED34",
-    "#FFFA4E",
-    "#FFFF68",
-    "#FFFF82",
-    "#FFFF9C",
-    "#FFFFB6",
-    "#FFFFD0",
-    "#FFFFEA"
-  ],
-  colorOptions5: [
-    "#FF0033",  // Fully Saturated Neon Red
-    "#FF1447",
-    "#FF285B",
-    "#FF3C6F",
-    "#FF5083",
-    "#FF6497",
-    "#FF78AB",
-    "#FF8CBF",
-    "#FFA0D3",
-    "#FFB4E7"
-  ],
-  colorOptions6: [
-    "#008080",  // Fully Saturated Teal
-    "#009999",
-    "#00B2B2",
-    "#00CCCC",
-    "#00E5E5",
-    "#00FFFF",
-    "#1AFFFF",
-    "#34FFFF",
-    "#4EFFFF",
-    "#68FFFF"
-  ],
-  colorOptions7: [
-    "#FF00FF",  // Fully Saturated Hot Magenta
-    "#FF1AFF",
-    "#FF34FF",
-    "#FF4EFF",
-    "#FF68FF",
-    "#FF82FF",
-    "#FF9CFF",
-    "#FFB6FF",
-    "#FFD0FF",
-    "#FFEAFF"
-  ],
-colorOptions8: [
-  "#AFFF00",  // Electric Lime
-  "#A4F500", 
-  "#99EB00",
-  "#8EE100",
-  "#83D700",  
-  "#78CD00",
-  "#6DC300",
-  "#62B900",  
-  "#57AF00",  
-  "#4CA500"  
-],
-colorOptions9: [
-  "#008B8B",  // Fully Saturated Dark Cyan
-  "#009EA4",
-  "#00B1BD",
-  "#00C4D6",
-  "#00D7EF",
-  "#00EAFF",
-  "#1AFFFF",
-  "#34FFFF",
-  "#4EFFFF",
-  "#68FFFF"
-],
-  characterColorOptions1: [
-    '#80dcdc', // Light Cyan
-    '#aaffff', // Light Neon Cyan
-    '#add6ff', // Light Bright Blue
-    '#ff9980', // Light Orange Red
-    '#ff80ff', // Light Magenta
-    '#f0f1f2', // Very Light Silver
-    '#b0a2ff', // Light Neon Periwinkle
-    '#9ae69e', // Light Lime Green
-    '#c77aff', // Light Dark Violet
-    '#5f6573', // Light Deep Space Blue
-  ],
-  characterColorOptions2: [
-    '#4a8a8a', // Darker version of Light Cyan
-    '#66cccc', // Darker version of Light Neon Cyan
-    '#6699cc', // Darker version of Light Bright Blue
-    '#cc664d', // Darker version of Light Orange Red
-    '#cc4dcc', // Darker version of Light Magenta
-    '#b0b1b3', // Darker version of Very Light Silver
-    '#6659cc', // Darker version of Light Neon Periwinkle
-    '#5a8a5e', // Darker version of Light Lime Green
-    '#764dcc', // Darker version of Light Dark Violet
-    '#394048', // Darker version of Light Deep Space Blue
-  ],
+    colorOptions1: [
+      "#B3001A", // Cyberpunk Maroon
+      "#BC0022", // Dark Maroon
+      "#C5002B", // Rich Maroon
+      "#CE0034", // Deep Maroon
+      "#D7003D", // Vivid Maroon
+      "#E00046", // Electric Maroon
+      "#E9004F", // Bright Maroon
+      "#F20058", // Fluorescent Maroon
+      "#FB0061", // Neon Maroon
+      "#FF046A"  // Ultra Maroon
+    ],
+    colorOptions2: [
+      "#C90000", // Cyberpunk Red
+      "#D4000A", // Slightly Darker Red
+      "#DF0015", // Deep Red
+      "#EA0020", // Rich Red
+      "#F5002B", // Vivid Red
+      "#FF0036", // Bright Red
+      "#FF0E41", // Electric Red
+      "#FF194C", // Neon Red
+      "#FF2457", // Fluorescent Red
+      "#FF2F62"  // Ultra Red
+    ],
+    colorOptions3: [
+      "#008080", // Cyberpunk Dark Cyan
+      "#008B8B", // Slightly Lighter Dark Cyan
+      "#009696", // Deep Dark Cyan
+      "#00A1A1", // Rich Dark Cyan
+      "#00ACAC", // Vivid Dark Cyan
+      "#00B7B7", // Bright Dark Cyan
+      "#00C2C2", // Electric Dark Cyan
+      "#00CDCD", // Neon Dark Cyan
+      "#00D8D8", // Fluorescent Dark Cyan
+      "#00E3E3"  // Ultra Dark Cyan
+    ],
+    colorOptions4: [
+      "#4700B3", // Cyberpunk Indigo
+      "#5200BC", // Dark Indigo
+      "#5D00C5", // Deep Indigo
+      "#6800CE", // Rich Indigo
+      "#7300D7", // Vivid Indigo
+      "#7E00E0", // Electric Indigo
+      "#8900E9", // Bright Indigo
+      "#9400F2", // Neon Indigo
+      "#9F00FB", // Fluorescent Indigo
+      "#AA04FF"  // Ultra Indigo
+    ],
+    colorOptions5: [
+      "#CC0066", // Cyberpunk Pink
+      "#D60070", // Dark Pink
+      "#E0007A", // Deep Pink
+      "#EA0084", // Rich Pink
+      "#F5008E", // Vivid Pink
+      "#FF0098", // Bright Pink
+      "#FF0EA2", // Electric Pink
+      "#FF19AC", // Neon Pink
+      "#FF24B6", // Fluorescent Pink
+      "#FF2FC0"  // Ultra Pink
+    ],
+    colorOptions6: [
+      "#0D5C47", // Cyberpunk Teal Green
+      "#106653", // Dark Teal Green
+      "#13715F", // Deep Teal Green
+      "#167C6B", // Rich Teal Green
+      "#198777", // Vivid Teal Green
+      "#1C9283", // Bright Teal Green
+      "#1F9D8F", // Electric Teal Green
+      "#22A89B", // Neon Teal Green
+      "#25B3A7", // Fluorescent Teal Green
+      "#28BEB3"  // Ultra Teal Green
+    ],
+    colorOptions7: [
+      "#660033", // Cyberpunk Burgundy
+      "#71003B", // Dark Burgundy
+      "#7C0043", // Deep Burgundy
+      "#87004B", // Rich Burgundy
+      "#920053", // Vivid Burgundy
+      "#9D005B", // Electric Burgundy
+      "#A80063", // Bright Burgundy
+      "#B3006B", // Neon Burgundy
+      "#BE0073", // Fluorescent Burgundy
+      "#C9007B"  // Ultra Burgundy
+    ],
+    colorOptions8: [
+      "#FF4040", // Cyberpunk Neon Coral
+      "#FF4D4D", // Dark Neon Coral
+      "#FF5A5A", // Deep Neon Coral
+      "#FF6767", // Rich Neon Coral
+      "#FF7474", // Vivid Neon Coral
+      "#FF8181", // Electric Neon Coral
+      "#FF8E8E", // Bright Neon Coral
+      "#FF9B9B", // Neon Bright Coral
+      "#FFA8A8", // Fluorescent Neon Coral
+      "#FFB5B5"  // Ultra Neon Coral
+    ],    
+    colorOptions9: [
+      "#003D66", // Cyberpunk Navy Blue
+      "#004970", // Dark Navy Blue
+      "#00557A", // Deep Navy Blue
+      "#006184", // Rich Navy Blue
+      "#006D8E", // Vivid Navy Blue
+      "#007898", // Bright Navy Blue
+      "#0083A2", // Electric Navy Blue
+      "#008EAC", // Neon Navy Blue
+      "#0099B6", // Fluorescent Navy Blue
+      "#00A4C0"  // Ultra Navy Blue
+    ],
+    characterColorOptions1: [
+      '#5CA6A6', // Darker and More Saturated Cyan
+      '#c05bb6', // Darker and More Saturated Neon Purple
+      '#6690CC', // Darker and More Saturated Bright Blue
+      '#CC6A40', // Darker and More Saturated Orange Red
+      '#CC66CC', // Darker and More Saturated Magenta
+      '#B8BABC', // Darker and More Saturated Very Light Silver
+      '#8070CC', // Darker and More Saturated Neon Periwinkle
+      '#800000', // Darker and More Saturated Maroon
+      '#8E4ACC', // Darker and More Saturated Dark Violet
+      '#474C5A', // Darker and More Saturated Deep Space Blue
+    ],
+    characterColorOptions2: [
+      '#3C8585', // Even Darker version of Darker and More Saturated Cyan
+      '#8C3C80', // Even Darker version of Darker and More Saturated Neon Purple
+      '#4C6C99', // Even Darker version of Darker and More Saturated Bright Blue
+      '#994730', // Even Darker version of Darker and More Saturated Orange Red
+      '#993C99', // Even Darker version of Darker and More Saturated Magenta
+      '#8C8C90', // Even Darker version of Darker and More Saturated Very Light Silver
+      '#604D99', // Even Darker version of Darker and More Saturated Neon Periwinkle
+      '#5B0000', // Even Darker version of Darker and More Saturated Maroon
+      '#663399', // Even Darker version of Darker and More Saturated Dark Violet
+      '#2C3038', // Even Darker version of Darker and More Saturated Deep Space Blue
+    ]    
   },
+
+  colorOptions2: {
+    colorOptions0: [
+      "#FF4080", "#FF4D89", "#FF5B92", "#FF689B", "#FF75A4",
+      "#FF82AD", "#FF8FB6", "#FF9CBF", "#FFA9C8", "#FFB6D1"
+    ],
+    colorOptions1: [
+      "#327CFF", "#4989FF", "#5F96FF", "#75A3FF", "#8BB0FF",
+      "#A1BDFF", "#B7CAFF", "#CDD7FF", "#E3E4FF", "#F9F1FF"
+    ],
+    colorOptions2: [
+      "#D7F565", "#DFF67C", "#E7F793", "#EFF8AA", "#F7F9C1",
+      "#FFFAD8", "#FFFBEF", "#FFFCFF", "#FFFFF6", "#FFFFFD"
+    ],
+    colorOptions3: [
+      "#8C7ED1", "#988BE3", "#A498F5", "#B0A5FF", "#BCB2FF",
+      "#C8BFFF", "#D4CCFF", "#E0D9FF", "#ECE6FF", "#F8F3FF"
+    ],
+    colorOptions4: [
+      "#FFD966", "#FFE27C", "#FFED93", "#FFF7AA", "#FFFFC1",
+      "#FFFFD8", "#FFFFEF", "#FFFFF6", "#FFFFFD", "#FFFFFF"
+    ],
+    colorOptions5: [
+      "#FF5074", "#FF5D86", "#FF6A98", "#FF77AA", "#FF84BC",
+      "#FF91CE", "#FF9EE0", "#FFABF2", "#FFB8FF", "#FFC5FF"
+    ],
+    colorOptions6: [
+      "#5CCCCC", "#6CD8D8", "#7DE4E4", "#8EF0F0", "#9FFCFC",
+      "#B0FFFF", "#C1FFFF", "#D2FFFF", "#E3FFFF", "#F4FFFF"
+    ],
+    colorOptions7: [
+      "#FF50FF", "#FF5DFF", "#FF6AFF", "#FF77FF", "#FF84FF",
+      "#FF91FF", "#FF9EFF", "#FFABFF", "#FFB8FF", "#FFC5FF"
+    ],
+    colorOptions8: [
+      "#BFFF50", "#CCFF5D", "#D9FF6A", "#E6FF77", "#F3FF84",
+      "#FFFF91", "#FFFF9E", "#FFFFAB", "#FFFFB8", "#FFFFC5"
+    ],
+    colorOptions9: [
+      "#50A3A3", "#5DAFBF", "#6ABBD8", "#77C7EE", "#84D3FF",
+      "#91DFFF", "#9EEBFF", "#ABF7FF", "#B8FFFF", "#C5FFFF"
+    ]
+     
+}
 };
 
 export default config;
