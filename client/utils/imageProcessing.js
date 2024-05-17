@@ -3,16 +3,14 @@ import path from 'path';
 import varConfig from './variablesConfig';
 
 export const composeIMG = async (paddedEntropy,  entityGeneration) => {
-  console.log(paddedEntropy, entityGeneration);
+  console.log("starting next image:", paddedEntropy, entityGeneration);
   try {
     const baseCharacterBuffer = await baseCharacterImg(entityGeneration, paddedEntropy);
-    console.log('Base Character Buffer Length:', baseCharacterBuffer.length);
 
     const variablesImgBuffer = await variablesLayer(
       paddedEntropy,
       entityGeneration
     );
-    console.log('Variables Image Buffer Length:', variablesImgBuffer.length);
 
     if (!baseCharacterBuffer || !variablesImgBuffer) {
       console.error('One of the image buffers is invalid');
@@ -21,8 +19,8 @@ export const composeIMG = async (paddedEntropy,  entityGeneration) => {
 
     const composedImage = await sharp({
       create: {
-        width: 2048,
-        height: 2048,
+        width: 3000,
+        height: 3000,
         channels: 4,
         background: { r: 173, g: 216, b: 230, alpha: 1 },
       },
@@ -49,15 +47,10 @@ const variablesLayer = async (paddedEntropy, entityGeneration) => {
   const optionIndex2 = parseInt(entropy[1]) % varConfig.varOptions.varOptions2.length;
   const optionIndex3 = parseInt(entropy[2]) % varConfig.varOptions.varOptions3.length;
   const optionIndex4 = parseInt(entropy[3]) % varConfig.varOptions.varOptions4.length;
-
-  console.log(`Entropy: ${entropy}`);
-  console.log(`Entropy length: ${entropy.length}`);
-
   const color1ArrayIndex = parseInt(entropy[5]); 
   const color2ArrayIndex = parseInt(entropy[4]);
   const color3ArrayIndex = parseInt(entropy[3]); 
   const color4ArrayIndex = parseInt(entropy[2]); 
- console.log('color1ArrayIndex:', color1ArrayIndex, 'color2ArrayIndex:', color2ArrayIndex, 'color3ArrayIndex:', color3ArrayIndex, 'color4ArrayIndex:', color4ArrayIndex)
   const color1 =
   varConfig.colorOptions[`colorOptions${color1ArrayIndex}`][
     parseInt(entropy[5]) % varConfig.colorOptions[`colorOptions${color1ArrayIndex}`].length
@@ -74,10 +67,14 @@ const color4 =
   varConfig.colorOptions[`colorOptions${color4ArrayIndex}`][
     parseInt(entropy[2]) % varConfig.colorOptions[`colorOptions${color4ArrayIndex}`].length
   ];
-
-  console.log(
-    `color1: ${color1}, color2: ${color2}, color3: ${color3}, color4: ${color4}`
-  );
+  const color5 =
+  varConfig.colorOptions2[`colorOptions${color3ArrayIndex}`][
+    parseInt(entropy[3]) % varConfig.colorOptions2[`colorOptions${color3ArrayIndex}`].length
+  ];
+const color6 =
+  varConfig.colorOptions2[`colorOptions${color4ArrayIndex}`][
+    parseInt(entropy[2]) % varConfig.colorOptions2[`colorOptions${color4ArrayIndex}`].length
+  ];
 
 
   let varImage1 = await tintVariables(
@@ -87,7 +84,7 @@ const color4 =
       varConfig.varPaths.varPath1,
       `${varConfig.varOptions.varOptions1[optionIndex1]}.png`
     ),
-    color1, color4
+    color1, color5
   );
   let varImage2 = await tintVariables(
     path.join(
@@ -96,7 +93,7 @@ const color4 =
       varConfig.varPaths.varPath2,
       `${varConfig.varOptions.varOptions2[optionIndex2]}.png`
     ),
-    color4, color3
+    color2, color6
   );
   let varImage3 = await tintVariables(
     path.join(
@@ -105,7 +102,7 @@ const color4 =
       varConfig.varPaths.varPath3,
       `${varConfig.varOptions.varOptions3[optionIndex3]}.png`
     ),
-    color2, color1
+    color3, color5
   );
   let varImage4 = await tintVariables(
     path.join(
@@ -114,13 +111,13 @@ const color4 =
       varConfig.varPaths.varPath4,
       `${varConfig.varOptions.varOptions4[optionIndex4]}.png`
     ),
-    color2, color4
+    color4, color6
   );
 
   let baseImage = sharp({
     create: {
-      width: 2048,
-      height: 2048,
+      width: 3000,
+      height: 3000,
       channels: 4,
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     },
@@ -150,14 +147,9 @@ const baseCharacterImg = async (
     `baseCharacter_${generation}.png`
   );
 
-  console.log(`Looking for image at: ${imagePath}`);
-
   const hexColorWhite = varConfig.colorOptions.characterColorOptions1[parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions1.length];
-  const hexColorGrey = varConfig.colorOptions.characterColorOptions2[parseInt(entropy[2]) % varConfig.colorOptions.characterColorOptions2.length];
-  console.log(`White color index: ${parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions1.length}, Color: ${hexColorWhite}`);
-  console.log(`Grey color index: ${parseInt(entropy[2]) % varConfig.colorOptions.characterColorOptions2.length}, Color: ${hexColorGrey}`);
+  const hexColorGrey = varConfig.colorOptions.characterColorOptions2[parseInt(entropy[5]) % varConfig.colorOptions.characterColorOptions2.length];
   let baseCharacter = sharp(imagePath);
-  console.log('initiating tint with colors:', hexColorWhite, hexColorGrey)
   baseCharacter = await tintCharacter(imagePath, hexColorWhite, hexColorGrey);
 
   if (overlayBuffer) {
@@ -170,7 +162,6 @@ const baseCharacterImg = async (
 };
 
 const tintCharacter = async (imagePath, hexColorWhite, hexColorGrey) => {
-  console.log('Tinting character with colors:', hexColorWhite, hexColorGrey);
   const rgbWhite = hexToRgb(hexColorWhite);
   const rgbGrey = hexToRgb(hexColorGrey);
 
@@ -203,7 +194,6 @@ const tintCharacter = async (imagePath, hexColorWhite, hexColorGrey) => {
 };
 
 const tintVariables = async (imagePath, firstColor, secondColor) => {
-  console.log('Tinting character with colors:', firstColor, secondColor);
   const rgbWhite = hexToRgb(firstColor);
   const rgbGrey = hexToRgb(secondColor);
 

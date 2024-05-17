@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
 import orangeBorder from '@/public/images/orangeborder.png';
@@ -15,28 +15,48 @@ export const EntityCard = ({
   borderType = 'blue',
   wrapperClass,
 }) => {
-  const [localEntropy, setLocalEntropy] = useState(entropy || entity?.entropy);
+  const [localEntropy, setLocalEntropy] = useState(entropy);
 
- useEffect(() => {
-    if (!localEntropy && listing) {
-      getEntityEntropy(listing)
-        .then(fetchedEntropy => {
-          setLocalEntropy(fetchedEntropy.toString());
-        })
-        .catch(error => {
-          console.error('Failed to fetch entropy:', error);
-        });
+  const isEntropy = async () => {
+    if (entropy) return;
+    let newEntropy = null;
+    if (entity) {
+      console.log('Fetching entropy for entity:', entity);
+      newEntropy = await getEntityEntropy(entity);
+    } else if (listing) {
+      console.log('Fetching entropy for listing:', listing);
+      newEntropy = await getEntityEntropy(listing);
+    } else if (tokenId) {
+      console.log('Fetching entropy for tokenId:', tokenId);
+      newEntropy = await getEntityEntropy(tokenId);
     }
-  }, [localEntropy, listing]);
 
-  const paddedEntropy = localEntropy?.toString().padStart(6, '0');
-  const calculateUri = (entropy, generation) => {
-    return `${entropy}_${generation}`;
+    if (newEntropy) {
+      setLocalEntropy(newEntropy.toString());
+    } else {
+      console.error('Failed to fetch entropy');
+    }
   };
-  const uri = calculateUri(paddedEntropy, 4);
 
-  const { role, forgePotential, performanceFactor, nukeFactor } =
-    calculateEntityAttributes(paddedEntropy);
+  useEffect(() => {
+    if (!localEntropy && (entity || listing || tokenId)) {
+      isEntropy();
+    }
+  }, [entity, listing, localEntropy, tokenId]);
+
+  console.log("localEntropy:", localEntropy);
+
+  if (!localEntropy) {
+    return null; 
+  }
+
+  const paddedEntropy = localEntropy.padStart(6, '0');
+  const calculateUri = (paddedEntropy, generation) => {
+    return `${paddedEntropy}_${generation}`;
+  };
+  const uri = calculateUri(paddedEntropy, 1);
+
+  const { role, forgePotential, performanceFactor, nukeFactor } = calculateEntityAttributes(paddedEntropy);
 
   let activeBorder;
 
