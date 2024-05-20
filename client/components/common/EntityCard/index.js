@@ -104,7 +104,7 @@ export const EntityCard = ({
           height={300}
         />
       </div>
-      <div className="py-5 mb-5 h-full text-sm md:text-[18px]">
+      <div className="py-5 mt-5 mb-5 h-full text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
         {showPrice && <h4 className="">{price} ETH</h4>}
         </div>

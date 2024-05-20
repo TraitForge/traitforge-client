@@ -72,7 +72,7 @@ const Home = () => {
 
   return (
     <div
-      className="mint-container h-[100vh]"
+      className="mint-container mt-24 h-full"
       style={{
         backgroundImage: "url('/images/home.png')",
         backgroundPosition: 'center',
@@ -86,7 +86,7 @@ const Home = () => {
       >
         Mint your traitforge entity
       </span>
-      <div className="w-full pb-10 flex justify-center">
+      <div className="w-full flex justify-center">
         <Slider />
       </div>
       <div className="max-md:px-5 flex flex-col">
@@ -95,7 +95,7 @@ const Home = () => {
           bg="#023340"
           borderColor="#0ADFDB"
           text={`Mint 1 For ${entityPrice} ETH`}
-          style={{ marginBottom: '20px' }}
+          style={{ marginBottom: '25px' }}
         />
         <Button
           onClick={() => setModalOpen(true)}
