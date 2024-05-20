@@ -128,3 +128,15 @@ export const getEntityEntropyHook = async (walletProvider, listing) => {
   const entityEntropy = await TraitForgeContract.getTokenEntropy(listing);
   return entityEntropy;
 };
+
+export const getEntityGenerationHook = async (walletProvider, entity) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const signer = await ethersProvider.getSigner();
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,  
+    contractsConfig.traitForgeNftAbi,     
+    signer
+  );
+  const entityGeneration = await TraitForgeContract.getTokenGeneration(entity);
+  return entityGeneration;
+};

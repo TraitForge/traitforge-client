@@ -5,7 +5,7 @@ import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
-import { calculateEntityAttributes, getEntityEntropyHook } from '@/utils/utils';
+import { calculateEntityAttributes, getEntityEntropyHook, getEntityGenerationHook } from '@/utils/utils';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
 
@@ -22,25 +22,37 @@ export const EntityCard = ({
 }) => {
   const { walletProvider } = useWeb3ModalProvider();
   const [localEntropy, setLocalEntropy] = useState(entropy);
-
+  const [localGeneration, setLocalGeneration] = useState(null); 
+  
   const isEntropy = async () => {
     if (entropy) return;
     let newEntropy = null;
+    let newGeneration = null;
+
     if (entity !== undefined && entity !== null) {
       console.log('Fetching entropy for entity:', entity);
       newEntropy = await getEntityEntropyHook(walletProvider, entity);
+      newGeneration = await getEntityGenerationHook(walletProvider, entity);
     } else if (listing !== undefined && listing !== null) {
       console.log('Fetching entropy for listing:', listing);
       newEntropy = await getEntityEntropyHook(walletProvider, listing);
+      newGeneration = await getEntityGenerationHook(walletProvider, listing);
     } else if (tokenId !== undefined && tokenId !== null) {
       console.log('Fetching entropy for tokenId:', tokenId);
       newEntropy = await getEntityEntropyHook(walletProvider, tokenId);
+      newGeneration = await getEntityGenerationHook(walletProvider, tokenId);
     }
 
     if (newEntropy) {
       setLocalEntropy(newEntropy.toString());
     } else {
       console.error('Failed to fetch entropy');
+    }
+
+    if (newGeneration) {
+      setLocalGeneration(newGeneration.toString());
+    } else {
+      console.error('Failed to fetch generation');
     }
   };
 
@@ -49,16 +61,16 @@ export const EntityCard = ({
       isEntropy();
     }
   }, [entity, listing, localEntropy, tokenId]);
-
+console.log("gen:", localGeneration)
   if (!localEntropy) {
     return null; 
   }
 
   const paddedEntropy = localEntropy.toString().padStart(6, '0');
-  const calculateUri = (paddedEntropy, generation) => {
-    return `${paddedEntropy}_${generation}`;
+  const calculateUri = (paddedEntropy, localGeneration) => {
+    return `${paddedEntropy}_${localGeneration}`;
   };
-  const uri = calculateUri(paddedEntropy, 3);
+  const uri = calculateUri(paddedEntropy, localGeneration);
 
   const { role, forgePotential, performanceFactor, nukeFactor } = calculateEntityAttributes(paddedEntropy);
 
@@ -107,6 +119,7 @@ export const EntityCard = ({
       <div className="py-5 mt-5 mb-5 h-full text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
         {showPrice && <h4 className="">{price} ETH</h4>}
+        <h4>GEN:{localGeneration}</h4>
         </div>
         <h4 className="card-name">{role}</h4> 
         <h4 className="">Forge Potential: {forgePotential}</h4>
