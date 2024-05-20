@@ -3,7 +3,10 @@ import Image from 'next/image';
 import classNames from 'classnames';
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
-import { calculateEntityAttributes, getEntityEntropy } from '@/utils/utils';
+import purpleBorder from '@/public/images/purpleBorder.svg';
+import greenBorder from '@/public/images/greenBorder.svg';
+import { calculateEntityAttributes, getEntityEntropyHook } from '@/utils/utils';
+import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
 
 export const EntityCard = ({
@@ -12,23 +15,28 @@ export const EntityCard = ({
   tokenId,
   listing,
   price,
+  onSelect,
   borderType = 'blue',
   wrapperClass,
+  showPrice,
 }) => {
+  const { walletProvider } = useWeb3ModalProvider();
   const [localEntropy, setLocalEntropy] = useState(entropy);
-
+  
   const isEntropy = async () => {
     if (entropy) return;
     let newEntropy = null;
-    if (entity) {
+    let newGeneration = null;
+
+    if (entity !== undefined && entity !== null) {
       console.log('Fetching entropy for entity:', entity);
-      newEntropy = await getEntityEntropy(entity);
-    } else if (listing) {
+      newEntropy = await getEntityEntropyHook(walletProvider, entity);
+    } else if (listing !== undefined && listing !== null) {
       console.log('Fetching entropy for listing:', listing);
-      newEntropy = await getEntityEntropy(listing);
-    } else if (tokenId) {
+      newEntropy = await getEntityEntropyHook(walletProvider, listing);
+    } else if (tokenId !== undefined && tokenId !== null) {
       console.log('Fetching entropy for tokenId:', tokenId);
-      newEntropy = await getEntityEntropy(tokenId);
+      newEntropy = await getEntityEntropyHook(walletProvider, tokenId);
     }
 
     if (newEntropy) {
@@ -39,22 +47,19 @@ export const EntityCard = ({
   };
 
   useEffect(() => {
-    if (!localEntropy && (entity || listing || tokenId)) {
+    if (!localEntropy && (entity !== undefined && entity !== null || listing !== undefined && listing !== null || tokenId !== undefined && tokenId !== null)) {
       isEntropy();
     }
   }, [entity, listing, localEntropy, tokenId]);
-
-  console.log("localEntropy:", localEntropy);
-
   if (!localEntropy) {
     return null; 
   }
 
-  const paddedEntropy = localEntropy.padStart(6, '0');
-  const calculateUri = (paddedEntropy, generation) => {
-    return `${paddedEntropy}_${generation}`;
+  const paddedEntropy = localEntropy.toString().padStart(6, '0');
+  const calculateUri = (paddedEntropy, localGeneration) => {
+    return `${paddedEntropy}_${localGeneration}`;
   };
-  const uri = calculateUri(paddedEntropy, 1);
+  const uri = calculateUri(paddedEntropy, '3');
 
   const { role, forgePotential, performanceFactor, nukeFactor } = calculateEntityAttributes(paddedEntropy);
 
@@ -67,12 +72,21 @@ export const EntityCard = ({
     case 'blue':
       activeBorder = blueBorder;
       break;
+    case 'purple':
+      activeBorder = purpleBorder;
+      break;
+    case 'green':
+      activeBorder = greenBorder;
+      break;
+    default:
+      activeBorder = blueBorder; 
   }
 
   const wrapperClasses = classNames('mx-5', styles.cardContainer, wrapperClass);
 
   return (
     <div
+    onClick={onSelect}
       className={wrapperClasses}
       style={{
         backgroundImage: `url("${activeBorder.src}")`,
@@ -91,9 +105,9 @@ export const EntityCard = ({
           height={300}
         />
       </div>
-      <div className="py-5 mb-5 h-full text-sm md:text-[18px]">
+      <div className="py-5 mt-5 mb-5 h-full text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
-          <h4 className="">{price} ETH</h4>
+        {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
         <h4 className="card-name">{role}</h4> 
         <h4 className="">Forge Potential: {forgePotential}</h4>

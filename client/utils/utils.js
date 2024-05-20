@@ -90,42 +90,53 @@ export const getEntitiesForSaleHook = async infuraProvider => {
 };
 
 export const getOwnersEntitiesHook = async walletProvider => {
-  const ethersProvider = new ethers.BrowserProvider(walletProvider);
-  const signer = await ethersProvider.getSigner();
-  const address = await signer.getAddress();
-  const TraitForgeContract = new ethers.Contract(
-    contractsConfig.traitForgeNftAddress,
-    contractsConfig.traitForgeNftAbi,
-    ethersProvider
-  );
-  const balance = await TraitForgeContract.balanceOf(address);
-  const fetchPromises = [];
-
-  for (let i = 0; i < balance; i++) {
-    fetchPromises.push(
-      (async () => {
-        const tokenId = await TraitForgeContract.tokenOfOwnerByIndex(
-          address,
-          i
-        );
-        const entropy = await TraitForgeContract.getTokenEntropy(tokenId);
-        return { tokenId: tokenId.toString(), entropy };
-      })()
+  try {
+    const ethersProvider = new ethers.BrowserProvider(walletProvider);
+    const signer = await ethersProvider.getSigner();
+    const address = await signer.getAddress();
+    const TraitForgeContract = new ethers.Contract(
+      contractsConfig.traitForgeNftAddress,
+      contractsConfig.traitForgeNftAbi,
+      ethersProvider
     );
+
+    const balance = await TraitForgeContract.balanceOf(address);
+    console.log("entity balance:", balance)
+    const fetchPromises = [];
+
+    for (let i = 0; i < balance; i++) {
+      fetchPromises.push(TraitForgeContract.tokenOfOwnerByIndex(address, i));
+    }
+
+    const entities = await Promise.all(fetchPromises);
+    console.log("context entities", entities)
+    return entities;
+  } catch (error) {
+    console.error("Error fetching owner's entities:", error);
+    throw error;
   }
-
-  const entities = await Promise.all(fetchPromises);
-
-  return entities;
 };
 
-export const getEntityEntropy = async (listing, infuraProvider) => {
-  const ethersProvider = new ethers.JsonRpcProvider(infuraProvider);
+export const getEntityEntropyHook = async (walletProvider, listing) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const signer = await ethersProvider.getSigner();
   const TraitForgeContract = new ethers.Contract(
     contractsConfig.traitForgeNftAddress,  
     contractsConfig.traitForgeNftAbi,     
-    ethersProvider
+    signer
   );
   const entityEntropy = await TraitForgeContract.getTokenEntropy(listing);
   return entityEntropy;
+};
+
+export const getEntityGenerationHook = async (walletProvider, entity) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const signer = await ethersProvider.getSigner();
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,  
+    contractsConfig.traitForgeNftAbi,     
+    signer
+  );
+  const entityGeneration = await TraitForgeContract.getTokenGeneration(entity);
+  return entityGeneration;
 };

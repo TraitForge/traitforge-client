@@ -165,6 +165,10 @@ contract TraitForgeNft is
     return tokenEntropy[tokenId];
   }
 
+  function getTokenGeneration(uint256 tokenId) public view returns (uint256) {
+      return tokenGenerations[tokenId];
+  }
+
   function getEntropiesForTokens(
     uint256 forgerTokenId,
     uint256 mergerTokenId
