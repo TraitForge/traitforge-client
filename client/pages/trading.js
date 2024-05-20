@@ -88,9 +88,8 @@ const Marketplace = observer(() => {
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
           {ownerEntities.map(entity => (
             <EntityCard
-              key={entity.tokenId}
-              entropy={entity.entropy}
-              entity={entity.tokenId}
+              key={entity}
+              entity={entity}
               onSelect={() => setSelectedForSale(entity)}
             />
           ))}

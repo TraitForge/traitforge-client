@@ -3,7 +3,8 @@ import Image from 'next/image';
 import classNames from 'classnames';
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
-import { calculateEntityAttributes, getEntityEntropy } from '@/utils/utils';
+import { calculateEntityAttributes, getEntityEntropyHook } from '@/utils/utils';
+import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
 
 export const EntityCard = ({
@@ -15,20 +16,21 @@ export const EntityCard = ({
   borderType = 'blue',
   wrapperClass,
 }) => {
+  const { walletProvider } = useWeb3ModalProvider();
   const [localEntropy, setLocalEntropy] = useState(entropy);
 
   const isEntropy = async () => {
     if (entropy) return;
     let newEntropy = null;
-    if (entity) {
+    if (entity !== undefined && entity !== null) {
       console.log('Fetching entropy for entity:', entity);
-      newEntropy = await getEntityEntropy(entity);
-    } else if (listing) {
+      newEntropy = await getEntityEntropyHook(walletProvider, entity);
+    } else if (listing !== undefined && listing !== null) {
       console.log('Fetching entropy for listing:', listing);
-      newEntropy = await getEntityEntropy(listing);
-    } else if (tokenId) {
+      newEntropy = await getEntityEntropyHook(walletProvider, listing);
+    } else if (tokenId !== undefined && tokenId !== null) {
       console.log('Fetching entropy for tokenId:', tokenId);
-      newEntropy = await getEntityEntropy(tokenId);
+      newEntropy = await getEntityEntropyHook(walletProvider, tokenId);
     }
 
     if (newEntropy) {
@@ -39,22 +41,20 @@ export const EntityCard = ({
   };
 
   useEffect(() => {
-    if (!localEntropy && (entity || listing || tokenId)) {
+    if (!localEntropy && (entity !== undefined && entity !== null || listing !== undefined && listing !== null || tokenId !== undefined && tokenId !== null)) {
       isEntropy();
     }
   }, [entity, listing, localEntropy, tokenId]);
-
-  console.log("localEntropy:", localEntropy);
 
   if (!localEntropy) {
     return null; 
   }
 
-  const paddedEntropy = localEntropy.padStart(6, '0');
+  const paddedEntropy = localEntropy.toString().padStart(6, '0');
   const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;
   };
-  const uri = calculateUri(paddedEntropy, 1);
+  const uri = calculateUri(paddedEntropy, 3);
 
   const { role, forgePotential, performanceFactor, nukeFactor } = calculateEntityAttributes(paddedEntropy);
 

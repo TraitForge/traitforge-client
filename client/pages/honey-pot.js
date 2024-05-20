@@ -21,9 +21,8 @@ const HoneyPot = () => {
             <div className="grid grid-cols-3 lg:grid-cols-5 lg:px-20 gap-x-[15px] gap-y-5 md:gap-y-10">
               {ownerEntities.map(entity => (
                 <EntityCard
-                  key={entity.tokenId}
-                  tokenId={entity.tokenId}
-                  entropy={entity.entropy}
+                  key={entity}
+                  tokenId={entity}
                 />
               ))}
             </div>

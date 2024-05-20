@@ -16,7 +16,9 @@ import {
   getUpcomingMintsHook,
   getEntitiesForSaleHook,
   getOwnersEntitiesHook,
+  getEntityEntropyHook
 } from './utils';
+import { get } from 'jquery';
 
 const AppContext = createContext();
 const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
@@ -26,6 +28,7 @@ const ContextProvider = ({ children }) => {
   const [usdAmount, setUsdAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [entityPrice, setEntityPrice] = useState(null);
+  const [entityEntropy, setEntityEntropy] = useState('');
   const [ownerEntities, setOwnerEntities] = useState([]);
   const [address, setAddress] = useState('');
   const [entitiesForSale, setEntitiesForSale] = useState([]);
@@ -74,6 +77,16 @@ const ContextProvider = ({ children }) => {
     } catch (error) {
       console.error('Failed to fetch entities for forging:', error);
       setEntitiesForForging([]);
+    }
+  };
+
+  const getEntityEntropy = async (listing) => {
+    if(!walletProvider) return;
+    try {
+      const entityEntropy = await getEntityEntropyHook(walletProvider, listing);
+      setEntityEntropy(entityEntropy);
+    } catch (error) {
+      console.error("Error fetching entity entropy:", error);
     }
   };
 
@@ -244,6 +257,8 @@ const ContextProvider = ({ children }) => {
         entitiesForForging,
         getEntitiesForForging,
         entitiesForSale,
+        getEntityEntropy,
+        entityEntropy,
         getEntitiesForSale,
       }}
     >
