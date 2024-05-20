@@ -3,6 +3,8 @@ import Image from 'next/image';
 import classNames from 'classnames';
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
+import purpleBorder from '@/public/images/purpleBorder.svg';
+import greenBorder from '@/public/images/greenBorder.svg';
 import { calculateEntityAttributes, getEntityEntropyHook } from '@/utils/utils';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
@@ -13,8 +15,10 @@ export const EntityCard = ({
   tokenId,
   listing,
   price,
+  onSelect,
   borderType = 'blue',
   wrapperClass,
+  showPrice,
 }) => {
   const { walletProvider } = useWeb3ModalProvider();
   const [localEntropy, setLocalEntropy] = useState(entropy);
@@ -67,12 +71,21 @@ export const EntityCard = ({
     case 'blue':
       activeBorder = blueBorder;
       break;
+    case 'purple':
+      activeBorder = purpleBorder;
+      break;
+    case 'green':
+      activeBorder = greenBorder;
+      break;
+    default:
+      activeBorder = blueBorder; 
   }
 
   const wrapperClasses = classNames('mx-5', styles.cardContainer, wrapperClass);
 
   return (
     <div
+    onClick={onSelect}
       className={wrapperClasses}
       style={{
         backgroundImage: `url("${activeBorder.src}")`,
@@ -93,7 +106,7 @@ export const EntityCard = ({
       </div>
       <div className="py-5 mb-5 h-full text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
-          <h4 className="">{price} ETH</h4>
+        {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
         <h4 className="card-name">{role}</h4> 
         <h4 className="">Forge Potential: {forgePotential}</h4>

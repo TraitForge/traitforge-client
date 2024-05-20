@@ -12,7 +12,7 @@ import { createContract } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
-  const { ownerEntities, entitiesForSale, getEntitiesForSale } =
+  const { ownerEntities, entitiesForSale, getEntitiesForSale, walletProvider } =
     useContextState();
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [sortOption, setSortOption] = useState('all');
@@ -81,7 +81,7 @@ const Marketplace = observer(() => {
 
   switch (step) {
     case 'three':
-      content = <SellEntity selectedForSale={selectedForSale} />;
+      content = <SellEntity selectedForSale={selectedForSale} listEntityForSale={listEntityForSale}/>;
       break;
     case 'two':
       content = (
@@ -90,7 +90,12 @@ const Marketplace = observer(() => {
             <EntityCard
               key={entity}
               entity={entity}
-              onSelect={() => setSelectedForSale(entity)}
+              borderType='green'
+              onSelect={() => {
+                 setSelectedForSale(entity)
+                 setStep('three')
+                 console.log("selected entity")
+               }}
             />
           ))}
         </div>
@@ -107,7 +112,9 @@ const Marketplace = observer(() => {
                 <EntityCard
                   key={listing.tokenId}
                   entity={listing.tokenId}
+                  borderType='green'
                   onSelect={() => setSelectedListing(listing)}
+                  showPrice={listing.price}
                 />
               ))}
             </div>

@@ -73,6 +73,7 @@ const Slider = observer(() => {
                     entropy={mint.entropy}
                     index={index}
                     price={price}
+                    showPrice
                   />
                 </SwiperSlide>
               );

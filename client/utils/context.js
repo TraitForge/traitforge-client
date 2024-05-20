@@ -250,6 +250,7 @@ const ContextProvider = ({ children }) => {
         isLoading,
         transactions,
         infuraProvider,
+        walletProvider,
         ownerEntities,
         setIsLoading,
         getOwnersEntities,

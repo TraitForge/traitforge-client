@@ -64,6 +64,7 @@ export const SelectEntityList = ({
               entity={listing}
               index={index}
               onClick={() => handleSelectedFromPool(listing)}
+              showPrice
             />
           ))}
         </div>
