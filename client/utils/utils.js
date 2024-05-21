@@ -3,12 +3,13 @@ import { ethers } from 'ethers';
 import { contractsConfig } from './contractsConfig';
 
 export function calculateEntityAttributes(paddedEntropy) {
-  const performanceFactor = paddedEntropy.toString() % 10;
-  const lastTwoDigits = paddedEntropy.toString() % 100;
+  const paddedEntropyNumber = Number(paddedEntropy);
+  const performanceFactor = paddedEntropyNumber % 10;
+  const lastTwoDigits = paddedEntropyNumber % 100;
   const forgePotential = Math.floor(lastTwoDigits / 10);
-  const nukeFactor = Number((paddedEntropy / 40000).toFixed(3));
+  const nukeFactor = Number((paddedEntropyNumber / 40000).toFixed(3));
   let role;
-  const result = paddedEntropy.toString() % 3;
+  const result = paddedEntropyNumber % 3;
   if (result === 0) {
     role = 'Forger';
   } else {
@@ -126,7 +127,7 @@ export const getEntityEntropyHook = async (walletProvider, listing) => {
     signer
   );
   const entityEntropy = await TraitForgeContract.getTokenEntropy(listing);
-  return entityEntropy;
+  return entityEntropy.toString();
 };
 
 export const getEntityGenerationHook = async (walletProvider, entity) => {
@@ -139,4 +140,16 @@ export const getEntityGenerationHook = async (walletProvider, entity) => {
   );
   const entityGeneration = await TraitForgeContract.getTokenGeneration(entity);
   return entityGeneration;
+};
+
+export const isForger = async (walletProvider, entity) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const signer = await ethersProvider.getSigner();
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,  
+    contractsConfig.traitForgeNftAbi,     
+    signer
+  );
+  const isForger = await TraitForgeContract.isForger(entity);
+  return isForger;
 };

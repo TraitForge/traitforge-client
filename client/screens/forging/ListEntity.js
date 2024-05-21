@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
-import { EntityCard, FiltersHeader } from '@/components';
+import React, { useState, useEffect } from 'react';
+import styles from '@/styles/forging.module.scss';
+import { EntityCard } from '@/components';
+import { ListingHeader } from '@/screens/forging/ListingHeader';
 import { isForger } from '@/utils/utils';
 
-export const WalletEntityModal = ({ ownerEntities, walletProvider, handleSelectedFromWallet }) => {
+export const ListEntity = ({ ownerEntities, walletProvider, handleStep, setSelectedForListing }) => {
   const [filteredEntities, setFilteredEntities] = useState([]);
 
   useEffect(() => {
@@ -11,7 +13,7 @@ export const WalletEntityModal = ({ ownerEntities, walletProvider, handleSelecte
         const results = await Promise.all(ownerEntities.map(async (entity) => {
           const isEntityForger = await isForger(walletProvider, entity);
           console.log("isForger:", isEntityForger);
-          if (!isEntityForger !== false) {
+          if (!isEntityForger === false) {
             return entity;
           }
           return null;
@@ -29,27 +31,22 @@ export const WalletEntityModal = ({ ownerEntities, walletProvider, handleSelecte
   }, [ownerEntities, walletProvider]);
 
   return (
-    <div className="bg-dark-81 md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[70vw] md:rounded-[30px] py-10 px-5 flex flex-col">
-      <div className="border-b border-white mb-10">
-        <h3 className="text-center pb-10 text-[40px] uppercase font-bebas-neue">
-          Select From Wallet
-        </h3>
-        <FiltersHeader
-          color="orange"
-          filterOptions={['mergers']}
+    <div className={styles.forgingPage2}>
+      <div className="container pt-16 md:pt-[134px] flex flex-col h-full">
+        <ListingHeader
+          handleStep={handleStep}
+          step="two"
         />
-      </div>
-      <div className="flex-1 overflow-y-scroll">
-        <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 md:gap-y-10">
+        <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
           {filteredEntities?.map(entity => (
             <EntityCard
-              key={entity}
+              key={entity.id}
               entity={entity}
               borderType='orange'
               onSelect={() => {
-                 handleSelectedFromWallet(entity)
-                console.log("entityid:", entity)
-                }}
+                 setSelectedForListing(entity);
+                 handleStep('three');
+               }}
             />
           ))}
         </div>
@@ -57,3 +54,5 @@ export const WalletEntityModal = ({ ownerEntities, walletProvider, handleSelecte
     </div>
   );
 };
+
+export default ListEntity;

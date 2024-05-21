@@ -7,6 +7,7 @@ export { default as LoadingSpinner } from './common/LoadingSpinner';
 export { default as TransactionsDisplay } from './common/TransactionsDisplay';
 export { default as BudgetModal } from './common/BudgetModal'
 export { Button } from './common/buttons/Button';
+export { Button2 } from './common/buttons/Button2';
 export { EntityCard } from './common/EntityCard';
 export { default as Modal } from './common/Modal';
 
