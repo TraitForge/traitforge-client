@@ -178,29 +178,30 @@ const config = {
       "#00A4C0"  // Ultra Navy Blue
     ],
     characterColorOptions1: [
-      '#5CA6A6', // Darker and More Saturated Cyan
-      '#c05bb6', // Darker and More Saturated Neon Purple
-      '#6690CC', // Darker and More Saturated Bright Blue
-      '#CC6A40', // Darker and More Saturated Orange Red
-      '#CC66CC', // Darker and More Saturated Magenta
-      '#00CED1', // Dark Turquoise
-      '#8070CC', // Darker and More Saturated Neon Periwinkle
-      '#800000', // Darker and More Saturated Maroon
-      '#8E4ACC', // Darker and More Saturated Dark Violet
-      '#474C5A', // Darker and More Saturated Deep Space Blue
+      '#D2A486', // Darker Light Skin Tone
+      '#B07D62', // Medium Skin Tone
+      '#6B4423', // Dark Skin Tone
+      '#D3D3D3', // Light Metal (Silver)
+      '#A9A9A9', // Medium Metal (Gray)
+      '#8B4513', // Dark Metal (Bronze)
+      '#708090', // Slate Gray (Steel)
+      '#2F4F4F', // Dark Slate Gray (Steel)
+      '#B0C4DE', // Light Blue Steel
+      '#4682B4', // Dark Blue Steel
     ],
     characterColorOptions2: [
-      '#3C8585', // Even Darker version of Darker and More Saturated Cyan
-      '#8C3C80', // Even Darker version of Darker and More Saturated Neon Purple
-      '#4C6C99', // Even Darker version of Darker and More Saturated Bright Blue
-      '#994730', // Even Darker version of Darker and More Saturated Orange Red
-      '#993C99', // Even Darker version of Darker and More Saturated Magenta
-      '#008B8B', // Dark Cyan
-      '#604D99', // Even Darker version of Darker and More Saturated Neon Periwinkle
-      '#5B0000', // Even Darker version of Darker and More Saturated Maroon
-      '#663399', // Even Darker version of Darker and More Saturated Dark Violet
-      '#2C3038', // Even Darker version of Darker and More Saturated Deep Space Blue
-    ]    
+      '#8A5D3B', // Shadow for Darker Light Skin Tone
+      '#8A5D3B', // Shadow for Medium Skin Tone
+      '#4B2C14', // Shadow for Dark Skin Tone
+      '#A9A9A9', // Shadow for Light Metal (Silver)
+      '#696969', // Shadow for Medium Metal (Gray)
+      '#5A3311', // Shadow for Dark Metal (Bronze)
+      '#4B515A', // Shadow for Slate Gray (Steel)
+      '#1C2929', // Shadow for Dark Slate Gray (Steel)
+      '#8797AF', // Shadow for Light Blue Steel
+      '#315A7B', // Shadow for Dark Blue Steel
+    ]
+         
   },
 
   colorOptions2: {

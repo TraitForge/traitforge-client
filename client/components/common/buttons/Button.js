@@ -1,12 +1,12 @@
-export const Button = ({ text, bg, borderColor, ...alt }) => (
+export const Button = ({ text, bg, borderColor, width, height, ...alt }) => (
   <button
     className="text-white relative hover:translate-y-[-2px] transition-all ease-in"
     {...alt}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="408"
-      height="92"
+      width={width}
+      height={height}
       fill="none"
       viewBox="0 0 408 92"
       className="w-full h-full"

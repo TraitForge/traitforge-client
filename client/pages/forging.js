@@ -4,7 +4,7 @@ import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
-import { Button, Button2, Modal } from '@/components';
+import { Button, Modal } from '@/components';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
 import { ListEntity } from '@/screens/forging/ListEntity';
@@ -89,9 +89,11 @@ const Forging = observer(() => {
           <div className={styles.forgeArenaContainer}>
             <div className="flex flex-row justify-center relative">
               <h1 className="text-[36px] md:text-extra-large">Forging Arena</h1>
-              <Button2
+              <Button
                 text="List for forging"
                 bg="rgba(31, 15, 0,0.6)"
+                width="200"
+                height="90"
                 borderColor="#FD8D26"
                 className="absolute top-4 right-1"
                 onClick={handleListingPage}
@@ -110,6 +112,8 @@ const Forging = observer(() => {
                 text="forge entity"
                 bg="rgba(31, 15, 0,0.6)"
                 borderColor="#FD8D26"
+                width="408"
+                height="92"
                 disabled={processing}
                 onClick={forgeEntity}
               />

@@ -1,5 +1,6 @@
 import sharp from 'sharp';
 import path from 'path';
+import BackgroundImage from '../assets/variables/backgroundfinish.png';
 import varConfig from './variablesConfig';
 
 export const composeIMG = async (paddedEntropy,  entityGeneration) => {
@@ -17,15 +18,18 @@ export const composeIMG = async (paddedEntropy,  entityGeneration) => {
       return null;
     }
 
+    const backgroundBuffer = await sharp(BackgroundImage).toBuffer();
+
     const composedImage = await sharp({
       create: {
         width: 3000,
         height: 3000,
         channels: 4,
-        background: { r: 173, g: 216, b: 230, alpha: 1 },
+        background: { r: 255, g: 255, b: 255, alpha: 0 },
       },
     })
       .composite([
+        { input: backgroundBuffer, blend: 'over' },
         { input: baseCharacterBuffer, blend: 'over' },
         { input: variablesImgBuffer, blend: 'over' },
       ])

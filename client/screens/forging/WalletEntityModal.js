@@ -11,7 +11,7 @@ export const WalletEntityModal = ({ ownerEntities, walletProvider, handleSelecte
         const results = await Promise.all(ownerEntities.map(async (entity) => {
           const isEntityForger = await isForger(walletProvider, entity);
           console.log("isForger:", isEntityForger);
-          if (!isEntityForger !== false) {
+          if (!isEntityForger) {
             return entity;
           }
           return null;
