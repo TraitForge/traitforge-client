@@ -58,7 +58,7 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
             </li>
           ))}
         </ul>
-        <div className="flex justify-center gap-x-6">
+        <div className="walletbackground flex justify-center p-1 rounded-lg gap-x-6">
           <ConnectButton />
           <button className="block lg:hidden ">
             <svg
