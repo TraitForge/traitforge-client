@@ -36,7 +36,7 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
         nftContract.isApprovedForAll(msg.sender, address(this)),
       'Contract must be approved to transfer the NFT.'
     );
-
+   
     nftContract.transferFrom(msg.sender, address(this), tokenId); // trasnfer NFT to contract
     listings[tokenId] = Listing(msg.sender, price, true); // create new listing
 

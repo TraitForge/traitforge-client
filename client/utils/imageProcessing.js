@@ -1,6 +1,5 @@
 import sharp from 'sharp';
 import path from 'path';
-import BackgroundImage from '../assets/variables/backgroundfinish.png';
 import varConfig from './variablesConfig';
 
 export const composeIMG = async (paddedEntropy,  entityGeneration) => {
@@ -18,7 +17,9 @@ export const composeIMG = async (paddedEntropy,  entityGeneration) => {
       return null;
     }
 
-    const backgroundBuffer = await sharp(BackgroundImage).toBuffer();
+    const backgroundImagePath = path.join(varConfig.variablesPath, '/backgroundfinish.png');
+    console.log('Resolved path:', backgroundImagePath);
+    const backgroundBuffer = await sharp(backgroundImagePath).toBuffer();
 
     const composedImage = await sharp({
       create: {

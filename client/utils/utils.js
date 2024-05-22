@@ -153,3 +153,16 @@ export const isForger = async (walletProvider, entity) => {
   const isForger = await TraitForgeContract.isForger(entity);
   return isForger;
 };
+
+export const calculateNukeFactor = async (walletProvider, entity) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const signer = await ethersProvider.getSigner();
+  const nukeContract = new ethers.Contract(
+    contractsConfig.nukeContractAddress,  
+    contractsConfig.nukeFundContractAbi,     
+    signer
+  );
+  const finalNukeFactor = await nukeContract.calculateNukeFactor(entity);
+  const formattedNukeFactor = (Number(finalNukeFactor) / 10000).toFixed(4).toString();
+  return formattedNukeFactor;
+};
