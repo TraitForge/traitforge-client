@@ -112,7 +112,7 @@ export const EntityCard = ({
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="IMG"
-          className="z-[-1]"
+          className="z-1"
           width={250}
           height={350}
         />

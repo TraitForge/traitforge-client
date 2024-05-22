@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { observer } from 'mobx-react';
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
@@ -13,7 +13,7 @@ import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
 const Forging = observer(() => {
-  const { ownerEntities, entitiesForForging, getEntitiesForForging } = useContextState();
+  const { ownerEntities, entitiesForForging } = useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [generationFilter, setGenerationFilter] = useState('');
@@ -24,10 +24,6 @@ const Forging = observer(() => {
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedForListing, setSelectedForListing] = useState(null);
-
-  useEffect(() => {
-    getEntitiesForForging();
-  }, []);
 
   const handleSelectedFromPool = (entity) => setSelectedFromPool(entity);
   const handleSelectedFromWallet = (entity) => setSelectedEntity(entity);

@@ -3,7 +3,7 @@ import { EntityCard, Button } from '@/components';
 
 import styles from '@/styles/trading.module.scss';
 
-export const SellEntity = ({ selectedForSale, listEntityForSale }) => {
+export const SellEntity = ({ selectedForSale, listEntityForSale, handleStep }) => {
   const [price, setPrice] = useState('');
   return (
     <div className="md:bg-dark-81 w-full md:w-1/2 mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
@@ -30,7 +30,10 @@ export const SellEntity = ({ selectedForSale, listEntityForSale }) => {
           borderColor="#0EEB81"
           bg="rba(8, 30, 14,0.8)"
           text="List for Sale"
-          onClick={() => {listEntityForSale(selectedForSale, price)}}
+          onClick={async () => {
+            await listEntityForSale(selectedForSale, price);
+            handleStep('one');
+          }}
         />
       </div>
     </div>
