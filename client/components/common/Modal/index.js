@@ -20,7 +20,7 @@ const Modal = ({ children, background, isOpen, closeModal, modalClasses }) => {
       <div
         style={modalStyle}
         onClick={e => e.stopPropagation()}
-        className={`relative bg-center bg-no-repeat bg-contain md:bg-cover`}
+        className={`relative bg-center bg-no-repeat `}
       >
         {children}
         <button

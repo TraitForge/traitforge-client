@@ -258,3 +258,25 @@ export const mintBatchEntityHandler = async (
     toast.error(`Minting entity failed`);
   }
 };
+
+export const shortenAddress = address => {
+  // Ensure the address is in the correct format
+  if (
+    typeof address !== 'string' ||
+    !address.startsWith('0x') ||
+    address.length !== 42
+  ) {
+    throw new Error('Invalid Ethereum address');
+  }
+
+  // Extract the first four characters (including '0x')
+  const firstPart = address.slice(0, 4);
+
+  // Extract the last four characters
+  const lastPart = address.slice(-4);
+
+  // Combine the parts with '......' in between
+  const shortenedAddress = `${firstPart}......${lastPart}`;
+
+  return shortenedAddress;
+};
