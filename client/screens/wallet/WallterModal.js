@@ -1,29 +1,16 @@
 import Image from 'next/image';
 import { FaWallet } from 'react-icons/fa';
-import {
-  useWeb3ModalAccount,
-  useWeb3ModalProvider,
-} from '@web3modal/ethers/react';
+import { useWeb3ModalAccount } from '@web3modal/ethers/react';
 
 import { Button, Modal } from '@/components';
-import { useEffect } from 'react';
+import { shortenAddress } from '@/utils/utils';
+import { useContextState } from '@/utils/context';
 
 export const WalletModal = ({ isOpen, closeModal }) => {
-  const { address, chainId, isConnected } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
+  const { ethAmount } = useContextState();
+  const { address } = useWeb3ModalAccount();
 
-  useEffect(() => {
-    // const getbalance = async () => {
-    //   if (!isConnected) throw Error('User disconnected');
-    //   const ethersProvider = new BrowserProvider(walletProvider);
-    //   const signer = await ethersProvider.getSigner();
-    //   // The Contract object
-    //   const USDTContract = new Contract(USDTAddress, USDTAbi, signer);
-    //   const USDTBalance = await USDTContract.balanceOf(address);
-    //   console.log(formatUnits(USDTBalance, 18));
-    // };
-    // getbalance();
-  }, []);
+  const shortAddress = shortenAddress(address);
 
   return (
     <Modal
@@ -38,9 +25,9 @@ export const WalletModal = ({ isOpen, closeModal }) => {
           width={300}
           height={5}
           alt=""
-          className="mb-5  md:mb-[73px]"
+          className="mb-3  md:mb-[53px]"
         />
-        <div className="flex items-center justify-around px-[150px] pb-5 md:pb-[66px] gap-x-[50px]">
+        <div className="flex items-center justify-around px-[150px] pb-5 md:pb-[36px] gap-x-[50px]">
           <div className="flex items-center gap-x-2.5">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +62,7 @@ export const WalletModal = ({ isOpen, closeModal }) => {
             </svg>
             <div>
               <p className="text-neutral-100  text-base">ETH</p>
-              <span className="text-white text-large">989889898</span>
+              <span className="text-white text-large">{ethAmount}</span>
             </div>
           </div>
           <div className="flex items-center gap-x-2.5">
@@ -84,7 +71,7 @@ export const WalletModal = ({ isOpen, closeModal }) => {
             </span>
             <div>
               <p className="text-neutral-100  text-base">Wallet Address</p>
-              <span className="text-white text-large">{address}</span>
+              <span className="text-white text-large">{shortAddress}</span>
             </div>
           </div>
         </div>

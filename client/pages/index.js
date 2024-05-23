@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3ModalProvider, useWeb3Modal } from '@web3modal/ethers/react';
+import { toast } from 'react-toastify';
 
 import { useContextState } from '@/utils/context';
-import { contractsConfig } from '@/utils/contractsConfig';
 import { Slider, Button, BudgetModal, LoadingSpinner } from '@/components';
-import { createContract } from '@/utils/utils';
+import { mintBatchEntityHandler, mintEntityHandler } from '@/utils/utils';
 
 const Home = () => {
   const { isLoading, setIsLoading, entityPrice } = useContextState();
@@ -15,58 +15,23 @@ const Home = () => {
   const { open } = useWeb3Modal();
   const { walletProvider } = useWeb3ModalProvider();
 
-  const mintEntityHandler = async () => {
-    if (!walletProvider) return open();
+  const handleMintEntity = async () => {
     setIsLoading(true);
-
-    try {
-      const mintContract = await createContract(
-        walletProvider,
-        contractsConfig.traitForgeNftAddress,
-        contractsConfig.traitForgeNftAbi
-      );
-      const transaction = await mintContract.mintToken({
-        value: ethers.parseEther(entityPrice),
-        gasLimit: 5000000,
-      });
-      await transaction.wait();
-      alert('Entity minted successfully');
-    } catch (error) {
-      console.error('Failed to mint entity:', error);
-      alert(`Minting entity failed: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
+    await mintEntityHandler(walletProvider, open, entityPrice);
+    setIsLoading(false);
   };
 
-  const mintBatchEntityHandler = async () => {
-    if (!walletProvider) return open();
+  const handleMintBatchEntity = async () => {
     setIsLoading(true);
-    try {
-      const mintContract = await createContract(
-        walletProvider,
-        contractsConfig.traitForgeNftAddress,
-        contractsConfig.traitForgeNftAbi
-      );
-      const transaction = await mintContract.mintWithBudget({
-        value: ethers.parseEther(budgetAmount),
-        gasLimit: 5000000,
-      });
-      await transaction.wait();
-      alert('Entity minted successfully');
-    } catch (error) {
-      console.error('Failed to mint entity:', error);
-      alert('Minting entity failed');
-    } finally {
-      setModalOpen(false);
-      setIsLoading(false);
-    }
+    await mintBatchEntityHandler(walletProvider, open, budgetAmount);
+    setIsLoading(false);
+    setModalOpen(false);
   };
 
   if (isLoading)
     return (
       <div className="h-screen w-full flex justify-center items-center">
-        <LoadingSpinner color="#0ff"/>
+        <LoadingSpinner color="#0ff" />
       </div>
     );
 
@@ -91,7 +56,7 @@ const Home = () => {
       </div>
       <div className="max-md:px-5 flex flex-col">
         <Button
-          onClick={mintEntityHandler}
+          onClick={handleMintEntity}
           bg="#023340"
           borderColor="#0ADFDB"
           text={`Mint 1 For ${entityPrice} ETH`}
@@ -109,7 +74,7 @@ const Home = () => {
             borderColor="#0ADFDB"
             budgetAmount={budgetAmount}
             setBudgetAmount={setBudgetAmount}
-            onSubmit={() => mintBatchEntityHandler(budgetAmount)}
+            onSubmit={handleMintBatchEntity}
             onClose={() => setModalOpen(false)}
           />
         )}

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useWeb3Modal } from '@web3modal/ethers/react';
 
 import styles from '@/styles/honeypot.module.scss';
 import { contractsConfig } from '@/utils/contractsConfig';
@@ -10,19 +11,19 @@ import { useContextState } from '@/utils/context';
 import { createContract, approveNFTForNuking } from '@/utils/utils';
 
 const HoneyPot = () => {
-  const {isLoading, setIsLoading, ownerEntities, walletProvider } = useContextState();
+  const { isLoading, setIsLoading, ownerEntities, walletProvider } =
+    useContextState();
   const [selectedForNuke, setSelectedForNuke] = useState(null);
   const [step, setStep] = useState('one');
-  const handleStep = (nextStep) => setStep(nextStep);
+  const { open } = useWeb3Modal();
 
-  const nukeEntity = async (tokenId) => {
-    if (!walletProvider) {
-      alert('Please connect your wallet first.');
-      return;
-    }
+  const handleStep = nextStep => setStep(nextStep);
+
+  const nukeEntity = async tokenId => {
+    if (!walletProvider) open();
     setIsLoading(true);
     try {
-      await approveNFTForNuking(tokenId, walletProvider); 
+      await approveNFTForNuking(tokenId, walletProvider);
       const tradeContract = await createContract(
         walletProvider,
         contractsConfig.nukeContractAddress,
@@ -30,26 +31,25 @@ const HoneyPot = () => {
       );
       const transaction = await tradeContract.nuke(tokenId);
       await transaction.wait();
-      alert('Entity Nuked successfully!');
+      toast.success('Entity Nuked successfully!');
     } catch (error) {
-      console.error('Nuke failed:', error);
-      alert('Nuke failed. Please try again.');
-    }finally {
+      toast.error(`Nuke failed. Please try again`);
+    } finally {
       setIsLoading(false);
     }
   };
 
   let content;
   if (isLoading)
-  return (
-    <div className="h-screen w-full flex justify-center items-center">
-      <LoadingSpinner color="#9457EB" />
-    </div>
-  );
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <LoadingSpinner color="#9457EB" />
+      </div>
+    );
   switch (step) {
     case 'three':
       content = (
-       <NukeEntity selectedForNuke={selectedForNuke} nukeEntity={nukeEntity}/>
+        <NukeEntity selectedForNuke={selectedForNuke} nukeEntity={nukeEntity} />
       );
       break;
     case 'two':
@@ -60,11 +60,11 @@ const HoneyPot = () => {
               <EntityCard
                 key={entity}
                 tokenId={entity}
-                borderType='purple'
+                borderType="purple"
                 onSelect={() => {
                   setSelectedForNuke(entity);
                   setStep('three');
-                  console.log("selected entity for nuke:", entity);
+                  console.log('selected entity for nuke:', entity);
                 }}
               />
             ))}

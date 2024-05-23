@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { toast } from 'react-toastify';
 
 import { contractsConfig } from './contractsConfig';
 
@@ -63,7 +64,6 @@ export const getUpcomingMintsHook = async (
           .getPublicEntropy(startSlot, numberIndex)
           .then(value => parseInt(value, 10))
           .catch(error => {
-            console.error('Error fetching entropy:', error);
             return 0;
           });
         promises.push(promise);
@@ -86,13 +86,13 @@ export const getEntitiesForSaleHook = async infuraProvider => {
     infuraProvider
   );
   const [tokenIds, sellers, prices] = await tradeContract.fetchListedEntities();
-    const listedEntities = tokenIds.map((tokenId, index) => ({
-      tokenId: tokenId,
-      seller: sellers[index],
-      price: ethers.formatEther(prices[index])
-    }));
-    
-    return listedEntities;
+  const listedEntities = tokenIds.map((tokenId, index) => ({
+    tokenId: tokenId,
+    seller: sellers[index],
+    price: ethers.formatEther(prices[index]),
+  }));
+
+  return listedEntities;
 };
 export const getOwnersEntitiesHook = async walletProvider => {
   try {
@@ -106,7 +106,6 @@ export const getOwnersEntitiesHook = async walletProvider => {
     );
 
     const balance = await TraitForgeContract.balanceOf(address);
-    console.log("entity balance:", balance)
     const fetchPromises = [];
 
     for (let i = 0; i < balance; i++) {
@@ -114,7 +113,6 @@ export const getOwnersEntitiesHook = async walletProvider => {
     }
 
     const entities = await Promise.all(fetchPromises);
-    console.log("context entities", entities)
     return entities;
   } catch (error) {
     console.error("Error fetching owner's entities:", error);
@@ -123,11 +121,11 @@ export const getOwnersEntitiesHook = async walletProvider => {
 };
 
 export const getEntityEntropyHook = async (walletProvider, listing) => {
-  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
   const TraitForgeContract = new ethers.Contract(
-    contractsConfig.traitForgeNftAddress,  
-    contractsConfig.traitForgeNftAbi,     
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
     signer
   );
   const entityEntropy = await TraitForgeContract.getTokenEntropy(listing);
@@ -135,11 +133,11 @@ export const getEntityEntropyHook = async (walletProvider, listing) => {
 };
 
 export const getEntityGenerationHook = async (walletProvider, entity) => {
-  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
   const TraitForgeContract = new ethers.Contract(
-    contractsConfig.traitForgeNftAddress,  
-    contractsConfig.traitForgeNftAbi,     
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
     signer
   );
   const entityGeneration = await TraitForgeContract.getTokenGeneration(entity);
@@ -147,11 +145,11 @@ export const getEntityGenerationHook = async (walletProvider, entity) => {
 };
 
 export const isForger = async (walletProvider, entity) => {
-  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
   const TraitForgeContract = new ethers.Contract(
-    contractsConfig.traitForgeNftAddress,  
-    contractsConfig.traitForgeNftAbi,     
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
     signer
   );
   const isForger = await TraitForgeContract.isForger(entity);
@@ -159,15 +157,17 @@ export const isForger = async (walletProvider, entity) => {
 };
 
 export const calculateNukeFactor = async (walletProvider, entity) => {
-  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
   const nukeContract = new ethers.Contract(
-    contractsConfig.nukeContractAddress,  
-    contractsConfig.nukeFundContractAbi,     
+    contractsConfig.nukeContractAddress,
+    contractsConfig.nukeFundContractAbi,
     signer
   );
   const finalNukeFactor = await nukeContract.calculateNukeFactor(entity);
-  const formattedNukeFactor = (Number(finalNukeFactor) / 10000).toFixed(4).toString();
+  const formattedNukeFactor = (Number(finalNukeFactor) / 10000)
+    .toFixed(4)
+    .toString();
   return formattedNukeFactor;
 };
 
@@ -179,18 +179,18 @@ export const approveNFTForTrading = async (tokenId, walletProvider) => {
   try {
     const nftContract = await createContract(
       walletProvider,
-      contractsConfig.traitForgeNftAddress,  
-      contractsConfig.traitForgeNftAbi,  
+      contractsConfig.traitForgeNftAddress,
+      contractsConfig.traitForgeNftAbi
     );
     const transaction = await nftContract.approve(
       contractsConfig.entityTradingContractAddress,
       tokenId
     );
     await transaction.wait();
-    alert('NFT approved successfully!');
+
+    toast.success('NFT approved successfully');
   } catch (error) {
-    console.error('Approval failed:', error);
-    alert('Approval failed. Please try again.');
+    toast.error(`Approval failed. Please try again`);
   }
 };
 
@@ -202,17 +202,81 @@ export const approveNFTForNuking = async (tokenId, walletProvider) => {
   try {
     const nftContract = await createContract(
       walletProvider,
-      contractsConfig.traitForgeNftAddress,  
-      contractsConfig.traitForgeNftAbi,  
+      contractsConfig.traitForgeNftAddress,
+      contractsConfig.traitForgeNftAbi
     );
     const transaction = await nftContract.approve(
       contractsConfig.nukeContractAddress,
       tokenId
     );
     await transaction.wait();
-    alert('NFT approved successfully!');
+    toast.success('NFT approved successfully');
   } catch (error) {
-    console.error('Approval failed:', error);
-    alert('Approval failed. Please try again.');
+    toast.error(`Approval failed. Please try again.`);
   }
+};
+
+export const mintEntityHandler = async (walletProvider, open, entityPrice) => {
+  if (!walletProvider) return open();
+
+  try {
+    const mintContract = await createContract(
+      walletProvider,
+      contractsConfig.traitForgeNftAddress,
+      contractsConfig.traitForgeNftAbi
+    );
+    const transaction = await mintContract.mintToken({
+      value: ethers.parseEther(entityPrice),
+      gasLimit: 5000000,
+    });
+    await transaction.wait();
+    toast.success('Entity minted successfully');
+  } catch (error) {
+    toast.error(`Minting entity failed`);
+  }
+};
+
+export const mintBatchEntityHandler = async (
+  walletProvider,
+  open,
+  budgetAmount
+) => {
+  if (!walletProvider) return open();
+  try {
+    const mintContract = await createContract(
+      walletProvider,
+      contractsConfig.traitForgeNftAddress,
+      contractsConfig.traitForgeNftAbi
+    );
+    const transaction = await mintContract.mintWithBudget({
+      value: ethers.parseEther(budgetAmount),
+      gasLimit: 5000000,
+    });
+    await transaction.wait();
+    toast.success('Entity minted successfully');
+  } catch (error) {
+    toast.error(`Minting entity failed`);
+  }
+};
+
+export const shortenAddress = address => {
+  // Ensure the address is in the correct format
+  if (
+    typeof address !== 'string' ||
+    !address.startsWith('0x') ||
+    address.length !== 42
+  ) {
+    throw new Error('Invalid Ethereum address');
+  }
+
+  // Extract the first four characters (including '0x')
+  const firstPart = address.slice(0, 4);
+
+  // Extract the last four characters
+  const lastPart = address.slice(-4);
+
+  // Combine the parts with '......' in between
+  const shortenedAddress = `${firstPart}......${lastPart}`;
+
+  return shortenedAddress;
 };
