@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ethers } from 'ethers';
 import { observer } from 'mobx-react';
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
@@ -64,9 +65,10 @@ const Forging = observer(() => {
         contractsConfig.entityMergingAddress,
         contractsConfig.entityMergingContractAbi
       );
+      const feeInWei = ethers.parseEther(fee);
       const transaction = await forgeContract.listForBreeding(
         selectedForListing,
-        fee
+        feeInWei
       );
       await transaction.wait();
       console.log('Listed Successfully');
