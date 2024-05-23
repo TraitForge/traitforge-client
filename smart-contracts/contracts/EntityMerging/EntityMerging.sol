@@ -60,7 +60,7 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
     );
     _resetBreedingCountIfNeeded(tokenId);
     uint256 entropy = nftContract.getTokenEntropy(tokenId); // Retrieve entropy for tokenId
-    uint8 forgePotential = uint8((entropy / 10000) % 10); // Extract the 5th digit from the entropy
+    uint8 forgePotential = uint8((entropy / 10) % 10); // Extract the 5th digit from the entropy
     require(
       breedingCounts[tokenId] < forgePotential,
       'Entity has reached its breeding limit'
@@ -92,7 +92,7 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
 
     // Check and update for merger token's breed potential
     uint256 mergerEntropy = nftContract.getTokenEntropy(mergerTokenId);
-    uint8 mergerForgePotential = uint8((mergerEntropy / 10000) % 10); // Extract the 5th digit from the entropy
+    uint8 mergerForgePotential = uint8((mergerEntropy / 10) % 10); // Extract the 5th digit from the entropy
     breedingCounts[mergerTokenId]++;
     require(
       breedingCounts[mergerTokenId] <= mergerForgePotential,
@@ -101,9 +101,9 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
 
     uint256 devFee = breedingFee / 10;
     uint256 forgerShare = breedingFee - devFee;
-    nukeFundAddress.transfer(devFee); // Transfer dev fee to NukeFund
-
     address payable forgerOwner = payable(nftContract.ownerOf(forgerTokenId));
+
+    nukeFundAddress.transfer(devFee); // Transfer dev fee to NukeFund
     forgerOwner.transfer(forgerShare);
 
     emit FeePaid(forgerTokenId, mergerTokenId, breedingFee);
@@ -125,7 +125,7 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
     uint256 oneYear = 365 days;
     if (block.timestamp >= lastBreedResetTimestamp[tokenId] + oneYear) {
       uint256 entropy = nftContract.getTokenEntropy(tokenId);
-      uint8 forgePotential = uint8((entropy / 10000) % 10);
+      uint8 forgePotential = uint8((entropy / 10) % 10);
       breedingCounts[tokenId] = forgePotential; // Reset to the forge potential
       lastBreedResetTimestamp[tokenId] = block.timestamp;
     }

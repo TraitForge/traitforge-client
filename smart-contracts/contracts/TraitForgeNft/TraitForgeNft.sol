@@ -33,16 +33,10 @@ contract TraitForgeNft is
   mapping(uint256 => uint256) public tokenCreationTimestamps;
   mapping(uint256 => uint256) public tokenEntropy;
   mapping(uint256 => uint256) public generationMintCounts;
-  mapping(address => bool) public burners;
   mapping(uint256 => uint256) public tokenGenerations;
   mapping(uint256 => address) public initialOwners;
 
   uint256 private _tokenIds;
-
-  modifier onlyBurner() {
-    require(burners[msg.sender], 'Caller is not burner');
-    _;
-  }
 
   constructor() ERC721('TraitForgeNft', 'TFGNFT') {}
 
@@ -71,15 +65,22 @@ contract TraitForgeNft is
     airdropContract = IAirdrop(_airdrop);
   }
 
-  function setBurner(address _account, bool _value) external onlyOwner {
-    burners[_account] = _value;
-  }
-
   function startAirdrop(uint256 amount) external onlyOwner {
     airdropContract.startAirdrop(amount);
   }
 
-  function burn(uint256 tokenId) external onlyBurner {
+  function isApprovedOrOwner(
+    address spender,
+    uint256 tokenId
+  ) public view returns (bool) {
+    return _isApprovedOrOwner(spender, tokenId);
+  }
+
+  function burn(uint256 tokenId) external nonReentrant {
+    require(
+      isApprovedOrOwner(msg.sender, tokenId),
+      'ERC721: caller is not token owner or approved'
+    );
     if (!airdropContract.airdropStarted()) {
       uint256 entropy = getTokenEntropy(tokenId);
       airdropContract.subUserAmount(initialOwners[tokenId], entropy);
@@ -166,7 +167,7 @@ contract TraitForgeNft is
   }
 
   function getTokenGeneration(uint256 tokenId) public view returns (uint256) {
-      return tokenGenerations[tokenId];
+    return tokenGenerations[tokenId];
   }
 
   function getEntropiesForTokens(

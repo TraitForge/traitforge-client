@@ -111,7 +111,15 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
   }
 
   function nuke(uint256 tokenId) public nonReentrant {
-    require(nftContract.ownerOf(tokenId) == msg.sender, 'Not the owner');
+    require(
+      nftContract.isApprovedOrOwner(msg.sender, tokenId),
+      'ERC721: caller is not token owner or approved'
+    );
+    require(
+      nftContract.getApproved(tokenId) == address(this) ||
+        nftContract.isApprovedForAll(msg.sender, address(this)),
+      'Contract must be approved to transfer the NFT.'
+    );
     require(canTokenBeNuked(tokenId), 'Token is not mature yet');
 
     uint256 finalNukeFactor = calculateNukeFactor(tokenId);
@@ -124,9 +132,9 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
       : potentialClaimAmount;
 
     fund -= claimAmount; // Deduct the claim amount from the fund
-    payable(msg.sender).transfer(claimAmount); // Transfer the claim amount to the player
 
     nftContract.burn(tokenId); // Burn the token
+    payable(msg.sender).transfer(claimAmount); // Transfer the claim amount to the player
 
     emit Nuked(msg.sender, tokenId, claimAmount); // Emit the event with the actual claim amount
     emit FundBalanceUpdated(fund); // Update the fund balance
