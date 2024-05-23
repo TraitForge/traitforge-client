@@ -36,7 +36,7 @@ export const WalletEntityModal = ({ ownerEntities, walletProvider, handleSelecte
         </h3>
         <FiltersHeader
           color="orange"
-          filterOptions={['mergers']}
+          filterOptions={['your mergers']}
         />
       </div>
       <div className="flex-1 overflow-y-scroll">

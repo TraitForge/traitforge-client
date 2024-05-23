@@ -69,34 +69,13 @@ export const FiltersHeader = ({
     <div className="flex w-full items-center uppercase pt-6">
       <div className="flex  gap-x-2 md:gap-x-6  text-[24px]">
         {filterOptions.map(type => (
-          <button
+          <h1
             key={type}
             className={`${sortOption === type ? activeClasses : ''} relative px-3 md:px-6 pb-3`}
-            onClick={() => handleSort(type)}
           >
             {type}
-          </button>
+          </h1>
         ))}
-      </div>
-      <div className="flex-1">
-        <div className="flex gap-x-6 text-[20px] justify-end">
-          <Select
-            options={genOptions}
-            onChange={option => handleFilterChange(option, 'generation')}
-            value={genOptions.find(option => option.value === generationFilter)}
-            styles={customStyles}
-          />
-          {!hideSortingSelect && (
-            <Select
-              options={sortingOptions}
-              onChange={option => handleFilterChange(option, 'sorting')}
-              value={sortingOptions.find(
-                option => option.value === sortingFilter
-              )}
-              styles={customStyles}
-            />
-          )}
-        </div>
       </div>
     </div>
   );

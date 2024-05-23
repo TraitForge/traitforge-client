@@ -6,6 +6,7 @@ import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
 import { calculateEntityAttributes, getEntityEntropyHook, calculateNukeFactor } from '@/utils/utils';
+import { useContextState } from '@/utils/context';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
 
@@ -23,7 +24,7 @@ export const EntityCard = ({
   const { walletProvider } = useWeb3ModalProvider();
   const [localEntropy, setLocalEntropy] = useState(entropy);
   const [finalNukeFactor, setFinalNukeFactor] = useState(null);
-  
+
   const isEntropy = async () => {
     if (entropy) return;
     let newEntropy = null;

@@ -1,17 +1,18 @@
 import Image from 'next/image';
 import classNames from 'classnames';
 
+
 import { EntityCard } from '@/components';
 
-export const ArenaItem = ({
-  handleOwnerEntityList,
+export const ArenaItemForger = ({
+  handleEntityListModal,
   image,
-  selectedFromWallet,
+  selectedFromPool,
   btnLabel,
   className,
 }) => {
-  if (selectedFromWallet)
-    return <EntityCard handleOwnerEntityList={handleOwnerEntityList} entity={selectedFromWallet} borderType="orange" />;
+  if (selectedFromPool)
+    return <EntityCard entity={selectedFromPool} borderType="orange" />;
 
   const buttonWrapper = classNames('flex flex-col gap-y-5', className);
 
@@ -20,7 +21,7 @@ export const ArenaItem = ({
       <button
         aria-label={btnLabel}
         className="items-center justify-center cursor-pointer h-auto"
-        onClick={handleOwnerEntityList}
+        onClick={handleEntityListModal}
       >
         <Image
           src={image}

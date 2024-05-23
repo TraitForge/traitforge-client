@@ -110,7 +110,7 @@ const Forging = observer(() => {
             <div className="py-7 md:py-10 3xl:py-20">
               <ForgingArena
                 selectedFromPool={selectedFromPool}
-                ownerEntities={ownerEntities}
+                selectedFromWallet={selectedEntity}
                 handleEntityListModal={handleEntityListModal}
                 handleOwnerEntityList={handleOwnerEntityList}
               />
@@ -136,8 +136,6 @@ const Forging = observer(() => {
               <SelectEntityList
                 entitiesForForging={entitiesForForging}
                 handleSelectedFromPool={handleSelectedFromPool}
-                generationFilter={generationFilter}
-                setGenerationFilter={setGenerationFilter}
               />
             </Modal>
           )}
@@ -152,8 +150,6 @@ const Forging = observer(() => {
                 walletProvider={walletProvider}
                 filterType="merger"
                 handleSelectedFromWallet={handleSelectedFromWallet}
-                generationFilter={generationFilter}
-                setGenerationFilter={setGenerationFilter}
               />
             </Modal>
           )}

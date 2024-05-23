@@ -72,7 +72,7 @@ const Home = () => {
 
   return (
     <div
-      className="mint-container mt-24 h-full"
+      className="mint-container h-screen"
       style={{
         backgroundImage: "url('/images/home.png')",
         backgroundPosition: 'center',
