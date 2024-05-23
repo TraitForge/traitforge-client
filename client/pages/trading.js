@@ -3,18 +3,18 @@ import { ethers } from 'ethers';
 import { observer } from 'mobx-react';
 
 import styles from '@/styles/trading.module.scss';
-import { EntityCard } from '@/components';
+import { EntityCard, LoadingSpinner } from '@/components';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useContextState } from '@/utils/context';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { BuyEntity } from '@/screens/traiding/BuyEntity';
 import { FiltersHeader } from '@/components';
-import { createContract, approveNFT } from '@/utils/utils';
+import { createContract, approveNFTForTrading } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = observer(() => {
-  const { ownerEntities, entitiesForSale, walletProvider } =
+  const {isLoading, setIsLoading, ownerEntities, entitiesForSale, walletProvider } =
     useContextState();
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [selectedListing, setSelectedListing] = useState(null);
@@ -22,6 +22,7 @@ const Marketplace = observer(() => {
 
 
   const buyEntity = async (tokenId, price) => {
+    setIsLoading(true);
     if (!walletProvider) {
       alert('Please connect your wallet first.');
       return;
@@ -43,16 +44,19 @@ const Marketplace = observer(() => {
     } catch (error) {
       console.error('Purchase failed:', error);
       alert('Purchase failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
   
   const listEntityForSale = async (tokenId, price) => {
+    setIsLoading(true);
     if (!walletProvider) {
       alert('Please connect your wallet first.');
       return;
     }
     try {
-      await approveNFT(tokenId, walletProvider); 
+      await approveNFTForTrading(tokenId, walletProvider); 
   
       const tradeContract = await createContract(
         walletProvider,
@@ -67,12 +71,21 @@ const Marketplace = observer(() => {
     } catch (error) {
       console.error('Listing failed:', error);
       alert('Listing failed. Please try again.');
+    }finally {
+      setIsLoading(false);
     }
   };
 
   const handleStep = step => setStep(step);
 
   let content;
+
+  if (isLoading)
+  return (
+    <div className="h-screen w-full flex justify-center items-center">
+      <LoadingSpinner color="#0EEB81" />
+    </div>
+  );
 
   switch (step) {
     case 'four':

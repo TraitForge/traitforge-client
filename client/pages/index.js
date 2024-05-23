@@ -66,7 +66,7 @@ const Home = () => {
   if (isLoading)
     return (
       <div className="h-screen w-full flex justify-center items-center">
-        <LoadingSpinner />
+        <LoadingSpinner color="#0ff"/>
       </div>
     );
 

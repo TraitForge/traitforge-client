@@ -171,7 +171,7 @@ export const calculateNukeFactor = async (walletProvider, entity) => {
   return formattedNukeFactor;
 };
 
-export const approveNFT = async (tokenId, walletProvider) => {
+export const approveNFTForTrading = async (tokenId, walletProvider) => {
   if (!walletProvider) {
     alert('Please connect your wallet first.');
     return;
@@ -184,6 +184,29 @@ export const approveNFT = async (tokenId, walletProvider) => {
     );
     const transaction = await nftContract.approve(
       contractsConfig.entityTradingContractAddress,
+      tokenId
+    );
+    await transaction.wait();
+    alert('NFT approved successfully!');
+  } catch (error) {
+    console.error('Approval failed:', error);
+    alert('Approval failed. Please try again.');
+  }
+};
+
+export const approveNFTForNuking = async (tokenId, walletProvider) => {
+  if (!walletProvider) {
+    alert('Please connect your wallet first.');
+    return;
+  }
+  try {
+    const nftContract = await createContract(
+      walletProvider,
+      contractsConfig.traitForgeNftAddress,  
+      contractsConfig.traitForgeNftAbi,  
+    );
+    const transaction = await nftContract.approve(
+      contractsConfig.nukeContractAddress,
       tokenId
     );
     await transaction.wait();

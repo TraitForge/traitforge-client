@@ -5,7 +5,7 @@ import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from '@/styles/forging.module.scss';
-import { Button, Modal } from '@/components';
+import { Button, Modal, LoadingSpinner } from '@/components';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
 import { ListEntity } from '@/screens/forging/ListEntity';
@@ -14,7 +14,7 @@ import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
 const Forging = observer(() => {
-  const { ownerEntities, entitiesForForging } = useContextState();
+  const { isLoading, setIsLoading, ownerEntities, entitiesForForging } = useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [generationFilter, setGenerationFilter] = useState('');
@@ -57,6 +57,7 @@ const Forging = observer(() => {
   };
 
   const ListEntityForForging = async (selectedForListing, fee) => {
+    setIsLoading(true);
     console.log("selected entity is:", selectedForListing);
     console.log("beginning forging");
     try {
@@ -75,10 +76,19 @@ const Forging = observer(() => {
       handleStep('one');
     } catch (error) {
       console.error('Failed to List Entity:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   let content;
+
+  if (isLoading)
+  return (
+    <div className="h-screen w-full flex justify-center items-center">
+      <LoadingSpinner color="#FF5F1F" />
+    </div>
+  );
 
   switch (step) {
     case 'one':
