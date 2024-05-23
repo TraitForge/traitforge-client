@@ -34,9 +34,12 @@ interface ITraitForgeNft is IERC721Enumerable {
 
   function setAirdropContract(address _airdrop) external;
 
-  function setBurner(address _account, bool _value) external;
-
   function startAirdrop(uint256 amount) external;
+
+  function isApprovedOrOwner(
+    address spender,
+    uint256 tokenId
+  ) external view returns (bool);
 
   function burn(uint256 tokenId) external;
 

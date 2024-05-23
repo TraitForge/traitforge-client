@@ -88,7 +88,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
       24;
     uint256 perfomanceFactor = nftContract.getTokenEntropy(tokenId) % 10;
 
-    uint256 age = (daysOld * perfomanceFactor) / 365;
+    uint256 age = (daysOld * perfomanceFactor * 10000) / 365;
     return age;
   }
 
@@ -111,11 +111,19 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
   }
 
   function nuke(uint256 tokenId) public nonReentrant {
-    require(nftContract.ownerOf(tokenId) == msg.sender, 'Not the owner');
+    require(
+      nftContract.isApprovedOrOwner(msg.sender, tokenId),
+      'ERC721: caller is not token owner or approved'
+    );
+    require(
+      nftContract.getApproved(tokenId) == address(this) ||
+        nftContract.isApprovedForAll(msg.sender, address(this)),
+      'Contract must be approved to transfer the NFT.'
+    );
     require(canTokenBeNuked(tokenId), 'Token is not mature yet');
 
     uint256 finalNukeFactor = calculateNukeFactor(tokenId);
-    uint256 potentialClaimAmount = (fund * finalNukeFactor) / 100000; // Calculate the potential claim amount based on the finalNukeFactor
+    uint256 potentialClaimAmount = (fund * finalNukeFactor) / 1000000; // Calculate the potential claim amount based on the finalNukeFactor
     uint256 maxAllowedClaimAmount = fund / 2; // Define a maximum allowed claim amount as 50% of the current fund size
 
     // Directly assign the value to claimAmount based on the condition, removing the redeclaration
@@ -124,9 +132,9 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
       : potentialClaimAmount;
 
     fund -= claimAmount; // Deduct the claim amount from the fund
-    payable(msg.sender).transfer(claimAmount); // Transfer the claim amount to the player
 
     nftContract.burn(tokenId); // Burn the token
+    payable(msg.sender).transfer(claimAmount); // Transfer the claim amount to the player
 
     emit Nuked(msg.sender, tokenId, claimAmount); // Emit the event with the actual claim amount
     emit FundBalanceUpdated(fund); // Update the fund balance
