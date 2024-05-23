@@ -17,9 +17,8 @@ export const WalletModal = ({ isOpen, closeModal }) => {
       isOpen={isOpen}
       closeModal={closeModal}
       background="/images/modal-bg.png"
-      modalClasses="!object-contain"
     >
-      <div className="flex justify-center items-center flex-col w-[80%] md:w-[800px]">
+      <div className="flex justify-center items-center flex-col">
         <h3 className="pt-10 text-[18px] md:text-[36px] pb-3 ">Wallet</h3>
         <Image
           src={'/images/border-bottom-line.png'}

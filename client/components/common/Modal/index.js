@@ -14,13 +14,13 @@ const Modal = ({ children, background, isOpen, closeModal, modalClasses }) => {
 
   return createPortal(
     <div
-      className={`${styles.modalOverlay} ${modalClasses}`}
+      className={`${styles.modalOverlay} ${modalClasses ? modalClasses : ''}`}
       onClick={closeModal}
     >
       <div
         style={modalStyle}
         onClick={e => e.stopPropagation()}
-        className={`relative bg-center bg-no-repeat `}
+        className={`relative bg-center bg-no-repeat object-contain md:object-cover w-[90%]`}
       >
         {children}
         <button
