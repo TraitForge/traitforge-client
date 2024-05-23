@@ -45,15 +45,8 @@ export const SelectEntityList = ({
           Select From Pool
         </h3>
         <FiltersHeader
-          sortOption={sortOption}
-          handleSort={handleSort}
           color="orange"
-          handleFilterChange={(selectedOption, type) =>
-            handleFilterChange(selectedOption, type)
-          }
-          generationFilter={generationFilter}
-          sortingFilter={sortingFilter}
-          filterOptions={['forgers']}
+          filterOptions={['forgers listed']}
         />
       </div>
       <div className="flex-1 overflow-y-scroll">

@@ -1,38 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { EntityCard, FiltersHeader } from '@/components';
+import { isForger } from '@/utils/utils';
 
-export const WalletEntityModal = ({ ownerEntities, generationFilter, setGenerationFilter }) => {
-  const [sortOption, setSortOption] = useState('mergers');
-  const [sortingFilter, setSortingFilter] = useState('');
+export const WalletEntityModal = ({ ownerEntities, walletProvider, handleSelectedFromWallet }) => {
+  const [filteredEntities, setFilteredEntities] = useState([]);
 
-  const handleSort = type => setSortOption(type);
+  useEffect(() => {
+    const fetchAndFilterEntities = async () => {
+      try {
+        const results = await Promise.all(ownerEntities.map(async (entity) => {
+          const isEntityForger = await isForger(walletProvider, entity);
+          console.log("isForger:", isEntityForger);
+          if (!isEntityForger) {
+            return entity;
+          }
+          return null;
+        }));
 
-  const handleFilterChange = (selectedOption, type) => {
-    if (type === 'generation') {
-      setGenerationFilter(selectedOption.value);
-    } else if (type === 'sorting') {
-      setSortingFilter(selectedOption.value);
-    }
-  };
+        const filtered = results.filter(result => result !== null);
+        console.log("entity tokenids:", filtered);
+        setFilteredEntities(filtered);
+      } catch (error) {
+        console.error('Error in fetchAndFilterEntities:', error);
+      }
+    };
 
-  const getFilteredEntities = () => {
-    
-    let filteredEntities = ownerEntities.filter(entity => entity.type === 'merger');
-  
-    if (generationFilter) {
-      filteredEntities = filteredEntities.filter(entity => entity.generation.toString() === generationFilter);
-    }
-  
-    if (sortingFilter === 'price_high_to_low') {
-      filteredEntities.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    } else if (sortingFilter === 'price_low_to_high') {
-      filteredEntities.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    }
-  
-    return filteredEntities;
-  };
-
-  const filteredEntities = getFilteredEntities();
+    fetchAndFilterEntities();
+  }, [ownerEntities, walletProvider]);
 
   return (
     <div className="bg-dark-81 md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[70vw] md:rounded-[30px] py-10 px-5 flex flex-col">
@@ -42,26 +36,20 @@ export const WalletEntityModal = ({ ownerEntities, generationFilter, setGenerati
         </h3>
         <FiltersHeader
           color="orange"
-          filterOptions={['mergers']}
-          handleFilterChange={(selectedOption, type) =>
-            handleFilterChange(selectedOption, type)
-          }
-          generationFilter={generationFilter}
-          sortingFilter={sortingFilter}
-          sortOption={sortOption}
-          handleSort={handleSort}
-          hideSortingSelect={true}
+          filterOptions={['your mergers']}
         />
       </div>
       <div className="flex-1 overflow-y-scroll">
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 md:gap-y-10">
-          {filteredEntities?.map((entity, index) => (
+          {filteredEntities?.map(entity => (
             <EntityCard
-              key={entity.id}
+              key={entity}
               entity={entity}
-              entropy={entity.entropy}
-              index={index}
-              onClick={() => handleSelectedFromWallet(entity)}
+              borderType='orange'
+              onSelect={() => {
+                 handleSelectedFromWallet(entity)
+                console.log("entityid:", entity)
+                }}
             />
           ))}
         </div>
@@ -69,4 +57,3 @@ export const WalletEntityModal = ({ ownerEntities, generationFilter, setGenerati
     </div>
   );
 };
-

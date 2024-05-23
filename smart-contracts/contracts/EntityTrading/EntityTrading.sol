@@ -10,6 +10,7 @@ import '../TraitForgeNft/ITraitForgeNft.sol';
 contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
   ITraitForgeNft public nftContract;
   address payable public nukeFundAddress;
+  uint256 public taxCut = 10;
 
   mapping(uint256 => Listing) public listings;
 
@@ -36,7 +37,7 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
         nftContract.isApprovedForAll(msg.sender, address(this)),
       'Contract must be approved to transfer the NFT.'
     );
-
+   
     nftContract.transferFrom(msg.sender, address(this), tokenId); // trasnfer NFT to contract
     listings[tokenId] = Listing(msg.sender, price, true); // create new listing
 
@@ -53,7 +54,7 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
     require(listing.seller != address(0), 'NFT is not listed for sale.');
 
     //transfer eth to seller (distribute to nukefund)
-    uint256 nukeFundContribution = msg.value / 10;
+    uint256 nukeFundContribution = msg.value / taxCut;
     uint256 sellerProceeds = msg.value - nukeFundContribution;
     transferToNukeFund(nukeFundContribution); // transfer contribution to nukeFund
 

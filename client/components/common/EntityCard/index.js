@@ -5,7 +5,8 @@ import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
-import { calculateEntityAttributes, getEntityEntropyHook } from '@/utils/utils';
+import { calculateEntityAttributes, getEntityEntropyHook, calculateNukeFactor } from '@/utils/utils';
+import { useContextState } from '@/utils/context';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
 
@@ -22,21 +23,31 @@ export const EntityCard = ({
 }) => {
   const { walletProvider } = useWeb3ModalProvider();
   const [localEntropy, setLocalEntropy] = useState(entropy);
-  
+  const [finalNukeFactor, setFinalNukeFactor] = useState(null);
+
   const isEntropy = async () => {
     if (entropy) return;
     let newEntropy = null;
-    let newGeneration = null;
+    let newNukeFactor = null;
 
     if (entity !== undefined && entity !== null) {
       console.log('Fetching entropy for entity:', entity);
       newEntropy = await getEntityEntropyHook(walletProvider, entity);
+      newNukeFactor = await calculateNukeFactor(walletProvider, entity);
     } else if (listing !== undefined && listing !== null) {
       console.log('Fetching entropy for listing:', listing);
       newEntropy = await getEntityEntropyHook(walletProvider, listing);
+      newNukeFactor = await calculateNukeFactor(walletProvider, listing);
     } else if (tokenId !== undefined && tokenId !== null) {
       console.log('Fetching entropy for tokenId:', tokenId);
       newEntropy = await getEntityEntropyHook(walletProvider, tokenId);
+      newNukeFactor = await calculateNukeFactor(walletProvider, tokenId);
+    }
+
+    if (newNukeFactor) {
+      setFinalNukeFactor(newNukeFactor);
+    } else {
+      console.error('Failed to get NukeFactor');
     }
 
     if (newEntropy) {
@@ -51,6 +62,7 @@ export const EntityCard = ({
       isEntropy();
     }
   }, [entity, listing, localEntropy, tokenId]);
+
   if (!localEntropy) {
     return null; 
   }
@@ -62,6 +74,7 @@ export const EntityCard = ({
   const uri = calculateUri(paddedEntropy, '3');
 
   const { role, forgePotential, performanceFactor, nukeFactor } = calculateEntityAttributes(paddedEntropy);
+  const displayedNukeFactor = finalNukeFactor !== null ? finalNukeFactor : nukeFactor;
 
   let activeBorder;
 
@@ -86,8 +99,8 @@ export const EntityCard = ({
 
   return (
     <div
-    onClick={onSelect}
-      className={wrapperClasses}
+      onClick={onSelect}
+      className={`${wrapperClasses} overflow-hidden items-center`}
       style={{
         backgroundImage: `url("${activeBorder.src}")`,
         backgroundPosition: 'center',
@@ -95,24 +108,24 @@ export const EntityCard = ({
         backgroundSize: 'contain',
       }}
     >
-      <div className="w-full h-full px-5 pt-5 3xl:px-10 3xl:pt-10">
+      <div className="w-11/12 mb-4 h-full 3xl:px-10 3xl:pt-10">
         <Image
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="IMG"
-          className="z-[-1]"
-          width={200}
-          height={300}
+          className="z-1"
+          width={250}
+          height={350}
         />
       </div>
-      <div className="py-5 mt-5 mb-5 h-full text-sm md:text-[18px]">
+      <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
-        {showPrice && <h4 className="">{price} ETH</h4>}
+          {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
         <h4 className="card-name">{role}</h4> 
-        <h4 className="">Forge Potential: {forgePotential}</h4>
-        <h4 className="">Nuke Factor: {nukeFactor} %</h4>
-        <h4 className="">Performance Factor: {performanceFactor}</h4>
+        <h4 className="card-name">Forge Potential: {forgePotential}</h4>
+        <h4 className="card-name">Nuke Factor: {displayedNukeFactor} %</h4>
+        <h4 className="card-name">Performance Factor: {performanceFactor}</h4>
       </div>
     </div>
   );

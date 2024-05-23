@@ -217,3 +217,7 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.walletbackground {
+  background-color: rgba(81, 81, 81, 0.575);
+}

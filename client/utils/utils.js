@@ -3,12 +3,13 @@ import { ethers } from 'ethers';
 import { contractsConfig } from './contractsConfig';
 
 export function calculateEntityAttributes(paddedEntropy) {
-  const performanceFactor = paddedEntropy.toString() % 10;
-  const lastTwoDigits = paddedEntropy.toString() % 100;
+  const paddedEntropyNumber = Number(paddedEntropy);
+  const performanceFactor = paddedEntropyNumber % 10;
+  const lastTwoDigits = paddedEntropyNumber % 100;
   const forgePotential = Math.floor(lastTwoDigits / 10);
-  const nukeFactor = Number((paddedEntropy / 40000).toFixed(3));
+  const nukeFactor = Number((paddedEntropyNumber / 40000).toFixed(3));
   let role;
-  const result = paddedEntropy.toString() % 3;
+  const result = paddedEntropyNumber % 3;
   if (result === 0) {
     role = 'Forger';
   } else {
@@ -84,11 +85,15 @@ export const getEntitiesForSaleHook = async infuraProvider => {
     contractsConfig.entityTradingAbi,
     infuraProvider
   );
-  const data = await tradeContract.fetchListedEntities();
-  const entitiesForSale = await Promise.all(data);
-  return entitiesForSale;
+  const [tokenIds, sellers, prices] = await tradeContract.fetchListedEntities();
+    const listedEntities = tokenIds.map((tokenId, index) => ({
+      tokenId: tokenId,
+      seller: sellers[index],
+      price: ethers.formatEther(prices[index])
+    }));
+    
+    return listedEntities;
 };
-
 export const getOwnersEntitiesHook = async walletProvider => {
   try {
     const ethersProvider = new ethers.BrowserProvider(walletProvider);
@@ -126,7 +131,7 @@ export const getEntityEntropyHook = async (walletProvider, listing) => {
     signer
   );
   const entityEntropy = await TraitForgeContract.getTokenEntropy(listing);
-  return entityEntropy;
+  return entityEntropy.toString();
 };
 
 export const getEntityGenerationHook = async (walletProvider, entity) => {
@@ -139,4 +144,75 @@ export const getEntityGenerationHook = async (walletProvider, entity) => {
   );
   const entityGeneration = await TraitForgeContract.getTokenGeneration(entity);
   return entityGeneration;
+};
+
+export const isForger = async (walletProvider, entity) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const signer = await ethersProvider.getSigner();
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,  
+    contractsConfig.traitForgeNftAbi,     
+    signer
+  );
+  const isForger = await TraitForgeContract.isForger(entity);
+  return isForger;
+};
+
+export const calculateNukeFactor = async (walletProvider, entity) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider)
+  const signer = await ethersProvider.getSigner();
+  const nukeContract = new ethers.Contract(
+    contractsConfig.nukeContractAddress,  
+    contractsConfig.nukeFundContractAbi,     
+    signer
+  );
+  const finalNukeFactor = await nukeContract.calculateNukeFactor(entity);
+  const formattedNukeFactor = (Number(finalNukeFactor) / 10000).toFixed(4).toString();
+  return formattedNukeFactor;
+};
+
+export const approveNFTForTrading = async (tokenId, walletProvider) => {
+  if (!walletProvider) {
+    alert('Please connect your wallet first.');
+    return;
+  }
+  try {
+    const nftContract = await createContract(
+      walletProvider,
+      contractsConfig.traitForgeNftAddress,  
+      contractsConfig.traitForgeNftAbi,  
+    );
+    const transaction = await nftContract.approve(
+      contractsConfig.entityTradingContractAddress,
+      tokenId
+    );
+    await transaction.wait();
+    alert('NFT approved successfully!');
+  } catch (error) {
+    console.error('Approval failed:', error);
+    alert('Approval failed. Please try again.');
+  }
+};
+
+export const approveNFTForNuking = async (tokenId, walletProvider) => {
+  if (!walletProvider) {
+    alert('Please connect your wallet first.');
+    return;
+  }
+  try {
+    const nftContract = await createContract(
+      walletProvider,
+      contractsConfig.traitForgeNftAddress,  
+      contractsConfig.traitForgeNftAbi,  
+    );
+    const transaction = await nftContract.approve(
+      contractsConfig.nukeContractAddress,
+      tokenId
+    );
+    await transaction.wait();
+    alert('NFT approved successfully!');
+  } catch (error) {
+    console.error('Approval failed:', error);
+    alert('Approval failed. Please try again.');
+  }
 };

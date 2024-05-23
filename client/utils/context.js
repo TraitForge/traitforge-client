@@ -108,6 +108,8 @@ const ContextProvider = ({ children }) => {
 
   useEffect(() => {
     getOwnersEntities();
+    getEntitiesForSale();
+    getEntitiesForForging();
   }, [walletProvider]);
 
   //fetching/setting Price States

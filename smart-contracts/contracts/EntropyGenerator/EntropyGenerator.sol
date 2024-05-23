@@ -10,9 +10,13 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
   uint256 private lastInitializedIndex = 0; // Indexes to keep track of the initialization and usage of entropy values
   uint256 private currentSlotIndex = 0;
   uint256 private currentNumberIndex = 0;
+  uint256 private batchSize1 = 256;
+  uint256 private batchSize2 = 512;
   // Constants to define the limits for slots and numbers within those slots
-  uint256 private constant MAX_SLOT_INDEX = 770;
-  uint256 private constant MAX_NUMBER_INDEX = 13;
+  uint256 private maxSlotIndex = 770;
+  uint256 private maxNumberIndex = 13;
+  uint256 private alphaSlotIndex = 516;
+  uint256 private alphaNumberIndex = 13;
 
   address private allowedCaller;
 
@@ -39,9 +43,9 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
 
   // Functions to initalize entropy values inbatches to spread gas cost over multiple transcations
   function writeEntropyBatch1() public {
-    require(lastInitializedIndex < 256, 'Batch 1 already initialized.');
+    require(lastInitializedIndex < batchSize1, 'Batch 1 already initialized.');
 
-    uint256 endIndex = lastInitializedIndex + 256; // calculate the end index for the batch
+    uint256 endIndex = lastInitializedIndex + batchSize1; // calculate the end index for the batch
     unchecked {
       for (uint256 i = lastInitializedIndex; i < endIndex; i++) {
         uint256 pseudoRandomValue = uint256(
@@ -57,11 +61,11 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
   // second batch initialization
   function writeEntropyBatch2() public {
     require(
-      lastInitializedIndex >= 256 && lastInitializedIndex < 512,
+      lastInitializedIndex >= batchSize1 && lastInitializedIndex < batchSize2,
       'Batch 2 not ready or already initialized.'
     );
 
-    uint256 endIndex = lastInitializedIndex + 256;
+    uint256 endIndex = lastInitializedIndex + batchSize1;
     unchecked {
       for (uint256 i = lastInitializedIndex; i < endIndex; i++) {
         uint256 pseudoRandomValue = uint256(
@@ -77,28 +81,28 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
   // allows setting a specific entropy slot with a value
   function writeEntropyBatch3() public {
     require(
-      lastInitializedIndex >= 512 && lastInitializedIndex < 770,
+      lastInitializedIndex >= batchSize2 && lastInitializedIndex < maxSlotIndex,
       'Batch 3 not ready or already completed.'
     );
     unchecked {
-      for (uint256 i = lastInitializedIndex; i < 770; i++) {
+      for (uint256 i = lastInitializedIndex; i < maxSlotIndex; i++) {
         uint256 pseudoRandomValue = uint256(
           keccak256(abi.encodePacked(block.number, i))
         ) % uint256(10) ** 78;
         entropySlots[i] = pseudoRandomValue;
       }
     }
-    lastInitializedIndex = 770;
+    lastInitializedIndex = maxSlotIndex;
   }
 
   // function to retrieve the next entropy value, accessible only by the allowed caller
   function getNextEntropy() public onlyAllowedCaller returns (uint256) {
-    require(currentSlotIndex <= MAX_SLOT_INDEX, 'Max slot index reached.');
+    require(currentSlotIndex <= maxSlotIndex, 'Max slot index reached.');
     uint256 entropy = getEntropy(currentSlotIndex, currentNumberIndex);
 
-    if (currentNumberIndex >= MAX_NUMBER_INDEX) {
+    if (currentNumberIndex >= maxNumberIndex) {
       currentNumberIndex = 0;
-      if (currentSlotIndex >= MAX_SLOT_INDEX - 1) {
+      if (currentSlotIndex >= maxSlotIndex - 1) {
         currentSlotIndex = 0;
       } else {
         currentSlotIndex++;
@@ -159,8 +163,8 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
     uint256 slotIndex,
     uint256 numberIndex
   ) private view returns (uint256) {
-    require(slotIndex <= MAX_SLOT_INDEX, 'Slot index out of bounds.');
-    if (slotIndex == 516 && numberIndex == 3) {
+    require(slotIndex <= maxSlotIndex, 'Slot index out of bounds.');
+    if (slotIndex == alphaSlotIndex && numberIndex == alphaNumberIndex) {
       return 999999;
     }
 

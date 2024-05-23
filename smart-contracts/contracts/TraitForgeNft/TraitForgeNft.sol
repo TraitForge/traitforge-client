@@ -16,9 +16,9 @@ contract TraitForgeNft is
   Ownable
 {
   // Constants for token generation and pricing
-  uint256 public constant MAX_TOKENS_PER_GEN = 10000;
-  uint256 public constant START_PRICE = 0.01 ether;
-  uint256 public constant PRICE_INCREMENT = 0.01 ether;
+  uint256 public maxTokensPerGen = 10000;
+  uint256 public startPrice = 0.01 ether;
+  uint256 public priceIncrement = 0.01 ether;
 
   IEntityMerging public entityMergingContract;
   IEntropyGenerator public entropyGenerator;
@@ -68,6 +68,14 @@ contract TraitForgeNft is
   function startAirdrop(uint256 amount) external onlyOwner {
     airdropContract.startAirdrop(amount);
   }
+
+  function setStartPrice(uint256 _startPrice) external onlyOwner {
+    startPrice = _startPrice;
+}
+
+function setPriceIncrement(uint256 _priceIncrement) external onlyOwner {
+    priceIncrement = _priceIncrement;
+}
 
   function isApprovedOrOwner(
     address spender,
@@ -139,7 +147,7 @@ contract TraitForgeNft is
     uint256 amountMinted = 0;
     uint256 budgetLeft = msg.value;
 
-    while (budgetLeft >= mintPrice && _tokenIds < MAX_TOKENS_PER_GEN) {
+    while (budgetLeft >= mintPrice && _tokenIds < maxTokensPerGen) {
       _mintInternal(msg.sender, mintPrice);
       amountMinted++;
       budgetLeft -= mintPrice;
@@ -153,10 +161,11 @@ contract TraitForgeNft is
 
   function calculateMintPrice() public view returns (uint256) {
     uint256 currentGenMintCount = generationMintCounts[currentGeneration];
-    uint256 priceIncrease = PRICE_INCREMENT * currentGenMintCount;
-    uint256 price = START_PRICE + priceIncrease;
+    uint256 priceIncrease = priceIncrement * currentGenMintCount;
+    uint256 price = startPrice + priceIncrease;
     return price;
   }
+
 
   function getTokenEntropy(uint256 tokenId) public view returns (uint256) {
     require(
@@ -199,11 +208,11 @@ contract TraitForgeNft is
   function isForger(uint256 tokenId) public view returns (bool) {
     uint256 entropy = tokenEntropy[tokenId];
     uint256 roleIndicator = entropy % 3;
-    return roleIndicator == 0; // Adjust logic as needed
+    return roleIndicator == 0;
   }
 
   function _mintInternal(address to, uint256 mintPrice) internal {
-    if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
+    if (generationMintCounts[currentGeneration] >= maxTokensPerGen) {
       _incrementGeneration();
     }
     uint256 newItemId = _tokenIds++;
@@ -226,7 +235,7 @@ contract TraitForgeNft is
   }
 
   function _mintNewEntity(uint256 entropy) private returns (uint256) {
-    if (generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN) {
+    if (generationMintCounts[currentGeneration] >= maxTokensPerGen) {
       _incrementGeneration();
     }
 
@@ -248,7 +257,7 @@ contract TraitForgeNft is
 
   function _incrementGeneration() private {
     require(
-      generationMintCounts[currentGeneration] >= MAX_TOKENS_PER_GEN,
+      generationMintCounts[currentGeneration] >= maxTokensPerGen,
       'Generation limit not yet reached'
     );
     currentGeneration++;

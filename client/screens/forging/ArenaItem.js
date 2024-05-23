@@ -4,15 +4,14 @@ import classNames from 'classnames';
 import { EntityCard } from '@/components';
 
 export const ArenaItem = ({
-  handleEntityListModal,
+  handleOwnerEntityList,
   image,
-  selectedFromPool,
   selectedFromWallet,
   btnLabel,
   className,
 }) => {
-  if (selectedFromPool || selectedFromWallet)
-    return <EntityCard entity={selectedFromPool} borderType="orange" />;
+  if (selectedFromWallet)
+    return <EntityCard handleOwnerEntityList={handleOwnerEntityList} entity={selectedFromWallet} borderType="orange" />;
 
   const buttonWrapper = classNames('flex flex-col gap-y-5', className);
 
@@ -21,7 +20,7 @@ export const ArenaItem = ({
       <button
         aria-label={btnLabel}
         className="items-center justify-center cursor-pointer h-auto"
-        onClick={handleEntityListModal}
+        onClick={handleOwnerEntityList}
       >
         <Image
           src={image}

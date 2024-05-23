@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 import styles from '@/styles/honeypot.module.scss';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { HoneyPotHeader } from '@/screens/honey-pot/HoneyPotHeader';
-import { EntityCard } from '@/components';
+import { EntityCard, LoadingSpinner } from '@/components';
 import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 import { NukeEntity } from '@/screens/honey-pot/NukeEntity';
 import { useContextState } from '@/utils/context';
-import { createContract } from '@/utils/utils';
+import { createContract, approveNFTForNuking } from '@/utils/utils';
 
 const HoneyPot = () => {
-  const { ownerEntities, walletProvider } = useContextState();
+  const {isLoading, setIsLoading, ownerEntities, walletProvider } = useContextState();
   const [selectedForNuke, setSelectedForNuke] = useState(null);
   const [step, setStep] = useState('one');
   const handleStep = (nextStep) => setStep(nextStep);
@@ -20,7 +20,9 @@ const HoneyPot = () => {
       alert('Please connect your wallet first.');
       return;
     }
+    setIsLoading(true);
     try {
+      await approveNFTForNuking(tokenId, walletProvider); 
       const tradeContract = await createContract(
         walletProvider,
         contractsConfig.nukeContractAddress,
@@ -32,11 +34,18 @@ const HoneyPot = () => {
     } catch (error) {
       console.error('Nuke failed:', error);
       alert('Nuke failed. Please try again.');
+    }finally {
+      setIsLoading(false);
     }
   };
 
   let content;
-
+  if (isLoading)
+  return (
+    <div className="h-screen w-full flex justify-center items-center">
+      <LoadingSpinner color="#9457EB" />
+    </div>
+  );
   switch (step) {
     case 'three':
       content = (

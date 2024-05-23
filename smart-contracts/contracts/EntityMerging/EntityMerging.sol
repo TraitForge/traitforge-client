@@ -10,6 +10,8 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
   uint256 private _currentTokenId = 0;
   ITraitForgeNft public nftContract;
   address payable public nukeFundAddress;
+  uint256 public taxCut = 10;
+  uint256 public oneYearInDays = 365;
 
   mapping(uint256 => Listing) public listings;
   mapping(uint256 => uint256) forgerListingFee;
@@ -99,7 +101,7 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
       'mergePotential insufficient'
     );
 
-    uint256 devFee = breedingFee / 10;
+    uint256 devFee = breedingFee / taxCut;
     uint256 forgerShare = breedingFee - devFee;
     address payable forgerOwner = payable(nftContract.ownerOf(forgerTokenId));
 
@@ -122,7 +124,7 @@ contract EntityMerging is IEntityMerging, ReentrancyGuard, Ownable {
   }
 
   function _resetBreedingCountIfNeeded(uint256 tokenId) private {
-    uint256 oneYear = 365 days;
+    uint256 oneYear = oneYearInDays;
     if (block.timestamp >= lastBreedResetTimestamp[tokenId] + oneYear) {
       uint256 entropy = nftContract.getTokenEntropy(tokenId);
       uint8 forgePotential = uint8((entropy / 10) % 10);

@@ -66,13 +66,13 @@ const Home = () => {
   if (isLoading)
     return (
       <div className="h-screen w-full flex justify-center items-center">
-        <LoadingSpinner />
+        <LoadingSpinner color="#0ff"/>
       </div>
     );
 
   return (
     <div
-      className="mint-container mt-24 h-full"
+      className="mint-container h-screen"
       style={{
         backgroundImage: "url('/images/home.png')",
         backgroundPosition: 'center',

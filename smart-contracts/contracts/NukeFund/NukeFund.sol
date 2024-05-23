@@ -13,6 +13,11 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
   IAirdrop public airdropContract;
   address payable public devAddress;
   address payable public daoAddress;
+  uint256 public taxCut = 10;
+  uint256 public defaultNukeFactorIncrease = 250;
+  uint256 public maxAllowedClaimDivisor = 2;
+  uint256 public nukeFactorMaxParam = 50000;
+  uint256 public minimumDaysHeld = 3 days;
 
   // Constructor now properly passes the initial owner address to the Ownable constructor
   constructor(
@@ -29,7 +34,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
 
   // Fallback function to receive ETH and update fund balance
   receive() external payable {
-    uint256 devShare = msg.value / 10; // Calculate developer's share (10%)
+    uint256 devShare = msg.value / taxCut; // Calculate developer's share (10%)
     uint256 remainingFund = msg.value - devShare; // Calculate remaining funds to add to the fund
 
     fund += remainingFund; // Update the fund balance
@@ -105,7 +110,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     uint256 ageInDays = calculateAge(tokenId);
     uint256 initialNukeFactor = entropy / 4; // calcualte initalNukeFactor based on entropy
 
-    uint256 finalNukeFactor = ((ageInDays * 250) / 10000) + initialNukeFactor;
+    uint256 finalNukeFactor = ((ageInDays * defaultNukeFactorIncrease) / 10000) + initialNukeFactor;
 
     return finalNukeFactor;
   }
@@ -124,10 +129,10 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
 
     uint256 finalNukeFactor = calculateNukeFactor(tokenId);
     uint256 potentialClaimAmount = (fund * finalNukeFactor) / 1000000; // Calculate the potential claim amount based on the finalNukeFactor
-    uint256 maxAllowedClaimAmount = fund / 2; // Define a maximum allowed claim amount as 50% of the current fund size
+    uint256 maxAllowedClaimAmount = fund / maxAllowedClaimDivisor; // Define a maximum allowed claim amount as 50% of the current fund size
 
     // Directly assign the value to claimAmount based on the condition, removing the redeclaration
-    uint256 claimAmount = finalNukeFactor > 50000
+    uint256 claimAmount = finalNukeFactor > nukeFactorMaxParam
       ? maxAllowedClaimAmount
       : potentialClaimAmount;
 
@@ -149,6 +154,6 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     // Get the age of the token in seconds from the ERC721 contract
     uint256 tokenAgeInSeconds = nftContract.getTokenAge(tokenId);
     // Assuming tokenAgeInSeconds is the age of the token since its creation, check if it's at least 3 days old
-    return tokenAgeInSeconds >= 3 days;
+    return tokenAgeInSeconds >= minimumDaysHeld;
   }
 }
