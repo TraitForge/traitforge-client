@@ -123,7 +123,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     require(canTokenBeNuked(tokenId), 'Token is not mature yet');
 
     uint256 finalNukeFactor = calculateNukeFactor(tokenId);
-    uint256 potentialClaimAmount = (fund * finalNukeFactor) / 100000; // Calculate the potential claim amount based on the finalNukeFactor
+    uint256 potentialClaimAmount = (fund * finalNukeFactor) / 1000000; // Calculate the potential claim amount based on the finalNukeFactor
     uint256 maxAllowedClaimAmount = fund / 2; // Define a maximum allowed claim amount as 50% of the current fund size
 
     // Directly assign the value to claimAmount based on the condition, removing the redeclaration
