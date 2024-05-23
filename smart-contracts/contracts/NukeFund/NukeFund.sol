@@ -88,7 +88,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
       24;
     uint256 perfomanceFactor = nftContract.getTokenEntropy(tokenId) % 10;
 
-    uint256 age = (daysOld * perfomanceFactor) / 365;
+    uint256 age = (daysOld * perfomanceFactor * 10000) / 365;
     return age;
   }
 
