@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import { observer } from 'mobx-react';
+import { useWeb3Modal } from '@web3modal/ethers/react';
 
 import styles from '@/styles/trading.module.scss';
 import { EntityCard, LoadingSpinner } from '@/components';
@@ -13,65 +13,63 @@ import { FiltersHeader } from '@/components';
 import { createContract, approveNFTForTrading } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
-const Marketplace = observer(() => {
-  const {isLoading, setIsLoading, ownerEntities, entitiesForSale, walletProvider } =
-    useContextState();
+const Marketplace = () => {
+  const {
+    isLoading,
+    setIsLoading,
+    ownerEntities,
+    entitiesForSale,
+    walletProvider,
+  } = useContextState();
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [selectedListing, setSelectedListing] = useState(null);
   const [step, setStep] = useState('one');
-
+  const { open } = useWeb3Modal();
 
   const buyEntity = async (tokenId, price) => {
     setIsLoading(true);
-    if (!walletProvider) {
-      alert('Please connect your wallet first.');
-      return;
-    }
+    if (!walletProvider) open();
     try {
       const tradeContract = await createContract(
         walletProvider,
         contractsConfig.entityTradingContractAddress,
         contractsConfig.entityTradingAbi
       );
-      console.log("price Pre conversion:", price);
       const priceInWei = ethers.parseEther(price);
-      console.log("price Post conversion:",priceInWei)
       const transaction = await tradeContract.buyNFT(tokenId, {
-        value: priceInWei
+        value: priceInWei,
       });
       await transaction.wait();
-      alert('Entity purchased successfully!');
+      toast.success('Entity purchased successfully!');
     } catch (error) {
-      console.error('Purchase failed:', error);
-      alert('Purchase failed. Please try again.');
+      toast.error(`Purchase failed. Please try again`);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   const listEntityForSale = async (tokenId, price) => {
     setIsLoading(true);
-    if (!walletProvider) {
-      alert('Please connect your wallet first.');
-      return;
-    }
+    if (!walletProvider) open();
     try {
-      await approveNFTForTrading(tokenId, walletProvider); 
-  
+      await approveNFTForTrading(tokenId, walletProvider);
+
       const tradeContract = await createContract(
         walletProvider,
         contractsConfig.entityTradingContractAddress,
         contractsConfig.entityTradingAbi
       );
       const priceInWei = ethers.parseEther(price);
-      console.log("Wei price:", priceInWei)
-      const transaction = await tradeContract.listNFTForSale(tokenId, priceInWei);
+      console.log('Wei price:', priceInWei);
+      const transaction = await tradeContract.listNFTForSale(
+        tokenId,
+        priceInWei
+      );
       await transaction.wait();
-      alert('Entity listed for sale successfully!');
+      toast.success('Entity listed for sale successfully');
     } catch (error) {
-      console.error('Listing failed:', error);
-      alert('Listing failed. Please try again.');
-    }finally {
+      toast.error(`Listing failed. Please try again.`);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -81,18 +79,30 @@ const Marketplace = observer(() => {
   let content;
 
   if (isLoading)
-  return (
-    <div className="h-screen w-full flex justify-center items-center">
-      <LoadingSpinner color="#0EEB81" />
-    </div>
-  );
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <LoadingSpinner color="#0EEB81" />
+      </div>
+    );
 
   switch (step) {
     case 'four':
-      content = <BuyEntity handleStep={handleStep} selectedListing={selectedListing} buyEntity={buyEntity}/>;
+      content = (
+        <BuyEntity
+          handleStep={handleStep}
+          selectedListing={selectedListing}
+          buyEntity={buyEntity}
+        />
+      );
       break;
     case 'three':
-      content = <SellEntity handleStep={handleStep} selectedForSale={selectedForSale} listEntityForSale={listEntityForSale}/>;
+      content = (
+        <SellEntity
+          handleStep={handleStep}
+          selectedForSale={selectedForSale}
+          listEntityForSale={listEntityForSale}
+        />
+      );
       break;
     case 'two':
       content = (
@@ -101,12 +111,12 @@ const Marketplace = observer(() => {
             <EntityCard
               key={entity}
               entity={entity}
-              borderType='green'
+              borderType="green"
               onSelect={() => {
-                 setSelectedForSale(entity)
-                 setStep('three')
-                 console.log("selected entity")
-               }}
+                setSelectedForSale(entity);
+                setStep('three');
+                console.log('selected entity');
+              }}
             />
           ))}
         </div>
@@ -115,8 +125,7 @@ const Marketplace = observer(() => {
     default:
       content = (
         <>
-          <div className="flex justify-between items-center border-b mb-12">
-          </div>
+          <div className="flex justify-between items-center border-b mb-12"></div>
           <div className="overflow-y-auto flex-1">
             <div className="grid grid-col-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
               {entitiesForSale.map(listing => (
@@ -124,11 +133,11 @@ const Marketplace = observer(() => {
                   key={listing.tokenId}
                   entity={listing.tokenId}
                   price={listing.price}
-                  borderType='green'
-                  onSelect={() => { 
-                    setSelectedListing(listing)
-                    handleStep('four')
-                    console.log("the listing is:", listing)
+                  borderType="green"
+                  onSelect={() => {
+                    setSelectedListing(listing);
+                    handleStep('four');
+                    console.log('the listing is:', listing);
                   }}
                   showPrice={listing.price}
                 />
@@ -142,14 +151,11 @@ const Marketplace = observer(() => {
   return (
     <div className={styles.tradingPage}>
       <div className="container pt-16 md:pt-[134px] flex flex-col h-full">
-        <TraidingHeader
-          handleStep={handleStep}
-          step={step}
-        />
+        <TraidingHeader handleStep={handleStep} step={step} />
         {content}
       </div>
     </div>
   );
-});
+};
 
 export default Marketplace;

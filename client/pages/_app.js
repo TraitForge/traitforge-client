@@ -4,6 +4,8 @@ import { Wrapper } from '@/components';
 import { ContextProvider } from '@/utils/context';
 import '../styles/index.css';
 import 'swiper/css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Logo from '@/public/images/websitelogo.png';
 import '@/styles/main.scss';
@@ -46,6 +48,15 @@ const App = ({ Component, pageProps }) => (
     <Wrapper>
       <DefaultSeo {...SEO} />
       <Component {...pageProps} />
+      <ToastContainer
+        position="bottom-right"
+        theme="dark"
+        autoClose={3000}
+        closeOnClick
+        className="custom-toast-container"
+        closeButton={false}
+        limit={3}
+      />
     </Wrapper>
   </ContextProvider>
 );

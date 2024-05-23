@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import { observer } from 'mobx-react';
+import { toast } from 'react-toastify';
+
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
@@ -13,8 +14,9 @@ import { ForgingArena } from '@/screens/forging/ForgingArena';
 import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
-const Forging = observer(() => {
-  const { isLoading, setIsLoading, ownerEntities, entitiesForForging } = useContextState();
+const Forging = () => {
+  const { isLoading, setIsLoading, ownerEntities, entitiesForForging } =
+    useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [generationFilter, setGenerationFilter] = useState('');
@@ -26,11 +28,13 @@ const Forging = observer(() => {
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedForListing, setSelectedForListing] = useState(null);
 
-  const handleSelectedFromPool = (entity) => setSelectedFromPool(entity);
-  const handleSelectedFromWallet = (entity) => setSelectedEntity(entity);
+  const handleSelectedFromPool = entity => setSelectedFromPool(entity);
+  const handleSelectedFromWallet = entity => setSelectedEntity(entity);
 
-  const handleEntityListModal = () => setIsEntityListModalOpen((prevState) => !prevState);
-  const handleOwnerEntityList = () => setIsOwnerListOpen((prevState) => !prevState);
+  const handleEntityListModal = () =>
+    setIsEntityListModalOpen(prevState => !prevState);
+  const handleOwnerEntityList = () =>
+    setIsOwnerListOpen(prevState => !prevState);
   const handleListingPage = () => setStep('two');
 
   const forgeEntity = async () => {
@@ -42,24 +46,26 @@ const Forging = observer(() => {
         contractsConfig.entityMergingAddress,
         contractsConfig.entityMergingContractAbi
       );
-      const transaction = await forgeContract.breedWithListed(selectedFromPool, selectedEntity);
+      const transaction = await forgeContract.breedWithListed(
+        selectedFromPool,
+        selectedEntity
+      );
       await transaction.wait();
       setProcessingText('Merging');
       setTimeout(() => {
         setProcessing(false);
-        console.log('Process completed');
       }, 10000);
-      console.log('Forged successfully');
+      toast.success('Forged successfully');
     } catch (error) {
-      console.error('Failed to Forge:', error);
+      toast.error(`Failed to Forge`);
     }
     setGenerationFilter('');
   };
 
   const ListEntityForForging = async (selectedForListing, fee) => {
     setIsLoading(true);
-    console.log("selected entity is:", selectedForListing);
-    console.log("beginning forging");
+    console.log('selected entity is:', selectedForListing);
+    console.log('beginning forging');
     try {
       const forgeContract = await createContract(
         walletProvider,
@@ -72,10 +78,10 @@ const Forging = observer(() => {
         feeInWei
       );
       await transaction.wait();
-      console.log('Listed Successfully');
+      toast.success('Listed Successfully');
       handleStep('one');
     } catch (error) {
-      console.error('Failed to List Entity:', error);
+      toast.error(`Failed to List Entity`);
     } finally {
       setIsLoading(false);
     }
@@ -84,11 +90,11 @@ const Forging = observer(() => {
   let content;
 
   if (isLoading)
-  return (
-    <div className="h-screen w-full flex justify-center items-center">
-      <LoadingSpinner color="#FF5F1F" />
-    </div>
-  );
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <LoadingSpinner color="#FF5F1F" />
+      </div>
+    );
 
   switch (step) {
     case 'one':
@@ -169,9 +175,9 @@ const Forging = observer(() => {
       break;
     case 'three':
       content = (
-        <ListNow 
-          selectedForListing={selectedForListing} 
-          ListEntityForForging={ListEntityForForging} 
+        <ListNow
+          selectedForListing={selectedForListing}
+          ListEntityForForging={ListEntityForForging}
           handleStep={setStep}
         />
       );
@@ -179,6 +185,6 @@ const Forging = observer(() => {
   }
 
   return <div className={styles.forgingPage}>{content}</div>;
-});
+};
 
 export default Forging;

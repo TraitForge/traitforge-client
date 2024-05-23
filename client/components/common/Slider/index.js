@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { observer } from 'mobx-react';
 import { useContextState } from '@/utils/context';
-import Spinner from '../LoadingSpinner';
 import { EntityCard } from '../EntityCard';
 
-const Slider = observer(() => {
+const Slider = () => {
   const { entityPrice, upcomingMints } = useContextState();
   const [ref, setRef] = useState(0);
 
@@ -157,6 +155,6 @@ const Slider = observer(() => {
       </button>
     </div>
   );
-});
+};
 
 export default Slider;
