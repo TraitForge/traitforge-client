@@ -4,7 +4,7 @@ import {
   Airdrop,
   DAOFund,
   DevFund,
-  EntityMerging,
+  EntityForging,
   EntityTrading,
   EntropyGenerator,
   NukeFund,
@@ -24,7 +24,7 @@ task('deploy-all', 'Deploy all the contracts').setAction(async (_, hre) => {
   const entityTrading: EntityTrading = await hre.run('deploy-entity-trading', {
     nft: await nft.getAddress(),
   });
-  const entityMerging: EntityMerging = await hre.run('deploy-entity-merging', {
+  const entityForging: EntityForging = await hre.run('deploy-entity-merging', {
     nft: await nft.getAddress(),
   });
   const devFund: DevFund = await hre.run('deploy-dev-fund');
@@ -40,11 +40,11 @@ task('deploy-all', 'Deploy all the contracts').setAction(async (_, hre) => {
   });
 
   await nft.setEntropyGenerator(await entropyGenerator.getAddress());
-  await nft.setEntityMergingContract(await entityMerging.getAddress());
+  await nft.setEntityForgingContract(await entityForging.getAddress());
   await nft.setNukeFundContract(await nukeFund.getAddress());
   await nft.setAirdropContract(await airdrop.getAddress());
   await entityTrading.setNukeFundAddress(await nukeFund.getAddress());
-  await entityMerging.setNukeFundAddress(await nukeFund.getAddress());
+  await entityForging.setNukeFundAddress(await nukeFund.getAddress());
   await airdrop.setTraitToken(await token.getAddress());
   await airdrop.transferOwnership(await nft.getAddress());
 });
@@ -120,17 +120,17 @@ task('deploy-entity-trading', 'Deploy EntityTrading')
     return null;
   });
 
-task('deploy-entity-merging', 'Deploy EntityMerging')
+task('deploy-entity-merging', 'Deploy EntityForging')
   .addParam('nft', 'The address of TraitForgeNft')
   .setAction(async (taskArguments, hre) => {
     try {
-      console.log('Deploying EntityMerging...');
-      const entityMerging = await hre.ethers.deployContract('EntityMerging', [
+      console.log('Deploying EntityForging...');
+      const entityForging = await hre.ethers.deployContract('EntityForging', [
         taskArguments.nft,
       ]);
-      await entityMerging.waitForDeployment();
-      console.log('Contract deployed to:', await entityMerging.getAddress());
-      return entityMerging;
+      await entityForging.waitForDeployment();
+      console.log('Contract deployed to:', await entityForging.getAddress());
+      return entityForging;
     } catch (error) {
       console.error(error);
     }
@@ -205,7 +205,7 @@ task('deploy-nuke-fund', 'Deploy NukeFund')
   });
 
 task('issue-fix', 'Issue fix').setAction(async (_, hre) => {
-  const entityMerging: EntityMerging = await hre.run('deploy-entity-merging', {
+  const entityForging: EntityForging = await hre.run('deploy-entity-merging', {
     nft: DEPLOYED_CONTRACTS.sepolia.TraitForgeNft,
   });
 
@@ -213,7 +213,7 @@ task('issue-fix', 'Issue fix').setAction(async (_, hre) => {
     'TraitForgeNft',
     DEPLOYED_CONTRACTS.sepolia.TraitForgeNft
   );
-  await nft.setEntityMergingContract(await entityMerging.getAddress());
+  await nft.setEntityForgingContract(await entityForging.getAddress());
 
-  await entityMerging.setNukeFundAddress(DEPLOYED_CONTRACTS.sepolia.NukeFund);
+  await entityForging.setNukeFundAddress(DEPLOYED_CONTRACTS.sepolia.NukeFund);
 });
