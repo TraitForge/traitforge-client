@@ -18,7 +18,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
   uint256 public maxAllowedClaimDivisor = 2;
   uint256 public nukeFactorMaxParam = 50000;
   uint256 public minimumDaysHeld = 3 days;
-  uint256 public ageMultiplier = 1;
+  uint256 public ageMultiplier;
 
   // Constructor now properly passes the initial owner address to the Ownable constructor
   constructor(
