@@ -18,7 +18,7 @@ interface ITraitForgeNft is IERC721Enumerable {
   );
   event GenerationIncremented(uint256 newGeneration);
   event FundsDistributedToNukeFund(address indexed to, uint256 amount);
-  event Entitybred(
+  event EntityForged(
     uint256 indexed newTokenId,
     uint256 parent1Id,
     uint256 parent2Id,
@@ -28,7 +28,7 @@ interface ITraitForgeNft is IERC721Enumerable {
 
   function setNukeFundContract(address payable _nukeFundAddress) external;
 
-  function setEntityMergingContract(address _entityMergingAddress) external;
+  function setEntityForgingContract(address _entityForgingAddress) external;
 
   function setEntropyGenerator(address _entropyGeneratorAddress) external;
 
@@ -43,7 +43,7 @@ interface ITraitForgeNft is IERC721Enumerable {
 
   function burn(uint256 tokenId) external;
 
-  function breed(
+  function forge(
     uint256 parent1Id,
     uint256 parent2Id,
     string memory baseTokenURI

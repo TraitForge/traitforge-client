@@ -41,8 +41,8 @@ interface IEntropyGenerator {
     view
     returns (
       uint256 nukeFactor,
-      uint256 breedPotential,
+      uint256 forgePotential,
       uint256 performanceFactor,
-      bool isSire
+      bool isForger
     );
 }

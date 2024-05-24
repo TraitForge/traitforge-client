@@ -139,23 +139,23 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
     view
     returns (
       uint256 nukeFactor,
-      uint256 breedPotential,
+      uint256 forgePotential,
       uint256 performanceFactor,
-      bool isSire
+      bool isForger
     )
   {
     uint256 entropy = getEntropy(slotIndex, numberIndex);
 
     // example calcualtions using entropyto derive game-related parameters
     nukeFactor = entropy / 4000000;
-    breedPotential = getFirstDigit(entropy);
+    forgePotential = getFirstDigit(entropy);
     performanceFactor = entropy % 10;
 
     // exmaple logic to determine a boolean property based on entropy
-    uint256 gender = entropy % 3;
-    isSire = gender == 0;
+    uint256 role = entropy % 3;
+    isForger = role == 0;
 
-    return (nukeFactor, breedPotential, performanceFactor, isSire); // return derived parammeters
+    return (nukeFactor, forgePotential, performanceFactor, isForger); // return derived parammeters
   }
 
   // private function to calculate the entropy value based on slot and number index
