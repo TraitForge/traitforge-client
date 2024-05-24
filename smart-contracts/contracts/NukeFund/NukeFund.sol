@@ -18,6 +18,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
   uint256 public maxAllowedClaimDivisor = 2;
   uint256 public nukeFactorMaxParam = 50000;
   uint256 public minimumDaysHeld = 3 days;
+  uint256 public ageMultiplier;
 
   // Constructor now properly passes the initial owner address to the Ownable constructor
   constructor(
@@ -82,6 +83,14 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     return fund;
   }
 
+  function setAgeMultplier(uint256 _ageMultiplier) external onlyOwner {
+    ageMultiplier = _ageMultiplier;
+  }
+
+  function getAgeMultiplier() public view returns (uint256) {
+    return ageMultiplier;
+  }
+
   // Calculate the age of a token based on its creation timestamp and current time
   function calculateAge(uint256 tokenId) public view returns (uint256) {
     require(nftContract.ownerOf(tokenId) != address(0), 'Token does not exist');
@@ -93,7 +102,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
       24;
     uint256 perfomanceFactor = nftContract.getTokenEntropy(tokenId) % 10;
 
-    uint256 age = (daysOld * perfomanceFactor * 10000) / 365;
+    uint256 age = (daysOld * perfomanceFactor * 10000 * ageMultiplier) / 365;
     return age;
   }
 
@@ -104,13 +113,12 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
       'ERC721: operator query for nonexistent token'
     );
 
-    uint256 entropy = nftContract.getTokenEntropy(tokenId); // Corrected line
-    // Assume this is stored within NukeFund or accessible somehow
-    // Use getTokenAge from the ERC721 contract (ICustomERC721) to get the age in seconds
-    uint256 ageInDays = calculateAge(tokenId);
+    uint256 entropy = nftContract.getTokenEntropy(tokenId); 
+    uint256 adjustedAge = calculateAge(tokenId);
+    
     uint256 initialNukeFactor = entropy / 4; // calcualte initalNukeFactor based on entropy
 
-    uint256 finalNukeFactor = ((ageInDays * defaultNukeFactorIncrease) / 10000) + initialNukeFactor;
+    uint256 finalNukeFactor = ((adjustedAge * defaultNukeFactorIncrease) / 10000) + initialNukeFactor;
 
     return finalNukeFactor;
   }

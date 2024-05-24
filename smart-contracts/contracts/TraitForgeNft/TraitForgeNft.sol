@@ -5,7 +5,7 @@ import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './ITraitForgeNft.sol';
-import '../EntityMerging/IEntityMerging.sol';
+import '../EntityForging/IEntityForging.sol';
 import '../EntropyGenerator/IEntropyGenerator.sol';
 import '../Airdrop/IAirdrop.sol';
 
@@ -20,7 +20,7 @@ contract TraitForgeNft is
   uint256 public startPrice = 0.01 ether;
   uint256 public priceIncrement = 0.01 ether;
 
-  IEntityMerging public entityMergingContract;
+  IEntityForging public entityForgingContract;
   IEntropyGenerator public entropyGenerator;
   IAirdrop public airdropContract;
   address public nukeFundAddress;
@@ -49,10 +49,10 @@ contract TraitForgeNft is
   }
 
   // Function to set the entity merging (breeding) contract address, restricted to the owner
-  function setEntityMergingContract(
-    address _entityMergingAddress
+  function setEntityForgingContract(
+    address _entityForgingAddress
   ) external onlyOwner {
-    entityMergingContract = IEntityMerging(_entityMergingAddress);
+    entityForgingContract = IEntityForging(_entityForgingAddress);
   }
 
   function setEntropyGenerator(
@@ -77,6 +77,10 @@ function setPriceIncrement(uint256 _priceIncrement) external onlyOwner {
     priceIncrement = _priceIncrement;
 }
 
+function getGeneration() public view returns (uint256) {
+  return currentGeneration;
+}
+
   function isApprovedOrOwner(
     address spender,
     uint256 tokenId
@@ -96,17 +100,17 @@ function setPriceIncrement(uint256 _priceIncrement) external onlyOwner {
     _burn(tokenId);
   }
 
-  function breed(
+  function forge(
     uint256 parent1Id,
     uint256 parent2Id,
     string memory
   ) external payable nonReentrant returns (uint256) {
-    entityMergingContract.breedWithListed{ value: msg.value }(
+    entityForgingContract.forgeWithListed{ value: msg.value }(
       parent1Id,
       parent2Id
     );
     require(
-      msg.sender == address(entityMergingContract),
+      msg.sender == address(entityForgingContract),
       'unauthorized caller'
     );
 
@@ -124,7 +128,7 @@ function setPriceIncrement(uint256 _priceIncrement) external onlyOwner {
     currentGeneration++;
     totalGenerationCirculation++;
 
-    emit Entitybred(newTokenId, parent1Id, parent2Id, newEntropy);
+    emit EntityForged(newTokenId, parent1Id, parent2Id, newEntropy);
 
     return newTokenId;
   }
