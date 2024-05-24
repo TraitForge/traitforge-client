@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWeb3Modal } from '@web3modal/ethers/react';
 
 import styles from '@/styles/honeypot.module.scss';
@@ -11,11 +11,15 @@ import { useContextState } from '@/utils/context';
 import { createContract, approveNFTForNuking } from '@/utils/utils';
 
 const HoneyPot = () => {
-  const { isLoading, setIsLoading, ownerEntities, walletProvider } =
+  const { isLoading, setIsLoading, ownerEntities, getOwnersEntities, walletProvider } =
     useContextState();
   const [selectedForNuke, setSelectedForNuke] = useState(null);
   const [step, setStep] = useState('one');
   const { open } = useWeb3Modal();
+
+  useEffect(() => {
+    getOwnersEntities()
+  }, []);
 
   const handleStep = nextStep => setStep(nextStep);
 

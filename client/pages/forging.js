@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 
@@ -15,7 +15,7 @@ import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
 const Forging = () => {
-  const { isLoading, setIsLoading, ownerEntities, entitiesForForging } =
+  const { isLoading, setIsLoading, ownerEntities, entitiesForForging, getOwnersEntities, getEntitiesForForging } =
     useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
@@ -27,6 +27,11 @@ const Forging = () => {
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedForListing, setSelectedForListing] = useState(null);
+
+  useEffect(() => {
+    getEntitiesForForging()
+    getOwnersEntities()
+  }, []);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
   const handleSelectedFromWallet = entity => setSelectedEntity(entity);

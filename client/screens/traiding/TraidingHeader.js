@@ -45,7 +45,7 @@ export const TraidingHeader = ({ handleStep, step }) => {
           </button>
         )}
         <h1 className="text-[36px] md:text-extra-large">
-          {step === 'one' ? 'Marketplace' : 'Sell Your entity'}
+        {step === 'one' ? 'Marketplace' : step === 'four' ? 'Buy Entity' : 'Sell Your Entity'}
         </h1>
         {step === 'one' && (
           <div className="md:absolute right-0 top-1/2 md:translate-y-[-50%] w-[265px]">

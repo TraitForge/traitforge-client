@@ -155,11 +155,9 @@ const ContextProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [fetchEthAmount, fetchEthToUsdRate]);
 
-  //Entity Price For Mint
   useEffect(() => {
     const getLatestEntityPrice = async () => {
       if (!infuraProvider) return;
-      setIsLoading(true);
       try {
         const mintContract = new ethers.Contract(
           contractsConfig.traitForgeNftAddress,
@@ -171,14 +169,18 @@ const ContextProvider = ({ children }) => {
         setEntityPrice(priceInEth);
       } catch (error) {
         console.error('Error fetching entity price:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
+  
     getLatestEntityPrice();
+  
+    const intervalId = setInterval(() => {
+      getLatestEntityPrice();
+    }, 6000);
+  
+    return () => clearInterval(intervalId); 
   }, []);
-
-  // get upcoming mints when we got entity price
+  
   useEffect(() => {
     if (entityPrice) {
       const priceToIndex = Math.floor(entityPrice * 100);
@@ -257,6 +259,7 @@ const ContextProvider = ({ children }) => {
         setIsLoading,
         getOwnersEntities,
         upcomingMints,
+        getUpcomingMints,
         entitiesForForging,
         getEntitiesForForging,
         entitiesForSale,

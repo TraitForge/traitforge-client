@@ -11,7 +11,7 @@ const links = [
   { url: '/forging', text: 'FORGING' },
   { url: '/trading', text: 'MARKETPLACE' },
   { url: '/honey-pot', text: 'HONEYPOT' },
-  { url: '/stats', text: 'GAME STATS' },
+  //{ url: '/stats', text: 'GAME STATS' },
 ];
 
 const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3Modal } from '@web3modal/ethers/react';
 
@@ -18,13 +18,20 @@ const Marketplace = () => {
     isLoading,
     setIsLoading,
     ownerEntities,
+    getOwnersEntities,
     entitiesForSale,
+    getEntitiesForSale,
     walletProvider,
   } = useContextState();
   const [selectedForSale, setSelectedForSale] = useState(null);
   const [selectedListing, setSelectedListing] = useState(null);
   const [step, setStep] = useState('one');
   const { open } = useWeb3Modal();
+
+  useEffect(() => {
+    getEntitiesForSale()
+    getOwnersEntities()
+  }, []);
 
   const buyEntity = async (tokenId, price) => {
     setIsLoading(true);

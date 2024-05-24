@@ -62,7 +62,7 @@ export const EntityCard = ({
       isEntropy();
     }
   }, [entity, listing, localEntropy, tokenId]);
-
+    console.log(localEntropy)
   if (!localEntropy) {
     return null; 
   }
