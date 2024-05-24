@@ -6,6 +6,7 @@ export const WalletEntityModal = ({
   ownerEntities,
   walletProvider,
   handleSelectedFromWallet,
+  handleOwnerEntityList
 }) => {
   const [filteredEntities, setFilteredEntities] = useState([]);
 
@@ -51,6 +52,7 @@ export const WalletEntityModal = ({
               borderType="orange"
               onSelect={() => {
                 handleSelectedFromWallet(entity);
+                handleOwnerEntityList();
                 console.log('entityid:', entity);
               }}
             />

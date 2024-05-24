@@ -1,6 +1,6 @@
 import TraitForgeNftAbi from '../../smart-contracts/artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
 import EntropyGenerator from '../../smart-contracts/artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
-import entityMerging from '../../smart-contracts/artifacts/contracts/EntityMerging/EntityMerging.sol/EntityMerging.json';
+import entityMerging from '../../smart-contracts/artifacts/contracts/EntityForging/EntityForging.sol/EntityForging.json';
 import entityTrading from '../../smart-contracts/artifacts/contracts/entityTrading/entityTrading.sol/entityTrading.json';
 import nukeFund from '../../smart-contracts/artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
 

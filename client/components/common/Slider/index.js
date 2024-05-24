@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { useContextState } from '@/utils/context';
-import { EntityCard } from '../EntityCard';
+import { EntitySliderCard } from './EntitySliderCard';
 
 const Slider = () => {
-  const { entityPrice, upcomingMints } = useContextState();
+  const { entityPrice, upcomingMints, currentGeneration } = useContextState();
   const [ref, setRef] = useState(0);
 
   const getEntityPrice = (entityPrice, index) => {
@@ -66,8 +66,9 @@ const Slider = () => {
               const price = getEntityPrice(entityPrice, index);
               return (
                 <SwiperSlide key={mint.id}>
-                  <EntityCard
+                  <EntitySliderCard
                     borderType="blue"
+                    currentGeneration={currentGeneration}
                     entropy={mint.entropy}
                     index={index}
                     price={price}

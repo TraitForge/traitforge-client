@@ -16,7 +16,8 @@ import {
   getUpcomingMintsHook,
   getEntitiesForSaleHook,
   getOwnersEntitiesHook,
-  getEntityEntropyHook
+  getEntityEntropyHook,
+  getCurrentGenerationHook,
 } from './utils';
 import { get } from 'jquery';
 
@@ -26,6 +27,7 @@ const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 const ContextProvider = ({ children }) => {
   const [ethAmount, setEthAmount] = useState(0);
   const [usdAmount, setUsdAmount] = useState(0);
+  const [currentGeneration, setCurrentGeneration] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [entityPrice, setEntityPrice] = useState(null);
   const [entityEntropy, setEntityEntropy] = useState('');
@@ -80,6 +82,19 @@ const ContextProvider = ({ children }) => {
     }
   };
 
+  const getCurrentGeneration = async () => {
+    if (!infuraProvider) return;
+
+    try {
+      const currentGeneration = await getCurrentGenerationHook(infuraProvider);
+      setCurrentGeneration(currentGeneration);
+      console.log(currentGeneration)
+    } catch (error) {
+      console.error('Failed to fetch entities for forging:', error);
+      getCurrentGeneration([]);
+    }
+  };
+
   const getEntityEntropy = async (listing) => {
     if(!walletProvider) return;
     try {
@@ -111,6 +126,9 @@ const ContextProvider = ({ children }) => {
     getEntitiesForSale();
     getEntitiesForForging();
   }, [walletProvider]);
+  useEffect(() => {
+    getCurrentGeneration();
+  }, []);
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
@@ -259,6 +277,7 @@ const ContextProvider = ({ children }) => {
         setIsLoading,
         getOwnersEntities,
         upcomingMints,
+        currentGeneration,
         getUpcomingMints,
         entitiesForForging,
         getEntitiesForForging,

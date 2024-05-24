@@ -63,7 +63,7 @@ const HoneyPot = () => {
             {ownerEntities.map(entity => (
               <EntityCard
                 key={entity}
-                tokenId={entity}
+                entity={entity}
                 borderType="purple"
                 onSelect={() => {
                   setSelectedForNuke(entity);

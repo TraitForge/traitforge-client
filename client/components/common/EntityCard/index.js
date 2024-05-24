@@ -5,7 +5,15 @@ import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
-import { calculateEntityAttributes, getEntityEntropyHook, calculateNukeFactor } from '@/utils/utils';
+
+import { 
+  calculateEntityAttributes,
+  getEntityEntropyHook,
+  calculateNukeFactor,
+  getEntityGeneration,
+  getCurrentGeneration
+  } from '@/utils/utils';
+
 import { useContextState } from '@/utils/context';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
@@ -13,8 +21,6 @@ import styles from './styles.module.scss';
 export const EntityCard = ({
   entropy,
   entity,
-  tokenId,
-  listing,
   price,
   onSelect,
   borderType = 'blue',
@@ -24,45 +30,69 @@ export const EntityCard = ({
   const { walletProvider } = useWeb3ModalProvider();
   const [localEntropy, setLocalEntropy] = useState(entropy);
   const [finalNukeFactor, setFinalNukeFactor] = useState(null);
+  const [localGeneration, setLocalGeneration] = useState(null);
 
-  const isEntropy = async () => {
-    if (entropy) return;
-    let newEntropy = null;
-    let newNukeFactor = null;
-
+  const isGeneration = async () => {
+    let generation = null;
+  
     if (entity !== undefined && entity !== null) {
-      console.log('Fetching entropy for entity:', entity);
-      newEntropy = await getEntityEntropyHook(walletProvider, entity);
-      newNukeFactor = await calculateNukeFactor(walletProvider, entity);
+      generation = await getEntityGeneration(walletProvider, entity);
     } else if (listing !== undefined && listing !== null) {
-      console.log('Fetching entropy for listing:', listing);
-      newEntropy = await getEntityEntropyHook(walletProvider, listing);
-      newNukeFactor = await calculateNukeFactor(walletProvider, listing);
+      generation = await getEntityGeneration(walletProvider, listing);
     } else if (tokenId !== undefined && tokenId !== null) {
-      console.log('Fetching entropy for tokenId:', tokenId);
-      newEntropy = await getEntityEntropyHook(walletProvider, tokenId);
-      newNukeFactor = await calculateNukeFactor(walletProvider, tokenId);
-    }
-
-    if (newNukeFactor) {
-      setFinalNukeFactor(newNukeFactor);
+      generation = await getEntityGeneration(walletProvider, tokenId);
     } else {
-      console.error('Failed to get NukeFactor');
+      generation = await getCurrentGeneration();
     }
-
-    if (newEntropy) {
-      setLocalEntropy(newEntropy.toString());
+  
+    if (generation) {
+      return generation;
     } else {
-      console.error('Failed to fetch entropy');
+      console.error('Failed to fetch generation');
+      return null;
+    }
+  };
+  
+  const fetchEntropy = async () => {
+    if (entropy) return;
+
+    try {
+      const newEntropy = await getEntityEntropyHook(walletProvider, entity);
+      const newNukeFactor = await calculateNukeFactor(walletProvider, entity);
+      if (newNukeFactor !== null) {
+        setFinalNukeFactor(newNukeFactor);
+      } else {
+        console.error('Failed to get NukeFactor');
+      }
+      if (newEntropy !== null) {
+        setLocalEntropy(newEntropy.toString());
+      } else {
+        console.error('Failed to fetch entropy');
+      }
+    } catch (error) {
+      console.error('Error fetching entropy or nuke factor:', error);
     }
   };
 
   useEffect(() => {
-    if (!localEntropy && (entity !== undefined && entity !== null || listing !== undefined && listing !== null || tokenId !== undefined && tokenId !== null)) {
-      isEntropy();
-    }
-  }, [entity, listing, localEntropy, tokenId]);
-    console.log(localEntropy)
+    const fetchEntropyAndGeneration = async () => {
+      if (!localEntropy && entity) {
+        await fetchEntropy();
+      }
+
+      if (!localGeneration && entity) {
+        const generation = await isGeneration();
+        setLocalGeneration(generation);
+      }
+    };
+
+    fetchEntropyAndGeneration();
+  }, [entity, localEntropy, localGeneration]);
+
+  console.log(localEntropy);
+  console.log(localGeneration);
+
+  
   if (!localEntropy) {
     return null; 
   }
@@ -71,7 +101,7 @@ export const EntityCard = ({
   const calculateUri = (paddedEntropy, localGeneration) => {
     return `${paddedEntropy}_${localGeneration}`;
   };
-  const uri = calculateUri(paddedEntropy, '3');
+  const uri = calculateUri(paddedEntropy, localGeneration);
 
   const { role, forgePotential, performanceFactor, nukeFactor } = calculateEntityAttributes(paddedEntropy);
   const displayedNukeFactor = finalNukeFactor !== null ? finalNukeFactor : nukeFactor;

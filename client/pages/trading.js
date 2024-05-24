@@ -75,7 +75,7 @@ const Marketplace = () => {
       await transaction.wait();
       toast.success('Entity listed for sale successfully');
     } catch (error) {
-      toast.error(`Listing failed. Please try again.`);
+      toast.error('Listing failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

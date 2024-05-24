@@ -145,6 +145,7 @@ const Forging = () => {
               modalClasses="items-end pb-4"
             >
               <SelectEntityList
+                handleEntityListModal={handleEntityListModal}
                 entitiesForForging={entitiesForForging}
                 handleSelectedFromPool={handleSelectedFromPool}
               />
@@ -158,6 +159,7 @@ const Forging = () => {
             >
               <WalletEntityModal
                 ownerEntities={ownerEntities}
+                handleOwnerEntityList={handleOwnerEntityList}
                 walletProvider={walletProvider}
                 filterType="merger"
                 handleSelectedFromWallet={handleSelectedFromWallet}

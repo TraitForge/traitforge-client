@@ -32,9 +32,13 @@ export const getEntitiesHook = async infuraProvider => {
     contractsConfig.entityMergingContractAbi,
     infuraProvider
   );
-  const data = await contract.fetchListings();
-  const entitiesForForging = await Promise.all(data);
-  return entitiesForForging;
+  const [tokenIds, sellers, prices] = await contract.fetchListings();
+  const listedEntities = tokenIds.map((tokenId, index) => ({
+    tokenId: tokenId,
+    seller: sellers[index],
+    price: ethers.formatEther(prices[index]),
+  }));
+  return listedEntities;
 };
 
 export const getUpcomingMintsHook = async (
@@ -130,6 +134,30 @@ export const getEntityEntropyHook = async (walletProvider, listing) => {
   );
   const entityEntropy = await TraitForgeContract.getTokenEntropy(listing);
   return entityEntropy.toString();
+};
+
+export const getEntityGeneration = async (walletProvider, listing) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider);
+  const signer = await ethersProvider.getSigner();
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
+    signer
+  );
+  const entityGeneration = await TraitForgeContract.getTokenGeneration(listing);
+  return entityGeneration.toString();
+};
+
+export const getCurrentGenerationHook = async (infuraProvider) => {
+  const ethersProvider = new ethers.providers.Web3Provider(infuraProvider);
+  const signer = ethersProvider.getSigner();
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
+    signer
+  );
+  const currentGeneration = await TraitForgeContract.getGeneration();
+  return currentGeneration.toString();
 };
 
 export const getEntityGenerationHook = async (walletProvider, entity) => {
