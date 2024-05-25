@@ -62,7 +62,7 @@ export const EntityCard = ({
       fetchEntropy(entity.toString());
       fetchNukeFactor(entity.toString());
       fetchGeneration(entity.toString());
-  }, []);
+  }, [entity]);
 
   const paddedEntropy = entropy.toString().padStart(6, '0');
     const calculateUri = (paddedEntropy, generation) => {

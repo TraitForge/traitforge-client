@@ -1,19 +1,23 @@
 import Image from 'next/image';
 import { FaWallet } from 'react-icons/fa';
-import { useWeb3ModalAccount } from '@web3modal/ethers/react';
-import { useState } from 'react';
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react';
+import { useEffect, useState } from 'react';
 
 import { Button, EntityCard, Modal } from '@/components';
 import { shortenAddress } from '@/utils/utils';
 import { useContextState } from '@/utils/context';
 
 export const WalletModal = ({ isOpen, closeModal }) => {
-  const { ethAmount, ownerEntities } = useContextState();
+  const { ethAmount, ownerEntities, entitiesListedByUser, getEntitiesListedByPlayer } = useContextState();
   const { address } = useWeb3ModalAccount();
   const [unlistModalOpen, setUnListModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
   const shortAddress = shortenAddress(address);
+
+  useEffect(() => {
+    getEntitiesListedByPlayer();
+  }, []);
 
   const handleUnlistModal = () =>
   setUnListModalOpen((prevState) => !prevState);
@@ -109,10 +113,10 @@ return (
             className="md:mb-[53px]"
           />
           <div className="overflow-x-scroll w-6/12 h-44 flex flex-row md:text-large text-white md:mb-5">
-            {ownerEntities.map((entity) => (
+            {entitiesListedByUser.map((entity) => (
               <EntityCard
-               key={entity}
-               entity={entity}
+               key={entity.tokenId}
+               entity={entity.tokenId}
                borderType="blue" />
             ))}
           </div>

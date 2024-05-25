@@ -27,6 +27,7 @@ const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 const ContextProvider = ({ children }) => {
   const [ethAmount, setEthAmount] = useState(0);
   const [usdAmount, setUsdAmount] = useState(0);
+  const [entitiesListedByUser, setEntitiesListedByUser] = useState([])
   const [currentGeneration, setCurrentGeneration] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [entityPrice, setEntityPrice] = useState(null);
@@ -37,7 +38,6 @@ const ContextProvider = ({ children }) => {
   const [upcomingMints, setUpcomingMints] = useState([]);
   const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [transactions, setTransactions] = useState([]);
-
 
   const { walletProvider } = useWeb3ModalProvider();
 
@@ -265,6 +265,48 @@ const ContextProvider = ({ children }) => {
   //};
   //}, [infuraProvider]);
 
+  const getEntitiesListedByPlayer = async () => {
+    if (!walletProvider) {
+      console.error('No wallet provider found.');
+      return;
+    }
+    try {
+      const ethersProvider = new ethers.BrowserProvider(walletProvider);
+      const signer = await ethersProvider.getSigner();
+      const address = await signer.getAddress();
+      
+      const listedEntities = [];
+      
+      for (let i = 0; i < entitiesForSale.length; i++) {
+        if (address === entitiesForSale[i].seller) {
+          listedEntities.push({
+            tokenId: entitiesForSale[i].tokenId,
+            seller: entitiesForSale[i].seller,
+            price: entitiesForSale[i].price,
+          });
+        }
+      }
+      
+      for (let i = 0; i < entitiesForForging.length; i++) {
+        if (address === entitiesForForging[i].seller) {
+          listedEntities.push({
+            tokenId: entitiesForForging[i].tokenId,
+            seller: entitiesForForging[i].seller,
+            price: entitiesForForging[i].price,
+          });
+        }
+      }
+      
+      console.log("Entities listed by player:", listedEntities);
+      setEntitiesListedByUser(listedEntities);
+    } catch (error) {
+      console.error('Failed to fetch entities listed by player:', error);
+    }
+  };
+  
+  
+
+
   return (
     <AppContext.Provider
       value={{
@@ -285,6 +327,8 @@ const ContextProvider = ({ children }) => {
         getUpcomingMints,
         entitiesForForging,
         getEntitiesForForging,
+        getEntitiesListedByPlayer,
+        entitiesListedByUser,
         entitiesForSale,
         getEntityEntropy,
         entityEntropy,

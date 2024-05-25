@@ -309,3 +309,46 @@ export const shortenAddress = address => {
 
   return shortenedAddress;
 };
+
+export const getEntitiesListedByPlayer = async (walletProvider) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider);
+  const signer = await ethersProvider.getSigner();
+  const address = await signer.getAddress();
+  
+  const tradeContract = new ethers.Contract(
+    contractsConfig.entityTradingContractAddress,
+    contractsConfig.entityTradingAbi,
+    signer
+  );
+  
+  const forgeContract = new ethers.Contract(
+    contractsConfig.entityMergingAddress,
+    contractsConfig.entityMergingContractAbi,
+    signer
+  );
+  const [tradeTokenIds, tradeSellers, tradePrices] = await tradeContract.fetchListedEntities();
+  const [forgeTokenIds, forgeSellers, forgePrices] = await forgeContract.fetchListings();
+  const listedEntities = [];
+  
+  for (let i = 0; i < tradeTokenIds.length; i++) {
+    if (address === tradeSellers[i]) {
+      listedEntities.push({
+        tokenId: tradeTokenIds[i],
+        seller: tradeSellers[i],
+        price: ethers.formatEther(tradePrices[i]),
+      });
+    }
+  }
+  
+  for (let i = 0; i < forgeTokenIds.length; i++) {
+    if (address === forgeSellers[i]) {
+      listedEntities.push({
+        tokenId: forgeTokenIds[i],
+        seller: forgeSellers[i],
+        price: ethers.formatEther(forgePrices[i]),
+      });
+    }
+  }
+  
+  return listedEntities;
+};
