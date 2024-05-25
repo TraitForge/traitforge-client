@@ -8,25 +8,28 @@ import { shortenAddress } from '@/utils/utils';
 import { useContextState } from '@/utils/context';
 
 export const WalletModal = ({ isOpen, closeModal }) => {
-  const { ethAmount, ownerEntities, entitiesListedByUser, getEntitiesListedByPlayer } = useContextState();
+  const { ethAmount, ownerEntities, entitiesListedByUser } = useContextState();
   const { address } = useWeb3ModalAccount();
-  const [unlistModalOpen, setUnListModalOpen] = useState(false);
+  const { walletProvider } = useWeb3ModalProvider();
+  const [selectedForUnlisting, setSelectedForUnlisting] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
 
   const shortAddress = shortenAddress(address);
 
-  useEffect(() => {
-    getEntitiesListedByPlayer();
-  }, []);
+  const handleNextStep = () => setCurrentStep((prevStep) => prevStep + 1);
+  const handlePreviousStep = () => setCurrentStep((prevStep) => prevStep - 1);
 
-  const handleUnlistModal = () =>
-  setUnListModalOpen((prevState) => !prevState);
+  const handleSelectEntity = (tokenId) => {
+    setSelectedForUnlisting((prevSelected) => {
+      if (prevSelected.includes(tokenId)) {
+        return prevSelected.filter((id) => id !== tokenId);
+      } else {
+        return [...prevSelected, tokenId];
+      }
+    });
+  };
 
-const handleNextStep = () => setCurrentStep((prevStep) => prevStep + 1);
-const handlePreviousStep = () => setCurrentStep((prevStep) => prevStep - 1);
-
-return (
-  <>
+  return (
     <Modal
       isOpen={isOpen}
       closeModal={closeModal}
@@ -94,10 +97,10 @@ return (
           <div className="w-6/12 pb-5 h-50 overflow-x-scroll flex flex-row md:text-large text-white md:mb-8">
             {ownerEntities.map((entity) => (
               <EntityCard
-               key={entity}
+                key={entity}
                 entity={entity}
-                 borderType="blue"
-                  />
+                borderType="blue"
+              />
             ))}
           </div>
         </div>
@@ -115,13 +118,15 @@ return (
           <div className="overflow-x-scroll w-6/12 h-44 flex flex-row md:text-large text-white md:mb-5">
             {entitiesListedByUser.map((entity) => (
               <EntityCard
-               key={entity.tokenId}
-               entity={entity.tokenId}
-               borderType="blue" />
+                key={entity}
+                entity={entity}
+                onSelect={() => handleSelectEntity(entity)}
+                borderType="blue"
+              />
             ))}
           </div>
           <div className="w-2/12 flex flex-col justify-center gap-3 pb-5">
-          <Button
+            <Button
               bg="#023340"
               borderColor="#0ADFDB"
               text="unlist entity"
@@ -136,6 +141,5 @@ return (
         </div>
       )}
     </Modal>
-  </>
-);
+  );
 };

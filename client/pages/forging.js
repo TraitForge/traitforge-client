@@ -52,8 +52,8 @@ const Forging = () => {
         contractsConfig.entityMergingContractAbi
       );
       const transaction = await forgeContract.breedWithListed(
-        selectedFromPool,
-        selectedEntity
+        selectedFromPool.tokenId,
+        selectedEntity.tokenId
       );
       await transaction.wait();
       setProcessingText('Merging');
@@ -79,7 +79,7 @@ const Forging = () => {
       );
       const feeInWei = ethers.parseEther(fee);
       const transaction = await forgeContract.listForBreeding(
-        selectedForListing,
+        selectedForListing.tokenId,
         feeInWei
       );
       await transaction.wait();

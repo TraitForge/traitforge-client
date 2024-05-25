@@ -5,73 +5,24 @@ import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
-import { 
-  calculateEntityAttributes,
-  getEntityEntropyHook,
-  calculateNukeFactor,
-  getEntityGeneration,
-} from '@/utils/utils';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
 
 export const EntityCard = ({
   entity,
-  price,
   onSelect,
   borderType = 'blue',
   wrapperClass,
   showPrice,
 }) => {
-  const { walletProvider } = useWeb3ModalProvider();
 
-  const [entropy, setEntropy] = useState('');
-  const [nukeFactor, setNukeFactor] = useState('');
-  const [generation, setGeneration] = useState('');
+  const { paddedEntropy, generation, role, forgePotential, performanceFactor, nukeFactor, price} = entity;
 
-  const fetchEntropy = async (entity) => {
-    try {
-      const entropy = await getEntityEntropyHook(walletProvider, entity);
-      console.log("Fetched entropy:", entropy);
-      setEntropy(entropy);
-    } catch (error) {
-      console.error('Error fetching entropy:', error);
-    }
-  };
-
-  const fetchNukeFactor = async (entity) => {
-    try {
-      const nukeFactor = await calculateNukeFactor(walletProvider, entity);
-      console.log("Fetched nuke factor:", nukeFactor);
-      setNukeFactor(nukeFactor);
-    } catch (error) {
-      console.error('Error fetching nuke factor:', error);
-    }
-  };
-
-  const fetchGeneration = async (entity) => {
-    try {
-      const generation = await getEntityGeneration(walletProvider, entity);
-      console.log("Fetched generation:", generation);
-      setGeneration(generation);
-    } catch (error) {
-      console.error('Error fetching generation:', error);
-    }
-  };
-
-  useEffect(() => {
-      fetchEntropy(entity.toString());
-      fetchNukeFactor(entity.toString());
-      fetchGeneration(entity.toString());
-  }, [entity]);
-
-  const paddedEntropy = entropy.toString().padStart(6, '0');
     const calculateUri = (paddedEntropy, generation) => {
       return `${paddedEntropy}_${generation}`;
     };
 
    const uri = calculateUri(paddedEntropy, generation);
-
-  const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
 
   let activeBorder;
   switch (borderType) {
@@ -113,6 +64,7 @@ export const EntityCard = ({
       </div>
       <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
+        <h1 className="card-name"> GEN{generation}</h1>
           {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
         {role && <h4 className="card-name">{role}</h4>}

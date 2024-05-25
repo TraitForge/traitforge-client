@@ -23,17 +23,17 @@ const HoneyPot = () => {
 
   const handleStep = nextStep => setStep(nextStep);
 
-  const nukeEntity = async tokenId => {
+  const nukeEntity = async entity => {
     if (!walletProvider) open();
     setIsLoading(true);
     try {
-      await approveNFTForNuking(tokenId, walletProvider);
+      await approveNFTForNuking(entity.tokenId, walletProvider);
       const tradeContract = await createContract(
         walletProvider,
         contractsConfig.nukeContractAddress,
         contractsConfig.nukeFundContractAbi
       );
-      const transaction = await tradeContract.nuke(tokenId);
+      const transaction = await tradeContract.nuke(entity.tokenId);
       await transaction.wait();
       toast.success('Entity Nuked successfully!');
     } catch (error) {

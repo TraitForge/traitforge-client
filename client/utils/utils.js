@@ -83,6 +83,7 @@ export const getUpcomingMintsHook = async (
 
   return { allEntropies, maxCount };
 };
+
 export const getEntitiesForSaleHook = async infuraProvider => {
   const tradeContract = new ethers.Contract(
     contractsConfig.entityTradingContractAddress,
@@ -95,9 +96,9 @@ export const getEntitiesForSaleHook = async infuraProvider => {
     seller: sellers[index],
     price: ethers.formatEther(prices[index]),
   }));
-
   return listedEntities;
 };
+
 export const getOwnersEntitiesHook = async walletProvider => {
   try {
     const ethersProvider = new ethers.BrowserProvider(walletProvider);

@@ -54,6 +54,7 @@ export const EntitySliderCard = ({
       </div>
       <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
+        <h1 className="card-name"> GEN{currentGeneration}</h1>
           {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
         <h4 className="card-name">{role}</h4> 

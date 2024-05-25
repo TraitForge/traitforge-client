@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3Modal } from '@web3modal/ethers/react';
+import { toast } from 'react-toastify';
 
 import styles from '@/styles/trading.module.scss';
 import { EntityCard, LoadingSpinner } from '@/components';
@@ -33,7 +34,7 @@ const Marketplace = () => {
     getOwnersEntities()
   }, []);
 
-  const buyEntity = async (tokenId, price) => {
+  const buyEntity = async (entity) => {
     setIsLoading(true);
     if (!walletProvider) open();
     try {
@@ -42,8 +43,8 @@ const Marketplace = () => {
         contractsConfig.entityTradingContractAddress,
         contractsConfig.entityTradingAbi
       );
-      const priceInWei = ethers.parseEther(price);
-      const transaction = await tradeContract.buyNFT(tokenId, {
+      const priceInWei = ethers.parseEther(entity.price);
+      const transaction = await tradeContract.buyNFT(entity.tokenId, {
         value: priceInWei,
       });
       await transaction.wait();
@@ -55,11 +56,11 @@ const Marketplace = () => {
     }
   };
 
-  const listEntityForSale = async (tokenId, price) => {
+  const listEntityForSale = async (entity, price) => {
     setIsLoading(true);
     if (!walletProvider) open();
     try {
-      await approveNFTForTrading(tokenId, walletProvider);
+      await approveNFTForTrading(entity.tokenId, walletProvider);
 
       const tradeContract = await createContract(
         walletProvider,
@@ -67,9 +68,8 @@ const Marketplace = () => {
         contractsConfig.entityTradingAbi
       );
       const priceInWei = ethers.parseEther(price);
-      console.log('Wei price:', priceInWei);
       const transaction = await tradeContract.listNFTForSale(
-        tokenId,
+        entity.tokenId,
         priceInWei
       );
       await transaction.wait();
@@ -122,7 +122,7 @@ const Marketplace = () => {
               onSelect={() => {
                 setSelectedForSale(entity);
                 setStep('three');
-                console.log('selected entity');
+                console.log('selected entity:');
               }}
             />
           ))}
@@ -135,18 +135,18 @@ const Marketplace = () => {
           <div className="flex justify-between items-center border-b mb-12"></div>
           <div className="overflow-y-auto flex-1">
             <div className="grid grid-col-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
-              {entitiesForSale.map(listing => (
+              {entitiesForSale.map(entity => (
                 <EntityCard
-                  key={listing.tokenId}
-                  entity={listing.tokenId}
-                  price={listing.price}
+                  key={entity.tokenId}
+                  entity={entity}
+                  price={entity.price}
                   borderType="green"
                   onSelect={() => {
-                    setSelectedListing(listing);
+                    setSelectedListing(entity);
                     handleStep('four');
-                    console.log('the listing is:', listing);
+                    console.log('the listing is:', entity);
                   }}
-                  showPrice={listing.price}
+                  showPrice={entity.price}
                 />
               ))}
             </div>

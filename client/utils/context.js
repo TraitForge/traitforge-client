@@ -18,6 +18,9 @@ import {
   getOwnersEntitiesHook,
   getEntityEntropyHook,
   getCurrentGenerationHook,
+  calculateNukeFactor,
+  getEntityGeneration,
+  calculateEntityAttributes,
 } from './utils';
 import { get } from 'jquery';
 
@@ -59,29 +62,68 @@ const ContextProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const getEntitiesForSale = async () => {
+  const getEntitiesForSale = useCallback(async () => {
     if (!infuraProvider) return;
 
     try {
       const entitiesForSale = await getEntitiesForSaleHook(infuraProvider);
-      setEntitiesForSale(entitiesForSale);
+      const enrichedEntitiesForSale = await Promise.all(entitiesForSale.map(async (entity) => {
+        const { tokenId, seller, price } = entity;
+        const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
+        const generation = await getEntityGeneration(walletProvider, tokenId);
+        const entropy = await getEntityEntropyHook(walletProvider, tokenId);
+        const paddedEntropy = entropy.toString().padStart(6, '0');
+        const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
+        return {
+          tokenId,
+          seller,
+          price,
+          nukeFactor,
+          generation,
+          paddedEntropy,
+          role,
+          forgePotential,
+          performanceFactor,
+        };
+      }));
+      setEntitiesForSale(enrichedEntitiesForSale);
     } catch (error) {
       console.error('Failed to fetch entities for sale:', error);
       setEntitiesForSale([]);
     }
-  };
+  }, [infuraProvider]);
 
-  const getEntitiesForForging = async () => {
+  const getEntitiesForForging = useCallback(async () => {
     if (!infuraProvider) return;
 
     try {
       const entitiesForForging = await getEntitiesHook(infuraProvider);
-      setEntitiesForForging(entitiesForForging);
+      const enrichedEntitiesForForging = await Promise.all(entitiesForForging.map(async (entity) => {
+        const { tokenId, seller, price } = entity;
+        const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
+        const generation = await getEntityGeneration(walletProvider, tokenId);
+        const entropy = await getEntityEntropyHook(walletProvider, tokenId);
+        const paddedEntropy = entropy.toString().padStart(6, '0');
+        const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
+        return {
+          tokenId,
+          price,
+          nukeFactor,
+          seller,
+          generation,
+          paddedEntropy,
+          role,
+          forgePotential,
+          performanceFactor,
+        };
+      }));
+      setEntitiesForForging(enrichedEntitiesForForging);
     } catch (error) {
       console.error('Failed to fetch entities for forging:', error);
       setEntitiesForForging([]);
     }
-  };
+  }, [infuraProvider]);
+  
 
   const getCurrentGeneration = async () => {
     if (!infuraProvider) return;
@@ -94,10 +136,6 @@ const ContextProvider = ({ children }) => {
       console.error('Failed to fetch current generation:', error);
     }
   };
-
-  useEffect(() => {
-    getCurrentGeneration();
-  }, []);
 
   const getEntityEntropy = async (listing) => {
     if(!walletProvider) return;
@@ -118,19 +156,37 @@ const ContextProvider = ({ children }) => {
     }
     try {
       const entities = await getOwnersEntitiesHook(walletProvider);
-
-      setOwnerEntities(entities);
+      const enrichedEntities = await Promise.all(entities.map(async (tokenId) => {
+        const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
+        const generation = await getEntityGeneration(walletProvider, tokenId);
+        const entropy = await getEntityEntropyHook(walletProvider, tokenId);
+        const paddedEntropy = entropy.toString().padStart(6, '0');
+        const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
+        return {
+          tokenId,
+          nukeFactor,
+          generation,
+          paddedEntropy,
+          role,
+          forgePotential,
+          performanceFactor,
+        };
+      }));
+      setOwnerEntities(enrichedEntities);
     } catch (error) {
       console.error('Error fetching NFTs:', error);
       setOwnerEntities([]);
     }
     setIsLoading(false);
   }, [walletProvider]);
+  
 
   useEffect(() => {
     getOwnersEntities();
     getEntitiesForSale();
     getEntitiesForForging();
+    getCurrentGeneration();
+    getEntitiesListedByPlayer();
   }, [walletProvider]);
 
   //fetching/setting Price States
@@ -270,35 +326,44 @@ const ContextProvider = ({ children }) => {
       console.error('No wallet provider found.');
       return;
     }
+  
     try {
       const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const address = await signer.getAddress();
-      
-      const listedEntities = [];
-      
-      for (let i = 0; i < entitiesForSale.length; i++) {
-        if (address === entitiesForSale[i].seller) {
-          listedEntities.push({
-            tokenId: entitiesForSale[i].tokenId,
-            seller: entitiesForSale[i].seller,
-            price: entitiesForSale[i].price,
-          });
-        }
-      }
-      
-      for (let i = 0; i < entitiesForForging.length; i++) {
-        if (address === entitiesForForging[i].seller) {
-          listedEntities.push({
-            tokenId: entitiesForForging[i].tokenId,
-            seller: entitiesForForging[i].seller,
-            price: entitiesForForging[i].price,
-          });
-        }
-      }
-      
-      console.log("Entities listed by player:", listedEntities);
-      setEntitiesListedByUser(listedEntities);
+  
+      const listedEntities = entitiesForSale
+        .filter(entity => entity.seller === address)
+        .map(entity => ({
+          tokenId: entity.tokenId,
+          seller: entity.seller,
+          price: entity.price,
+          nukeFactor: entity.nukeFactor,
+          generation: entity.generation,
+          paddedEntropy: entity.paddedEntropy,
+          role: entity.role,
+          forgePotential: entity.forgePotential,
+          performanceFactor: entity.performanceFactor,
+        }));
+  
+      const forgingEntities = entitiesForForging
+        .filter(entity => entity.seller === address)
+        .map(entity => ({
+          tokenId: entity.tokenId,
+          seller: entity.seller,
+          price: entity.price,
+          nukeFactor: entity.nukeFactor,
+          generation: entity.generation,
+          paddedEntropy: entity.paddedEntropy,
+          role: entity.role,
+          forgePotential: entity.forgePotential,
+          performanceFactor: entity.performanceFactor,
+        }));
+  
+      const combinedListedEntities = [...listedEntities, ...forgingEntities];
+  
+      console.log("Entities listed by player:", combinedListedEntities);
+      setEntitiesListedByUser(combinedListedEntities);
     } catch (error) {
       console.error('Failed to fetch entities listed by player:', error);
     }

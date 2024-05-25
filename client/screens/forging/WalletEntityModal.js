@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { EntityCard, FiltersHeader } from '@/components';
-import { isForger } from '@/utils/utils';
 
 export const WalletEntityModal = ({
   ownerEntities,
-  walletProvider,
   handleSelectedFromWallet,
   handleOwnerEntityList
 }) => {
@@ -13,19 +11,8 @@ export const WalletEntityModal = ({
   useEffect(() => {
     const fetchAndFilterEntities = async () => {
       try {
-        const results = await Promise.all(
-          ownerEntities.map(async entity => {
-            const isEntityForger = await isForger(walletProvider, entity);
-            console.log('isForger:', isEntityForger);
-            if (!isEntityForger) {
-              return entity;
-            }
-            return null;
-          })
-        );
-
-        const filtered = results.filter(result => result !== null);
-        console.log('entity tokenids:', filtered);
+        const filtered = ownerEntities.filter(entity => entity.role === "Merger");
+        console.log("Filtered entities:", filtered);
         setFilteredEntities(filtered);
       } catch (error) {
         console.error('Error in fetchAndFilterEntities:', error);
@@ -33,7 +20,8 @@ export const WalletEntityModal = ({
     };
 
     fetchAndFilterEntities();
-  }, [ownerEntities, walletProvider]);
+  }, [ownerEntities]);
+
 
   return (
     <div className="bg-dark-81 md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[70vw] md:rounded-[30px] py-10 px-5 flex flex-col">
