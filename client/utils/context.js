@@ -126,9 +126,6 @@ const ContextProvider = ({ children }) => {
     getEntitiesForSale();
     getEntitiesForForging();
   }, [walletProvider]);
-  useEffect(() => {
-    getCurrentGeneration();
-  }, []);
 
   //fetching/setting Price States
   const fetchEthAmount = useCallback(async () => {
