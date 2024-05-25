@@ -5,8 +5,12 @@ import { useContextState } from '@/utils/context';
 import { EntitySliderCard } from './EntitySliderCard';
 
 const Slider = () => {
-  const { entityPrice, upcomingMints, currentGeneration } = useContextState();
+  const { entityPrice, upcomingMints, currentGeneration, getCurrentGeneration } = useContextState();
   const [ref, setRef] = useState(0);
+
+  useEffect(() => {
+   getCurrentGeneration();
+  }, []);
 
   const getEntityPrice = (entityPrice, index) => {
     const numericPrice = Number(entityPrice);

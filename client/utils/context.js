@@ -38,6 +38,7 @@ const ContextProvider = ({ children }) => {
   const [entitiesForForging, setEntitiesForForging] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
+
   const { walletProvider } = useWeb3ModalProvider();
 
   const getUpcomingMints = async (startSlot = 0, startNumberIndex = 0) => {
@@ -86,14 +87,17 @@ const ContextProvider = ({ children }) => {
     if (!infuraProvider) return;
 
     try {
-      const currentGeneration = await getCurrentGenerationHook(infuraProvider);
-      setCurrentGeneration(currentGeneration);
-      console.log(currentGeneration)
+      const generation = await getCurrentGenerationHook(infuraProvider);
+      setCurrentGeneration(generation);
+      console.log('Current Generation:', generation);
     } catch (error) {
-      console.error('Failed to fetch entities for forging:', error);
-      getCurrentGeneration([]);
+      console.error('Failed to fetch current generation:', error);
     }
   };
+
+  useEffect(() => {
+    getCurrentGeneration();
+  }, []);
 
   const getEntityEntropy = async (listing) => {
     if(!walletProvider) return;
@@ -106,6 +110,7 @@ const ContextProvider = ({ children }) => {
   };
 
   const getOwnersEntities = useCallback(async () => {
+    setIsLoading(true);
     if (!walletProvider) {
       alert('Please connect your wallet first.');
       setOwnerEntities([]);
@@ -119,6 +124,7 @@ const ContextProvider = ({ children }) => {
       console.error('Error fetching NFTs:', error);
       setOwnerEntities([]);
     }
+    setIsLoading(false);
   }, [walletProvider]);
 
   useEffect(() => {
@@ -273,6 +279,7 @@ const ContextProvider = ({ children }) => {
         ownerEntities,
         setIsLoading,
         getOwnersEntities,
+        getCurrentGeneration,
         upcomingMints,
         currentGeneration,
         getUpcomingMints,

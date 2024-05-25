@@ -30,7 +30,6 @@ export const ListNow = ({ selectedForListing, ListEntityForForging, handleStep }
         <EntityCard 
           borderType='orange'
           entity={selectedForListing}
-          entropy={selectedForListing.entropy}
         />
       </div>
       <div className="max-md:order-3 max-md:px-10">
