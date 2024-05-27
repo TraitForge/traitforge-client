@@ -64,7 +64,7 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     uint256 entropy = nftContract.getTokenEntropy(tokenId); // Retrieve entropy for tokenId
     uint8 forgePotential = uint8((entropy / 10) % 10); // Extract the 5th digit from the entropy
     require(
-      forgingCounts[tokenId] < forgePotential,
+      forgingCounts[tokenId] <= forgePotential,
       'Entity has reached its forging limit'
     );
 
