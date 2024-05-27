@@ -10,7 +10,6 @@ export const ListEntity = ({ ownerEntities, handleStep, setSelectedForListing })
     const fetchAndFilterEntities = async () => {
       try {
         const filtered = ownerEntities.filter(entity => entity.role === "Forger");
-        console.log("Filtered entities:", filtered);
         setFilteredEntities(filtered);
       } catch (error) {
         console.error('Error in fetchAndFilterEntities:', error);
@@ -31,7 +30,7 @@ export const ListEntity = ({ ownerEntities, handleStep, setSelectedForListing })
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
           {filteredEntities?.map(entity => (
             <EntityCard
-              key={entity} 
+              key={entity.tokenId} 
               entity={entity}
               borderType='orange'
               onSelect={() => {

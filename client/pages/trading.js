@@ -152,7 +152,7 @@ const Marketplace = () => {
         <div className="grid grid-cols-3 lg:grid-cols-5 mt-10 gap-x-[15px] gap-y-7 lg:gap-y-10">
           {ownerEntities.map(entity => (
             <EntityCard
-              key={entity}
+              key={entity.tokenId}
               entity={entity}
               borderType="green"
               onSelect={() => {

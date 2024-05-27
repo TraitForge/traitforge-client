@@ -40,7 +40,6 @@ const HoneyPot = () => {
   const filteredAndSortedListings = useMemo(() => {
   
     let filtered = ownerEntities.filter(listing => {
-      console.log('Listing Type:', listing.role); 
       if (generationFilter && String(listing.generation) !== String(generationFilter)) {
         return false;
       }
@@ -110,7 +109,7 @@ const HoneyPot = () => {
           <div className="grid mt-10 grid-cols-3 lg:grid-cols-5 lg:px-20 gap-x-[15px] gap-y-5 md:gap-y-10">
             {filteredAndSortedListings.map(entity => (
               <EntityCard
-                key={entity}
+                key={entity.tokenId}
                 entity={entity}
                 borderType="purple"
                 onSelect={() => {
