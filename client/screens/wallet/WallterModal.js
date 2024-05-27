@@ -1,20 +1,35 @@
 import Image from 'next/image';
 import { FaWallet } from 'react-icons/fa';
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
 
 import { Button, EntityCard, Modal } from '@/components';
 import { shortenAddress } from '@/utils/utils';
 import { useContextState } from '@/utils/context';
 
 export const WalletModal = ({ isOpen, closeModal }) => {
-  const { ethAmount, ownerEntities, entitiesListedByUser } = useContextState();
+  const {  ownerEntities, entitiesListedByUser } = useContextState();
   const { address } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const [selectedForUnlisting, setSelectedForUnlisting] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
+  const [ balanceInETH, setBalanceInETH ] = useState('')
 
   const shortAddress = shortenAddress(address);
+
+  const getWalletBalance = async () => {
+    console.log(address);
+    const provider = new ethers.BrowserProvider(walletProvider);
+    const balance = await provider.getBalance(address);
+    const balanceInETH = ethers.formatEther(balance);
+    const balanceInETHShortened = parseFloat(balanceInETH).toFixed(6);
+    setBalanceInETH(balanceInETHShortened);
+  }
+
+  useEffect(() => {
+   getWalletBalance();
+  }, [walletProvider]);
 
   const handleNextStep = () => setCurrentStep((prevStep) => prevStep + 1);
   const handlePreviousStep = () => setCurrentStep((prevStep) => prevStep - 1);
@@ -72,7 +87,7 @@ export const WalletModal = ({ isOpen, closeModal }) => {
               </svg>
               <div>
                 <p className="text-neutral-100 text-base">ETH</p>
-                <span className="text-white text-large">{ethAmount}</span>
+                <span className="text-white text-large">{balanceInETH}</span>
               </div>
             </div>
             <div className="flex items-center gap-x-2.5">
