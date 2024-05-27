@@ -1,3 +1,4 @@
+import React, {useState, useMemo} from 'react';
 import { EntityCard, FiltersHeader } from '@/components';
 
 export const SelectEntityList = ({
@@ -5,6 +6,35 @@ export const SelectEntityList = ({
   handleSelectedFromPool,
   handleEntityListModal
 }) => {
+
+  const [generationFilter, setGenerationFilter] = useState('');
+  const [sortingFilter, setSortingFilter] = useState('');
+
+  const handleFilterChange = (selectedOption, type) => {
+    if (type === 'generation') {
+      setGenerationFilter(selectedOption.value);
+    } else if (type === 'sorting') {
+      setSortingFilter(selectedOption.value);
+    }
+  };
+
+  const filteredAndSortedListings = useMemo(() => {
+  
+    let filtered = entitiesForForging.filter(listing => {
+      console.log('Listing Type:', listing.role); 
+      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+        return false;
+      }
+    });
+
+    if (sortingFilter === 'price_low_to_high') {
+      filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (sortingFilter === 'price_high_to_low') {
+      filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    }
+  
+    return filtered;
+  }, [ generationFilter, sortingFilter, entitiesForForging]);
 
 
   return (
@@ -14,13 +44,18 @@ export const SelectEntityList = ({
           Select From Pool
         </h3>
         <FiltersHeader
-          color="orange"
-          filterOptions={['forgers listed']}
-        />
+              filterOptions={['Listed forgers']}
+              color="orange"
+              handleFilterChange={(selectedOption, type) =>
+                handleFilterChange(selectedOption, type)
+              }
+              generationFilter={generationFilter}
+              sortingFilter={sortingFilter}
+            />
       </div>
       <div className="flex-1 overflow-y-scroll">
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 md:gap-y-10">
-          {entitiesForForging.map((listing, index) => (
+          {filteredAndSortedListings.map((listing, index) => (
             <EntityCard
               key={listing.tokenId}
               entity={listing.tokenId}

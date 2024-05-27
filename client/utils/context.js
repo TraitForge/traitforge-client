@@ -63,7 +63,7 @@ const ContextProvider = ({ children }) => {
   };
 
   const getEntitiesForSale = useCallback(async () => {
-    if (!infuraProvider) return;
+    if (!infuraProvider || !walletProvider) return;
 
     try {
       const entitiesForSale = await getEntitiesForSaleHook(infuraProvider);
@@ -148,7 +148,6 @@ const ContextProvider = ({ children }) => {
   };
 
   const getOwnersEntities = useCallback(async () => {
-    setIsLoading(true);
     if (!walletProvider) {
       alert('Please connect your wallet first.');
       setOwnerEntities([]);
@@ -177,16 +176,17 @@ const ContextProvider = ({ children }) => {
       console.error('Error fetching NFTs:', error);
       setOwnerEntities([]);
     }
-    setIsLoading(false);
   }, [walletProvider]);
   
 
   useEffect(() => {
+    setIsLoading(true);
     getOwnersEntities();
     getEntitiesForSale();
     getEntitiesForForging();
     getCurrentGeneration();
     getEntitiesListedByPlayer();
+    setIsLoading(false);
   }, [walletProvider]);
 
   //fetching/setting Price States

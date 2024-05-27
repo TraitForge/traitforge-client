@@ -78,7 +78,7 @@ const Forging = () => {
         contractsConfig.entityMergingContractAbi
       );
       const feeInWei = ethers.parseEther(fee);
-      const transaction = await forgeContract.listForBreeding(
+      const transaction = await forgeContract.listForForging(
         selectedForListing.tokenId,
         feeInWei
       );
