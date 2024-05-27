@@ -1,16 +1,14 @@
-import { useState } from 'react';
+import React, {useState, useMemo} from 'react';
 import { EntityCard, FiltersHeader } from '@/components';
 
 export const SelectEntityList = ({
   entitiesForForging,
   handleSelectedFromPool,
-  generationFilter,
-  setGenerationFilter
+  handleEntityListModal
 }) => {
-  const [sortOption, setSortOption] = useState('forgers');
-  const [sortingFilter, setSortingFilter] = useState('');
 
-  const handleSort = type => setSortOption(type);
+  const [generationFilter, setGenerationFilter] = useState('');
+  const [sortingFilter, setSortingFilter] = useState('');
 
   const handleFilterChange = (selectedOption, type) => {
     if (type === 'generation') {
@@ -20,23 +18,24 @@ export const SelectEntityList = ({
     }
   };
 
-  const getFilteredEntities = () => {
-    let filteredEntities = entitiesForForging.filter(entity => entity.type === 'forger');
+  const filteredAndSortedListings = useMemo(() => {
   
-    if (generationFilter) {
-      filteredEntities = filteredEntities.filter(entity => entity.generation.toString() === generationFilter);
-    }
-  
-    if (sortingFilter === 'price_high_to_low') {
-      filteredEntities.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    } else if (sortingFilter === 'price_low_to_high') {
-      filteredEntities.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    }
-  
-    return filteredEntities;
-  };
+    let filtered = entitiesForForging.filter(listing => {
+      console.log('Listing Type:', listing.role); 
+      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+        return false;
+      }
+    });
 
-  const filteredEntities = getFilteredEntities();
+    if (sortingFilter === 'price_low_to_high') {
+      filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (sortingFilter === 'price_high_to_low') {
+      filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    }
+  
+    return filtered;
+  }, [ generationFilter, sortingFilter, entitiesForForging]);
+
 
   return (
     <div className="bg-dark-81 md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[70vw] md:rounded-[30px] py-10 px-5 flex flex-col">
@@ -45,18 +44,27 @@ export const SelectEntityList = ({
           Select From Pool
         </h3>
         <FiltersHeader
-          color="orange"
-          filterOptions={['forgers listed']}
-        />
+              filterOptions={['Listed forgers']}
+              color="orange"
+              handleFilterChange={(selectedOption, type) =>
+                handleFilterChange(selectedOption, type)
+              }
+              generationFilter={generationFilter}
+              sortingFilter={sortingFilter}
+            />
       </div>
       <div className="flex-1 overflow-y-scroll">
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 md:gap-y-10">
-          {filteredEntities?.map((listing, index) => (
+          {filteredAndSortedListings.map((listing, index) => (
             <EntityCard
-              key={listing.id}
-              entity={listing}
+              key={listing.tokenId}
+              entity={listing.tokenId}
+              price={listing.fee}
               index={index}
-              onClick={() => handleSelectedFromPool(listing)}
+              onClick={() => { 
+                handleSelectedFromPool(listing);
+                handleEntityListModal();
+              }}
               showPrice
             />
           ))}

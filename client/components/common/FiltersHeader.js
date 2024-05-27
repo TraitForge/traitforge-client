@@ -10,12 +10,14 @@ export const FiltersHeader = ({
   sortingFilter,
   hideSortingSelect,
   filterOptions = ['all', 'forgers', 'mergers'],
+  pageType,  // Add this prop to determine which sorting options to display
 }) => {
   const commonClasses =
     'after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px]';
   const activeClasses = classNames(commonClasses, {
     'after:bg-neon-orange': color === 'orange',
     'after:bg-neon-green': color === 'green',
+    'after:bg-neon-purple': color === 'purple',
   });
 
   const genOptions = [
@@ -32,8 +34,14 @@ export const FiltersHeader = ({
     { value: 'price_low_to_high', label: 'Price: Low to High' },
   ];
 
+  const nukeSortingOptions = [
+    { value: '', label: 'All' },
+    { value: 'NukeFactor_high_to_low', label: 'NukeFactor: High to Low' },
+    { value: 'NukeFactor_low_to_high', label: 'NukeFactor: Low to High' },
+  ];
+
   const borderColor =
-    color === 'orange' ? '#ff7a00' : color === 'green' ? '#4CAF50' : '#ccc';
+    color === 'orange' ? '#ff7a00' : color === 'green' ? '#4CAF50' : color === 'purple' ? '#B026FF' : '#ccc';
   const customStyles = {
     control: styles => ({
       ...styles,
@@ -49,7 +57,7 @@ export const FiltersHeader = ({
     }),
     menu: styles => ({
       ...styles,
-      backgroundColor: 'rgba(0, 0, 0, ${})',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       boxShadow: `0px 0px 1px 1px ${borderColor}`,
     }),
     option: styles => ({
@@ -66,16 +74,41 @@ export const FiltersHeader = ({
   };
 
   return (
-    <div className="flex w-full items-center uppercase pt-6">
+    <div className="flex w-full items-center uppercase pt-6 z-50">
       <div className="flex  gap-x-2 md:gap-x-6  text-[24px]">
         {filterOptions.map(type => (
-          <h1
+          <button
             key={type}
             className={`${sortOption === type ? activeClasses : ''} relative px-3 md:px-6 pb-3`}
+            onClick={() => {
+              if (color !== 'orange') {
+                handleSort(type);
+              }
+            }}
           >
             {type}
-          </h1>
+          </button>
         ))}
+      </div>
+      <div className="flex-1">
+        <div className="flex gap-x-6 text-[20px] justify-end">
+          <Select
+            options={genOptions}
+            onChange={option => handleFilterChange(option, 'generation')}
+            value={genOptions.find(option => option.value === generationFilter)}
+            styles={customStyles}
+          />
+          {!hideSortingSelect && (
+            <Select
+              options={pageType === 'nuke' ? nukeSortingOptions : sortingOptions}
+              onChange={option => handleFilterChange(option, 'sorting')}
+              value={(pageType === 'nuke' ? nukeSortingOptions : sortingOptions).find(
+                option => option.value === sortingFilter
+              )}
+              styles={customStyles}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

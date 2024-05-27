@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 
@@ -15,7 +15,7 @@ import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
 const Forging = () => {
-  const { isLoading, setIsLoading, ownerEntities, entitiesForForging } =
+  const { isLoading, setIsLoading, ownerEntities, entitiesForForging, getOwnersEntities, getEntitiesForForging } =
     useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
@@ -27,6 +27,11 @@ const Forging = () => {
   const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedForListing, setSelectedForListing] = useState(null);
+
+  useEffect(() => {
+    getEntitiesForForging()
+    getOwnersEntities()
+  }, []);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
   const handleSelectedFromWallet = entity => setSelectedEntity(entity);
@@ -47,8 +52,8 @@ const Forging = () => {
         contractsConfig.entityMergingContractAbi
       );
       const transaction = await forgeContract.breedWithListed(
-        selectedFromPool,
-        selectedEntity
+        selectedFromPool.tokenId,
+        selectedEntity.tokenId
       );
       await transaction.wait();
       setProcessingText('Merging');
@@ -65,7 +70,6 @@ const Forging = () => {
   const ListEntityForForging = async (selectedForListing, fee) => {
     setIsLoading(true);
     console.log('selected entity is:', selectedForListing);
-    console.log('beginning forging');
     try {
       const forgeContract = await createContract(
         walletProvider,
@@ -73,8 +77,8 @@ const Forging = () => {
         contractsConfig.entityMergingContractAbi
       );
       const feeInWei = ethers.parseEther(fee);
-      const transaction = await forgeContract.listForBreeding(
-        selectedForListing,
+      const transaction = await forgeContract.listForForging(
+        selectedForListing.tokenId,
         feeInWei
       );
       await transaction.wait();
@@ -140,6 +144,7 @@ const Forging = () => {
               modalClasses="items-end pb-4"
             >
               <SelectEntityList
+                handleEntityListModal={handleEntityListModal}
                 entitiesForForging={entitiesForForging}
                 handleSelectedFromPool={handleSelectedFromPool}
               />
@@ -153,6 +158,7 @@ const Forging = () => {
             >
               <WalletEntityModal
                 ownerEntities={ownerEntities}
+                handleOwnerEntityList={handleOwnerEntityList}
                 walletProvider={walletProvider}
                 filterType="merger"
                 handleSelectedFromWallet={handleSelectedFromWallet}
