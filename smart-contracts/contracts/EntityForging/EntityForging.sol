@@ -11,7 +11,7 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
   ITraitForgeNft public nftContract;
   address payable public nukeFundAddress;
   uint256 public taxCut = 10;
-  uint256 public oneYearInDays = 365;
+  uint256 public oneYearInDays = 365 days;
 
   mapping(uint256 => Listing) public listings;
   mapping(uint256 => uint256) forgerListingFee;
