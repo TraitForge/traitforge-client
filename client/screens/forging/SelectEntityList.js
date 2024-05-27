@@ -59,7 +59,7 @@ export const SelectEntityList = ({
             <EntityCard
               key={listing.tokenId}
               entity={listing.tokenId}
-              price={listing.price}
+              price={listing.fee}
               index={index}
               onClick={() => { 
                 handleSelectedFromPool(listing);

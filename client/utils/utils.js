@@ -26,20 +26,21 @@ export async function createContract(walletProvider, address, abi) {
   return mintContract;
 }
 
-export const getEntitiesHook = async infuraProvider => {
+export const getEntitiesHook = async (infuraProvider) => {
   const contract = new ethers.Contract(
     contractsConfig.entityMergingAddress,
     contractsConfig.entityMergingContractAbi,
     infuraProvider
   );
-  const [tokenIds, sellers, prices] = await contract.fetchListings();
-  const listedEntities = tokenIds.map((tokenId, index) => ({
-    tokenId: tokenId,
-    seller: sellers[index],
-    price: ethers.formatEther(prices[index]),
+  const listings = await contract.fetchListings();
+  const listedEntities = listings.map(listing => ({
+    tokenId: listing.tokenId,
+    isListed: listing.isListed,
+    fee: ethers.formatEther(listing.fee)
   }));
   return listedEntities;
 };
+
 
 export const getUpcomingMintsHook = async (
   startSlot,
@@ -96,6 +97,7 @@ export const getEntitiesForSaleHook = async infuraProvider => {
     seller: sellers[index],
     price: ethers.formatEther(prices[index]),
   }));
+  console.log(listedEntities);
   return listedEntities;
 };
 

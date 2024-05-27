@@ -97,7 +97,7 @@ export const WalletModal = ({ isOpen, closeModal }) => {
           <div className="w-6/12 pb-5 h-50 overflow-x-scroll flex flex-row md:text-large text-white md:mb-8">
             {ownerEntities.map((entity) => (
               <EntityCard
-                key={entity}
+                key={entity.tokenId}
                 entity={entity}
                 borderType="blue"
               />
@@ -118,7 +118,7 @@ export const WalletModal = ({ isOpen, closeModal }) => {
           <div className="overflow-x-scroll w-6/12 h-44 flex flex-row md:text-large text-white md:mb-5">
             {entitiesListedByUser.map((entity) => (
               <EntityCard
-                key={entity}
+                key={entity.tokenId}
                 entity={entity}
                 onSelect={() => handleSelectEntity(entity)}
                 borderType="blue"

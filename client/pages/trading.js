@@ -10,6 +10,7 @@ import { useContextState } from '@/utils/context';
 import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
 import { SellEntity } from '@/screens/traiding/SellEntity';
 import { BuyEntity } from '@/screens/traiding/BuyEntity';
+import { ListEntity } from '@/screens/traiding/ListEntity';
 import { FiltersHeader } from '@/components';
 import { createContract, approveNFTForTrading } from '@/utils/utils';
 // import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
@@ -149,20 +150,12 @@ const Marketplace = () => {
       break;
     case 'two':
       content = (
-        <div className="grid grid-cols-3 lg:grid-cols-5 mt-10 gap-x-[15px] gap-y-7 lg:gap-y-10">
-          {ownerEntities.map(entity => (
-            <EntityCard
-              key={entity.tokenId}
-              entity={entity}
-              borderType="green"
-              onSelect={() => {
-                setSelectedForSale(entity);
-                setStep('three');
-                console.log('selected entity:');
-              }}
-            />
-          ))}
-        </div>
+        <ListEntity
+        ownerEntities={ownerEntities}
+        handleStep={handleStep}
+        setSelectedForSale={setSelectedForSale}
+        selectedForSale={selectedForSale}
+        />
       );
       break;
     default:

@@ -70,7 +70,6 @@ const Forging = () => {
   const ListEntityForForging = async (selectedForListing, fee) => {
     setIsLoading(true);
     console.log('selected entity is:', selectedForListing);
-    console.log('beginning forging');
     try {
       const forgeContract = await createContract(
         walletProvider,

@@ -95,11 +95,11 @@ const ContextProvider = ({ children }) => {
 
   const getEntitiesForForging = useCallback(async () => {
     if (!infuraProvider) return;
-
     try {
       const entitiesForForging = await getEntitiesHook(infuraProvider);
+      console.log(" all entities for forging:", entitiesForForging)
       const enrichedEntitiesForForging = await Promise.all(entitiesForForging.map(async (entity) => {
-        const { tokenId, seller, price } = entity;
+        const { tokenId, isListed, fee } = entity;
         const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
         const generation = await getEntityGeneration(walletProvider, tokenId);
         const entropy = await getEntityEntropyHook(walletProvider, tokenId);
@@ -107,9 +107,9 @@ const ContextProvider = ({ children }) => {
         const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
         return {
           tokenId,
-          price,
+          isListed,
+          fee,
           nukeFactor,
-          seller,
           generation,
           paddedEntropy,
           role,
@@ -117,12 +117,13 @@ const ContextProvider = ({ children }) => {
           performanceFactor,
         };
       }));
-      setEntitiesForForging(enrichedEntitiesForForging);
+      console.log("Entities for forging:", enrichedEntitiesForForging);
+      setEntitiesForForging(enrichedEntitiesForForging); 
     } catch (error) {
       console.error('Failed to fetch entities for forging:', error);
       setEntitiesForForging([]);
     }
-  }, [infuraProvider]);
+  }, [infuraProvider, walletProvider, setEntitiesForForging]);
   
 
   const getCurrentGeneration = async () => {
@@ -345,13 +346,12 @@ const ContextProvider = ({ children }) => {
           forgePotential: entity.forgePotential,
           performanceFactor: entity.performanceFactor,
         }));
-  
-      const forgingEntities = entitiesForForging
-        .filter(entity => entity.seller === address)
+
+        const forgingEntities = entitiesForForging
+        .filter(entity => ownerEntities.some(ownedEntity => ownedEntity.tokenId === entity.tokenId))
         .map(entity => ({
           tokenId: entity.tokenId,
-          seller: entity.seller,
-          price: entity.price,
+          price: entity.fee,
           nukeFactor: entity.nukeFactor,
           generation: entity.generation,
           paddedEntropy: entity.paddedEntropy,
@@ -359,7 +359,7 @@ const ContextProvider = ({ children }) => {
           forgePotential: entity.forgePotential,
           performanceFactor: entity.performanceFactor,
         }));
-  
+        
       const combinedListedEntities = [...listedEntities, ...forgingEntities];
   
       console.log("Entities listed by player:", combinedListedEntities);
