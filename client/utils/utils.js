@@ -26,16 +26,21 @@ export async function createContract(walletProvider, address, abi) {
   return mintContract;
 }
 
-export const getEntitiesHook = async infuraProvider => {
+export const getEntitiesHook = async (infuraProvider) => {
   const contract = new ethers.Contract(
     contractsConfig.entityMergingAddress,
     contractsConfig.entityMergingContractAbi,
     infuraProvider
   );
-  const data = await contract.fetchListings();
-  const entitiesForForging = await Promise.all(data);
-  return entitiesForForging;
+  const listings = await contract.fetchListings();
+  const listedEntities = listings.map(listing => ({
+    tokenId: listing.tokenId,
+    isListed: listing.isListed,
+    fee: ethers.formatEther(listing.fee)
+  }));
+  return listedEntities;
 };
+
 
 export const getUpcomingMintsHook = async (
   startSlot,
@@ -79,6 +84,7 @@ export const getUpcomingMintsHook = async (
 
   return { allEntropies, maxCount };
 };
+
 export const getEntitiesForSaleHook = async infuraProvider => {
   const tradeContract = new ethers.Contract(
     contractsConfig.entityTradingContractAddress,
@@ -91,9 +97,10 @@ export const getEntitiesForSaleHook = async infuraProvider => {
     seller: sellers[index],
     price: ethers.formatEther(prices[index]),
   }));
-
+  console.log(listedEntities);
   return listedEntities;
 };
+
 export const getOwnersEntitiesHook = async walletProvider => {
   try {
     const ethersProvider = new ethers.BrowserProvider(walletProvider);
@@ -120,7 +127,8 @@ export const getOwnersEntitiesHook = async walletProvider => {
   }
 };
 
-export const getEntityEntropyHook = async (walletProvider, listing) => {
+export const getEntityEntropyHook = async (walletProvider, entity) => {
+  console.log("getting entropy:");
   const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
   const TraitForgeContract = new ethers.Contract(
@@ -128,8 +136,32 @@ export const getEntityEntropyHook = async (walletProvider, listing) => {
     contractsConfig.traitForgeNftAbi,
     signer
   );
-  const entityEntropy = await TraitForgeContract.getTokenEntropy(listing);
-  return entityEntropy.toString();
+  const entityEntropy = await TraitForgeContract.getTokenEntropy(entity);
+  console.log("entity entropy is:", entityEntropy);
+  return entityEntropy;
+};
+
+export const getEntityGeneration = async (walletProvider, listing) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider);
+  const signer = await ethersProvider.getSigner();
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
+    signer
+  );
+  const entityGeneration = await TraitForgeContract.getTokenGeneration(listing);
+  return entityGeneration.toString();
+};
+
+export const getCurrentGenerationHook = async infuraProvider => {
+  const TraitForgeContract = new ethers.Contract(
+    contractsConfig.traitForgeNftAddress,
+    contractsConfig.traitForgeNftAbi,
+    infuraProvider
+  );
+  const currentGeneration = await TraitForgeContract.getGeneration();
+  console.log("current gen is", currentGeneration)
+  return currentGeneration.toString();
 };
 
 export const getEntityGenerationHook = async (walletProvider, entity) => {
@@ -279,4 +311,47 @@ export const shortenAddress = address => {
   const shortenedAddress = `${firstPart}......${lastPart}`;
 
   return shortenedAddress;
+};
+
+export const getEntitiesListedByPlayer = async (walletProvider) => {
+  const ethersProvider = new ethers.BrowserProvider(walletProvider);
+  const signer = await ethersProvider.getSigner();
+  const address = await signer.getAddress();
+  
+  const tradeContract = new ethers.Contract(
+    contractsConfig.entityTradingContractAddress,
+    contractsConfig.entityTradingAbi,
+    signer
+  );
+  
+  const forgeContract = new ethers.Contract(
+    contractsConfig.entityMergingAddress,
+    contractsConfig.entityMergingContractAbi,
+    signer
+  );
+  const [tradeTokenIds, tradeSellers, tradePrices] = await tradeContract.fetchListedEntities();
+  const [forgeTokenIds, forgeSellers, forgePrices] = await forgeContract.fetchListings();
+  const listedEntities = [];
+  
+  for (let i = 0; i < tradeTokenIds.length; i++) {
+    if (address === tradeSellers[i]) {
+      listedEntities.push({
+        tokenId: tradeTokenIds[i],
+        seller: tradeSellers[i],
+        price: ethers.formatEther(tradePrices[i]),
+      });
+    }
+  }
+  
+  for (let i = 0; i < forgeTokenIds.length; i++) {
+    if (address === forgeSellers[i]) {
+      listedEntities.push({
+        tokenId: forgeTokenIds[i],
+        seller: forgeSellers[i],
+        price: ethers.formatEther(forgePrices[i]),
+      });
+    }
+  }
+  
+  return listedEntities;
 };

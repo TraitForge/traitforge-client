@@ -7,12 +7,13 @@ import './IEntityForging.sol';
 import '../TraitForgeNft/ITraitForgeNft.sol';
 
 contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
-  uint256 private _currentTokenId = 0;
   ITraitForgeNft public nftContract;
   address payable public nukeFundAddress;
   uint256 public taxCut = 10;
-  uint256 public oneYearInDays = 365;
+  uint256 public oneYearInDays = 365 days;
+  uint256 public listingCount = 0;
 
+  mapping(uint256 => uint256) public listedTokenIds;
   mapping(uint256 => Listing) public listings;
   mapping(uint256 => uint256) forgerListingFee;
   mapping(uint256 => uint8) public forgingCounts; // track forgePotential
@@ -29,33 +30,16 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     nukeFundAddress = _nukeFundAddress;
   }
 
-  function fetchListings() public view returns (ListingInfo[] memory) {
-    uint256 totalListed = 0;
-
-    for (uint256 i = 1; i <= _currentTokenId; i++) {
-      if (listings[i].isListed) {
-        totalListed++;
-      }
+  function fetchListings() external view returns (Listing[] memory _listings) {
+    _listings = new Listing[](listingCount);
+    for (uint256 i = 0; i < listingCount; i++) {
+      uint256 tokenId = listedTokenIds[i];
+      _listings[i] = listings[tokenId];
     }
-
-    ListingInfo[] memory listedEntities = new ListingInfo[](totalListed);
-    uint256 counter = 0;
-
-    for (uint256 i = 1; i <= _currentTokenId; i++) {
-      if (listings[i].isListed) {
-        listedEntities[counter] = ListingInfo(
-          i,
-          listings[i].isListed,
-          listings[i].fee
-        );
-        counter++;
-      }
-    }
-
-    return listedEntities;
   }
 
   function listForForging(uint256 tokenId, uint256 fee) public {
+    require(!listings[tokenId].isListed, 'Token is already listed for forging');
     require(
       nftContract.ownerOf(tokenId) == msg.sender,
       'Caller must own the token'
@@ -68,14 +52,17 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     uint256 entropy = nftContract.getTokenEntropy(tokenId); // Retrieve entropy for tokenId
     uint8 forgePotential = uint8((entropy / 10) % 10); // Extract the 5th digit from the entropy
     require(
-      forgingCounts[tokenId] < forgePotential,
+      forgePotential > 0 && forgingCounts[tokenId] <= forgePotential,
       'Entity has reached its forging limit'
     );
 
     bool isForger = (entropy % 3) == 0; // Determine if the token is a forger based on entropy
     require(isForger, 'Only forgers can list for forging');
 
-    listings[tokenId] = Listing(true, fee);
+    listings[tokenId] = Listing(msg.sender, tokenId, true, fee);
+    listedTokenIds[listingCount] = tokenId;
+    listingCount++;
+
     emit ListedForForging(tokenId, fee);
   }
 
@@ -101,7 +88,8 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     uint8 mergerForgePotential = uint8((mergerEntropy / 10) % 10); // Extract the 5th digit from the entropy
     forgingCounts[mergerTokenId]++;
     require(
-      forgingCounts[mergerTokenId] <= mergerForgePotential,
+      mergerForgePotential > 0 &&
+        forgingCounts[mergerTokenId] <= mergerForgePotential,
       'forgePotential insufficient'
     );
 
@@ -128,10 +116,17 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
   }
 
   function _resetForgingCountIfNeeded(uint256 tokenId) private {
+<<<<<<< HEAD
     uint256 oneYear = oneYearInDays * 1;
     if (block.timestamp >= lastForgeResetTimestamp[tokenId] + oneYear) {
       uint256 entropy = nftContract.getTokenEntropy(tokenId);
       uint8 forgePotential = uint8((entropy / 10) % 10);
+=======
+    uint256 oneYear = oneYearInDays;
+    if (lastForgeResetTimestamp[tokenId] == 0) {
+      lastForgeResetTimestamp[tokenId] = block.timestamp;
+    } else if (block.timestamp >= lastForgeResetTimestamp[tokenId] + oneYear) {
+>>>>>>> 2cb1e77764e18f48e80bf8b3cd7322e41438d4d9
       forgingCounts[tokenId] = 0; // Reset to the forge potential
       lastForgeResetTimestamp[tokenId] = block.timestamp;
     }

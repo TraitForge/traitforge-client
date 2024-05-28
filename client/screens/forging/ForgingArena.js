@@ -10,6 +10,8 @@ export const ForgingArena = ({
   areEntitiesForged = false,
   selectedFromWallet,
 }) => {
+
+  
   return (
     <div className="flex flex-col max-md:gap-y-10 md:grid md:grid-cols-3 max-w-[1440px] md:px-[100px] lg:px-[150px] xl:px-[200px] lg:gap-x-[80px] 3xl:gap-x-[111px]">
       <ArenaItemForger

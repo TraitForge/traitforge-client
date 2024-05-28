@@ -1,8 +1,8 @@
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
 
-describe('EntityMerging', () => {
-  let entityMerging;
+describe('EntityForging', () => {
+  let entityForging;
   let nft;
   let owner;
   let user1;
@@ -18,7 +18,7 @@ describe('EntityMerging', () => {
     nft = await TraitForgeNft.deploy();
     await nft.deployed();
 
-    // Deploy EntityMerging contract
+    // Deploy EntityForging contract
     const EntropyGenerator = await ethers.getContractFactory(
       'EntropyGenerator'
     );
@@ -26,11 +26,11 @@ describe('EntityMerging', () => {
     await entropyGenerator.deployed();
     await nft.setEntropyGenerator(entropyGenerator.address);
 
-    // Deploy EntityMerging contract
-    const EntityMerging = await ethers.getContractFactory('EntityMerging');
-    entityMerging = await EntityMerging.deploy(nft.address);
-    await entityMerging.deployed();
-    await nft.setEntityMergingContract(entityMerging.address);
+    // Deploy EntityForging contract
+    const EntityForging = await ethers.getContractFactory('EntityForging');
+    entityForging = await EntityForging.deploy(nft.address);
+    await entityForging.deployed();
+    await nft.setEntityForgingContract(entityForging.address);
 
     await nft.setNukeFundContract(user2.address);
 
@@ -46,7 +46,7 @@ describe('EntityMerging', () => {
       const fee = BREEDING_FEE;
 
       await expect(
-        entityMerging.connect(user1).listForBreeding(tokenId, fee)
+        entityForging.connect(user1).listForBreeding(tokenId, fee)
       ).to.be.revertedWith('Caller must own the token');
 
       // Additional assertions as needed
@@ -58,9 +58,9 @@ describe('EntityMerging', () => {
       const tokenId = 0;
       const fee = BREEDING_FEE;
 
-      await entityMerging.connect(owner).listForBreeding(tokenId, fee);
+      await entityForging.connect(owner).listForBreeding(tokenId, fee);
 
-      const listing = await entityMerging.listings(tokenId);
+      const listing = await entityForging.listings(tokenId);
       expect(listing.isListed).to.be.true;
       expect(listing.fee).to.equal(fee);
 
@@ -74,7 +74,7 @@ describe('EntityMerging', () => {
       const mergerTokenId = 1;
 
       await expect(
-        entityMerging
+        entityForging
           .connect(user1)
           .breedWithListed(forgerTokenId, mergerTokenId, {
             value: BREEDING_FEE,
@@ -88,12 +88,12 @@ describe('EntityMerging', () => {
       const forgerTokenId = 0;
       const mergerTokenId = 1;
 
-      await entityMerging
+      await entityForging
         .connect(owner)
         .listForBreeding(forgerTokenId, BREEDING_FEE);
 
       const initialBalance = await ethers.provider.getBalance(user1.address);
-      const tx = await entityMerging
+      const tx = await entityForging
         .connect(user1)
         .breedWithListed(forgerTokenId, mergerTokenId, {
           value: BREEDING_FEE,
@@ -102,7 +102,7 @@ describe('EntityMerging', () => {
 
       // Check event emissions
       expect(tx)
-        .to.emit(entityMerging, 'FeePaid')
+        .to.emit(entityForging, 'FeePaid')
         .withArgs(forgerTokenId, mergerTokenId, BREEDING_FEE);
 
       // Check balances
