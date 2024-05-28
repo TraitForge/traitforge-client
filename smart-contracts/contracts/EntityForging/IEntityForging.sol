@@ -3,14 +3,10 @@ pragma solidity ^0.8.20;
 
 interface IEntityForging {
   struct Listing {
+    address account;
+    uint256 tokenId;
     bool isListed;
-    uint fee;
-  }
-
-  struct ListingInfo {
-    uint256 Listing;
-    bool isListed;
-    uint fee;
+    uint256 fee;
   }
 
   event ListedForForging(uint256 tokenId, uint256 fee);
@@ -35,5 +31,5 @@ interface IEntityForging {
 
   function cancelListingForForging(uint256 tokenId) external;
 
-  function fetchListings() external view returns (ListingInfo[] memory);
+  function fetchListings() external view returns (Listing[] memory);
 }
