@@ -104,7 +104,7 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
     emit NukeFundContribution(address(this), amount);
   }
 
-  function fetchListedEntities()
+ function fetchListedEntities()
     external
     view
     returns (

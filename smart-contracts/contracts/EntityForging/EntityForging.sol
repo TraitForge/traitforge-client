@@ -60,6 +60,10 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
       nftContract.ownerOf(tokenId) == msg.sender,
       'Caller must own the token'
     );
+    require(
+      !listings[tokenId].isListed,
+      'Token is already listed for forging'
+    );
     _resetForgingCountIfNeeded(tokenId);
     uint256 entropy = nftContract.getTokenEntropy(tokenId); // Retrieve entropy for tokenId
     uint8 forgePotential = uint8((entropy / 10) % 10); // Extract the 5th digit from the entropy
@@ -124,11 +128,11 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
   }
 
   function _resetForgingCountIfNeeded(uint256 tokenId) private {
-    uint256 oneYear = oneYearInDays;
+    uint256 oneYear = oneYearInDays * 1;
     if (block.timestamp >= lastForgeResetTimestamp[tokenId] + oneYear) {
       uint256 entropy = nftContract.getTokenEntropy(tokenId);
       uint8 forgePotential = uint8((entropy / 10) % 10);
-      forgingCounts[tokenId] = forgePotential; // Reset to the forge potential
+      forgingCounts[tokenId] = 0; // Reset to the forge potential
       lastForgeResetTimestamp[tokenId] = block.timestamp;
     }
   }
