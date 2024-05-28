@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 import { contractsConfig } from './contractsConfig';
 
@@ -26,7 +27,7 @@ export async function createContract(walletProvider, address, abi) {
   return mintContract;
 }
 
-export const getEntitiesHook = async (infuraProvider) => {
+export const getEntitiesHook = async infuraProvider => {
   const contract = new ethers.Contract(
     contractsConfig.entityMergingAddress,
     contractsConfig.entityMergingContractAbi,
@@ -36,11 +37,10 @@ export const getEntitiesHook = async (infuraProvider) => {
   const listedEntities = listings.map(listing => ({
     tokenId: listing.tokenId,
     isListed: listing.isListed,
-    fee: ethers.formatEther(listing.fee)
+    fee: ethers.formatEther(listing.fee),
   }));
   return listedEntities;
 };
-
 
 export const getUpcomingMintsHook = async (
   startSlot,
@@ -97,7 +97,6 @@ export const getEntitiesForSaleHook = async infuraProvider => {
     seller: sellers[index],
     price: ethers.formatEther(prices[index]),
   }));
-  console.log(listedEntities);
   return listedEntities;
 };
 
@@ -122,13 +121,11 @@ export const getOwnersEntitiesHook = async walletProvider => {
     const entities = await Promise.all(fetchPromises);
     return entities;
   } catch (error) {
-    console.error("Error fetching owner's entities:", error);
     throw error;
   }
 };
 
 export const getEntityEntropyHook = async (walletProvider, entity) => {
-  console.log("getting entropy:");
   const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
   const TraitForgeContract = new ethers.Contract(
@@ -137,7 +134,6 @@ export const getEntityEntropyHook = async (walletProvider, entity) => {
     signer
   );
   const entityEntropy = await TraitForgeContract.getTokenEntropy(entity);
-  console.log("entity entropy is:", entityEntropy);
   return entityEntropy;
 };
 
@@ -154,14 +150,18 @@ export const getEntityGeneration = async (walletProvider, listing) => {
 };
 
 export const getCurrentGenerationHook = async infuraProvider => {
-  const TraitForgeContract = new ethers.Contract(
-    contractsConfig.traitForgeNftAddress,
-    contractsConfig.traitForgeNftAbi,
-    infuraProvider
-  );
-  const currentGeneration = await TraitForgeContract.getGeneration();
-  console.log("current gen is", currentGeneration)
-  return currentGeneration.toString();
+  if (!infuraProvider) return;
+  try {
+    const TraitForgeContract = new ethers.Contract(
+      contractsConfig.traitForgeNftAddress,
+      contractsConfig.traitForgeNftAbi,
+      infuraProvider
+    );
+    const currentGeneration = await TraitForgeContract.getGeneration();
+    return currentGeneration.toString();
+  } catch (err) {
+    toast.error('Failed to fetch current generation:');
+  }
 };
 
 export const getEntityGenerationHook = async (walletProvider, entity) => {
@@ -313,26 +313,28 @@ export const shortenAddress = address => {
   return shortenedAddress;
 };
 
-export const getEntitiesListedByPlayer = async (walletProvider) => {
+export const getEntitiesListedByPlayer = async walletProvider => {
   const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
   const address = await signer.getAddress();
-  
+
   const tradeContract = new ethers.Contract(
     contractsConfig.entityTradingContractAddress,
     contractsConfig.entityTradingAbi,
     signer
   );
-  
+
   const forgeContract = new ethers.Contract(
     contractsConfig.entityMergingAddress,
     contractsConfig.entityMergingContractAbi,
     signer
   );
-  const [tradeTokenIds, tradeSellers, tradePrices] = await tradeContract.fetchListedEntities();
-  const [forgeTokenIds, forgeSellers, forgePrices] = await forgeContract.fetchListings();
+  const [tradeTokenIds, tradeSellers, tradePrices] =
+    await tradeContract.fetchListedEntities();
+  const [forgeTokenIds, forgeSellers, forgePrices] =
+    await forgeContract.fetchListings();
   const listedEntities = [];
-  
+
   for (let i = 0; i < tradeTokenIds.length; i++) {
     if (address === tradeSellers[i]) {
       listedEntities.push({
@@ -342,7 +344,7 @@ export const getEntitiesListedByPlayer = async (walletProvider) => {
       });
     }
   }
-  
+
   for (let i = 0; i < forgeTokenIds.length; i++) {
     if (address === forgeSellers[i]) {
       listedEntities.push({
@@ -352,6 +354,43 @@ export const getEntitiesListedByPlayer = async (walletProvider) => {
       });
     }
   }
-  
+
   return listedEntities;
+};
+
+export const getWalletBalance = async (walletProvider, address) => {
+  const provider = new ethers.BrowserProvider(walletProvider);
+  const balance = await provider.getBalance(address);
+  const balanceInETH = ethers.formatEther(balance);
+  const balanceInETHShortened = parseFloat(balanceInETH).toFixed(6);
+
+  return balanceInETHShortened;
+};
+
+export const fetchEthToUsdRate = async () => {
+  try {
+    const response = await axios.get(
+      'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms=USD'
+    );
+    return response.data.ETH.USD;
+  } catch (error) {
+    console.error('Error fetching ETH to USD rate:', error);
+  }
+  return null;
+};
+
+export const fetchEthAmount = async infuraProvider => {
+  if (!infuraProvider) return;
+  try {
+    const nukeFundContract = new ethers.Contract(
+      contractsConfig.nukeContractAddress,
+      contractsConfig.nukeFundContractAbi,
+      infuraProvider
+    );
+    const balance = await nukeFundContract.getFundBalance();
+    return ethers.formatEther(balance);
+  } catch (error) {
+    console.error('Error fetching ETH amount from nuke fund:', error);
+    return 0;
+  }
 };
