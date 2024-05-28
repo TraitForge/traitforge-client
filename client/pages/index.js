@@ -51,7 +51,7 @@ const Home = () => {
       >
         Mint your traitforge entity
       </span>
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center max-md:mb-5">
         <Slider />
       </div>
       <div className="max-md:px-5 flex flex-col">

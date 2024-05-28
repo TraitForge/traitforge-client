@@ -43,7 +43,7 @@ export const EntitySliderCard = ({
         zIndex: 10,
       }}
     >
-      <div className="mb-4 w-[65%] 2xl:w-[80%] 3xl:w-[75%] mx-auto h-full pt-3 2xl:pt-5 3xl:pt-10">
+      <div className="mb-4 w-[70%] md:w-[65%] 2xl:w-[80%] 3xl:w-[75%] mx-auto h-full pt-4 2xl:pt-5 3xl:pt-10">
         <Image
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}

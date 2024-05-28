@@ -1,9 +1,17 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import classNames from 'classnames';
 
 import styles from './styles.module.scss';
 
-const Modal = ({ children, background, isOpen, closeModal, modalClasses }) => {
+const Modal = ({
+  children,
+  background,
+  isOpen,
+  closeModal,
+  modalClasses,
+  containerClass,
+}) => {
   const modalStyle = background
     ? {
         backgroundImage: `url(${background})`,
@@ -11,6 +19,13 @@ const Modal = ({ children, background, isOpen, closeModal, modalClasses }) => {
     : {};
 
   if (!isOpen) return null;
+
+  const contClasses = classNames(
+    'relative bg-center bg-no-repeat object-contain',
+    {
+      [containerClass]: containerClass,
+    }
+  );
 
   return createPortal(
     <div
@@ -20,7 +35,7 @@ const Modal = ({ children, background, isOpen, closeModal, modalClasses }) => {
       <div
         style={modalStyle}
         onClick={e => e.stopPropagation()}
-        className={`relative bg-center bg-no-repeat object-contain md:object-cover`}
+        className={contClasses}
       >
         {children}
         <button
