@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useWeb3Modal } from '@web3modal/ethers/react';
+import { toast } from 'react-toastify';
 
 import styles from '@/styles/honeypot.module.scss';
 import { contractsConfig } from '@/utils/contractsConfig';
