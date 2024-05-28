@@ -253,7 +253,7 @@ export const mintEntityHandler = async (walletProvider, open, entityPrice) => {
       contractsConfig.traitForgeNftAddress,
       contractsConfig.traitForgeNftAbi
     );
-    console.log(ethers.parseEther(entityPrice))
+    console.log(entityPrice)
     const transaction = await mintContract.mintToken({
       value: ethers.parseEther(entityPrice),
       gasLimit: 5000000,

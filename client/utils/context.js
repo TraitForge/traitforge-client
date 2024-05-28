@@ -52,10 +52,9 @@ const ContextProvider = ({ children }) => {
       startNumberIndex,
       infuraProvider
     );
-
     setUpcomingMints(
       allEntropies.slice(0, maxCount).map((entropy, index) => ({
-        id: startSlot * 13 + index + 1,
+        id: startSlot * 13 + index,
         entropy,
       }))
     );
@@ -263,7 +262,7 @@ const ContextProvider = ({ children }) => {
     if (entityPrice) {
       const priceToIndex = Math.floor(entityPrice * 100);
       const startSlot = Math.floor(priceToIndex / 13);
-      const startNumberIndex = priceToIndex % 13;
+      const startNumberIndex = (priceToIndex % 13) - 1;
       getUpcomingMints(startSlot, startNumberIndex);
     }
   }, [entityPrice]);
