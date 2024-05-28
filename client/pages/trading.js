@@ -34,8 +34,8 @@ const Marketplace = () => {
   const { open } = useWeb3Modal();
 
   useEffect(() => {
-    getEntitiesForSale()
-    getOwnersEntities()
+    getEntitiesForSale();
+    getOwnersEntities();
   }, []);
 
   const handleSort = type => setSortOption(type);
@@ -49,10 +49,12 @@ const Marketplace = () => {
   };
 
   const filteredAndSortedListings = useMemo(() => {
-  
     let filtered = entitiesForSale.filter(listing => {
-      console.log('Listing Type:', listing.role); 
-      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+      console.log('Listing Type:', listing.role);
+      if (
+        generationFilter &&
+        String(listing.generation) !== String(generationFilter)
+      ) {
         return false;
       }
 
@@ -67,11 +69,11 @@ const Marketplace = () => {
     } else if (sortingFilter === 'price_high_to_low') {
       filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
     }
-  
+
     return filtered;
   }, [sortOption, generationFilter, sortingFilter, entitiesForSale]);
 
-  const buyEntity = async (entity) => {
+  const buyEntity = async entity => {
     setIsLoading(true);
     if (!walletProvider) open();
     try {
@@ -151,10 +153,10 @@ const Marketplace = () => {
     case 'two':
       content = (
         <ListEntity
-        ownerEntities={ownerEntities}
-        handleStep={handleStep}
-        setSelectedForSale={setSelectedForSale}
-        selectedForSale={selectedForSale}
+          ownerEntities={ownerEntities}
+          handleStep={handleStep}
+          setSelectedForSale={setSelectedForSale}
+          selectedForSale={selectedForSale}
         />
       );
       break;
@@ -163,7 +165,7 @@ const Marketplace = () => {
         <>
           <div className="flex justify-between items-center border-b mb-12"></div>
           <div className="overflow-y-auto flex-1">
-          <FiltersHeader
+            <FiltersHeader
               sortOption={sortOption}
               handleSort={handleSort}
               color="green"
@@ -173,7 +175,7 @@ const Marketplace = () => {
               generationFilter={generationFilter}
               sortingFilter={sortingFilter}
             />
-            <div className="grid grid-col-3 lg:grid-cols-5 gap-x-[15px] mt-10 gap-y-7 lg:gap-y-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 gap-x-3 md:gap-x-[15px] mt-10 gap-y-7 lg:gap-y-10">
               {filteredAndSortedListings.map(entity => (
                 <EntityCard
                   key={entity.tokenId}
@@ -197,7 +199,7 @@ const Marketplace = () => {
   return (
     <div className={styles.tradingPage}>
       <div className="container pt-16 md:pt-[134px] flex flex-col h-full">
-      <TraidingHeader handleStep={handleStep} step={step} />
+        <TraidingHeader handleStep={handleStep} step={step} />
         {content}
       </div>
     </div>

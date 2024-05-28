@@ -11,9 +11,8 @@ export const EntitySliderCard = ({
   borderType = 'blue',
   wrapperClass,
   showPrice,
-  currentGeneration
+  currentGeneration,
 }) => {
-
   const paddedEntropy = entropy.toString().padStart(6, '0');
   const generation = currentGeneration.toString();
   const calculateUri = (paddedEntropy, generation) => {
@@ -21,46 +20,50 @@ export const EntitySliderCard = ({
   };
   const uri = calculateUri(paddedEntropy, generation);
 
-  const { role, forgePotential, performanceFactor, nukeFactor } = calculateEntityAttributes(paddedEntropy);
+  const { role, forgePotential, performanceFactor, nukeFactor } =
+    calculateEntityAttributes(paddedEntropy);
 
   let activeBorder;
 
   switch (borderType) {
     default:
-      activeBorder = blueBorder; 
+      activeBorder = blueBorder;
   }
 
   const wrapperClasses = classNames('mx-5', styles.cardContainer, wrapperClass);
 
   return (
     <div
-      className={`${wrapperClasses} overflow-hidden items-center`}
+      className={`${wrapperClasses} overflow-hidden items-center min-h-[300px] 3xl:min-h-[400px]`}
       style={{
         backgroundImage: `url("${activeBorder.src}")`,
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain',
+        zIndex: 10,
       }}
     >
-      <div className="w-11/12 mb-4 h-full 3xl:px-10 3xl:pt-10">
+      <div className="mb-4 w-[65%] 2xl:w-[80%] 3xl:w-[75%] mx-auto h-full pt-3 2xl:pt-5 3xl:pt-10">
         <Image
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="IMG"
-          className="z-1"
+          className="w-full"
           width={250}
           height={350}
         />
       </div>
       <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
-        <h1 className="card-name"> GEN{currentGeneration}</h1>
+          <h3 className="card-name"> GEN{currentGeneration}</h3>
           {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
-        <h4 className="card-name">{role}</h4> 
-        <h4 className="card-name">Forge Potential: {forgePotential}</h4>
-        <h4 className="card-name">Nuke Factor: {nukeFactor} %</h4>
-        <h4 className="card-name">Performance Factor: {performanceFactor}</h4>
+        <div className="text-[14px] xl:text-base 3xl:text-[20px]">
+          <h4>{role}</h4>
+          <h4>Forge Potential: {forgePotential}</h4>
+          <h4>Nuke Factor: {nukeFactor} %</h4>
+          <h4>Performance Factor: {performanceFactor}</h4>
+        </div>
       </div>
     </div>
   );

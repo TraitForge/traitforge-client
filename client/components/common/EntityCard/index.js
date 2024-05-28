@@ -5,7 +5,6 @@ import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
-import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
 
 export const EntityCard = ({
@@ -15,14 +14,21 @@ export const EntityCard = ({
   wrapperClass,
   showPrice,
 }) => {
+  const {
+    paddedEntropy,
+    generation,
+    role,
+    forgePotential,
+    performanceFactor,
+    nukeFactor,
+    price,
+  } = entity;
 
-  const { paddedEntropy, generation, role, forgePotential, performanceFactor, nukeFactor, price} = entity;
+  const calculateUri = (paddedEntropy, generation) => {
+    return `${paddedEntropy}_${generation}`;
+  };
 
-    const calculateUri = (paddedEntropy, generation) => {
-      return `${paddedEntropy}_${generation}`;
-    };
-
-   const uri = calculateUri(paddedEntropy, generation);
+  const uri = calculateUri(paddedEntropy, generation);
 
   let activeBorder;
   switch (borderType) {
@@ -44,7 +50,7 @@ export const EntityCard = ({
   return (
     <div
       onClick={onSelect}
-      className={`${wrapperClasses} overflow-hidden items-center`}
+      className={`${wrapperClasses} overflow-hidden items-center min-h-[300px]`}
       style={{
         backgroundImage: `url("${activeBorder.src}")`,
         backgroundPosition: 'center',
@@ -52,25 +58,27 @@ export const EntityCard = ({
         backgroundSize: 'contain',
       }}
     >
-      <div className="w-11/12 mb-4 h-full 3xl:px-10 3xl:pt-10">
+      <div className="mb-4 max-md:w-[70%] w-[65%] 2xl:w-[80%] mx-auto h-full pt-9 md:pt-3 2xl:pt-5">
         <Image
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="IMG"
-          className="z-1"
+          className="w-full"
           width={250}
           height={350}
         />
       </div>
       <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
-        <h1 className="card-name"> GEN{generation}</h1>
+          <h3> GEN{generation}</h3>
           {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
-        {role && <h4 className="card-name">{role}</h4>}
-        <h4 className="card-name">Forge Potential: {forgePotential}</h4>
-        <h4 className="card-name">Nuke Factor: {nukeFactor} %</h4>
-        <h4 className="card-name">Performance Factor: {performanceFactor}</h4>
+        {role && <h4>{role}</h4>}
+        <div className="text-[14px] lg:text-base">
+          <h4>Forge Potential: {forgePotential}</h4>
+          <h4>Nuke Factor: {nukeFactor} %</h4>
+          <h4>Performance Factor: {performanceFactor}</h4>
+        </div>
       </div>
     </div>
   );
