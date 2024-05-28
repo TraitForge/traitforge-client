@@ -116,17 +116,10 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
   }
 
   function _resetForgingCountIfNeeded(uint256 tokenId) private {
-<<<<<<< HEAD
-    uint256 oneYear = oneYearInDays * 1;
-    if (block.timestamp >= lastForgeResetTimestamp[tokenId] + oneYear) {
-      uint256 entropy = nftContract.getTokenEntropy(tokenId);
-      uint8 forgePotential = uint8((entropy / 10) % 10);
-=======
     uint256 oneYear = oneYearInDays;
     if (lastForgeResetTimestamp[tokenId] == 0) {
       lastForgeResetTimestamp[tokenId] = block.timestamp;
     } else if (block.timestamp >= lastForgeResetTimestamp[tokenId] + oneYear) {
->>>>>>> 2cb1e77764e18f48e80bf8b3cd7322e41438d4d9
       forgingCounts[tokenId] = 0; // Reset to the forge potential
       lastForgeResetTimestamp[tokenId] = block.timestamp;
     }
