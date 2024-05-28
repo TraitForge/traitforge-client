@@ -1,10 +1,7 @@
 import { Button } from '@/components';
-import { useContextState } from '@/utils/context';
 import styles from '@/styles/honeypot.module.scss';
 
-export const HoneyPotBody = ({ handleStep }) => {
-  const { ethAmount, usdAmount } = useContextState();
-
+export const HoneyPotBody = ({ handleStep, ethAmount, usdAmount }) => {
   return (
     <>
       <div className={styles.frameContainer}>

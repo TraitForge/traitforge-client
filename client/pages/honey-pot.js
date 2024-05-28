@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useWeb3Modal } from '@web3modal/ethers/react';
 import { toast } from 'react-toastify';
+import { ethers } from 'ethers';
 
 import styles from '@/styles/honeypot.module.scss';
 import { contractsConfig } from '@/utils/contractsConfig';
@@ -10,11 +11,24 @@ import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 import { NukeEntity } from '@/screens/honey-pot/NukeEntity';
 import { FiltersHeader } from '@/components';
 import { useContextState } from '@/utils/context';
-import { createContract, approveNFTForNuking } from '@/utils/utils';
+import {
+  createContract,
+  approveNFTForNuking,
+  fetchEthToUsdRate,
+  fetchEthAmount,
+} from '@/utils/utils';
 
-const HoneyPot = () => {
-  const { isLoading, setIsLoading, ownerEntities, getOwnersEntities, walletProvider } =
-    useContextState();
+const HoneyPot = ({ rate }) => {
+  const [ethAmount, setEthAmount] = useState(0);
+  const [usdAmount, setUsdAmount] = useState(0);
+  const {
+    isLoading,
+    setIsLoading,
+    ownerEntities,
+    infuraProvider,
+    getOwnersEntities,
+    walletProvider,
+  } = useContextState();
   const [selectedForNuke, setSelectedForNuke] = useState(null);
   const [step, setStep] = useState('one');
   const [sortOption, setSortOption] = useState('all');
@@ -23,8 +37,21 @@ const HoneyPot = () => {
   const { open } = useWeb3Modal();
 
   useEffect(() => {
-    getOwnersEntities()
+    getOwnersEntities();
   }, []);
+
+  useEffect(() => {
+    const handlePrice = async () => {
+      const amount = await fetchEthAmount(infuraProvider);
+
+      if (amount && rate) {
+        const usdValue = amount * rate;
+        setEthAmount(Number(amount).toFixed(5));
+        setUsdAmount(Number(usdValue).toFixed(5));
+      }
+    };
+    handlePrice();
+  }, [rate]);
 
   const handleStep = nextStep => setStep(nextStep);
 
@@ -39,9 +66,11 @@ const HoneyPot = () => {
   };
 
   const filteredAndSortedListings = useMemo(() => {
-  
     let filtered = ownerEntities.filter(listing => {
-      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+      if (
+        generationFilter &&
+        String(listing.generation) !== String(generationFilter)
+      ) {
         return false;
       }
 
@@ -52,11 +81,15 @@ const HoneyPot = () => {
     });
 
     if (sortingFilter === 'NukeFactor_low_to_high') {
-      filtered.sort((a, b) => parseFloat(a.nukeFactor) - parseFloat(b.nukeFactor));
+      filtered.sort(
+        (a, b) => parseFloat(a.nukeFactor) - parseFloat(b.nukeFactor)
+      );
     } else if (sortingFilter === 'NukeFactor_high_to_low') {
-      filtered.sort((a, b) => parseFloat(b.nukeFactor) - parseFloat(a.nukeFactor));
+      filtered.sort(
+        (a, b) => parseFloat(b.nukeFactor) - parseFloat(a.nukeFactor)
+      );
     }
-  
+
     return filtered;
   }, [sortOption, generationFilter, sortingFilter, ownerEntities]);
 
@@ -96,17 +129,17 @@ const HoneyPot = () => {
     case 'two':
       content = (
         <div className="overflow-y-scroll flex-1 pt-8">
-             <FiltersHeader
-             pageType='nuke'
-              sortOption={sortOption}
-              handleSort={handleSort}
-              color="purple"
-              handleFilterChange={(selectedOption, type) =>
-                handleFilterChange(selectedOption, type)
-              }
-              generationFilter={generationFilter}
-              sortingFilter={sortingFilter}
-            />
+          <FiltersHeader
+            pageType="nuke"
+            sortOption={sortOption}
+            handleSort={handleSort}
+            color="purple"
+            handleFilterChange={(selectedOption, type) =>
+              handleFilterChange(selectedOption, type)
+            }
+            generationFilter={generationFilter}
+            sortingFilter={sortingFilter}
+          />
           <div className="grid mt-10 grid-cols-3 lg:grid-cols-5 lg:px-20 gap-x-[15px] gap-y-5 md:gap-y-10">
             {filteredAndSortedListings.map(entity => (
               <EntityCard
@@ -125,7 +158,13 @@ const HoneyPot = () => {
       );
       break;
     default:
-      content = <HoneyPotBody handleStep={() => setStep('two')} />;
+      content = (
+        <HoneyPotBody
+          ethAmount={ethAmount}
+          usdAmount={usdAmount}
+          handleStep={() => setStep('two')}
+        />
+      );
   }
 
   return (
@@ -139,3 +178,13 @@ const HoneyPot = () => {
 };
 
 export default HoneyPot;
+
+export const getStaticProps = async () => {
+  const rate = await fetchEthToUsdRate();
+  return {
+    props: {
+      rate,
+    },
+    revalidate: 43200,
+  };
+};
