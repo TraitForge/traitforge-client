@@ -33,12 +33,8 @@ export const getEntitiesHook = async (infuraProvider) => {
     infuraProvider
   );
   const listings = await contract.fetchListings();
-  const listedEntities = listings.map(listing => ({
-    tokenId: listing.tokenId,
-    isListed: listing.isListed,
-    fee: ethers.formatEther(listing.fee)
-  }));
-  return listedEntities;
+  console.log("forging listings are:", listings)
+  return listings;
 };
 
 
@@ -257,6 +253,7 @@ export const mintEntityHandler = async (walletProvider, open, entityPrice) => {
       contractsConfig.traitForgeNftAddress,
       contractsConfig.traitForgeNftAbi
     );
+    console.log(ethers.parseEther(entityPrice))
     const transaction = await mintContract.mintToken({
       value: ethers.parseEther(entityPrice),
       gasLimit: 5000000,

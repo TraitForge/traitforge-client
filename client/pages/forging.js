@@ -51,9 +51,16 @@ const Forging = () => {
         contractsConfig.entityMergingAddress,
         contractsConfig.entityMergingContractAbi
       );
-      const transaction = await forgeContract.breedWithListed(
+      const feeInWei = BigInt(selectedFromPool.fee);
+      console.log(feeInWei)
+      console.log(selectedFromPool.tokenId,
+        selectedEntity.tokenId);
+      const transaction = await forgeContract.forgeWithListed(
         selectedFromPool.tokenId,
-        selectedEntity.tokenId
+        selectedEntity.tokenId,
+        {
+          value: feeInWei,
+        }
       );
       await transaction.wait();
       setProcessingText('Merging');
