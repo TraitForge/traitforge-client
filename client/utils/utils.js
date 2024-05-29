@@ -354,3 +354,40 @@ export const getEntitiesListedByPlayer = async walletProvider => {
 
   return listedEntities;
 };
+
+export const getWalletBalance = async (walletProvider, address) => {
+  const provider = new ethers.BrowserProvider(walletProvider);
+  const balance = await provider.getBalance(address);
+  const balanceInETH = ethers.formatEther(balance);
+  const balanceInETHShortened = parseFloat(balanceInETH).toFixed(6);
+
+  return balanceInETHShortened;
+};
+
+export const fetchEthToUsdRate = async () => {
+  try {
+    const response = await axios.get(
+      'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms=USD'
+    );
+    return response.data.ETH.USD;
+  } catch (error) {
+    console.error('Error fetching ETH to USD rate:', error);
+  }
+  return null;
+};
+
+export const fetchEthAmount = async infuraProvider => {
+  if (!infuraProvider) return;
+  try {
+    const nukeFundContract = new ethers.Contract(
+      contractsConfig.nukeContractAddress,
+      contractsConfig.nukeFundContractAbi,
+      infuraProvider
+    );
+    const balance = await nukeFundContract.getFundBalance();
+    return ethers.formatEther(balance);
+  } catch (error) {
+    console.error('Error fetching ETH amount from nuke fund:', error);
+    return 0;
+  }
+};
