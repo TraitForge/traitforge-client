@@ -15,6 +15,16 @@ interface INukeFund {
   // Fallback function to receive ETH and update fund balance
   receive() external payable;
 
+  function setTaxCut(uint256 _taxCut) external;
+
+  function setMinimumDaysHeld(uint256 value) external;
+
+  function setDefaultNukeFactorIncrease(uint256 value) external;
+
+  function setMaxAllowedClaimDivisor(uint256 value) external;
+
+  function setNukeFactorMaxParam(uint256 value) external;
+
   // Allow the owner to update the reference to the ERC721 contract
   function setTraitForgeNftContract(address _traitForgeNft) external;
 

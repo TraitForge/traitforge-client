@@ -25,6 +25,8 @@ interface IEntityTrading {
   // allows the owner to set NukeFund address
   function setNukeFundAddress(address payable _nukeFundAddress) external;
 
+  function setTaxCut(uint256 _taxCut) external;
+
   // function to lsit NFT for sale
   function listNFTForSale(uint256 tokenId, uint256 price) external;
 
