@@ -261,7 +261,7 @@ const ContextProvider = ({ children }) => {
   
   useEffect(() => {
     if (entityPrice) {
-      const priceToIndex = Math.floor(entityPrice * 100);
+      const priceToIndex = Math.floor(entityPrice * 10000);
       const startSlot = Math.floor(priceToIndex / 13);
       const startNumberIndex = priceToIndex % 13;
       getUpcomingMints(startSlot, startNumberIndex);

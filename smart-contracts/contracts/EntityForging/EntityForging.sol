@@ -76,10 +76,14 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     );
     uint256 forgingFee = listings[forgerTokenId].fee;
     require(msg.value >= forgingFee, 'Insufficient fee for forging');
+    require(
+        nftContract.ownerOf(mergerTokenId) == msg.sender,
+        "Caller must own the merger token"
+    );
     _resetForgingCountIfNeeded(forgerTokenId); // Reset for forger if needed
     _resetForgingCountIfNeeded(mergerTokenId); // Reset for merger if needed
 
-    // Check forger's breed count increment but do not check forge potential here
+    // Check forger's forge count increment but do not check forge potential here
     // as it is already checked in listForForging for the forger
     forgingCounts[forgerTokenId]++;
 
