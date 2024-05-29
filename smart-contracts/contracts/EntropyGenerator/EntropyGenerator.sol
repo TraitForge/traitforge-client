@@ -100,7 +100,7 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
     require(currentSlotIndex <= maxSlotIndex, 'Max slot index reached.');
     uint256 entropy = getEntropy(currentSlotIndex, currentNumberIndex);
 
-    if (currentNumberIndex >= maxNumberIndex) {
+    if (currentNumberIndex >= maxNumberIndex - 1) {
       currentNumberIndex = 0;
       if (currentSlotIndex >= maxSlotIndex - 1) {
         currentSlotIndex = 0;
