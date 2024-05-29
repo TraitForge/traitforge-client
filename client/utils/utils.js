@@ -34,12 +34,8 @@ export const getEntitiesHook = async infuraProvider => {
     infuraProvider
   );
   const listings = await contract.fetchListings();
-  const listedEntities = listings.map(listing => ({
-    tokenId: listing.tokenId,
-    isListed: listing.isListed,
-    fee: ethers.formatEther(listing.fee),
-  }));
-  return listedEntities;
+  console.log("forging listings are:", listings)
+  return listings;
 };
 
 export const getUpcomingMintsHook = async (
