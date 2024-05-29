@@ -47,7 +47,6 @@ const ContextProvider = ({ children }) => {
       startNumberIndex,
       infuraProvider
     );
-
     setUpcomingMints(
       allEntropies.slice(0, maxCount).map((entropy, index) => ({
         id: startSlot * 13 + index,
