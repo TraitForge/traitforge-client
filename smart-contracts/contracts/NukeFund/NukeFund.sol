@@ -65,6 +65,18 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     minimumDaysHeld = value;
   }
 
+  function setDefaultNukeFactorIncrease(uint256 value) external onlyOwner {
+    defaultNukeFactorIncrease = value;
+  }
+
+  function setMaxAllowedClaimDivisor(uint256 value) external onlyOwner {
+    maxAllowedClaimDivisor = value;
+  }
+
+  function setNukeFactorMaxParam(uint256 value) external onlyOwner {
+    nukeFactorMaxParam = value;
+  }
+
   // Allow the owner to update the reference to the ERC721 contract
   function setTraitForgeNftContract(address _traitForgeNft) external onlyOwner {
     nftContract = ITraitForgeNft(_traitForgeNft);
