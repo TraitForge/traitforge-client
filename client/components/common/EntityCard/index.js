@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { ethers } from 'ethers';
 import classNames from 'classnames';
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
-import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import styles from './styles.module.scss';
 
 export const EntityCard = ({
@@ -13,10 +13,13 @@ export const EntityCard = ({
   onSelect,
   borderType = 'blue',
   wrapperClass,
-  showPrice,
+  showPrice
 }) => {
 
-  const { paddedEntropy, generation, role, forgePotential, performanceFactor, nukeFactor, price} = entity;
+
+  const { paddedEntropy, generation, role, forgePotential, performanceFactor, nukeFactor, price, fee} = entity;
+  
+  const displayPrice = price || (fee ? ethers.formatEther(fee) : null);
 
     const calculateUri = (paddedEntropy, generation) => {
       return `${paddedEntropy}_${generation}`;
@@ -65,7 +68,7 @@ export const EntityCard = ({
       <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
         <h1 className="card-name"> GEN{generation}</h1>
-          {showPrice && <h4 className="">{price} ETH</h4>}
+          {showPrice && <h4 className="">{displayPrice} ETH</h4>}
         </div>
         {role && <h4 className="card-name">{role}</h4>}
         <h4 className="card-name">Forge Potential: {forgePotential}</h4>
