@@ -25,6 +25,10 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
     nukeFundAddress = _nukeFundAddress;
   }
 
+  function setTaxCut(uint256 _taxCut) external onlyOwner {
+    taxCut = _taxCut;
+  }
+
   // function to lsit NFT for sale
   function listNFTForSale(uint256 tokenId, uint256 price) public nonReentrant {
     require(price > 0, 'Price must be greater than zero');
@@ -37,7 +41,7 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
         nftContract.isApprovedForAll(msg.sender, address(this)),
       'Contract must be approved to transfer the NFT.'
     );
-   
+
     nftContract.transferFrom(msg.sender, address(this), tokenId); // trasnfer NFT to contract
     listings[tokenId] = Listing(msg.sender, price, true); // create new listing
 

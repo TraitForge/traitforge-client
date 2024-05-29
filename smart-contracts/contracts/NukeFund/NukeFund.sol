@@ -57,6 +57,14 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     emit FundBalanceUpdated(fund); // Update the fund balance
   }
 
+  function setTaxCut(uint256 _taxCut) external onlyOwner {
+    taxCut = _taxCut;
+  }
+
+  function setMinimumDaysHeld(uint256 value) external onlyOwner {
+    minimumDaysHeld = value;
+  }
+
   // Allow the owner to update the reference to the ERC721 contract
   function setTraitForgeNftContract(address _traitForgeNft) external onlyOwner {
     nftContract = ITraitForgeNft(_traitForgeNft);
@@ -113,12 +121,13 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
       'ERC721: operator query for nonexistent token'
     );
 
-    uint256 entropy = nftContract.getTokenEntropy(tokenId); 
+    uint256 entropy = nftContract.getTokenEntropy(tokenId);
     uint256 adjustedAge = calculateAge(tokenId);
-    
+
     uint256 initialNukeFactor = entropy / 4; // calcualte initalNukeFactor based on entropy
 
-    uint256 finalNukeFactor = ((adjustedAge * defaultNukeFactorIncrease) / 10000) + initialNukeFactor;
+    uint256 finalNukeFactor = ((adjustedAge * defaultNukeFactorIncrease) /
+      10000) + initialNukeFactor;
 
     return finalNukeFactor;
   }

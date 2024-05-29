@@ -12,6 +12,7 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
   uint256 public taxCut = 10;
   uint256 public oneYearInDays = 365 days;
   uint256 public listingCount = 0;
+  uint256 public minimumListFee = 0.01 ether;
 
   mapping(uint256 => uint256) public listedTokenIds;
   mapping(uint256 => Listing) public listings;
@@ -30,6 +31,18 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     nukeFundAddress = _nukeFundAddress;
   }
 
+  function setTaxCut(uint256 _taxCut) external onlyOwner {
+    taxCut = _taxCut;
+  }
+
+  function setOneYearInDays(uint256 value) external onlyOwner {
+    oneYearInDays = value;
+  }
+
+  function setMinimumListingFee(uint256 _fee) external onlyOwner {
+    minimumListFee = _fee;
+  }
+
   function fetchListings() external view returns (Listing[] memory _listings) {
     _listings = new Listing[](listingCount);
     for (uint256 i = 0; i < listingCount; i++) {
@@ -43,6 +56,10 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     require(
       nftContract.ownerOf(tokenId) == msg.sender,
       'Caller must own the token'
+    );
+    require(
+      fee >= minimumListFee,
+      'Fee should be higher than minimum listing fee'
     );
     _resetForgingCountIfNeeded(tokenId);
     uint256 entropy = nftContract.getTokenEntropy(tokenId); // Retrieve entropy for tokenId
@@ -70,6 +87,14 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
       listings[forgerTokenId].isListed,
       "Forger's entity not listed for forging"
     );
+    require(
+      nftContract.ownerOf(mergerTokenId) == msg.sender,
+      'Caller must own the merger token'
+    );
+    require(
+      nftContract.ownerOf(forgerTokenId) != msg.sender,
+      'Caller should be different from forger token owner'
+    );
     uint256 forgingFee = listings[forgerTokenId].fee;
     require(msg.value >= forgingFee, 'Insufficient fee for forging');
     _resetForgingCountIfNeeded(forgerTokenId); // Reset for forger if needed
@@ -81,6 +106,7 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
 
     // Check and update for merger token's forge potential
     uint256 mergerEntropy = nftContract.getTokenEntropy(mergerTokenId);
+    require(mergerEntropy % 3 != 0, 'Not merger');
     uint8 mergerForgePotential = uint8((mergerEntropy / 10) % 10); // Extract the 5th digit from the entropy
     forgingCounts[mergerTokenId]++;
     require(
