@@ -6,7 +6,6 @@ import React, {
   useCallback,
 } from 'react';
 import { ethers } from 'ethers';
-import axios from 'axios';
 
 import { JsonRpcProvider } from 'ethers/providers';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
@@ -17,21 +16,17 @@ import {
   getEntitiesForSaleHook,
   getOwnersEntitiesHook,
   getEntityEntropyHook,
-  getCurrentGenerationHook,
   calculateNukeFactor,
   getEntityGeneration,
   calculateEntityAttributes,
 } from './utils';
-import { get } from 'jquery';
+import { toast } from 'react-toastify';
 
 const AppContext = createContext();
 const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 
 const ContextProvider = ({ children }) => {
-  const [ethAmount, setEthAmount] = useState(0);
-  const [usdAmount, setUsdAmount] = useState(0);
-  const [entitiesListedByUser, setEntitiesListedByUser] = useState([])
-  const [currentGeneration, setCurrentGeneration] = useState(null);
+  const [entitiesListedByUser, setEntitiesListedByUser] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [entityPrice, setEntityPrice] = useState(null);
   const [entityEntropy, setEntityEntropy] = useState('');
@@ -67,25 +62,28 @@ const ContextProvider = ({ children }) => {
 
     try {
       const entitiesForSale = await getEntitiesForSaleHook(infuraProvider);
-      const enrichedEntitiesForSale = await Promise.all(entitiesForSale.map(async (entity) => {
-        const { tokenId, seller, price } = entity;
-        const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
-        const generation = await getEntityGeneration(walletProvider, tokenId);
-        const entropy = await getEntityEntropyHook(walletProvider, tokenId);
-        const paddedEntropy = entropy.toString().padStart(6, '0');
-        const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
-        return {
-          tokenId,
-          seller,
-          price,
-          nukeFactor,
-          generation,
-          paddedEntropy,
-          role,
-          forgePotential,
-          performanceFactor,
-        };
-      }));
+      const enrichedEntitiesForSale = await Promise.all(
+        entitiesForSale.map(async entity => {
+          const { tokenId, seller, price } = entity;
+          const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
+          const generation = await getEntityGeneration(walletProvider, tokenId);
+          const entropy = await getEntityEntropyHook(walletProvider, tokenId);
+          const paddedEntropy = entropy.toString().padStart(6, '0');
+          const { role, forgePotential, performanceFactor } =
+            calculateEntityAttributes(paddedEntropy);
+          return {
+            tokenId,
+            seller,
+            price,
+            nukeFactor,
+            generation,
+            paddedEntropy,
+            role,
+            forgePotential,
+            performanceFactor,
+          };
+        })
+      );
       setEntitiesForSale(enrichedEntitiesForSale);
     } catch (error) {
       console.error('Failed to fetch entities for sale:', error);
@@ -97,141 +95,89 @@ const ContextProvider = ({ children }) => {
     if (!infuraProvider) return;
     try {
       const entitiesForForging = await getEntitiesHook(infuraProvider);
-      console.log(" all entities for forging:", entitiesForForging)
-      const enrichedEntitiesForForging = await Promise.all(entitiesForForging.map(async (entity) => {
-        const { tokenId, isListed, fee } = entity;
-        const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
-        const generation = await getEntityGeneration(walletProvider, tokenId);
-        const entropy = await getEntityEntropyHook(walletProvider, tokenId);
-        const paddedEntropy = entropy.toString().padStart(6, '0');
-        const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
-        return {
-          tokenId,
-          isListed,
-          fee,
-          nukeFactor,
-          generation,
-          paddedEntropy,
-          role,
-          forgePotential,
-          performanceFactor,
-        };
-      }));
-      console.log("Entities for forging:", enrichedEntitiesForForging);
-      setEntitiesForForging(enrichedEntitiesForForging); 
+      const enrichedEntitiesForForging = await Promise.all(
+        entitiesForForging.map(async entity => {
+          const { tokenId, isListed, fee } = entity;
+          const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
+          const generation = await getEntityGeneration(walletProvider, tokenId);
+          const entropy = await getEntityEntropyHook(walletProvider, tokenId);
+          const paddedEntropy = entropy.toString().padStart(6, '0');
+          const { role, forgePotential, performanceFactor } =
+            calculateEntityAttributes(paddedEntropy);
+          return {
+            tokenId,
+            isListed,
+            fee,
+            nukeFactor,
+            generation,
+            paddedEntropy,
+            role,
+            forgePotential,
+            performanceFactor,
+          };
+        })
+      );
+      setEntitiesForForging(enrichedEntitiesForForging);
     } catch (error) {
-      console.error('Failed to fetch entities for forging:', error);
       setEntitiesForForging([]);
     }
   }, [infuraProvider, walletProvider, setEntitiesForForging]);
-  
 
-  const getCurrentGeneration = async () => {
-    if (!infuraProvider) return;
-
-    try {
-      const generation = await getCurrentGenerationHook(infuraProvider);
-      setCurrentGeneration(generation);
-      console.log('Current Generation:', generation);
-    } catch (error) {
-      console.error('Failed to fetch current generation:', error);
-    }
-  };
-
-  const getEntityEntropy = async (listing) => {
-    if(!walletProvider) return;
+  const getEntityEntropy = async listing => {
+    if (!walletProvider) return;
     try {
       const entityEntropy = await getEntityEntropyHook(walletProvider, listing);
       setEntityEntropy(entityEntropy);
     } catch (error) {
-      console.error("Error fetching entity entropy:", error);
+      toast.error('Error fetching entity entropy');
+      console.error('Error fetching entity entropy:', error);
     }
   };
 
   const getOwnersEntities = useCallback(async () => {
     if (!walletProvider) {
-      alert('Please connect your wallet first.');
+      open();
       setOwnerEntities([]);
       return;
     }
     try {
       const entities = await getOwnersEntitiesHook(walletProvider);
-      const enrichedEntities = await Promise.all(entities.map(async (tokenId) => {
-        const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
-        const generation = await getEntityGeneration(walletProvider, tokenId);
-        const entropy = await getEntityEntropyHook(walletProvider, tokenId);
-        const paddedEntropy = entropy.toString().padStart(6, '0');
-        const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
-        return {
-          tokenId,
-          nukeFactor,
-          generation,
-          paddedEntropy,
-          role,
-          forgePotential,
-          performanceFactor,
-        };
-      }));
+      const enrichedEntities = await Promise.all(
+        entities.map(async tokenId => {
+          const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
+          const generation = await getEntityGeneration(walletProvider, tokenId);
+          console.log(generation);
+
+          const entropy = await getEntityEntropyHook(walletProvider, tokenId);
+          const paddedEntropy = entropy.toString().padStart(6, '0');
+          const { role, forgePotential, performanceFactor } =
+            calculateEntityAttributes(paddedEntropy);
+          return {
+            tokenId,
+            nukeFactor,
+            generation,
+            paddedEntropy,
+            role,
+            forgePotential,
+            performanceFactor,
+          };
+        })
+      );
       setOwnerEntities(enrichedEntities);
     } catch (error) {
       console.error('Error fetching NFTs:', error);
       setOwnerEntities([]);
     }
   }, [walletProvider]);
-  
 
   useEffect(() => {
     setIsLoading(true);
     getOwnersEntities();
     getEntitiesForSale();
     getEntitiesForForging();
-    getCurrentGeneration();
     getEntitiesListedByPlayer();
     setIsLoading(false);
   }, [walletProvider]);
-
-  //fetching/setting Price States
-  const fetchEthAmount = useCallback(async () => {
-    if (!infuraProvider) return;
-    try {
-      const nukeFundContract = new ethers.Contract(
-        contractsConfig.nukeContractAddress,
-        contractsConfig.nukeFundContractAbi,
-        infuraProvider
-      );
-      const balance = await nukeFundContract.getFundBalance();
-      return ethers.formatEther(balance);
-    } catch (error) {
-      console.error('Error fetching ETH amount from nuke fund:', error);
-      return 0;
-    }
-  }, [infuraProvider]);
-
-  const fetchEthToUsdRate = async () => {
-    try {
-      const response = await axios.get(
-        'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH&tsyms=USD'
-      );
-      return response.data.ETH.USD;
-    } catch (error) {
-      console.error('Error fetching ETH to USD rate:', error);
-    }
-    return null;
-  };
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const amount = await fetchEthAmount();
-      const rate = await fetchEthToUsdRate();
-      if (amount && rate) {
-        const usdValue = amount * rate;
-        setEthAmount(Number(amount).toFixed(5));
-        setUsdAmount(Number(usdValue).toFixed(5));
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [fetchEthAmount, fetchEthToUsdRate]);
 
   useEffect(() => {
     const getLatestEntityPrice = async () => {
@@ -249,16 +195,16 @@ const ContextProvider = ({ children }) => {
         console.error('Error fetching entity price:', error);
       }
     };
-  
+
     getLatestEntityPrice();
-  
+
     const intervalId = setInterval(() => {
       getLatestEntityPrice();
     }, 6000);
-  
-    return () => clearInterval(intervalId); 
+
+    return () => clearInterval(intervalId);
   }, []);
-  
+
   useEffect(() => {
     if (entityPrice) {
       const priceToIndex = Math.floor(entityPrice * 10000);
@@ -267,8 +213,6 @@ const ContextProvider = ({ children }) => {
       getUpcomingMints(startSlot, startNumberIndex);
     }
   }, [entityPrice]);
-
-  // Event Listener for Stats
   //const subscribeToMintEvent = () => {
   //if (!infuraProvider) return;
   //
@@ -327,12 +271,12 @@ const ContextProvider = ({ children }) => {
       console.error('No wallet provider found.');
       return;
     }
-  
+
     try {
       const ethersProvider = new ethers.BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
       const address = await signer.getAddress();
-  
+
       const listedEntities = entitiesForSale
         .filter(entity => entity.seller === address)
         .map(entity => ({
@@ -347,8 +291,12 @@ const ContextProvider = ({ children }) => {
           performanceFactor: entity.performanceFactor,
         }));
 
-        const forgingEntities = entitiesForForging
-        .filter(entity => ownerEntities.some(ownedEntity => ownedEntity.tokenId === entity.tokenId))
+      const forgingEntities = entitiesForForging
+        .filter(entity =>
+          ownerEntities.some(
+            ownedEntity => ownedEntity.tokenId === entity.tokenId
+          )
+        )
         .map(entity => ({
           tokenId: entity.tokenId,
           price: entity.fee,
@@ -359,25 +307,20 @@ const ContextProvider = ({ children }) => {
           forgePotential: entity.forgePotential,
           performanceFactor: entity.performanceFactor,
         }));
-        
+
       const combinedListedEntities = [...listedEntities, ...forgingEntities];
-  
-      console.log("Entities listed by player:", combinedListedEntities);
+
+      console.log('Entities listed by player:', combinedListedEntities);
       setEntitiesListedByUser(combinedListedEntities);
     } catch (error) {
       console.error('Failed to fetch entities listed by player:', error);
     }
   };
-  
-  
-
 
   return (
     <AppContext.Provider
       value={{
-        ethAmount,
         address,
-        usdAmount,
         entityPrice,
         isLoading,
         transactions,
@@ -386,9 +329,7 @@ const ContextProvider = ({ children }) => {
         ownerEntities,
         setIsLoading,
         getOwnersEntities,
-        getCurrentGeneration,
         upcomingMints,
-        currentGeneration,
         getUpcomingMints,
         entitiesForForging,
         getEntitiesForForging,

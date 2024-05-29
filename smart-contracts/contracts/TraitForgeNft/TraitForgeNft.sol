@@ -71,15 +71,15 @@ contract TraitForgeNft is
 
   function setStartPrice(uint256 _startPrice) external onlyOwner {
     startPrice = _startPrice;
-}
+  }
 
-function setPriceIncrement(uint256 _priceIncrement) external onlyOwner {
+  function setPriceIncrement(uint256 _priceIncrement) external onlyOwner {
     priceIncrement = _priceIncrement;
-}
+  }
 
-function getGeneration() public view returns (uint256) {
-  return currentGeneration;
-}
+  function getGeneration() public view returns (uint256) {
+    return currentGeneration;
+  }
 
   function isApprovedOrOwner(
     address spender,
@@ -169,7 +169,6 @@ function getGeneration() public view returns (uint256) {
     uint256 price = startPrice + priceIncrease;
     return price;
   }
-
 
   function getTokenEntropy(uint256 tokenId) public view returns (uint256) {
     require(
