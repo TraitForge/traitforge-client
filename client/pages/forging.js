@@ -15,8 +15,14 @@ import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
 const Forging = () => {
-  const { isLoading, setIsLoading, ownerEntities, entitiesForForging, getOwnersEntities, getEntitiesForForging } =
-    useContextState();
+  const {
+    isLoading,
+    setIsLoading,
+    ownerEntities,
+    entitiesForForging,
+    getOwnersEntities,
+    getEntitiesForForging,
+  } = useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [generationFilter, setGenerationFilter] = useState('');
@@ -29,8 +35,8 @@ const Forging = () => {
   const [selectedForListing, setSelectedForListing] = useState(null);
 
   useEffect(() => {
-    getEntitiesForForging()
-    getOwnersEntities()
+    getEntitiesForForging();
+    getOwnersEntities();
   }, []);
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
@@ -51,9 +57,15 @@ const Forging = () => {
         contractsConfig.entityMergingAddress,
         contractsConfig.entityMergingContractAbi
       );
-      const transaction = await forgeContract.breedWithListed(
+      const feeInWei = BigInt(selectedFromPool.fee);
+      console.log(feeInWei);
+      console.log(selectedFromPool.tokenId, selectedEntity.tokenId);
+      const transaction = await forgeContract.forgeWithListed(
         selectedFromPool.tokenId,
-        selectedEntity.tokenId
+        selectedEntity.tokenId,
+        {
+          value: feeInWei,
+        }
       );
       await transaction.wait();
       setProcessingText('Merging');
@@ -69,7 +81,6 @@ const Forging = () => {
 
   const ListEntityForForging = async (selectedForListing, fee) => {
     setIsLoading(true);
-    console.log('selected entity is:', selectedForListing);
     try {
       const forgeContract = await createContract(
         walletProvider,
@@ -105,7 +116,7 @@ const Forging = () => {
       content = (
         <div className={styles.forgingPage}>
           <div className={styles.forgeArenaContainer}>
-            <div className="flex flex-row justify-center relative">
+            <div className="flex flex-row justify-center relative items-center">
               <h1 className="text-[36px] md:text-extra-large">Forging Arena</h1>
               <Button
                 text="List for forging"
@@ -113,7 +124,7 @@ const Forging = () => {
                 width="200"
                 height="90"
                 borderColor="#FD8D26"
-                className="absolute top-4 right-1"
+                className="absolute top-0 right-1"
                 onClick={handleListingPage}
               />
             </div>

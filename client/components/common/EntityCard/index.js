@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { ethers } from 'ethers';
 import classNames from 'classnames';
 import orangeBorder from '@/public/images/orangeborder.png';
 import blueBorder from '@/public/images/border.svg';
@@ -14,6 +15,10 @@ export const EntityCard = ({
   wrapperClass,
   showPrice,
 }) => {
+  const calculateUri = (paddedEntropy, generation) => {
+    return `${paddedEntropy}_${generation}`;
+  };
+
   const {
     paddedEntropy,
     generation,
@@ -22,13 +27,14 @@ export const EntityCard = ({
     performanceFactor,
     nukeFactor,
     price,
+    fee,
   } = entity;
 
-  const calculateUri = (paddedEntropy, generation) => {
-    return `${paddedEntropy}_${generation}`;
-  };
+  const displayPrice = price || (fee ? ethers.formatEther(fee) : null);
 
   const uri = calculateUri(paddedEntropy, generation);
+
+  console.log(uri);
 
   let activeBorder;
   switch (borderType) {
@@ -50,7 +56,7 @@ export const EntityCard = ({
   return (
     <div
       onClick={onSelect}
-      className={`${wrapperClasses} overflow-hidden items-center min-h-[300px]`}
+      className={`${wrapperClasses} overflow-hidden items-center min-h-[300px] w-full 3xl:min-h-[400px]`}
       style={{
         backgroundImage: `url("${activeBorder.src}")`,
         backgroundPosition: 'center',
@@ -70,8 +76,8 @@ export const EntityCard = ({
       </div>
       <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
         <div className={styles.cardInfo}>
-          <h3> GEN{generation}</h3>
-          {showPrice && <h4 className="">{price} ETH</h4>}
+          <h1 className="card-name"> GEN{generation}</h1>
+          {showPrice && <h4 className="">{displayPrice} ETH</h4>}
         </div>
         {role && <h4>{role}</h4>}
         <div className="text-[14px] lg:text-base">

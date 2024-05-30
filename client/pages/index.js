@@ -1,19 +1,33 @@
-import { useState } from 'react';
-import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 import { useWeb3ModalProvider, useWeb3Modal } from '@web3modal/ethers/react';
 import { toast } from 'react-toastify';
 
 import { useContextState } from '@/utils/context';
 import { Slider, Button, BudgetModal, LoadingSpinner } from '@/components';
-import { mintBatchEntityHandler, mintEntityHandler } from '@/utils/utils';
+import {
+  mintBatchEntityHandler,
+  mintEntityHandler,
+  getCurrentGenerationHook,
+} from '@/utils/utils';
 
 const Home = () => {
-  const { isLoading, setIsLoading, entityPrice } = useContextState();
+  const { isLoading, setIsLoading, entityPrice, infuraProvider } =
+    useContextState();
   const [isModalOpen, setModalOpen] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState('');
+  const [currentGeneration, setCurrentGeneration] = useState(null);
 
   const { open } = useWeb3Modal();
   const { walletProvider } = useWeb3ModalProvider();
+
+  const getCurrentGeneration = async () => {
+    const generation = await getCurrentGenerationHook(infuraProvider);
+    setCurrentGeneration(generation);
+  };
+
+  useEffect(() => {
+    getCurrentGeneration();
+  }, [getCurrentGeneration]);
 
   const handleMintEntity = async () => {
     setIsLoading(true);
@@ -51,8 +65,8 @@ const Home = () => {
       >
         Mint your traitforge entity
       </span>
-      <div className="w-full flex justify-center max-md:mb-5">
-        <Slider />
+      <div className="w-full flex justify-center">
+        <Slider currentGeneration={currentGeneration} />
       </div>
       <div className="max-md:px-5 flex flex-col">
         <Button

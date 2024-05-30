@@ -5,10 +5,9 @@ import {
   useWeb3ModalProvider,
 } from '@web3modal/ethers/react';
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
 
 import { Button, EntityCard, Modal } from '@/components';
-import { shortenAddress } from '@/utils/utils';
+import { shortenAddress, getWalletBalance } from '@/utils/utils';
 import { useContextState } from '@/utils/context';
 
 export const WalletModal = ({ isOpen, closeModal }) => {
@@ -21,20 +20,13 @@ export const WalletModal = ({ isOpen, closeModal }) => {
 
   const shortAddress = shortenAddress(address);
 
-  const getWalletBalance = async () => {
-    const provider = new ethers.BrowserProvider(walletProvider);
-    const balance = await provider.getBalance(address);
-    const balanceInETH = ethers.formatEther(balance);
-    const balanceInETHShortened = parseFloat(balanceInETH).toFixed(6);
-    setBalanceInETH(balanceInETHShortened);
-  };
-
   useEffect(() => {
-    getWalletBalance();
+    const fetchBalance = async () => {
+      const balance = await getWalletBalance(walletProvider, address);
+      setBalanceInETH(balance);
+    };
+    fetchBalance();
   }, [walletProvider]);
-
-  const handleNextStep = () => setCurrentStep(prevStep => prevStep + 1);
-  const handlePreviousStep = () => setCurrentStep(prevStep => prevStep - 1);
 
   const handleSelectEntity = tokenId => {
     setSelectedForUnlisting(prevSelected => {
@@ -110,7 +102,7 @@ export const WalletModal = ({ isOpen, closeModal }) => {
               borderColor="#0ADFDB"
               text="Unlist an Entity"
               style={{ marginBottom: '40px' }}
-              onClick={handleNextStep}
+              onClick={() => setCurrentStep(2)}
             />
           </div>
           <div className="w-6/12 pb-5 h-50 overflow-x-scroll flex flex-row md:text-large text-white md:mb-8">
@@ -150,7 +142,7 @@ export const WalletModal = ({ isOpen, closeModal }) => {
               bg="#023340"
               borderColor="#0ADFDB"
               text="Back to Wallet"
-              onClick={handlePreviousStep}
+              onClick={() => setCurrentStep(1)}
             />
           </div>
         </div>

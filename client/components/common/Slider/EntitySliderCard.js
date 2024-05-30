@@ -8,13 +8,12 @@ import styles from './styles.module.scss';
 export const EntitySliderCard = ({
   entropy,
   price,
-  borderType = 'blue',
   wrapperClass,
   showPrice,
   currentGeneration,
 }) => {
   const paddedEntropy = entropy.toString().padStart(6, '0');
-  const generation = currentGeneration.toString();
+  const generation = currentGeneration?.toString();
   const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;
   };
@@ -23,20 +22,13 @@ export const EntitySliderCard = ({
   const { role, forgePotential, performanceFactor, nukeFactor } =
     calculateEntityAttributes(paddedEntropy);
 
-  let activeBorder;
-
-  switch (borderType) {
-    default:
-      activeBorder = blueBorder;
-  }
-
   const wrapperClasses = classNames('mx-5', styles.cardContainer, wrapperClass);
 
   return (
     <div
-      className={`${wrapperClasses} overflow-hidden items-center min-h-[300px] 3xl:min-h-[400px]`}
+      className={`${wrapperClasses} overflow-hidden items-center min-h-[300px] w-full 3xl:min-h-[400px]`}
       style={{
-        backgroundImage: `url("${activeBorder.src}")`,
+        backgroundImage: `url("${blueBorder.src}")`,
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain',

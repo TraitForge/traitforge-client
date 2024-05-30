@@ -22,6 +22,12 @@ interface IEntityForging {
   // allows the owner to set NukeFund address
   function setNukeFundAddress(address payable _nukeFundAddress) external;
 
+  function setTaxCut(uint256 _taxCut) external;
+
+  function setOneYearInDays(uint256 value) external;
+
+  function setMinimumListingFee(uint256 _fee) external;
+
   function listForForging(uint256 tokenId, uint256 fee) external;
 
   function forgeWithListed(

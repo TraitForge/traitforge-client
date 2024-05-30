@@ -50,7 +50,6 @@ const Marketplace = () => {
 
   const filteredAndSortedListings = useMemo(() => {
     let filtered = entitiesForSale.filter(listing => {
-      console.log('Listing Type:', listing.role);
       if (
         generationFilter &&
         String(listing.generation) !== String(generationFilter)
@@ -163,7 +162,7 @@ const Marketplace = () => {
     default:
       content = (
         <>
-          <div className="flex justify-between items-center border-b mb-12"></div>
+          <div className="border-b"></div>
           <div className="overflow-y-auto flex-1">
             <FiltersHeader
               sortOption={sortOption}
@@ -198,7 +197,7 @@ const Marketplace = () => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="container pt-16 md:pt-[134px] flex flex-col h-full">
+      <div className="container pt-16 md:pt-[104px] flex flex-col h-full">
         <TraidingHeader handleStep={handleStep} step={step} />
         {content}
       </div>
