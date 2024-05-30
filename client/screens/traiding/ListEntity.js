@@ -1,7 +1,11 @@
 import { EntityCard, FiltersHeader } from '@/components';
 import { useState, useMemo } from 'react';
 
-export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) => {
+export const ListEntity = ({
+  ownerEntities,
+  setSelectedForSale,
+  handleStep,
+}) => {
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
@@ -18,8 +22,11 @@ export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) =>
 
   const filteredAndSortedOwnerEntities = useMemo(() => {
     let filtered = ownerEntities.filter(listing => {
-      console.log('Listing Type:', listing.role); 
-      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+      console.log('Listing Type:', listing.role);
+      if (
+        generationFilter &&
+        String(listing.generation) !== String(generationFilter)
+      ) {
         return false;
       }
 
@@ -30,9 +37,13 @@ export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) =>
     });
 
     if (sortingFilter === 'NukeFactor_low_to_high') {
-        filtered.sort((a, b) => parseFloat(a.nukeFactor) - parseFloat(b.nukeFactor));
+      filtered.sort(
+        (a, b) => parseFloat(a.nukeFactor) - parseFloat(b.nukeFactor)
+      );
     } else if (sortingFilter === 'NukeFactor_high_to_low') {
-        filtered.sort((a, b) => parseFloat(b.nukeFactor) - parseFloat(a.nukeFactor));
+      filtered.sort(
+        (a, b) => parseFloat(b.nukeFactor) - parseFloat(a.nukeFactor)
+      );
     }
 
     return filtered;
@@ -40,18 +51,18 @@ export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) =>
 
   return (
     <div>
-      <div className='mb-20'>
+      <div className="mb-20">
         <FiltersHeader
           sortOption={sortOption}
           handleSort={handleSort}
-          pageType='nuke'
+          pageType="nuke"
           color="green"
           handleFilterChange={handleFilterChange}
           generationFilter={generationFilter}
           sortingFilter={sortingFilter}
         />
       </div>
-      <div className="grid grid-cols-3 lg:grid-cols-5 mt-10 gap-x-[15px] gap-y-7 lg:gap-y-10">
+      <div className="grid grid-cols-3 lg:grid-cols-5 mt-10 gap-x-3 md:gap-x-[15px] gap-y-7 lg:gap-y-10">
         {filteredAndSortedOwnerEntities.map(entity => (
           <EntityCard
             key={entity.tokenId}
@@ -59,7 +70,7 @@ export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) =>
             borderType="green"
             onSelect={() => {
               setSelectedForSale(entity);
-              handleStep('three')
+              handleStep('three');
               console.log('Selected entity:', entity);
             }}
           />

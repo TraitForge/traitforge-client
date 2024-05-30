@@ -43,6 +43,8 @@ export const WalletModal = ({ isOpen, closeModal }) => {
       isOpen={isOpen}
       closeModal={closeModal}
       background="/images/modal-bg.png"
+      modalClasses="bg-dark-81"
+      containerClass="w-full h-full flex justify-center items-center"
     >
       {currentStep === 1 && (
         <div className="flex justify-center items-center flex-col">

@@ -162,7 +162,7 @@ const Marketplace = () => {
     default:
       content = (
         <>
-          <div className="flex justify-between items-center border-b mb-12"></div>
+          <div className="border-b"></div>
           <div className="overflow-y-auto flex-1">
             <FiltersHeader
               sortOption={sortOption}
@@ -174,7 +174,7 @@ const Marketplace = () => {
               generationFilter={generationFilter}
               sortingFilter={sortingFilter}
             />
-            <div className="grid grid-col-3 lg:grid-cols-5 gap-x-[15px] mt-10 gap-y-7 lg:gap-y-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 gap-x-3 md:gap-x-[15px] mt-10 gap-y-7 lg:gap-y-10">
               {filteredAndSortedListings.map(entity => (
                 <EntityCard
                   key={entity.tokenId}
@@ -197,7 +197,7 @@ const Marketplace = () => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="container pt-16 md:pt-[134px] flex flex-col h-full">
+      <div className="container pt-16 md:pt-[104px] flex flex-col h-full">
         <TraidingHeader handleStep={handleStep} step={step} />
         {content}
       </div>

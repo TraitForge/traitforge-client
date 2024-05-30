@@ -10,7 +10,7 @@ export const FiltersHeader = ({
   sortingFilter,
   hideSortingSelect,
   filterOptions = ['all', 'forgers', 'mergers'],
-  pageType,  // Add this prop to determine which sorting options to display
+  pageType, // Add this prop to determine which sorting options to display
 }) => {
   const commonClasses =
     'after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px]';
@@ -41,7 +41,13 @@ export const FiltersHeader = ({
   ];
 
   const borderColor =
-    color === 'orange' ? '#ff7a00' : color === 'green' ? '#4CAF50' : color === 'purple' ? '#B026FF' : '#ccc';
+    color === 'orange'
+      ? '#ff7a00'
+      : color === 'green'
+        ? '#4CAF50'
+        : color === 'purple'
+          ? '#B026FF'
+          : '#ccc';
   const customStyles = {
     control: styles => ({
       ...styles,
@@ -59,6 +65,8 @@ export const FiltersHeader = ({
       ...styles,
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       boxShadow: `0px 0px 1px 1px ${borderColor}`,
+      minWidth: '190px',
+      right: 0,
     }),
     option: styles => ({
       ...styles,
@@ -66,6 +74,7 @@ export const FiltersHeader = ({
       '&:hover': {
         backgroundColor: 'rgba(0, 0, 0, 1)',
       },
+      whiteSpace: 'nowrap',
     }),
     singleValue: styles => ({
       ...styles,
@@ -96,15 +105,26 @@ export const FiltersHeader = ({
             options={genOptions}
             onChange={option => handleFilterChange(option, 'generation')}
             value={genOptions.find(option => option.value === generationFilter)}
-            styles={customStyles}
+            styles={{
+              ...customStyles,
+              menu: styles => ({
+                ...styles,
+                minWidth: '100px',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                boxShadow: `0px 0px 1px 1px ${borderColor}`,
+              }),
+            }}
           />
           {!hideSortingSelect && (
             <Select
-              options={pageType === 'nuke' ? nukeSortingOptions : sortingOptions}
+              options={
+                pageType === 'nuke' ? nukeSortingOptions : sortingOptions
+              }
               onChange={option => handleFilterChange(option, 'sorting')}
-              value={(pageType === 'nuke' ? nukeSortingOptions : sortingOptions).find(
-                option => option.value === sortingFilter
-              )}
+              value={(pageType === 'nuke'
+                ? nukeSortingOptions
+                : sortingOptions
+              ).find(option => option.value === sortingFilter)}
               styles={customStyles}
             />
           )}
