@@ -16,7 +16,6 @@ const Home = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState('');
   const [currentGeneration, setCurrentGeneration] = useState(null);
-
   const { open } = useWeb3Modal();
   const { walletProvider } = useWeb3ModalProvider();
 
@@ -44,14 +43,14 @@ const Home = () => {
 
   if (isLoading)
     return (
-      <div className="h-screen w-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center items-center">
         <LoadingSpinner color="#0ff" />
       </div>
     );
 
   return (
     <div
-      className="mint-container h-screen"
+      className="mint-container h-full overflow-auto pb-5"
       style={{
         backgroundImage: "url('/images/home.png')",
         backgroundPosition: 'center',
@@ -59,13 +58,13 @@ const Home = () => {
         backgroundAttachment: 'fixed',
       }}
     >
-      <span
+      <h1
         title="Mint Your Traitforge Entity"
         className="headers text-[36px] mb-2.5 text-center md:text-extra-large"
       >
         Mint your traitforge entity
-      </span>
-      <div className="w-full flex justify-center">
+      </h1>
+      <div className="w-full flex justify-center overflow-hidden">
         <Slider currentGeneration={currentGeneration} />
       </div>
       <div className="max-md:px-5 flex flex-col">

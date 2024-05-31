@@ -145,8 +145,6 @@ const ContextProvider = ({ children }) => {
         entities.map(async tokenId => {
           const nukeFactor = await calculateNukeFactor(walletProvider, tokenId);
           const generation = await getEntityGeneration(walletProvider, tokenId);
-          console.log(generation);
-
           const entropy = await getEntityEntropyHook(walletProvider, tokenId);
           const paddedEntropy = entropy.toString().padStart(6, '0');
           const { role, forgePotential, performanceFactor } =

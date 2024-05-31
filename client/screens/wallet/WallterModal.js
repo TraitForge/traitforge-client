@@ -1,32 +1,19 @@
 import Image from 'next/image';
 import { FaWallet } from 'react-icons/fa';
-import {
-  useWeb3ModalAccount,
-  useWeb3ModalProvider,
-} from '@web3modal/ethers/react';
-import { useState, useEffect } from 'react';
+import { useWeb3ModalAccount } from '@web3modal/ethers/react';
+import { useState } from 'react';
 
 import { Button, EntityCard, Modal } from '@/components';
-import { shortenAddress, getWalletBalance } from '@/utils/utils';
+import { shortenAddress } from '@/utils/utils';
 import { useContextState } from '@/utils/context';
 
-export const WalletModal = ({ isOpen, closeModal }) => {
+export const WalletModal = ({ isOpen, closeModal, balanceInETH }) => {
   const { ownerEntities, entitiesListedByUser } = useContextState();
   const { address } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
   const [selectedForUnlisting, setSelectedForUnlisting] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
-  const [balanceInETH, setBalanceInETH] = useState('');
 
   const shortAddress = shortenAddress(address);
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      const balance = await getWalletBalance(walletProvider, address);
-      setBalanceInETH(balance);
-    };
-    fetchBalance();
-  }, [walletProvider]);
 
   const handleSelectEntity = tokenId => {
     setSelectedForUnlisting(prevSelected => {

@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 
-import styles from './styles.module.scss';
 import { Logo } from '@/icons';
 import ConnectButton from '@/components/ui/WalletButton';
 
@@ -14,8 +14,13 @@ const links = [
   //{ url: '/stats', text: 'GAME STATS' },
 ];
 
-const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
+const Navbar = () => {
   const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [router.asPath]);
 
   const commonClasses = `text-base flex items-center py-6 lg:text-[32px] lg:text-[32px] relative after:absolute after:bottom-0 after:left-0 after:w-full hover:after:h-[2px] after:h-[0px]`;
   const navLinkClasses = classNames(commonClasses, {
@@ -36,17 +41,17 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
     'text-primary': router.asPath === '/',
   });
 
+  const expandedClasses = classNames(
+    'container max-lg:py-1 flex items-center justify-between'
+  );
+
   return (
-    <header className={styles.nav}>
-      <nav
-        className={`container flex items-center justify-between ${
-          isNavExpanded ? styles.expanded : ''
-        }`}
-      >
+    <header>
+      <nav className={expandedClasses}>
         <Link href="/" className="inline-block">
           <Logo />
         </Link>
-        <ul className="flex gap-x-[20px] xl:gap-x-[64px] max-md:hidden">
+        <ul className="flex gap-x-[20px] xl:gap-x-[64px] max-lg:hidden">
           {links.map((link, index) => (
             <li key={index}>
               <Link
@@ -60,7 +65,10 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
         </ul>
         <div className="walletbackground flex justify-center p-1 rounded-lg gap-x-6">
           <ConnectButton />
-          <button className="block lg:hidden ">
+          <button
+            className="block lg:hidden"
+            onClick={() => setIsMenuOpen(prevState => !prevState)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="28"
@@ -114,6 +122,20 @@ const Navbar = ({ isNavExpanded, setIsNavExpanded }) => {
             </svg>
           </button>
         </div>
+        {isMenuOpen && (
+          <ul className="absolute top-[56px] right-0 w-[70%] bg-black h-[calc(100vh-56px)] z-50 px-[46px] py-10">
+            {links.map((link, index) => (
+              <li key={index}>
+                <Link
+                  className={`${navLinkClasses} !text-[32px] ${link.url === router.asPath && activeClass}`}
+                  href={link.url}
+                >
+                  {link.text}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </nav>
     </header>
   );
