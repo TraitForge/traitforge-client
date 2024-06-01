@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
 import { useWeb3ModalProvider } from '@web3modal/ethers/react';
-import styles from '@/styles/forging.module.scss';
 import { Button, Modal, LoadingSpinner } from '@/components';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
@@ -15,29 +14,18 @@ import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
 const Forging = () => {
-  const {
-    isLoading,
-    setIsLoading,
-    ownerEntities,
-    entitiesForForging,
-    getOwnersEntities,
-    getEntitiesForForging,
-  } = useContextState();
+  const { isLoading, setIsLoading, ownerEntities, entitiesForForging } =
+    useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
-  const [generationFilter, setGenerationFilter] = useState('');
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
   const [selectedFromPool, setSelectedFromPool] = useState(null);
   const [processing, setProcessing] = useState(false);
   const { walletProvider } = useWeb3ModalProvider();
-  const [processingText, setProcessingText] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedForListing, setSelectedForListing] = useState(null);
-
-  useEffect(() => {
-    getEntitiesForForging();
-    getOwnersEntities();
-  }, []);
+  const [processingText, setProcessingText] = useState('');
+  const [generationFilter, setGenerationFilter] = useState('');
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
   const handleSelectedFromWallet = entity => setSelectedEntity(entity);
@@ -58,8 +46,6 @@ const Forging = () => {
         contractsConfig.entityMergingContractAbi
       );
       const feeInWei = BigInt(selectedFromPool.fee);
-      console.log(feeInWei);
-      console.log(selectedFromPool.tokenId, selectedEntity.tokenId);
       const transaction = await forgeContract.forgeWithListed(
         selectedFromPool.tokenId,
         selectedEntity.tokenId,
@@ -114,9 +100,9 @@ const Forging = () => {
   switch (step) {
     case 'one':
       content = (
-        <div className={styles.forgingPage}>
-          <div className={styles.forgeArenaContainer}>
-            <div className="flex flex-row justify-center relative items-center">
+        <div className="">
+          <div className="h-full w-full">
+            <div className="flex flex-col md:flex-row justify-center relative items-center">
               <h1 className="text-[36px] md:text-extra-large">Forging Arena</h1>
               <Button
                 text="List for forging"
@@ -124,7 +110,7 @@ const Forging = () => {
                 width="200"
                 height="90"
                 borderColor="#FD8D26"
-                className="absolute top-0 right-1"
+                className="relative md:absolute md:top-0 md:right-1"
                 onClick={handleListingPage}
               />
             </div>
@@ -201,7 +187,19 @@ const Forging = () => {
       break;
   }
 
-  return <div className={styles.forgingPage}>{content}</div>;
+  return (
+    <div
+      className="mint-container h-full overflow-auto py-5"
+      style={{
+        backgroundImage: "url('/images/forge-background.jpg')",
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      {content}
+    </div>
+  );
 };
 
 export default Forging;
