@@ -3,13 +3,19 @@ import styles from '@/styles/forging.module.scss';
 import { EntityCard } from '@/components';
 import { ListingHeader } from '@/screens/forging/ListingHeader';
 
-export const ListEntity = ({ ownerEntities, handleStep, setSelectedForListing }) => {
+export const ListEntity = ({
+  ownerEntities,
+  handleStep,
+  setSelectedForListing,
+}) => {
   const [filteredEntities, setFilteredEntities] = useState([]);
 
   useEffect(() => {
     const fetchAndFilterEntities = async () => {
       try {
-        const filtered = ownerEntities.filter(entity => entity.role === "Forger");
+        const filtered = ownerEntities.filter(
+          entity => entity.role === 'Forger'
+        );
         setFilteredEntities(filtered);
       } catch (error) {
         console.error('Error in fetchAndFilterEntities:', error);
@@ -19,20 +25,16 @@ export const ListEntity = ({ ownerEntities, handleStep, setSelectedForListing })
     fetchAndFilterEntities();
   }, [ownerEntities]);
 
-
   return (
     <div className={styles.forgingPage2}>
       <div className="container pt-16 md:pt-[134px] flex flex-col h-full">
-        <ListingHeader
-          handleStep={handleStep}
-          step="two"
-        />
+        <ListingHeader handleStep={handleStep} step="two" />
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
           {filteredEntities?.map(entity => (
             <EntityCard
-              key={entity.tokenId} 
+              key={entity.tokenId}
               entity={entity}
-              borderType='orange'
+              borderType="orange"
               onSelect={() => {
                 setSelectedForListing(entity);
                 handleStep('three');

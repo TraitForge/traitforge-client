@@ -11,7 +11,8 @@ export const contractsConfig = {
   traitForgeNftAbi: TraitForgeNftAbi.abi,
   traitForgeNftAddress: process.env.NEXT_PUBLIC_TRAITFORGENFT_ADDRESS,
   entropyGeneratorContractAbi: EntropyGenerator.abi,
-  entropyGeneratorContractAddress:process.env.NEXT_PUBLIC_ENTROPY_GENERATOR_ADDRESS,
+  entropyGeneratorContractAddress:
+    process.env.NEXT_PUBLIC_ENTROPY_GENERATOR_ADDRESS,
   entityTradingContractAddress: process.env.NEXT_PUBLIC_TRADING_ADDRESS,
   entityTradingAbi: entityTrading.abi,
   entityMergingContractAbi: entityMerging.abi,
