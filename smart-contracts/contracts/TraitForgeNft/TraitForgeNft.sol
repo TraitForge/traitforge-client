@@ -265,6 +265,7 @@ contract TraitForgeNft is
     );
     currentGeneration++;
     generationMintCounts[currentGeneration] = 0;
+    entropyGenerator.initializeAlphaIndices();
     emit GenerationIncremented(currentGeneration);
   }
 
