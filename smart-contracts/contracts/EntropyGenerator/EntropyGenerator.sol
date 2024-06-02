@@ -17,6 +17,8 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
   uint256 private maxNumberIndex = 13;
   uint256 private alphaSlotIndex = 516;
   uint256 private alphaNumberIndex = 13;
+  uint256 private alphaSlotIndexStart = 516;
+  uint256 private alphaSlotIndexEnd = 770;
 
   address private allowedCaller;
 
@@ -160,34 +162,56 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
 
   // private function to calculate the entropy value based on slot and number index
   function getEntropy(
-    uint256 slotIndex,
-    uint256 numberIndex
-  ) private view returns (uint256) {
-    require(slotIndex <= maxSlotIndex, 'Slot index out of bounds.');
-    if (slotIndex == alphaSlotIndex && numberIndex == alphaNumberIndex) {
-      return 999999;
+        uint256 slotIndex,
+        uint256 numberIndex
+    ) private view returns (uint256) {
+        require(slotIndex <= maxSlotIndex, 'Slot index out of bounds.');
+
+        if (slotIndex == alphaSlotIndex && numberIndex == alphaNumberIndex) {
+            return 999999;
+        }
+
+        uint256 position = numberIndex * 6;
+        require(position <= 72, 'Position calculation error');
+
+        uint256 slotValue = entropySlots[slotIndex];
+        uint256 entropy = (slotValue / (10 ** (72 - position))) % 1000000;
+        uint256 paddedEntropy = entropy * (10 ** (6 - numberOfDigits(entropy)));
+
+        return paddedEntropy;
     }
 
-    uint256 position = numberIndex * 6; // calculate the position for slicing the entropy value
-    require(position <= 72, 'Position calculation error');
+    function initializeAlphaIndices() public onlyOwner {
+        uint256 hashValue = uint256(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp)));
 
-    uint256 slotValue = entropySlots[slotIndex]; // slice the required [art of the entropy value
-    uint256 entropy = (slotValue / (10 ** (72 - position))) % 1000000; // adjust the entropy value based on the number of digits
-    uint256 paddedEntropy = entropy * (10 ** (6 - numberOfDigits(entropy)));
+        uint256[10] memory genValues;
+        for (uint256 i = 0; i < 10; i++) {
+            genValues[i] = uint256(keccak256(abi.encodePacked(hashValue, i)));
+        }
 
-    return paddedEntropy; // return the caculated entropy value
-  }
+        uint256 generationIndex = (block.number % 10); 
+        uint256 genValue = genValues[generationIndex];
 
-  // Utility function te calcualte the number of digits in a number
-  function numberOfDigits(uint256 number) private pure returns (uint256) {
+        uint256 numberIndexSelection = genValue % maxNumberIndex;
+
+        uint256 slotIndexSelection = (2 * numberIndexSelection) + alphaSlotIndexStart;
+
+        if (slotIndexSelection >= alphaSlotIndexEnd) {
+            slotIndexSelection = alphaSlotIndexEnd - 1;
+        }
+
+        alphaSlotIndex = slotIndexSelection;
+        alphaNumberIndex = numberIndexSelection;
+    }
+
+function numberOfDigits(uint256 number) private pure returns (uint256) {
     uint256 digits = 0;
     while (number != 0) {
-      number /= 10;
-      digits++;
+        number /= 10;
+        digits++;
     }
     return digits;
-  }
-
+}
   // utility to get he first digit of a number
   function getFirstDigit(uint256 number) private pure returns (uint256) {
     while (number >= 10) {

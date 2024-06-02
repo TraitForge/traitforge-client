@@ -125,11 +125,13 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
 
     nukeFundAddress.transfer(devFee); // Transfer dev fee to NukeFund
     forgerOwner.transfer(forgerShare);
+    
+     uint256 newTokenId = nftContract.forge{ value: msg.value }(forgerTokenId, mergerTokenId, "");
 
     emit FeePaid(forgerTokenId, mergerTokenId, forgingFee);
 
-    return forgingFee;
-  }
+    return newTokenId;
+  } 
 
   function cancelListingForForging(uint256 tokenId) public {
     require(
