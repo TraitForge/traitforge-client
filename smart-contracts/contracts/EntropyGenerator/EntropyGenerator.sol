@@ -160,16 +160,11 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
     return (nukeFactor, forgePotential, performanceFactor, isForger); // return derived parammeters
   }
 
-  // private function to calculate the entropy value based on slot and number index
   function getEntropy(
         uint256 slotIndex,
         uint256 numberIndex
     ) private view returns (uint256) {
         require(slotIndex <= maxSlotIndex, 'Slot index out of bounds.');
-
-        if (slotIndex == alphaSlotIndex && numberIndex == alphaNumberIndex) {
-            return 999999;
-        }
 
         uint256 position = numberIndex * 6;
         require(position <= 72, 'Position calculation error');
