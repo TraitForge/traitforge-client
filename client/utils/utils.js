@@ -356,6 +356,7 @@ export const getEntitiesListedByPlayer = async walletProvider => {
 };
 
 export const getWalletBalance = async (walletProvider, address) => {
+  if (!walletProvider) return null;
   const provider = new ethers.BrowserProvider(walletProvider);
   const balance = await provider.getBalance(address);
   const balanceInETH = ethers.formatEther(balance);
