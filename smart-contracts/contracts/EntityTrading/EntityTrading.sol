@@ -63,7 +63,10 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
     transferToNukeFund(nukeFundContribution); // transfer contribution to nukeFund
 
     // transfer NFT from contract to buyer
-    payable(listing.seller).transfer(sellerProceeds); // transfer proceeds to the seller
+    (bool success, ) = payable(listing.seller).call{ value: sellerProceeds }(
+      ''
+    );
+    require(success, 'Failed to send to seller');
     nftContract.transferFrom(address(this), msg.sender, tokenId); // transfer NFT to the buyer
 
     delete listings[tokenId]; // remove listing
