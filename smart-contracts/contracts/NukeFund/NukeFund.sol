@@ -168,7 +168,8 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     fund -= claimAmount; // Deduct the claim amount from the fund
 
     nftContract.burn(tokenId); // Burn the token
-    payable(msg.sender).transfer(claimAmount); // Transfer the claim amount to the player
+    (bool success, ) = payable(msg.sender).call{ value: claimAmount }('');
+    require(success, 'Failed to send Ether');
 
     emit Nuked(msg.sender, tokenId, claimAmount); // Emit the event with the actual claim amount
     emit FundBalanceUpdated(fund); // Update the fund balance
