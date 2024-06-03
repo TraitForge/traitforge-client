@@ -1,7 +1,28 @@
+import { useEffect, useState } from 'react';
+
 import { Button } from '@/components';
+import { handlePrice } from '@/utils/utils';
+import { useContextState } from '@/utils/context';
 import styles from '@/styles/honeypot.module.scss';
 
-export const HoneyPotBody = ({ handleStep, ethAmount, usdAmount }) => {
+export const HoneyPotBody = ({
+  handleStep,
+  usdAmountInitial,
+  ethAmountInitial,
+}) => {
+  const [ethAmount, setEthAmount] = useState(ethAmountInitial);
+  const [usdAmount, setUsdAmount] = useState(usdAmountInitial);
+  const { infuraProvider } = useContextState();
+
+  useEffect(() => {
+    const handleEthPrice = setInterval(async () => {
+      const { ethAmount, usdAmount } = await handlePrice(infuraProvider);
+      setEthAmount(ethAmount);
+      setUsdAmount(usdAmount);
+    }, 5000);
+    return () => clearInterval(handleEthPrice);
+  }, []);
+
   return (
     <>
       <div className={styles.frameContainer}>

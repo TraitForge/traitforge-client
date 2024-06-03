@@ -63,7 +63,7 @@ export const getUpcomingMintsHook = async (
       ) {
         const promise = contract
           .getPublicEntropy(startSlot, numberIndex)
-          .then(value => parseInt(value, 10))
+          .then(value => parseInt(value, 10)) //TODO check decimale
           .catch(error => {
             return 0;
           });
@@ -390,4 +390,22 @@ export const fetchEthAmount = async infuraProvider => {
     console.error('Error fetching ETH amount from nuke fund:', error);
     return 0;
   }
+};
+
+export const handlePrice = async infuraProvider => {
+  const amount = await fetchEthAmount(infuraProvider);
+  const rate = await fetchEthToUsdRate();
+
+  let ethAmount;
+  let usdAmount;
+
+  if (amount && rate) {
+    const usdValue = amount * rate;
+    ethAmount = Number(amount).toFixed(5);
+    usdAmount = Number(usdValue).toFixed(5);
+  }
+  return {
+    ethAmount,
+    usdAmount,
+  };
 };
