@@ -104,11 +104,7 @@ contract TraitForgeNft is
     uint256 parent1Id,
     uint256 parent2Id,
     string memory
-  ) external payable nonReentrant returns (uint256) {
-    entityForgingContract.forgeWithListed{ value: msg.value }(
-      parent1Id,
-      parent2Id
-    );
+  ) external nonReentrant returns (uint256) {
     require(
       msg.sender == address(entityForgingContract),
       'unauthorized caller'
@@ -265,6 +261,7 @@ contract TraitForgeNft is
     );
     currentGeneration++;
     generationMintCounts[currentGeneration] = 0;
+    entropyGenerator.initializeAlphaIndices();
     emit GenerationIncremented(currentGeneration);
   }
 

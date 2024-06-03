@@ -6,7 +6,7 @@
     "clean": "npx hardhat clean",
     "test": "yarn compile && npx hardhat test",
     "compile": "npx hardhat clean && npx hardhat compile",
-    "deploy": "npx hardhat deploy-all"
+    "deploy": "yarn compile && npx hardhat deploy-all"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.3",

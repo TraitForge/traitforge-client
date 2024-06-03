@@ -15,7 +15,8 @@ contract DevFund is IDevFund, Ownable, ReentrancyGuard {
     if (totalDevCount > 0) {
       rewardPerDev += msg.value / totalDevCount;
     } else {
-      payable(owner()).transfer(msg.value);
+      (bool success, ) = payable(owner()).call{ value: msg.value }('');
+      require(success, 'Failed to send Ether to owner');
     }
     emit FundReceived(msg.sender, msg.value);
   }
@@ -62,7 +63,8 @@ contract DevFund is IDevFund, Ownable, ReentrancyGuard {
   ) internal returns (uint256) {
     uint256 _rewardBalance = payable(address(this)).balance;
     if (amount > _rewardBalance) amount = _rewardBalance;
-    payable(to).transfer(amount);
+    (bool success, ) = payable(to).call{ value: amount }('');
+    require(success, 'Failed to send Reward');
     return amount;
   }
 }
