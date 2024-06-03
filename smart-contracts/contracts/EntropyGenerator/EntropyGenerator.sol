@@ -15,8 +15,8 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
   // Constants to define the limits for slots and numbers within those slots
   uint256 private maxSlotIndex = 770;
   uint256 private maxNumberIndex = 13;
-  uint256 private alphaSlotIndex = 516;
-  uint256 private alphaNumberIndex = 13;
+  uint256 public slotIndexSelectionPoint;
+  uint256 public numberIndexSelectionPoint;
 
   address private allowedCaller;
 
@@ -28,6 +28,7 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
 
   constructor(address _traitForgetNft) {
     allowedCaller = _traitForgetNft;
+    initializeAlphaIndices();
   }
 
   // Function to update the allowed caller, restricted to the owner of the contract
@@ -164,7 +165,11 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
     uint256 numberIndex
   ) private view returns (uint256) {
     require(slotIndex <= maxSlotIndex, 'Slot index out of bounds.');
-    if (slotIndex == alphaSlotIndex && numberIndex == alphaNumberIndex) {
+
+    if (
+      slotIndex == slotIndexSelectionPoint &&
+      numberIndex == numberIndexSelectionPoint
+    ) {
       return 999999;
     }
 
@@ -194,5 +199,18 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
       number /= 10;
     }
     return number;
+  }
+
+  //select index points for 999999, triggered each gen-increment
+  function initializeAlphaIndices() public onlyOwner {
+    uint256 hashValue = uint256(
+      keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))
+    );
+
+    uint256 slotIndexSelection = (hashValue % 258) + 512;
+    uint256 numberIndexSelection = hashValue % 13;
+
+    slotIndexSelectionPoint = slotIndexSelection;
+    numberIndexSelectionPoint = numberIndexSelection;
   }
 }

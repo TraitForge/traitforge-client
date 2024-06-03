@@ -32,6 +32,8 @@ interface IEntropyGenerator {
   // function to get the last initialized index for debugging or informational puroposed
   function getLastInitializedIndex() external view returns (uint256);
 
+  function initializeAlphaIndices() external;
+
   // function to derive various parameters baed on entrtopy values, demonstrating potential cases
   function deriveTokenParameters(
     uint256 slotIndex,
