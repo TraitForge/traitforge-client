@@ -18,7 +18,6 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
   uint256 public slotIndexSelectionPoint;
   uint256 public numberIndexSelectionPoint;
 
-
   address private allowedCaller;
 
   // Modifier to restrict certain functions to the allowed caller
@@ -29,6 +28,7 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
 
   constructor(address _traitForgetNft) {
     allowedCaller = _traitForgetNft;
+    initializeAlphaIndices();
   }
 
   // Function to update the allowed caller, restricted to the owner of the contract
@@ -166,8 +166,11 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
   ) private view returns (uint256) {
     require(slotIndex <= maxSlotIndex, 'Slot index out of bounds.');
 
-    if (slotIndex == slotIndexSelectionPoint && numberIndex == numberIndexSelectionPoint) {
-    return 999999;
+    if (
+      slotIndex == slotIndexSelectionPoint &&
+      numberIndex == numberIndexSelectionPoint
+    ) {
+      return 999999;
     }
 
     uint256 position = numberIndex * 6; // calculate the position for slicing the entropy value
@@ -200,18 +203,14 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
 
   //select index points for 999999, triggered each gen-increment
   function initializeAlphaIndices() public onlyOwner {
-        uint256 hashValue = uint256(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp)));
+    uint256 hashValue = uint256(
+      keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))
+    );
 
-        uint256 slotIndexSelection = hashValue % 770;
-        if (slotIndexSelection <= 257) {
-            slotIndexSelection += 512;
-        } else {
-            slotIndexSelection = slotIndexSelection - 258 + 512;
-        }
+    uint256 slotIndexSelection = (hashValue % 258) + 512;
+    uint256 numberIndexSelection = hashValue % 13;
 
-        uint256 numberIndexSelection = hashValue % 13;
-
-      slotIndexSelectionPoint = slotIndexSelection;
-      numberIndexSelectionPoint = numberIndexSelection;
+    slotIndexSelectionPoint = slotIndexSelection;
+    numberIndexSelectionPoint = numberIndexSelection;
   }
 }

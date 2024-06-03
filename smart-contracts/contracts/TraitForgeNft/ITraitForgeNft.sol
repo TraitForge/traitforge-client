@@ -51,7 +51,7 @@ interface ITraitForgeNft is IERC721Enumerable {
     uint256 parent1Id,
     uint256 parent2Id,
     string memory baseTokenURI
-  ) external payable returns (uint256);
+  ) external returns (uint256);
 
   function mintToken() external payable;
 
