@@ -4,9 +4,8 @@ import styles from './styles.module.scss';
 
 const Wrapper = ({ children }) => (
   <div className={styles.app}>
-    <div className={styles.appHeader}></div>
     <Navbar />
-    <main>{children}</main>
+    <main className="h-full">{children}</main>
   </div>
 );
 

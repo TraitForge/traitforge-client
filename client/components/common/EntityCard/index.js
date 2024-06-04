@@ -34,8 +34,6 @@ export const EntityCard = ({
 
   const uri = calculateUri(paddedEntropy, generation);
 
-  console.log(uri);
-
   let activeBorder;
   switch (borderType) {
     case 'orange':
@@ -51,12 +49,12 @@ export const EntityCard = ({
       activeBorder = blueBorder;
   }
 
-  const wrapperClasses = classNames('mx-5', styles.cardContainer, wrapperClass);
+  const wrapperClasses = classNames(styles.cardContainer, wrapperClass);
 
   return (
     <div
       onClick={onSelect}
-      className={`${wrapperClasses} overflow-hidden items-center min-h-[300px] w-full 3xl:min-h-[400px]`}
+      className={`${wrapperClasses} overflow-hidden items-center justify-center min-h-[300px] w-full 3xl:min-h-[400px]`}
       style={{
         backgroundImage: `url("${activeBorder.src}")`,
         backgroundPosition: 'center',
@@ -64,26 +62,28 @@ export const EntityCard = ({
         backgroundSize: 'contain',
       }}
     >
-      <div className="mb-4 max-md:w-[70%] w-[65%] 2xl:w-[80%] mx-auto h-full pt-9 md:pt-3 2xl:pt-5">
-        <Image
-          loading="lazy"
-          src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
-          alt="IMG"
-          className="w-full"
-          width={250}
-          height={350}
-        />
-      </div>
-      <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
-        <div className={styles.cardInfo}>
-          <h1 className="card-name"> GEN{generation}</h1>
-          {showPrice && <h4 className="">{displayPrice} ETH</h4>}
+      <div>
+        <div className="mb-4 max-md:w-[70%] w-[65%] 2xl:w-[80%] mx-auto pt-9 md:pt-3 2xl:pt-5">
+          <Image
+            loading="lazy"
+            src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
+            alt="IMG"
+            className="w-full"
+            width={250}
+            height={350}
+          />
         </div>
-        {role && <h4>{role}</h4>}
-        <div className="text-[14px] lg:text-base">
-          <h4>Forge Potential: {forgePotential}</h4>
-          <h4>Nuke Factor: {nukeFactor} %</h4>
-          <h4>Performance Factor: {performanceFactor}</h4>
+        <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
+          <div className={styles.cardInfo}>
+            <h1 className="card-name"> GEN{generation}</h1>
+            {showPrice && <h4 className="">{displayPrice} ETH</h4>}
+          </div>
+          {role && <h4>{role}</h4>}
+          <div className="text-[14px] lg:text-base">
+            <h4>Forge Potential: {forgePotential}</h4>
+            <h4>Nuke Factor: {nukeFactor} %</h4>
+            <h4>Performance Factor: {performanceFactor}</h4>
+          </div>
         </div>
       </div>
     </div>

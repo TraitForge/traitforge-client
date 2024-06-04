@@ -13,7 +13,6 @@ import { BuyEntity } from '@/screens/traiding/BuyEntity';
 import { ListEntity } from '@/screens/traiding/ListEntity';
 import { FiltersHeader } from '@/components';
 import { createContract, approveNFTForTrading } from '@/utils/utils';
-// import { MarketplaceEntityCard } from '@/screens/traiding/MarketplaceEntityCard';
 
 const Marketplace = () => {
   const {
@@ -197,7 +196,7 @@ const Marketplace = () => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="container pt-16 md:pt-[104px] flex flex-col h-full">
+      <div className="container pt-10 md:pt-[54px] flex flex-col h-full">
         <TraidingHeader handleStep={handleStep} step={step} />
         {content}
       </div>

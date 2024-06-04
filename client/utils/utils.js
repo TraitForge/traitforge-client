@@ -34,7 +34,7 @@ export const getEntitiesHook = async infuraProvider => {
     infuraProvider
   );
   const listings = await contract.fetchListings();
-  console.log("forging listings are:", listings)
+  console.log('forging listings are:', listings);
   return listings;
 };
 
@@ -63,7 +63,7 @@ export const getUpcomingMintsHook = async (
       ) {
         const promise = contract
           .getPublicEntropy(startSlot, numberIndex)
-          .then(value => parseInt(value, 10))
+          .then(value => parseInt(value, 10)) //TODO check decimale
           .catch(error => {
             return 0;
           });
@@ -253,7 +253,7 @@ export const mintEntityHandler = async (walletProvider, open, entityPrice) => {
       contractsConfig.traitForgeNftAddress,
       contractsConfig.traitForgeNftAbi
     );
-    console.log(entityPrice)
+    console.log(entityPrice);
     const transaction = await mintContract.mintToken({
       value: ethers.parseEther(entityPrice),
       gasLimit: 5000000,
@@ -356,6 +356,7 @@ export const getEntitiesListedByPlayer = async walletProvider => {
 };
 
 export const getWalletBalance = async (walletProvider, address) => {
+  if (!walletProvider) return null;
   const provider = new ethers.BrowserProvider(walletProvider);
   const balance = await provider.getBalance(address);
   const balanceInETH = ethers.formatEther(balance);
@@ -390,4 +391,22 @@ export const fetchEthAmount = async infuraProvider => {
     console.error('Error fetching ETH amount from nuke fund:', error);
     return 0;
   }
+};
+
+export const handlePrice = async infuraProvider => {
+  const amount = await fetchEthAmount(infuraProvider);
+  const rate = await fetchEthToUsdRate();
+
+  let ethAmount;
+  let usdAmount;
+
+  if (amount && rate) {
+    const usdValue = amount * rate;
+    ethAmount = Number(amount).toFixed(5);
+    usdAmount = Number(usdValue).toFixed(5);
+  }
+  return {
+    ethAmount,
+    usdAmount,
+  };
 };
