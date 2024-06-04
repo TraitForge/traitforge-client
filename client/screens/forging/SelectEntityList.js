@@ -59,10 +59,9 @@ export const SelectEntityList = ({
           {filteredAndSortedListings.map(listing => (
             <EntityCard
               key={listing.tokenId}
-              entity={listing.tokenId}
+              entity={listing}
               price={listing.fee}
-              index={index}
-              onClick={() => {
+              onSelect={() => {
                 handleSelectedFromPool(listing);
                 handleEntityListModal();
               }}

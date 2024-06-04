@@ -160,18 +160,6 @@ export const getCurrentGenerationHook = async infuraProvider => {
   }
 };
 
-export const getEntityGenerationHook = async (walletProvider, entity) => {
-  const ethersProvider = new ethers.BrowserProvider(walletProvider);
-  const signer = await ethersProvider.getSigner();
-  const TraitForgeContract = new ethers.Contract(
-    contractsConfig.traitForgeNftAddress,
-    contractsConfig.traitForgeNftAbi,
-    signer
-  );
-  const entityGeneration = await TraitForgeContract.getTokenGeneration(entity);
-  return entityGeneration;
-};
-
 export const isForger = async (walletProvider, entity) => {
   const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
