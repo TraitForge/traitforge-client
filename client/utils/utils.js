@@ -23,8 +23,8 @@ export function calculateEntityAttributes(paddedEntropy) {
 export async function createContract(walletProvider, address, abi) {
   const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
-  const mintContract = new ethers.Contract(address, abi, signer);
-  return mintContract;
+  const contract = new ethers.Contract(address, abi, signer);
+  return contract;
 }
 
 export const getEntitiesHook = async infuraProvider => {

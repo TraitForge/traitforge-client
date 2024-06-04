@@ -11,7 +11,7 @@ import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 import { NukeEntity } from '@/screens/honey-pot/NukeEntity';
 import { FiltersHeader } from '@/components';
 import { useContextState } from '@/utils/context';
-import { handlePrice } from '@/utils/utils';
+import { handlePrice, approveNFTForNuking, createContract } from '@/utils/utils';
 
 const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 
@@ -80,15 +80,16 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
     setIsLoading(true);
     try {
       await approveNFTForNuking(entity.tokenId, walletProvider);
-      const tradeContract = await createContract(
+      const nukeContract = await createContract(
         walletProvider,
         contractsConfig.nukeContractAddress,
         contractsConfig.nukeFundContractAbi
       );
-      const transaction = await tradeContract.nuke(entity.tokenId);
+      const transaction = await nukeContract.nuke(entity.tokenId);
       await transaction.wait();
       toast.success('Entity Nuked successfully!');
     } catch (error) {
+      console.error(error)
       toast.error(`Nuke failed. Please try again`);
     } finally {
       setIsLoading(false);
