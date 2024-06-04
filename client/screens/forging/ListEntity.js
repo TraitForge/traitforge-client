@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styles from '@/styles/forging.module.scss';
 import { EntityCard } from '@/components';
 import { ListingHeader } from '@/screens/forging/ListingHeader';
 
@@ -26,8 +25,8 @@ export const ListEntity = ({
   }, [ownerEntities]);
 
   return (
-    <div className={styles.forgingPage2}>
-      <div className="container pt-16 md:pt-[134px] flex flex-col h-full">
+    <div className="h-full w-full">
+      <div className="container pt-10 md:pt-[54px] flex flex-col h-full">
         <ListingHeader handleStep={handleStep} step="two" />
         <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 lg:gap-y-10">
           {filteredEntities?.map(entity => (

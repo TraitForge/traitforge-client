@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useWeb3Modal } from '@web3modal/ethers/react';
 import { toast } from 'react-toastify';
-import { ethers } from 'ethers';
+import { JsonRpcProvider } from 'ethers/providers';
 
 import styles from '@/styles/honeypot.module.scss';
 import { contractsConfig } from '@/utils/contractsConfig';
@@ -11,16 +11,11 @@ import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 import { NukeEntity } from '@/screens/honey-pot/NukeEntity';
 import { FiltersHeader } from '@/components';
 import { useContextState } from '@/utils/context';
-import {
-  createContract,
-  approveNFTForNuking,
-  fetchEthToUsdRate,
-  fetchEthAmount,
-} from '@/utils/utils';
+import { handlePrice } from '@/utils/utils';
 
-const HoneyPot = ({ rate }) => {
-  const [ethAmount, setEthAmount] = useState(0);
-  const [usdAmount, setUsdAmount] = useState(0);
+const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
+
+const HoneyPot = ({ usdAmount, ethAmount }) => {
   const {
     isLoading,
     setIsLoading,
@@ -39,19 +34,6 @@ const HoneyPot = ({ rate }) => {
   useEffect(() => {
     getOwnersEntities();
   }, []);
-
-  useEffect(() => {
-    const handlePrice = async () => {
-      const amount = await fetchEthAmount(infuraProvider);
-
-      if (amount && rate) {
-        const usdValue = amount * rate;
-        setEthAmount(Number(amount).toFixed(5));
-        setUsdAmount(Number(usdValue).toFixed(5));
-      }
-    };
-    handlePrice();
-  }, [rate]);
 
   const handleStep = nextStep => setStep(nextStep);
 
@@ -160,9 +142,9 @@ const HoneyPot = ({ rate }) => {
     default:
       content = (
         <HoneyPotBody
-          ethAmount={ethAmount}
-          usdAmount={usdAmount}
           handleStep={() => setStep('two')}
+          usdAmountInitial={usdAmount}
+          ethAmountInitial={ethAmount}
         />
       );
   }
@@ -180,11 +162,12 @@ const HoneyPot = ({ rate }) => {
 export default HoneyPot;
 
 export const getStaticProps = async () => {
-  const rate = await fetchEthToUsdRate();
+  const { ethAmount, usdAmount } = await handlePrice(infuraProvider);
+
   return {
     props: {
-      rate,
+      usdAmount,
+      ethAmount,
     },
-    revalidate: 43200,
   };
 };
