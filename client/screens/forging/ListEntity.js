@@ -37,7 +37,6 @@ export const ListEntity = ({
               onSelect={() => {
                 setSelectedForListing(entity);
                 handleStep('three');
-                console.log('Selected entity:', entity);
               }}
             />
           ))}

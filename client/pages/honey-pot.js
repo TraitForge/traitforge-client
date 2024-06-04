@@ -152,7 +152,7 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
 
   return (
     <div className={styles.honeyPotContainer}>
-      <div className="container flex flex-col h-full">
+      <div className="container flex flex-col h-full ">
         <HoneyPotHeader step={step} handleStep={handleStep} />
         {content}
       </div>
