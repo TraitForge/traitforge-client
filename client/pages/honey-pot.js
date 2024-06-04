@@ -11,7 +11,7 @@ import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 import { NukeEntity } from '@/screens/honey-pot/NukeEntity';
 import { FiltersHeader } from '@/components';
 import { useContextState } from '@/utils/context';
-import { handlePrice } from '@/utils/utils';
+import { handlePrice, createContract } from '@/utils/utils';
 
 const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 
@@ -151,7 +151,7 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
 
   return (
     <div className={styles.honeyPotContainer}>
-      <div className="container flex flex-col h-full">
+      <div className="container flex flex-col h-full ">
         <HoneyPotHeader step={step} handleStep={handleStep} />
         {content}
       </div>

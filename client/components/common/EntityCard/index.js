@@ -63,7 +63,7 @@ export const EntityCard = ({
       }}
     >
       <div>
-        <div className="mb-4 max-md:w-[70%] w-[65%] 2xl:w-[80%] mx-auto pt-9 md:pt-3 2xl:pt-5">
+        <div className="mb-4 max-md:w-[70%] w-[65%] 2xl:w-[80%] mx-auto pt-9 md:pt-3 2xl:pt-6">
           <Image
             loading="lazy"
             src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}

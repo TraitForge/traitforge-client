@@ -1,8 +1,8 @@
-import TraitForgeNftAbi from '../../smart-contracts/artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
-import EntropyGenerator from '../../smart-contracts/artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
-import entityMerging from '../../smart-contracts/artifacts/contracts/EntityForging/EntityForging.sol/EntityForging.json';
-import entityTrading from '../../smart-contracts/artifacts/contracts/entityTrading/entityTrading.sol/entityTrading.json';
-import nukeFund from '../../smart-contracts/artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
+import TraitForgeNftAbi from '../artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
+import EntropyGenerator from '../artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
+import entityMerging from '../artifacts/contracts/EntityForging/EntityForging.sol/EntityForging.json';
+import entityTrading from '../artifacts/contracts/entityTrading/entityTrading.sol/entityTrading.json';
+import nukeFund from '../artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
 
 export const contractsConfig = {
   totalSlots: 770,

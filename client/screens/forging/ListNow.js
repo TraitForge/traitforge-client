@@ -8,6 +8,7 @@ export const ListNow = ({
   handleStep,
 }) => {
   const [fee, setFee] = useState('');
+  const [showFeeError, setShowFeeError] = useState(false);
 
   return (
     <div className="h-full w-full">
@@ -19,12 +20,17 @@ export const ListNow = ({
               Set a fee for your forger:
             </h3>
             <input
-              className="border w-full mb-[44px] border-neon-orange bg-dark-81 p-3 text-neutral-100 text-base focus:outline-none"
+              className="border w-full border-neon-orange bg-dark-81 p-3 text-neutral-100 text-base focus:outline-none"
               type="number"
               placeholder="Enter fee in ETH"
               value={fee}
               onChange={e => setFee(e.target.value)}
             />
+            {showFeeError && (
+              <p className="text-left text-base py-1 text-red-600">
+                Enter fee in ETH
+              </p>
+            )}
           </div>
           <div className="max-md:order-1">
             <EntityCard borderType="orange" entity={selectedForListing} />
@@ -35,8 +41,12 @@ export const ListNow = ({
               bg="rgba(24, 12, 0,0.7)"
               text="List for Forging"
               onClick={() => {
-                ListEntityForForging(selectedForListing, fee);
-                handleStep('one');
+                if (fee !== '') {
+                  ListEntityForForging(selectedForListing, fee);
+                  handleStep('one');
+                } else {
+                  setShowFeeError(true);
+                }
               }}
             />
           </div>

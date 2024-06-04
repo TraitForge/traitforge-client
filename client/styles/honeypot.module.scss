@@ -1,11 +1,14 @@
 .honeyPotContainer {
   color: #ffffff;
-  height: 100vh;
+  height: 100%;
   font-family: 'Bebas Neue', sans-serif;
   background: url('/images/honeypot-background.jpeg') center / cover no-repeat;
   background-attachment: fixed;
-  padding-top: 104px;
+  padding-top: 54px;
   padding-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   .frameContainer {
     background-image: url('/images/honeypotcontainer.png');
