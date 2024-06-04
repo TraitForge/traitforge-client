@@ -124,7 +124,7 @@ const Marketplace = () => {
 
   if (isLoading)
     return (
-      <div className="h-screen w-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center items-center">
         <LoadingSpinner color="#0EEB81" />
       </div>
     );
@@ -173,7 +173,7 @@ const Marketplace = () => {
               generationFilter={generationFilter}
               sortingFilter={sortingFilter}
             />
-            <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 gap-x-3 md:gap-x-[15px] mt-10 gap-y-7 lg:gap-y-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-3 md:gap-x-[15px] mt-10 gap-y-7 lg:gap-y-10">
               {filteredAndSortedListings.map(entity => (
                 <EntityCard
                   key={entity.tokenId}
@@ -183,7 +183,6 @@ const Marketplace = () => {
                   onSelect={() => {
                     setSelectedListing(entity);
                     handleStep('four');
-                    console.log('the listing is:', entity);
                   }}
                   showPrice={entity.price}
                 />
