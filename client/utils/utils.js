@@ -23,8 +23,8 @@ export function calculateEntityAttributes(paddedEntropy) {
 export async function createContract(walletProvider, address, abi) {
   const ethersProvider = new ethers.BrowserProvider(walletProvider);
   const signer = await ethersProvider.getSigner();
-  const mintContract = new ethers.Contract(address, abi, signer);
-  return mintContract;
+  const contract = new ethers.Contract(address, abi, signer);
+  return contract;
 }
 
 export const getEntitiesHook = async infuraProvider => {
@@ -158,18 +158,6 @@ export const getCurrentGenerationHook = async infuraProvider => {
   } catch (err) {
     toast.error('Failed to fetch current generation:');
   }
-};
-
-export const getEntityGenerationHook = async (walletProvider, entity) => {
-  const ethersProvider = new ethers.BrowserProvider(walletProvider);
-  const signer = await ethersProvider.getSigner();
-  const TraitForgeContract = new ethers.Contract(
-    contractsConfig.traitForgeNftAddress,
-    contractsConfig.traitForgeNftAbi,
-    signer
-  );
-  const entityGeneration = await TraitForgeContract.getTokenGeneration(entity);
-  return entityGeneration;
 };
 
 export const isForger = async (walletProvider, entity) => {

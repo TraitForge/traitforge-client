@@ -51,6 +51,7 @@ const Forging = () => {
         selectedEntity.tokenId,
         {
           value: feeInWei,
+          gasLimit: 10000000
         }
       );
       await transaction.wait();

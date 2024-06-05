@@ -44,6 +44,22 @@ async function renderAndUpdateImage(tokenId) {
     }
 }
 
+const forgeContract = new ethers.Contract(
+    contractsConfig.entityMergingAddress,
+    contractsConfig.entityMergingContractAbi,
+    provider
+);
+
+contract.on("NewlyForgedEntity", async (tokenId, generation) => {
+    try {
+        console.log(`New entity forged with tokenId: ${tokenId} and generation: ${generation}`);
+
+        await processImage(tokenId, generation);
+    } catch (error) {
+        console.error('Error generating image for new forge:', error);
+    }
+});
+
 cron.schedule('0 0 * * *', async () => {
     try {
         const totalTokens = await contract.totalSupply();
