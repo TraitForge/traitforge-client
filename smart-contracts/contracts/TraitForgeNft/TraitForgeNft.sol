@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './ITraitForgeNft.sol';
 import '../EntityForging/IEntityForging.sol';
 import '../EntropyGenerator/IEntropyGenerator.sol';
@@ -13,7 +14,8 @@ contract TraitForgeNft is
   ITraitForgeNft,
   ERC721Enumerable,
   ReentrancyGuard,
-  Ownable
+  Ownable,
+  Pausable
 {
   // Constants for token generation and pricing
   uint256 public maxTokensPerGen = 10000;
@@ -27,7 +29,6 @@ contract TraitForgeNft is
 
   // Variables for managing generations and token IDs
   uint256 public currentGeneration = 1;
-  uint256 public totalGenerationCirculation = 0;
 
   // Mappings for token metadata
   mapping(uint256 => uint256) public tokenCreationTimestamps;
@@ -65,7 +66,7 @@ contract TraitForgeNft is
     airdropContract = IAirdrop(_airdrop);
   }
 
-  function startAirdrop(uint256 amount) external onlyOwner {
+  function startAirdrop(uint256 amount) external whenNotPaused onlyOwner {
     airdropContract.startAirdrop(amount);
   }
 
@@ -88,7 +89,7 @@ contract TraitForgeNft is
     return _isApprovedOrOwner(spender, tokenId);
   }
 
-  function burn(uint256 tokenId) external nonReentrant {
+  function burn(uint256 tokenId) external whenNotPaused nonReentrant {
     require(
       isApprovedOrOwner(msg.sender, tokenId),
       'ERC721: caller is not token owner or approved'
@@ -104,7 +105,7 @@ contract TraitForgeNft is
     uint256 parent1Id,
     uint256 parent2Id,
     string memory
-  ) external nonReentrant returns (uint256) {
+  ) external whenNotPaused nonReentrant returns (uint256) {
     require(
       msg.sender == address(entityForgingContract),
       'unauthorized caller'
@@ -116,20 +117,17 @@ contract TraitForgeNft is
       parent2Id
     );
     uint256 newEntropy = (forgerEntropy + mergerEntropy) / 2;
+    uint256 newGeneration = getTokenGeneration(parent1Id) + 1;
 
     // Mint the new entity
-    uint256 newTokenId = _mintNewEntity(newEntropy);
-
-    // Update generation and circulation
-    currentGeneration++;
-    totalGenerationCirculation++;
+    uint256 newTokenId = _mintNewEntity(newEntropy, newGeneration);
 
     emit EntityForged(newTokenId, parent1Id, parent2Id, newEntropy);
 
     return newTokenId;
   }
 
-  function mintToken() public payable nonReentrant {
+  function mintToken() public payable whenNotPaused nonReentrant {
     uint256 mintPrice = calculateMintPrice();
     require(msg.value >= mintPrice, 'Insufficient ETH send for minting.');
 
@@ -142,7 +140,7 @@ contract TraitForgeNft is
     }
   }
 
-  function mintWithBudget() public payable nonReentrant {
+  function mintWithBudget() public payable whenNotPaused nonReentrant {
     uint256 mintPrice = calculateMintPrice();
     uint256 amountMinted = 0;
     uint256 budgetLeft = msg.value;
@@ -233,24 +231,34 @@ contract TraitForgeNft is
     _distributeFunds(mintPrice);
   }
 
-  function _mintNewEntity(uint256 entropy) private returns (uint256) {
-    if (generationMintCounts[currentGeneration] >= maxTokensPerGen) {
-      _incrementGeneration();
-    }
+  function _mintNewEntity(
+    uint256 entropy,
+    uint256 gen
+  ) private returns (uint256) {
+    require(
+      generationMintCounts[gen] < maxTokensPerGen,
+      'Exceeds maxTokensPerGen'
+    );
 
     uint256 newTokenId = _tokenIds++;
     _mint(msg.sender, newTokenId);
 
     tokenEntropy[newTokenId] = entropy;
-    tokenGenerations[newTokenId] = currentGeneration;
-    generationMintCounts[currentGeneration]++;
+    tokenGenerations[newTokenId] = gen;
+    generationMintCounts[gen]++;
     initialOwners[newTokenId] = msg.sender;
+
+    if (
+      generationMintCounts[gen] >= maxTokensPerGen && gen == currentGeneration
+    ) {
+      _incrementGeneration();
+    }
 
     if (!airdropContract.airdropStarted()) {
       airdropContract.addUserAmount(msg.sender, entropy);
     }
 
-    emit NewEntityMinted(msg.sender, newTokenId, entropy, currentGeneration);
+    emit NewEntityMinted(msg.sender, newTokenId, entropy, gen);
     return newTokenId;
   }
 
@@ -273,5 +281,16 @@ contract TraitForgeNft is
     require(success, 'ETH send failed');
 
     emit FundsDistributedToNukeFund(nukeFundAddress, totalAmount);
+  }
+
+  function _beforeTokenTransfer(
+    address from,
+    address to,
+    uint256 firstTokenId,
+    uint256 batchSize
+  ) internal virtual override {
+    super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
+
+    require(!paused(), 'ERC721Pausable: token transfer while paused');
   }
 }

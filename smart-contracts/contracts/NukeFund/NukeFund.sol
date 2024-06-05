@@ -3,11 +3,14 @@ pragma solidity ^0.8.20;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './INukeFund.sol';
 import '../TraitForgeNft/ITraitForgeNft.sol';
 import '../Airdrop/IAirdrop.sol';
 
-contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
+contract NukeFund is INukeFund, ReentrancyGuard, Ownable, Pausable {
+  uint256 public constant MAX_DENOMINATOR = 100000;
+
   uint256 private fund;
   ITraitForgeNft public nftContract;
   IAirdrop public airdropContract;
@@ -16,7 +19,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
   uint256 public taxCut = 10;
   uint256 public defaultNukeFactorIncrease = 250;
   uint256 public maxAllowedClaimDivisor = 2;
-  uint256 public nukeFactorMaxParam = 50000;
+  uint256 public nukeFactorMaxParam = MAX_DENOMINATOR / 2;
   uint256 public minimumDaysHeld = 3 days;
   uint256 public ageMultiplier;
 
@@ -122,7 +125,10 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
       24;
     uint256 perfomanceFactor = nftContract.getTokenEntropy(tokenId) % 10;
 
-    uint256 age = (daysOld * perfomanceFactor * 10000 * ageMultiplier) / 365;
+    uint256 age = (daysOld *
+      perfomanceFactor *
+      MAX_DENOMINATOR *
+      ageMultiplier) / 365; // add 5 digits for decimals
     return age;
   }
 
@@ -136,15 +142,15 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     uint256 entropy = nftContract.getTokenEntropy(tokenId);
     uint256 adjustedAge = calculateAge(tokenId);
 
-    uint256 initialNukeFactor = entropy / 4; // calcualte initalNukeFactor based on entropy
+    uint256 initialNukeFactor = entropy / 40; // calcualte initalNukeFactor based on entropy, 5 digits
 
     uint256 finalNukeFactor = ((adjustedAge * defaultNukeFactorIncrease) /
-      10000) + initialNukeFactor;
+      MAX_DENOMINATOR) + initialNukeFactor;
 
     return finalNukeFactor;
   }
 
-  function nuke(uint256 tokenId) public nonReentrant {
+  function nuke(uint256 tokenId) public whenNotPaused nonReentrant {
     require(
       nftContract.isApprovedOrOwner(msg.sender, tokenId),
       'ERC721: caller is not token owner or approved'
@@ -156,8 +162,8 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     );
     require(canTokenBeNuked(tokenId), 'Token is not mature yet');
 
-    uint256 finalNukeFactor = calculateNukeFactor(tokenId);
-    uint256 potentialClaimAmount = (fund * finalNukeFactor) / 1000000; // Calculate the potential claim amount based on the finalNukeFactor
+    uint256 finalNukeFactor = calculateNukeFactor(tokenId); // finalNukeFactor has 5 digits
+    uint256 potentialClaimAmount = (fund * finalNukeFactor) / MAX_DENOMINATOR; // Calculate the potential claim amount based on the finalNukeFactor
     uint256 maxAllowedClaimAmount = fund / maxAllowedClaimDivisor; // Define a maximum allowed claim amount as 50% of the current fund size
 
     // Directly assign the value to claimAmount based on the condition, removing the redeclaration
