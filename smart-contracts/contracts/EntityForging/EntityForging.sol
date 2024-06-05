@@ -3,10 +3,11 @@ pragma solidity ^0.8.20;
 
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './IEntityForging.sol';
 import '../TraitForgeNft/ITraitForgeNft.sol';
 
-contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
+contract EntityForging is IEntityForging, ReentrancyGuard, Ownable, Pausable {
   ITraitForgeNft public nftContract;
   address payable public nukeFundAddress;
   uint256 public taxCut = 10;
@@ -51,7 +52,10 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     }
   }
 
-  function listForForging(uint256 tokenId, uint256 fee) public {
+  function listForForging(
+    uint256 tokenId,
+    uint256 fee
+  ) public whenNotPaused nonReentrant {
     require(!listings[tokenId].isListed, 'Token is already listed for forging');
     require(
       nftContract.ownerOf(tokenId) == msg.sender,
@@ -84,7 +88,7 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
   function forgeWithListed(
     uint256 forgerTokenId,
     uint256 mergerTokenId
-  ) external payable nonReentrant returns (uint256) {
+  ) external payable whenNotPaused nonReentrant returns (uint256) {
     require(
       listings[forgerTokenId].isListed,
       "Forger's entity not listed for forging"
@@ -139,7 +143,9 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     return newTokenId;
   }
 
-  function cancelListingForForging(uint256 tokenId) public {
+  function cancelListingForForging(
+    uint256 tokenId
+  ) public whenNotPaused nonReentrant {
     require(
       nftContract.ownerOf(tokenId) == msg.sender,
       'Caller must own the token'

@@ -2,10 +2,11 @@
 pragma solidity ^0.8.20;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './IEntropyGenerator.sol';
 
 // EntropyGenerator is a contract designed to generate pseudo-random values for use in other contracts
-contract EntropyGenerator is IEntropyGenerator, Ownable {
+contract EntropyGenerator is IEntropyGenerator, Ownable, Pausable {
   uint256[770] private entropySlots; // Array to store entropy values
   uint256 private lastInitializedIndex = 0; // Indexes to keep track of the initialization and usage of entropy values
   uint256 private currentSlotIndex = 0;
@@ -202,7 +203,7 @@ contract EntropyGenerator is IEntropyGenerator, Ownable {
   }
 
   //select index points for 999999, triggered each gen-increment
-  function initializeAlphaIndices() public onlyOwner {
+  function initializeAlphaIndices() public whenNotPaused onlyOwner {
     uint256 hashValue = uint256(
       keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))
     );

@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './ITraitForgeNft.sol';
 import '../EntityForging/IEntityForging.sol';
 import '../EntropyGenerator/IEntropyGenerator.sol';
@@ -13,7 +14,8 @@ contract TraitForgeNft is
   ITraitForgeNft,
   ERC721Enumerable,
   ReentrancyGuard,
-  Ownable
+  Ownable,
+  Pausable
 {
   // Constants for token generation and pricing
   uint256 public maxTokensPerGen = 10000;
@@ -64,7 +66,7 @@ contract TraitForgeNft is
     airdropContract = IAirdrop(_airdrop);
   }
 
-  function startAirdrop(uint256 amount) external onlyOwner {
+  function startAirdrop(uint256 amount) external whenNotPaused onlyOwner {
     airdropContract.startAirdrop(amount);
   }
 
@@ -87,7 +89,7 @@ contract TraitForgeNft is
     return _isApprovedOrOwner(spender, tokenId);
   }
 
-  function burn(uint256 tokenId) external nonReentrant {
+  function burn(uint256 tokenId) external whenNotPaused nonReentrant {
     require(
       isApprovedOrOwner(msg.sender, tokenId),
       'ERC721: caller is not token owner or approved'
@@ -103,7 +105,7 @@ contract TraitForgeNft is
     uint256 parent1Id,
     uint256 parent2Id,
     string memory
-  ) external nonReentrant returns (uint256) {
+  ) external whenNotPaused nonReentrant returns (uint256) {
     require(
       msg.sender == address(entityForgingContract),
       'unauthorized caller'
@@ -125,7 +127,7 @@ contract TraitForgeNft is
     return newTokenId;
   }
 
-  function mintToken() public payable nonReentrant {
+  function mintToken() public payable whenNotPaused nonReentrant {
     uint256 mintPrice = calculateMintPrice();
     require(msg.value >= mintPrice, 'Insufficient ETH send for minting.');
 
@@ -138,7 +140,7 @@ contract TraitForgeNft is
     }
   }
 
-  function mintWithBudget() public payable nonReentrant {
+  function mintWithBudget() public payable whenNotPaused nonReentrant {
     uint256 mintPrice = calculateMintPrice();
     uint256 amountMinted = 0;
     uint256 budgetLeft = msg.value;
@@ -279,5 +281,16 @@ contract TraitForgeNft is
     require(success, 'ETH send failed');
 
     emit FundsDistributedToNukeFund(nukeFundAddress, totalAmount);
+  }
+
+  function _beforeTokenTransfer(
+    address from,
+    address to,
+    uint256 firstTokenId,
+    uint256 batchSize
+  ) internal virtual override {
+    super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
+
+    require(!paused(), 'ERC721Pausable: token transfer while paused');
   }
 }

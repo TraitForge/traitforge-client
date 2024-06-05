@@ -3,11 +3,12 @@ pragma solidity ^0.8.20;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './INukeFund.sol';
 import '../TraitForgeNft/ITraitForgeNft.sol';
 import '../Airdrop/IAirdrop.sol';
 
-contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
+contract NukeFund is INukeFund, ReentrancyGuard, Ownable, Pausable {
   uint256 public constant MAX_DENOMINATOR = 100000;
 
   uint256 private fund;
@@ -149,7 +150,7 @@ contract NukeFund is INukeFund, ReentrancyGuard, Ownable {
     return finalNukeFactor;
   }
 
-  function nuke(uint256 tokenId) public nonReentrant {
+  function nuke(uint256 tokenId) public whenNotPaused nonReentrant {
     require(
       nftContract.isApprovedOrOwner(msg.sender, tokenId),
       'ERC721: caller is not token owner or approved'

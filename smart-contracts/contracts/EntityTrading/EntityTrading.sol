@@ -4,10 +4,11 @@ pragma solidity ^0.8.20;
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './IEntityTrading.sol';
 import '../TraitForgeNft/ITraitForgeNft.sol';
 
-contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
+contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable, Pausable {
   ITraitForgeNft public nftContract;
   address payable public nukeFundAddress;
   uint256 public taxCut = 10;
@@ -30,7 +31,10 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
   }
 
   // function to lsit NFT for sale
-  function listNFTForSale(uint256 tokenId, uint256 price) public nonReentrant {
+  function listNFTForSale(
+    uint256 tokenId,
+    uint256 price
+  ) public whenNotPaused nonReentrant {
     require(price > 0, 'Price must be greater than zero');
     require(
       nftContract.ownerOf(tokenId) == msg.sender,
@@ -49,7 +53,7 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
   }
 
   // function to buy an NFT listed for sale
-  function buyNFT(uint256 tokenId) external payable nonReentrant {
+  function buyNFT(uint256 tokenId) external payable whenNotPaused nonReentrant {
     Listing memory listing = listings[tokenId];
     require(
       msg.value == listing.price,
@@ -80,7 +84,7 @@ contract EntityTrading is IEntityTrading, ReentrancyGuard, Ownable {
     ); // emit an event for the sale
   }
 
-  function cancelListing(uint256 tokenId) public nonReentrant {
+  function cancelListing(uint256 tokenId) public whenNotPaused nonReentrant {
     Listing storage listing = listings[tokenId];
 
     // check if caller is the seller and listing is acivte

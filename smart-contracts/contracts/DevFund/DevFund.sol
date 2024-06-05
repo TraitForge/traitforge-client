@@ -3,9 +3,10 @@ pragma solidity ^0.8.20;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './IDevFund.sol';
 
-contract DevFund is IDevFund, Ownable, ReentrancyGuard {
+contract DevFund is IDevFund, Ownable, ReentrancyGuard, Pausable {
   uint256 public totalDevCount;
   uint256 public rewardPerDev;
   mapping(address => bool) public isDev;
@@ -38,7 +39,7 @@ contract DevFund is IDevFund, Ownable, ReentrancyGuard {
     emit RemoveDev(user);
   }
 
-  function claim() external nonReentrant {
+  function claim() external whenNotPaused nonReentrant {
     DevInfo storage info = devInfo[msg.sender];
 
     uint256 pending = info.pendingRewards + (rewardPerDev - info.rewardDebt);
