@@ -4,9 +4,10 @@ pragma solidity ^0.8.20;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './IAirdrop.sol';
 
-contract Airdrop is IAirdrop, Ownable, ReentrancyGuard {
+contract Airdrop is IAirdrop, Ownable, ReentrancyGuard, Pausable {
   bool private started;
   bool private daoAllowed;
 
@@ -20,7 +21,9 @@ contract Airdrop is IAirdrop, Ownable, ReentrancyGuard {
     traitToken = IERC20(_traitToken);
   }
 
-  function startAirdrop(uint256 amount) external onlyOwner {
+  function startAirdrop(
+    uint256 amount
+  ) external whenNotPaused nonReentrant onlyOwner {
     require(!started, 'Already started');
     require(amount > 0, 'Invalid amount');
     traitToken.transferFrom(tx.origin, address(this), amount);
@@ -42,20 +45,26 @@ contract Airdrop is IAirdrop, Ownable, ReentrancyGuard {
     return daoAllowed;
   }
 
-  function addUserAmount(address user, uint256 amount) external onlyOwner {
+  function addUserAmount(
+    address user,
+    uint256 amount
+  ) external whenNotPaused nonReentrant onlyOwner {
     require(!started, 'Already started');
     userInfo[user] += amount;
     totalValue += amount;
   }
 
-  function subUserAmount(address user, uint256 amount) external onlyOwner {
+  function subUserAmount(
+    address user,
+    uint256 amount
+  ) external whenNotPaused nonReentrant onlyOwner {
     require(!started, 'Already started');
     require(userInfo[user] >= amount, 'Invalid amount');
     userInfo[user] -= amount;
     totalValue -= amount;
   }
 
-  function claim() external nonReentrant {
+  function claim() external whenNotPaused nonReentrant {
     require(started, 'Not started');
     require(userInfo[msg.sender] > 0, 'Not eligible');
 

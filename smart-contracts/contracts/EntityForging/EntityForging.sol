@@ -3,10 +3,11 @@ pragma solidity ^0.8.20;
 
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
 import './IEntityForging.sol';
 import '../TraitForgeNft/ITraitForgeNft.sol';
 
-contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
+contract EntityForging is IEntityForging, ReentrancyGuard, Ownable, Pausable {
   ITraitForgeNft public nftContract;
   address payable public nukeFundAddress;
   uint256 public taxCut = 10;
@@ -51,7 +52,10 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     }
   }
 
-  function listForForging(uint256 tokenId, uint256 fee) public {
+  function listForForging(
+    uint256 tokenId,
+    uint256 fee
+  ) public whenNotPaused nonReentrant {
     require(!listings[tokenId].isListed, 'Token is already listed for forging');
     require(
       nftContract.ownerOf(tokenId) == msg.sender,
@@ -61,7 +65,9 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
       fee >= minimumListFee,
       'Fee should be higher than minimum listing fee'
     );
+
     _resetForgingCountIfNeeded(tokenId);
+
     uint256 entropy = nftContract.getTokenEntropy(tokenId); // Retrieve entropy for tokenId
     uint8 forgePotential = uint8((entropy / 10) % 10); // Extract the 5th digit from the entropy
     require(
@@ -82,7 +88,7 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
   function forgeWithListed(
     uint256 forgerTokenId,
     uint256 mergerTokenId
-  ) external payable nonReentrant returns (uint256) {
+  ) external payable whenNotPaused nonReentrant returns (uint256) {
     require(
       listings[forgerTokenId].isListed,
       "Forger's entity not listed for forging"
@@ -95,8 +101,15 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
       nftContract.ownerOf(forgerTokenId) != msg.sender,
       'Caller should be different from forger token owner'
     );
+    require(
+      nftContract.getTokenGeneration(mergerTokenId) ==
+        nftContract.getTokenGeneration(forgerTokenId),
+      'Invalid token generation'
+    );
+
     uint256 forgingFee = listings[forgerTokenId].fee;
     require(msg.value >= forgingFee, 'Insufficient fee for forging');
+
     _resetForgingCountIfNeeded(forgerTokenId); // Reset for forger if needed
     _resetForgingCountIfNeeded(mergerTokenId); // Reset for merger if needed
 
@@ -130,7 +143,9 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
     return newTokenId;
   }
 
-  function cancelListingForForging(uint256 tokenId) public {
+  function cancelListingForForging(
+    uint256 tokenId
+  ) public whenNotPaused nonReentrant {
     require(
       nftContract.ownerOf(tokenId) == msg.sender,
       'Caller must own the token'
