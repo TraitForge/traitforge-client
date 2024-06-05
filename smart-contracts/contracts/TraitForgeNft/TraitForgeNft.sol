@@ -27,7 +27,6 @@ contract TraitForgeNft is
 
   // Variables for managing generations and token IDs
   uint256 public currentGeneration = 1;
-  uint256 public totalGenerationCirculation = 0;
 
   // Mappings for token metadata
   mapping(uint256 => uint256) public tokenCreationTimestamps;
@@ -116,13 +115,10 @@ contract TraitForgeNft is
       parent2Id
     );
     uint256 newEntropy = (forgerEntropy + mergerEntropy) / 2;
+    uint256 newGeneration = getTokenGeneration(parent1Id) + 1;
 
     // Mint the new entity
-    uint256 newTokenId = _mintNewEntity(newEntropy);
-
-    // Update generation and circulation
-    currentGeneration++;
-    totalGenerationCirculation++;
+    uint256 newTokenId = _mintNewEntity(newEntropy, newGeneration);
 
     emit EntityForged(newTokenId, parent1Id, parent2Id, newEntropy);
 
@@ -233,24 +229,34 @@ contract TraitForgeNft is
     _distributeFunds(mintPrice);
   }
 
-  function _mintNewEntity(uint256 entropy) private returns (uint256) {
-    if (generationMintCounts[currentGeneration] >= maxTokensPerGen) {
-      _incrementGeneration();
-    }
+  function _mintNewEntity(
+    uint256 entropy,
+    uint256 gen
+  ) private returns (uint256) {
+    require(
+      generationMintCounts[gen] < maxTokensPerGen,
+      'Exceeds maxTokensPerGen'
+    );
 
     uint256 newTokenId = _tokenIds++;
     _mint(msg.sender, newTokenId);
 
     tokenEntropy[newTokenId] = entropy;
-    tokenGenerations[newTokenId] = currentGeneration;
-    generationMintCounts[currentGeneration]++;
+    tokenGenerations[newTokenId] = gen;
+    generationMintCounts[gen]++;
     initialOwners[newTokenId] = msg.sender;
+
+    if (
+      generationMintCounts[gen] >= maxTokensPerGen && gen == currentGeneration
+    ) {
+      _incrementGeneration();
+    }
 
     if (!airdropContract.airdropStarted()) {
       airdropContract.addUserAmount(msg.sender, entropy);
     }
 
-    emit NewEntityMinted(msg.sender, newTokenId, entropy, currentGeneration);
+    emit NewEntityMinted(msg.sender, newTokenId, entropy, gen);
     return newTokenId;
   }
 

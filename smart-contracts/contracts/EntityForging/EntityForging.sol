@@ -61,7 +61,9 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
       fee >= minimumListFee,
       'Fee should be higher than minimum listing fee'
     );
+
     _resetForgingCountIfNeeded(tokenId);
+
     uint256 entropy = nftContract.getTokenEntropy(tokenId); // Retrieve entropy for tokenId
     uint8 forgePotential = uint8((entropy / 10) % 10); // Extract the 5th digit from the entropy
     require(
@@ -95,8 +97,15 @@ contract EntityForging is IEntityForging, ReentrancyGuard, Ownable {
       nftContract.ownerOf(forgerTokenId) != msg.sender,
       'Caller should be different from forger token owner'
     );
+    require(
+      nftContract.getTokenGeneration(mergerTokenId) ==
+        nftContract.getTokenGeneration(forgerTokenId),
+      'Invalid token generation'
+    );
+
     uint256 forgingFee = listings[forgerTokenId].fee;
     require(msg.value >= forgingFee, 'Insufficient fee for forging');
+
     _resetForgingCountIfNeeded(forgerTokenId); // Reset for forger if needed
     _resetForgingCountIfNeeded(mergerTokenId); // Reset for merger if needed
 

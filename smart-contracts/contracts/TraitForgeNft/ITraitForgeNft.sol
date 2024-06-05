@@ -61,6 +61,8 @@ interface ITraitForgeNft is IERC721Enumerable {
 
   function getTokenEntropy(uint256 tokenId) external view returns (uint256);
 
+  function getTokenGeneration(uint256 tokenId) external view returns (uint256);
+
   function getEntropiesForTokens(
     uint256 forgerTokenId,
     uint256 mergerTokenId
