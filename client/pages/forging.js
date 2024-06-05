@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 
@@ -14,8 +14,13 @@ import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
 const Forging = () => {
-  const { isLoading, setIsLoading, ownerEntities, entitiesForForging } =
-    useContextState();
+  const {
+    isLoading,
+    setIsLoading,
+    ownerEntities,
+    entitiesForForging,
+    getEntitiesForForging,
+  } = useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
@@ -51,7 +56,7 @@ const Forging = () => {
         selectedEntity.tokenId,
         {
           value: feeInWei,
-          gasLimit: 10000000
+          gasLimit: 10000000,
         }
       );
       await transaction.wait();
@@ -81,7 +86,7 @@ const Forging = () => {
       );
       await transaction.wait();
       toast.success('Listed Successfully');
-      handleStep('one');
+      setStep('one');
     } catch (error) {
       toast.error(`Failed to List Entity`);
     } finally {
@@ -93,7 +98,7 @@ const Forging = () => {
 
   if (isLoading)
     return (
-      <div className="h-screen w-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center items-center">
         <LoadingSpinner color="#FF5F1F" />
       </div>
     );
@@ -173,7 +178,7 @@ const Forging = () => {
           ownerEntities={ownerEntities}
           walletProvider={walletProvider}
           setSelectedForListing={setSelectedForListing}
-          handleStep={setStep}
+          handleStep={step => setStep(step)}
         />
       );
       break;
@@ -182,7 +187,7 @@ const Forging = () => {
         <ListNow
           selectedForListing={selectedForListing}
           ListEntityForForging={ListEntityForForging}
-          handleStep={setStep}
+          handleStep={step => setStep(step)}
         />
       );
       break;
@@ -190,7 +195,7 @@ const Forging = () => {
 
   return (
     <div
-      className="mint-container h-full overflow-auto py-5"
+      className="mint-container h-full overflow-auto"
       style={{
         backgroundImage: "url('/images/forge-background.jpg')",
         backgroundPosition: 'center',

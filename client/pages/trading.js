@@ -32,11 +32,6 @@ const Marketplace = () => {
   const [sortingFilter, setSortingFilter] = useState('');
   const { open } = useWeb3Modal();
 
-  useEffect(() => {
-    getEntitiesForSale();
-    getOwnersEntities();
-  }, []);
-
   const handleSort = type => setSortOption(type);
 
   const handleFilterChange = (selectedOption, type) => {
@@ -85,6 +80,8 @@ const Marketplace = () => {
         value: priceInWei,
       });
       await transaction.wait();
+      getOwnersEntities();
+      getEntitiesForSale();
       toast.success('Entity purchased successfully!');
     } catch (error) {
       toast.error(`Purchase failed. Please try again`);
@@ -110,6 +107,8 @@ const Marketplace = () => {
         priceInWei
       );
       await transaction.wait();
+      getOwnersEntities();
+      getEntitiesForSale();
       toast.success('Entity listed for sale successfully');
     } catch (error) {
       toast.error('Listing failed. Please try again.');

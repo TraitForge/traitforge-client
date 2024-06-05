@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ethers } from 'ethers';
 import classNames from 'classnames';
-import orangeBorder from '@/public/images/orangeborder.png';
+import orangeBorder from '@/public/images/orangeborder.svg';
 import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';

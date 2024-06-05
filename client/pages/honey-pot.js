@@ -11,7 +11,11 @@ import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
 import { NukeEntity } from '@/screens/honey-pot/NukeEntity';
 import { FiltersHeader } from '@/components';
 import { useContextState } from '@/utils/context';
-import { handlePrice, approveNFTForNuking, createContract } from '@/utils/utils';
+import {
+  handlePrice,
+  approveNFTForNuking,
+  createContract,
+} from '@/utils/utils';
 
 const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 
@@ -20,9 +24,8 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
     isLoading,
     setIsLoading,
     ownerEntities,
-    infuraProvider,
-    getOwnersEntities,
     walletProvider,
+    getOwnersEntities,
   } = useContextState();
   const [selectedForNuke, setSelectedForNuke] = useState(null);
   const [step, setStep] = useState('one');
@@ -30,10 +33,6 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const { open } = useWeb3Modal();
-
-  useEffect(() => {
-    getOwnersEntities();
-  }, []);
 
   const handleStep = nextStep => setStep(nextStep);
 
@@ -87,9 +86,10 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
       );
       const transaction = await nukeContract.nuke(entity.tokenId);
       await transaction.wait();
+      getOwnersEntities();
       toast.success('Entity Nuked successfully!');
     } catch (error) {
-      console.error(error)
+      console.error(error);
       toast.error(`Nuke failed. Please try again`);
     } finally {
       setIsLoading(false);
@@ -97,21 +97,27 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
   };
 
   let content;
+
   if (isLoading)
     return (
-      <div className="h-screen w-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center items-center">
         <LoadingSpinner color="#9457EB" />
       </div>
     );
+
   switch (step) {
     case 'three':
       content = (
-        <NukeEntity selectedForNuke={selectedForNuke} nukeEntity={nukeEntity} />
+        <NukeEntity
+          selectedForNuke={selectedForNuke}
+          nukeEntity={nukeEntity}
+          handleStep={step => setStep(step)}
+        />
       );
       break;
     case 'two':
       content = (
-        <div className="overflow-y-scroll flex-1 pt-8">
+        <div className="overflow-y-scroll flex-1">
           <FiltersHeader
             pageType="nuke"
             sortOption={sortOption}
@@ -123,7 +129,7 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
             generationFilter={generationFilter}
             sortingFilter={sortingFilter}
           />
-          <div className="grid mt-10 grid-cols-3 lg:grid-cols-5 lg:px-20 gap-x-[15px] gap-y-5 md:gap-y-10">
+          <div className="grid mt-10 grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-5 md:gap-y-10">
             {filteredAndSortedListings.map(entity => (
               <EntityCard
                 key={entity.tokenId}
@@ -132,7 +138,6 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
                 onSelect={() => {
                   setSelectedForNuke(entity);
                   setStep('three');
-                  console.log('selected entity for nuke:', entity);
                 }}
               />
             ))}

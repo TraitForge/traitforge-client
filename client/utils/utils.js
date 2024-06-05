@@ -34,7 +34,6 @@ export const getEntitiesHook = async infuraProvider => {
     infuraProvider
   );
   const listings = await contract.fetchListings();
-  console.log('forging listings are:', listings);
   return listings;
 };
 
