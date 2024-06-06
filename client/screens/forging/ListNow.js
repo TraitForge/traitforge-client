@@ -4,7 +4,7 @@ import { ListingHeader } from '@/screens/forging/ListingHeader';
 
 export const ListNow = ({
   selectedForListing,
-  ListEntityForForging,
+  listEntityForForging,
   handleStep,
 }) => {
   const [fee, setFee] = useState('');
@@ -42,7 +42,7 @@ export const ListNow = ({
               text="List for Forging"
               onClick={() => {
                 if (fee !== '') {
-                  ListEntityForForging(selectedForListing, fee);
+                  listEntityForForging(selectedForListing, fee);
                   handleStep('one');
                 } else {
                   setShowFeeError(true);

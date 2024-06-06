@@ -96,14 +96,14 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
     }
   };
 
-  let content;
-
   if (isLoading)
     return (
       <div className="h-full w-full flex justify-center items-center">
         <LoadingSpinner color="#9457EB" />
       </div>
     );
+
+  let content;
 
   switch (step) {
     case 'three':

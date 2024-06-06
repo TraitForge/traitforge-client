@@ -54,7 +54,7 @@ export const EntityCard = ({
   return (
     <div
       onClick={onSelect}
-      className={`${wrapperClasses} overflow-hidden items-center justify-center min-h-[300px] w-full 3xl:min-h-[400px]`}
+      className={`${wrapperClasses} overflow-hidden items-center justify-center min-h-[300px] w-full 2xl:min-h-[350px] 3xl:min-h-[400px]`}
       style={{
         backgroundImage: `url("${activeBorder.src}")`,
         backgroundPosition: 'center',
@@ -79,7 +79,7 @@ export const EntityCard = ({
             {showPrice && <h4 className="">{displayPrice} ETH</h4>}
           </div>
           {role && <h4>{role}</h4>}
-          <div className="text-[14px] lg:text-base">
+          <div className="text-[14px] lg:text-base 3xl:text-[18px]">
             <h4>Forge Potential: {forgePotential}</h4>
             <h4>Nuke Factor: {nukeFactor} %</h4>
             <h4>Performance Factor: {performanceFactor}</h4>

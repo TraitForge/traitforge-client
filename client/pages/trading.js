@@ -160,8 +160,7 @@ const Marketplace = () => {
     default:
       content = (
         <>
-          <div className="border-b"></div>
-          <div className="overflow-y-auto flex-1">
+          <div className="overflow-y-auto flex-1 border-t">
             <FiltersHeader
               sortOption={sortOption}
               handleSort={handleSort}

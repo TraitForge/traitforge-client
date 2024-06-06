@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 
@@ -61,9 +61,6 @@ const Forging = () => {
       );
       await transaction.wait();
       setProcessingText('Merging');
-      setTimeout(() => {
-        setProcessing(false);
-      }, 10000);
       toast.success('Forged successfully');
     } catch (error) {
       toast.error(`Failed to Forge`);
@@ -71,7 +68,7 @@ const Forging = () => {
     setGenerationFilter('');
   };
 
-  const ListEntityForForging = async (selectedForListing, fee) => {
+  const listEntityForForging = async (selectedForListing, fee) => {
     setIsLoading(true);
     try {
       const forgeContract = await createContract(
@@ -186,7 +183,7 @@ const Forging = () => {
       content = (
         <ListNow
           selectedForListing={selectedForListing}
-          ListEntityForForging={ListEntityForForging}
+          listEntityForForging={listEntityForForging}
           handleStep={step => setStep(step)}
         />
       );

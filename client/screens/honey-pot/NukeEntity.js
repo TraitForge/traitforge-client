@@ -6,9 +6,9 @@ export const NukeEntity = ({ selectedForNuke, nukeEntity, handleStep }) => {
       <div className="max-md:order-1 py-3">
         <EntityCard entity={selectedForNuke} borderType="purple" />
       </div>
-      <div className="max-md:order-3 max-md:px-10">
+      <div className="max-md:order-3 max-md:px-10 mt-5">
         <Button
-          borderColor="#9457EB"
+          borderColor="#FC62FF"
           bg="rba(148, 87, 235, 0.8)"
           text="Nuke"
           onClick={() => {
