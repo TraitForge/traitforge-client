@@ -60,6 +60,7 @@ export const SelectEntityList = ({
             <EntityCard
               key={listing.tokenId}
               entity={listing}
+              borderType="orange"
               price={listing.fee}
               onSelect={() => {
                 handleSelectedFromPool(listing);
