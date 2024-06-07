@@ -19,13 +19,6 @@ export const ForgingArena = ({
         btnLabel="select entity fro the pool button"
         className="hidden md:flex"
       />
-      <ArenaItemForger
-        handleEntityListModal={handleEntityListModal}
-        image="/images/poolSelectedCardSm.png"
-        selectedFromPool={selectedFromPool}
-        btnLabel="select entity fro the pool button"
-        className="flex md:hidden"
-      />
       <ArenaCenter areEntitiesForged={areEntitiesForged} />
       <ArenaItem
         handleOwnerEntityList={handleOwnerEntityList}
@@ -33,13 +26,6 @@ export const ForgingArena = ({
         selectedFromWallet={selectedFromWallet}
         btnLabel="select entity from wallet button"
         className="hidden md:flex"
-      />
-      <ArenaItem
-        handleOwnerEntityList={handleOwnerEntityList}
-        image="/images/walletSelectCardSm.png"
-        selectedFromWallet={selectedFromWallet}
-        btnLabel="select entity from wallet button"
-        className="flex md:hidden"
       />
     </div>
   );

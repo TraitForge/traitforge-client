@@ -180,8 +180,8 @@ export const calculateNukeFactor = async (walletProvider, entity) => {
     signer
   );
   const finalNukeFactor = await nukeContract.calculateNukeFactor(entity);
-  const formattedNukeFactor = (Number(finalNukeFactor) / 10000)
-    .toFixed(4)
+  const formattedNukeFactor = (Number(finalNukeFactor) / 1000)
+    .toFixed(3)
     .toString();
   return formattedNukeFactor;
 };
