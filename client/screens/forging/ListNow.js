@@ -4,7 +4,7 @@ import { ListingHeader } from '@/screens/forging/ListingHeader';
 
 export const ListNow = ({
   selectedForListing,
-  ListEntityForForging,
+  listEntityForForging,
   handleStep,
 }) => {
   const [fee, setFee] = useState('');
@@ -14,7 +14,7 @@ export const ListNow = ({
     <div className="h-full w-full">
       <div className="container w-screen pt-10 md:pt-[54px] flex flex-col h-full">
         <ListingHeader handleStep={handleStep} step="three" />
-        <div className=" md:bg-dark-81 md:w-1/2 mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
+        <div className=" md:bg-dark-81 md:w-[60%] xl:w-1/2 mx-auto pt-10 pb-[50px] md:px-[70px] lg:px-[100px] flex flex-col rounded-[20px] items-center">
           <div className="max-md:order-2 w-full">
             <h3 className="text-large font-electrolize mb-8">
               Set a fee for your forger:
@@ -32,7 +32,7 @@ export const ListNow = ({
               </p>
             )}
           </div>
-          <div className="max-md:order-1">
+          <div className="max-md:order-1 py-4">
             <EntityCard borderType="orange" entity={selectedForListing} />
           </div>
           <div className="max-md:order-3 max-md:px-10">
@@ -42,7 +42,7 @@ export const ListNow = ({
               text="List for Forging"
               onClick={() => {
                 if (fee !== '') {
-                  ListEntityForForging(selectedForListing, fee);
+                  listEntityForForging(selectedForListing, fee);
                   handleStep('one');
                 } else {
                   setShowFeeError(true);

@@ -50,7 +50,7 @@ export const EntitySliderCard = ({
           <h3 className="card-name"> GEN{currentGeneration}</h3>
           {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
-        <div className="text-[14px] xl:text-base 3xl:text-[20px]">
+        <div className="text-[14px] xl:text-base 3xl:text-[18px]">
           <h4>{role}</h4>
           <h4>Forge Potential: {forgePotential}</h4>
           <h4>Nuke Factor: {nukeFactor} %</h4>

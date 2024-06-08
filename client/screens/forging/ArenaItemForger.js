@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import classNames from 'classnames';
 
-
 import { EntityCard } from '@/components';
 
 export const ArenaItemForger = ({
@@ -28,7 +27,14 @@ export const ArenaItemForger = ({
           alt="forge place holder"
           width={400}
           height={500}
-          className="w-full h-full"
+          className="w-full h-full hidden md:block"
+        />
+        <Image
+          src="/images/poolSelectedCardSm.png"
+          alt="forge place holder"
+          width={400}
+          height={500}
+          className="w-full h-full block md:hidden"
         />
       </button>
     </div>

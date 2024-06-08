@@ -55,6 +55,7 @@ const App = ({ Component, pageProps }) => (
         closeOnClick
         className="custom-toast-container"
         closeButton={false}
+        style={{ fontSize: '20px' }}
         limit={3}
       />
     </Wrapper>

@@ -16,7 +16,6 @@ export const ArenaItem = ({
         handleOwnerEntityList={handleOwnerEntityList}
         entity={selectedFromWallet}
         borderType="orange"
-        wrapperClass={className}
       />
     );
 
@@ -34,7 +33,14 @@ export const ArenaItem = ({
           alt="forge place holder"
           width={400}
           height={500}
-          className="w-full h-full"
+          className="w-full h-full hidden md:block"
+        />
+        <Image
+          src="/images/walletSelectCardSm.png"
+          alt="forge place holder"
+          width={400}
+          height={500}
+          className="w-full h-full block md:hidden"
         />
       </button>
     </div>

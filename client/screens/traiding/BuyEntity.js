@@ -1,7 +1,5 @@
 import { EntityCard, Button } from '@/components';
 
-import styles from '@/styles/trading.module.scss';
-
 export const BuyEntity = ({ selectedListing, buyEntity, handleStep }) => {
   return (
     <div className="md:bg-dark-81 w-full md:w-1/2 cl:w-[60%] mx-auto pt-10 pb-[50px] md:px-[50px] xl:px-[100px] flex flex-col rounded-[20px] items-center">

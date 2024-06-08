@@ -34,7 +34,6 @@ export const getEntitiesHook = async infuraProvider => {
     infuraProvider
   );
   const listings = await contract.fetchListings();
-  console.log('forging listings are:', listings);
   return listings;
 };
 
@@ -241,7 +240,6 @@ export const mintEntityHandler = async (walletProvider, open, entityPrice) => {
       contractsConfig.traitForgeNftAddress,
       contractsConfig.traitForgeNftAbi
     );
-    console.log(entityPrice);
     const transaction = await mintContract.mintToken({
       value: ethers.parseEther(entityPrice),
       gasLimit: 5000000,
