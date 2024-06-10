@@ -7,7 +7,7 @@ import nukeFund from '../artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json
 export const contractsConfig = {
   totalSlots: 770,
   valuesPerSlot: 13,
-  infuraRPCURL: process.env.NEXT_PUBLIC_INFURA_RPCURL,
+  infuraRPCURL: process.env.NEXT_PUBLIC_ALCHEMY_RPCURL,
   traitForgeNftAbi: TraitForgeNftAbi.abi,
   traitForgeNftAddress: process.env.NEXT_PUBLIC_TRAITFORGENFT_ADDRESS,
   entropyGeneratorContractAbi: EntropyGenerator.abi,
