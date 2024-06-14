@@ -50,7 +50,7 @@ export const HoneyPotHeader = ({ step, handleStep }) => {
         </button>
       )}
       <h1 className="text-[36px] md:text-extra-large">
-        {step === 'one' ? 'The HoneyPot' : 'Nuke Entity'}
+        {step === 'one' ? 'The Nukefund' : 'Nuke Entity'}
       </h1>
     </div>
   );

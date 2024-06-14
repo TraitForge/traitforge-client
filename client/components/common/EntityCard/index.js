@@ -49,21 +49,23 @@ export const EntityCard = ({
       activeBorder = blueBorder;
   }
 
-  const wrapperClasses = classNames(styles.cardContainer, wrapperClass);
+  const wrapperClasses = classNames(
+    'overflow-hidden items-center justify-center min-h-[300px] w-full 2xl:min-h-[350px] 3xl:min-h-[400px]',
+    styles.cardContainer,
+    wrapperClass
+  );
+
+  const borderStyles = {
+    borderWidth: '15px', // Set the border width to match the border image slice value
+    borderStyle: 'solid', // Ensure a border style is set
+    borderColor: 'transparent', // To avoid conflicts with borderColor, set it to transparent
+    borderImage: `url(${activeBorder.src}) 15 stretch`,
+  };
 
   return (
-    <div
-      onClick={onSelect}
-      className={`${wrapperClasses} overflow-hidden items-center justify-center min-h-[300px] w-full 2xl:min-h-[350px] 3xl:min-h-[400px]`}
-      style={{
-        backgroundImage: `url("${activeBorder.src}")`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain',
-      }}
-    >
+    <div onClick={onSelect} className={wrapperClasses} style={borderStyles}>
       <div>
-        <div className="mb-4 max-md:w-[70%] w-[65%] 2xl:w-[80%] mx-auto pt-9 md:pt-3 2xl:pt-6">
+        <div className="mb-4">
           <Image
             loading="lazy"
             src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
