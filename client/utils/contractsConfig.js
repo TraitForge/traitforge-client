@@ -1,7 +1,7 @@
 import TraitForgeNftAbi from '../artifacts/contracts/TraitForgeNft/TraitForgeNft.sol/TraitForgeNft.json';
 import EntropyGenerator from '../artifacts/contracts/EntropyGenerator/EntropyGenerator.sol/EntropyGenerator.json';
 import entityMerging from '../artifacts/contracts/EntityForging/EntityForging.sol/EntityForging.json';
-import entityTrading from '../artifacts/contracts/entityTrading/entityTrading.sol/entityTrading.json';
+import entityTrading from '../artifacts/contracts/EntityTrading/EntityTrading.sol/EntityTrading.json';
 import nukeFund from '../artifacts/contracts/NukeFund/NukeFund.sol/NukeFund.json';
 
 export const contractsConfig = {
