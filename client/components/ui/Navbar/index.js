@@ -10,7 +10,7 @@ const links = [
   { url: '/', text: 'HOME' },
   { url: '/forging', text: 'FORGING' },
   { url: '/trading', text: 'MARKETPLACE' },
-  { url: '/honey-pot', text: 'HONEYPOT' },
+  { url: '/nuke-fund', text: 'NUKEFUND' },
   //{ url: '/stats', text: 'GAME STATS' },
 ];
 
@@ -27,7 +27,7 @@ const Navbar = () => {
     'after:bg-neon-orange hover:text-neon-orange': router.asPath === '/forging',
     'after:bg-neon-green hover:text-neon-green': router.asPath === '/trading',
     'after:bg-neon-purple hover:text-neon-purple':
-      router.asPath === '/honey-pot',
+      router.asPath === '/nuke-fund',
     'after:bg-neon-green-yellow hover:text-neon-green-yellow':
       router.asPath === '/stats',
     'after:bg-primary hover:text-primary': router.asPath === '/',
@@ -36,7 +36,7 @@ const Navbar = () => {
   const activeClass = classNames({
     'text-neon-orange': router.asPath === '/forging',
     'text-neon-green': router.asPath === '/trading',
-    'text-neon-purple': router.asPath === '/honey-pot',
+    'text-neon-purple': router.asPath === '/nuke-fund',
     'text-neon-green-yellow': router.asPath === '/stats',
     'text-primary': router.asPath === '/',
   });

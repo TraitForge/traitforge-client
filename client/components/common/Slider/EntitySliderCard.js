@@ -1,9 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-import blueBorder from '@/public/images/border.svg';
 import { calculateEntityAttributes } from '@/utils/utils';
 import styles from './styles.module.scss';
+import blueBorder from '@/public/images/border.svg';
 
 export const EntitySliderCard = ({
   entropy,
@@ -22,25 +22,27 @@ export const EntitySliderCard = ({
   const { role, forgePotential, performanceFactor, nukeFactor } =
     calculateEntityAttributes(paddedEntropy);
 
-  const wrapperClasses = classNames('mx-5', styles.cardContainer, wrapperClass);
+  const wrapperClasses = classNames(
+    'mx-5 overflow-hidden items-center min-h-[300px] w-full 3xl:min-h-[400px]',
+    styles.cardContainer,
+    wrapperClass
+  );
+
+  const borderStyles = {
+    borderWidth: '15px', // Set the border width to match the border image slice value
+    borderStyle: 'solid', // Ensure a border style is set
+    borderColor: 'transparent', // To avoid conflicts with borderColor, set it to transparent
+    borderImage: `url("${blueBorder.src}") 15 stretch`,
+  };
 
   return (
-    <div
-      className={`${wrapperClasses} overflow-hidden items-center min-h-[300px] w-full 3xl:min-h-[400px]`}
-      style={{
-        backgroundImage: `url("${blueBorder.src}")`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain',
-        zIndex: 10,
-      }}
-    >
-      <div className="mb-4 w-[70%] sm:w-[64%] md:w-[65%] 2xl:w-[80%] 3xl:w-[75%] mx-auto h-full pt-6 md:pt-4 2xl:pt-5 3xl:pt-10">
+    <div className={wrapperClasses} style={borderStyles}>
+      <div className="mb-4 h-full w-full">
         <Image
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="IMG"
-          className="w-full"
+          className="w-full max-h-[310px]"
           width={250}
           height={350}
         />
