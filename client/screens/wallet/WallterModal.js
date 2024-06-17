@@ -2,6 +2,8 @@ import Image from 'next/image';
 import { FaWallet } from 'react-icons/fa';
 import { useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { useState } from 'react';
+import classNames from 'classnames';
+import { useRouter } from 'next/router';
 
 import { Button, EntityCard, Modal } from '@/components';
 import { shortenAddress } from '@/utils/utils';
@@ -9,6 +11,7 @@ import { useContextState } from '@/utils/context';
 
 export const WalletModal = ({ isOpen, closeModal, balanceInETH }) => {
   const { ownerEntities, entitiesListedByUser } = useContextState();
+  const { asPath } = useRouter();
   const { address } = useWeb3ModalAccount();
   const [selectedForUnlisting, setSelectedForUnlisting] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
@@ -25,13 +28,43 @@ export const WalletModal = ({ isOpen, closeModal, balanceInETH }) => {
     });
   };
 
+  const containerClasses = classNames(
+    'bg-dark-81 flex justify-center items-center border-[5px] rounded-xl',
+    {
+      'border-neon-orange': asPath === '/forging',
+      'border-neon-green': asPath === '/trading',
+      'border-neon-purple': asPath === '/honey-pot',
+      'border-neon-green-yellow': asPath === '/stats',
+      'border-primary': asPath === '/',
+    }
+  );
+
+  let borderType;
+  let buttonColor;
+
+  switch (asPath) {
+    case '/forging':
+      borderType = 'orange';
+      buttonColor = '#FD8D26';
+      break;
+    case '/trading':
+      borderType = 'green';
+      buttonColor = '#0EEB81';
+      break;
+    case '/honey-pot':
+      borderType = 'purple';
+      buttonColor = '#FC62FF';
+      break;
+    default:
+      borderType = 'blue';
+      buttonColor = '#0ADFDB';
+  }
+
   return (
     <Modal
       isOpen={isOpen}
       closeModal={closeModal}
-      background="/images/modal-bg.png"
-      modalClasses="bg-dark-81"
-      containerClass="w-full h-full flex justify-center items-center"
+      containerClass={containerClasses}
     >
       {currentStep === 1 && (
         <div className="flex justify-center items-center flex-col">
@@ -86,18 +119,18 @@ export const WalletModal = ({ isOpen, closeModal, balanceInETH }) => {
           <div className="w-1/2 mx-auto flex justify-center">
             <Button
               bg="#023340"
-              borderColor="#0ADFDB"
+              borderColor={buttonColor}
               text="Unlist an Entity"
               style={{ marginBottom: '40px' }}
               onClick={() => setCurrentStep(2)}
             />
           </div>
-          <div className="w-6/12 pb-5 h-50 overflow-x-scroll flex flex-row md:text-large text-white md:mb-8">
+          <div className="w-8/12 pb-5 h-50 overflow-x-scroll flex flex-row md:text-large text-white md:mb-8 gap-x-4">
             {ownerEntities.map(entity => (
               <EntityCard
                 key={entity.tokenId}
                 entity={entity}
-                borderType="blue"
+                borderType={borderType}
               />
             ))}
           </div>
@@ -124,7 +157,11 @@ export const WalletModal = ({ isOpen, closeModal, balanceInETH }) => {
             ))}
           </div>
           <div className="w-2/12 flex flex-col justify-center gap-3 pb-5">
-            <Button bg="#023340" borderColor="#0ADFDB" text="unlist entity" />
+            <Button
+              bg="#023340"
+              borderColor={buttonColor}
+              text="unlist entity"
+            />
             <Button
               bg="#023340"
               borderColor="#0ADFDB"

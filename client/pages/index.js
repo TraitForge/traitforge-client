@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useWeb3ModalProvider, useWeb3Modal } from '@web3modal/ethers/react';
-import { toast } from 'react-toastify';
 
 import { useContextState } from '@/utils/context';
 import { Slider, Button, BudgetModal, LoadingSpinner } from '@/components';

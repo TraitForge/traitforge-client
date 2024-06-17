@@ -22,7 +22,6 @@ export const ListEntity = ({
 
   const filteredAndSortedOwnerEntities = useMemo(() => {
     let filtered = ownerEntities.filter(listing => {
-      console.log('Listing Type:', listing.role);
       if (
         generationFilter &&
         String(listing.generation) !== String(generationFilter)
@@ -51,17 +50,15 @@ export const ListEntity = ({
 
   return (
     <div>
-      <div className="mb-20">
-        <FiltersHeader
-          sortOption={sortOption}
-          handleSort={handleSort}
-          pageType="nuke"
-          color="green"
-          handleFilterChange={handleFilterChange}
-          generationFilter={generationFilter}
-          sortingFilter={sortingFilter}
-        />
-      </div>
+      <FiltersHeader
+        sortOption={sortOption}
+        handleSort={handleSort}
+        pageType="nuke"
+        color="green"
+        handleFilterChange={handleFilterChange}
+        generationFilter={generationFilter}
+        sortingFilter={sortingFilter}
+      />
       <div className="grid grid-cols-3 lg:grid-cols-5 mt-10 gap-x-3 md:gap-x-[15px] gap-y-7 lg:gap-y-10">
         {filteredAndSortedOwnerEntities.map(entity => (
           <EntityCard

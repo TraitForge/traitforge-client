@@ -90,7 +90,7 @@ const ContextProvider = ({ children }) => {
     }
   }, [infuraProvider]);
 
-  const getEntitiesForForging = useCallback(async () => {
+  const getEntitiesForForging = async () => {
     if (!infuraProvider) return;
     try {
       const entitiesForForging = await getEntitiesHook(infuraProvider);
@@ -120,7 +120,7 @@ const ContextProvider = ({ children }) => {
     } catch (error) {
       setEntitiesForForging([]);
     }
-  }, [infuraProvider, walletProvider, setEntitiesForForging]);
+  };
 
   const getEntityEntropy = async listing => {
     if (!walletProvider) return;
@@ -206,7 +206,7 @@ const ContextProvider = ({ children }) => {
     if (entityPrice) {
       const priceToIndex = Math.floor(entityPrice * 10000);
       const startSlot = Math.floor(priceToIndex / 13);
-      const startNumberIndex = (priceToIndex % 13);
+      const startNumberIndex = priceToIndex % 13;
       getUpcomingMints(startSlot, startNumberIndex);
     }
   }, [entityPrice]);
@@ -306,8 +306,6 @@ const ContextProvider = ({ children }) => {
         }));
 
       const combinedListedEntities = [...listedEntities, ...forgingEntities];
-
-      console.log('Entities listed by player:', combinedListedEntities);
       setEntitiesListedByUser(combinedListedEntities);
     } catch (error) {
       console.error('Failed to fetch entities listed by player:', error);
