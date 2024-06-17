@@ -1,5 +1,5 @@
 import { contractsConfig } from '@/utils/contractsConfig';
-import { ethers } from 'ethers';
+import { JsonRpcProvider, ethers } from 'ethers';
 import { processImage } from './generate-image';
 
 export default async function handler(req, res) {
@@ -15,11 +15,11 @@ export default async function handler(req, res) {
         contractsConfig.traitForgeNftAbi,
         infuraProvider
       );
-      const currentGen = await nftContract.currentGeneration();
-      const tokenGen = await nftContract.tokenGenerations(tokenId);
+      const currentGen = Number(await nftContract.currentGeneration());
+      const tokenGen = Number(await nftContract.tokenGenerations(tokenId));
       if (tokenGen > currentGen) {
         // EntityForging
-        const tokenEntropy = await nftContract.tokenEntropy(tokenId);
+        const tokenEntropy = Number(await nftContract.tokenEntropy(tokenId));
         await processImage(tokenEntropy, tokenGen);
       }
     }
