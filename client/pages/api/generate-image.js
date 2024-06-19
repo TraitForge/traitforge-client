@@ -80,4 +80,4 @@ export default async function handler(req, res) {
   }
 }
 
-// startProcessing();
+startProcessing();
