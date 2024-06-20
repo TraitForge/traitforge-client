@@ -59,7 +59,7 @@ export const WalletEntityModal = ({
   }, [generationFilter, sortingFilter, filteredEntities]);
 
   return (
-    <div className="bg-dark-81 md:w-[90vw] h-[100vh] md:h-[90vh] 2xl:w-[80vw] md:rounded-[30px] py-10 px-5 flex flex-col">
+    <div className="bg-dark-81 w-[95vw] md:w-[80vw] h-[100vh] md:h-[90vh] 2xl:w-[80vw] md:rounded-[30px] py-10 px-5 flex flex-col">
       <div className="border-b border-white mb-10">
         <h3 className="text-center pb-10 text-[40px] uppercase font-bebas-neue">
           Select From Wallet

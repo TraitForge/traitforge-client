@@ -103,7 +103,7 @@ const Forging = () => {
   switch (step) {
     case 'one':
       content = (
-        <div className="">
+        <div className="max-md:h-full py-10 pt-5">
           <div className="h-full w-full">
             <div className="flex flex-col md:flex-row justify-center relative items-center">
               <h1 className="text-[36px] md:text-extra-large">Forging Arena</h1>

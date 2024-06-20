@@ -66,7 +66,7 @@ const Home = () => {
       <div className="w-full flex justify-center overflow-hidden">
         <Slider currentGeneration={currentGeneration} />
       </div>
-      <div className="max-md:px-5 flex flex-col">
+      <div className="max-md:px-5 flex flex-col max-md:mt-5">
         <Button
           onClick={handleMintEntity}
           bg="#023340"

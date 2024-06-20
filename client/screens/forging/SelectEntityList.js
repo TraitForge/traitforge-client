@@ -39,7 +39,7 @@ export const SelectEntityList = ({
   }, [generationFilter, sortingFilter, entitiesForForging]);
 
   return (
-    <div className="bg-dark-81 md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[70vw] md:rounded-[30px] mx-auto py-10 px-5 flex flex-col">
+    <div className="bg-dark-81 w-[95vw] md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[70vw] md:rounded-[30px] mx-auto py-10 px-5 flex flex-col">
       <div className="border-b border-white mb-10">
         <h3 className="text-center pb-10 text-[40px] uppercase font-bebas-neue">
           Select From Pool
@@ -55,7 +55,7 @@ export const SelectEntityList = ({
         />
       </div>
       <div className="flex-1 overflow-y-scroll">
-        <div className="grid grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 md:gap-y-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-7 md:gap-y-10">
           {filteredAndSortedListings.map(listing => (
             <EntityCard
               key={listing.tokenId}

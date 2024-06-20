@@ -42,7 +42,7 @@ export const EntitySliderCard = ({
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="IMG"
-          className="w-full max-h-[310px]"
+          className="w-full max-h-[170px] md:max-h-[310px]"
           width={250}
           height={350}
         />
@@ -52,7 +52,7 @@ export const EntitySliderCard = ({
           <h3 className="card-name"> GEN{currentGeneration}</h3>
           {showPrice && <h4 className="">{price} ETH</h4>}
         </div>
-        <div className="text-[14px] xl:text-base 3xl:text-[18px]">
+        <div className="text-[14px] xl:text-base 3xl:text-[18px] font-electrolize">
           <h4>{role}</h4>
           <h4>Forge Potential: {forgePotential}</h4>
           <h4>Nuke Factor: {nukeFactor} %</h4>
