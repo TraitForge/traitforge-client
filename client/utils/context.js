@@ -56,7 +56,7 @@ const ContextProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const getEntitiesForSale = useCallback(async () => {
+  const getEntitiesForSale = async () => {
     if (!infuraProvider || !walletProvider) return;
 
     try {
@@ -88,7 +88,7 @@ const ContextProvider = ({ children }) => {
       console.error('Failed to fetch entities for sale:', error);
       setEntitiesForSale([]);
     }
-  }, [infuraProvider]);
+  };
 
   const getEntitiesForForging = async () => {
     if (!infuraProvider) return;
