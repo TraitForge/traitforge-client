@@ -35,6 +35,12 @@ const Forging = () => {
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
   const handleSelectedFromWallet = entity => setSelectedEntity(entity);
 
+  useEffect(() => {
+    setIsLoading(true);
+    getOwnersEntities();
+    getEntitiesForForging();
+  }, [walletProvider]);
+
   const handleEntityListModal = () =>
     setIsEntityListModalOpen(prevState => !prevState);
   const handleOwnerEntityList = () =>
