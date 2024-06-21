@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 
@@ -18,6 +18,7 @@ const Forging = () => {
     isLoading,
     setIsLoading,
     ownerEntities,
+    getOwnersEntities,
     entitiesForForging,
     getEntitiesForForging,
   } = useContextState();
