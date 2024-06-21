@@ -184,10 +184,10 @@ const config = {
       '#D3D3D3', // Light Metal (Silver)
       '#A9A9A9', // Medium Metal (Gray)
       '#8B4513', // Dark Metal (Bronze)
-      '#708090', // Slate Gray (Steel)
-      '#2F4F4F', // Dark Slate Gray (Steel)
-      '#B0C4DE', // Light Blue Steel
-      '#4682B4', // Dark Blue Steel
+      '#5C6671', // Slate Gray (Steel)
+      '#696969', // Dark Slate Gray
+      '#939799', // Light Steel
+      '#626C70', // Gun Metal Grey
     ],
     characterColorOptions2: [
       '#8A5D3B', // Shadow for Darker Light Skin Tone
@@ -199,53 +199,52 @@ const config = {
       '#4B515A', // Shadow for Slate Gray (Steel)
       '#1C2929', // Shadow for Dark Slate Gray (Steel)
       '#8797AF', // Shadow for Light Blue Steel
-      '#315A7B', // Shadow for Dark Blue Steel
+      '#3B3D40', // Shadow for Gun Metal Grey
     ]
          
   },
 
   colorOptions2: {
     colorOptions0: [
-      "#FF4080", "#FF4D89", "#FF5B92", "#FF689B", "#FF75A4",
-      "#FF82AD", "#FF8FB6", "#FF9CBF", "#FFA9C8", "#FFB6D1"
+      "#FF4080", "#FF457E", "#FF4B7D", "#FF507B", "#FF557A",
+      "#FF5B78", "#FF6077", "#FF6575", "#FF6B74", "#FF7072"
     ],
     colorOptions1: [
-      "#327CFF", "#4989FF", "#5F96FF", "#75A3FF", "#8BB0FF",
-      "#A1BDFF", "#B7CAFF", "#CDD7FF", "#E3E4FF", "#F9F1FF"
+      "#327CFF", "#387AFF", "#3D78FF", "#4375FF", "#4973FF",
+      "#4F71FF", "#546EFF", "#5A6CFF", "#606AFF", "#6567FF"
     ],
     colorOptions2: [
-      "#D7F565", "#DFF67C", "#E7F793", "#EFF8AA", "#F7F9C1",
-      "#FFFAD8", "#FFFBEF", "#FFFCFF", "#FFFFF6", "#FFFFFD"
+      "#D7F565", "#DDF66A", "#E3F670", "#E9F775", "#EFF77B",
+      "#F5F880", "#FBF886", "#FFF98B", "#FFF991", "#FFFF96"
     ],
     colorOptions3: [
-      "#8C7ED1", "#988BE3", "#A498F5", "#B0A5FF", "#BCB2FF",
-      "#C8BFFF", "#D4CCFF", "#E0D9FF", "#ECE6FF", "#F8F3FF"
+      "#8C7ED1", "#937FDE", "#9A81EB", "#A183F7", "#A884FF",
+      "#AF85FF", "#B686FF", "#BD87FF", "#C488FF", "#CB89FF"
     ],
     colorOptions4: [
-      "#FFD966", "#FFE27C", "#FFED93", "#FFF7AA", "#FFFFC1",
-      "#FFFFD8", "#FFFFEF", "#FFFFF6", "#FFFFFD", "#FFFFFF"
+      "#FFD966", "#FFE077", "#FFE788", "#FFEE99", "#FFF5AA",
+      "#FFFCBB", "#FFFFCC", "#FFFFDD", "#FFFFEE", "#FFFFFF"
     ],
     colorOptions5: [
-      "#FF5074", "#FF5D86", "#FF6A98", "#FF77AA", "#FF84BC",
-      "#FF91CE", "#FF9EE0", "#FFABF2", "#FFB8FF", "#FFC5FF"
+      "#FF5074", "#FF567C", "#FF5C84", "#FF628C", "#FF6894",
+      "#FF6E9C", "#FF74A4", "#FF7AAC", "#FF80B4", "#FF86BC"
     ],
     colorOptions6: [
-      "#5CCCCC", "#6CD8D8", "#7DE4E4", "#8EF0F0", "#9FFCFC",
-      "#B0FFFF", "#C1FFFF", "#D2FFFF", "#E3FFFF", "#F4FFFF"
+      "#5CCCCC", "#61D1D1", "#66D6D6", "#6BDBDB", "#70E0E0",
+      "#75E5E5", "#7AEAEA", "#7FEEEE", "#84F3F3", "#89F8F8"
     ],
     colorOptions7: [
-      "#FF50FF", "#FF5DFF", "#FF6AFF", "#FF77FF", "#FF84FF",
-      "#FF91FF", "#FF9EFF", "#FFABFF", "#FFB8FF", "#FFC5FF"
+      "#FF50FF", "#FF55FF", "#FF5AFF", "#FF5FFF", "#FF64FF",
+      "#FF69FF", "#FF6EFF", "#FF73FF", "#FF78FF", "#FF7DFF"
     ],
     colorOptions8: [
-      "#BFFF50", "#CCFF5D", "#D9FF6A", "#E6FF77", "#F3FF84",
-      "#FFFF91", "#FFFF9E", "#FFFFAB", "#FFFFB8", "#FFFFC5"
+      "#BFFF50", "#C4FF55", "#C9FF5A", "#CEFF5F", "#D3FF64",
+      "#D8FF69", "#DDFF6E", "#E2FF73", "#E7FF78", "#ECFF7D"
     ],
     colorOptions9: [
-      "#50A3A3", "#5DAFBF", "#6ABBD8", "#77C7EE", "#84D3FF",
-      "#91DFFF", "#9EEBFF", "#ABF7FF", "#B8FFFF", "#C5FFFF"
-    ]
-     
+      "#50A3A3", "#56A8A8", "#5CADAD", "#62B2B2", "#68B7B7",
+      "#6EBBBB", "#74C0C0", "#7AC5C5", "#80CACA", "#86CFCF"
+    ]    
 }
 };
 

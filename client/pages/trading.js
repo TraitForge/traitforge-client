@@ -34,6 +34,11 @@ const Marketplace = () => {
 
   const handleSort = type => setSortOption(type);
 
+  useEffect(() => {
+    getOwnersEntities();
+    getEntitiesForSale();
+  }, [walletProvider]);
+
   const handleFilterChange = (selectedOption, type) => {
     if (type === 'generation') {
       setGenerationFilter(selectedOption.value);
