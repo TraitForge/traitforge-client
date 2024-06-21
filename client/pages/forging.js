@@ -37,7 +37,6 @@ const Forging = () => {
   const handleSelectedFromWallet = entity => setSelectedEntity(entity);
 
   useEffect(() => {
-    setIsLoading(true);
     getOwnersEntities();
     getEntitiesForForging();
   }, [walletProvider]);

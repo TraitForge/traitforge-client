@@ -35,7 +35,6 @@ const Marketplace = () => {
   const handleSort = type => setSortOption(type);
 
   useEffect(() => {
-    setIsLoading(true);
     getOwnersEntities();
     getEntitiesForSale();
   }, [walletProvider]);
