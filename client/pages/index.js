@@ -3,15 +3,10 @@ import { useWeb3ModalProvider, useWeb3Modal } from '@web3modal/ethers/react';
 
 import { useContextState } from '@/utils/context';
 import { Slider, Button, BudgetModal, LoadingSpinner } from '@/components';
-import {
-  mintBatchEntityHandler,
-  mintEntityHandler,
-  getCurrentGenerationHook,
-} from '@/utils/utils';
+import { mintBatchEntityHandler, mintEntityHandler, getCurrentGenerationHook } from '@/utils/utils';
 
 const Home = () => {
-  const { isLoading, setIsLoading, entityPrice, infuraProvider } =
-    useContextState();
+  const { isLoading, setIsLoading, entityPrice, infuraProvider } = useContextState();
   const [isModalOpen, setModalOpen] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState('');
   const [currentGeneration, setCurrentGeneration] = useState(null);
@@ -57,29 +52,15 @@ const Home = () => {
         backgroundAttachment: 'fixed',
       }}
     >
-      <h1
-        title="Mint Your Traitforge Entity"
-        className="headers text-[36px] mb-2.5 text-center md:text-extra-large"
-      >
+      <h1 title="Mint Your Traitforge Entity" className="headers text-[36px] mb-2.5 text-center md:text-extra-large">
         Mint your traitforge entity
       </h1>
       <div className="w-full flex justify-center overflow-hidden">
         <Slider currentGeneration={currentGeneration} />
       </div>
       <div className="max-md:px-5 flex flex-col max-md:mt-5">
-        <Button
-          onClick={handleMintEntity}
-          bg="#023340"
-          borderColor="#0ADFDB"
-          text={`Mint 1 For ${entityPrice} ETH`}
-          style={{ marginBottom: '25px' }}
-        />
-        <Button
-          onClick={() => setModalOpen(true)}
-          bg="#023340"
-          borderColor="#0ADFDB"
-          text={`Mint With a Budget`}
-        />
+        <Button onClick={handleMintEntity} bg="#023340" borderColor="#0ADFDB" text={`Mint 1 For ${entityPrice} ETH`} style={{ marginBottom: '25px' }} />
+        <Button onClick={() => setModalOpen(true)} bg="#023340" borderColor="#0ADFDB" text={`Mint With a Budget`} />
         {isModalOpen && (
           <BudgetModal
             bg="#023340"

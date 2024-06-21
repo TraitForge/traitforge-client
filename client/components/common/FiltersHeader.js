@@ -12,8 +12,7 @@ export const FiltersHeader = ({
   filterOptions = ['all', 'forgers', 'mergers'],
   pageType, // Add this prop to determine which sorting options to display
 }) => {
-  const commonClasses =
-    'after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px]';
+  const commonClasses = 'after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px]';
   const activeClasses = classNames(commonClasses, {
     'after:bg-neon-orange': color === 'orange',
     'after:bg-neon-green': color === 'green',
@@ -41,13 +40,7 @@ export const FiltersHeader = ({
   ];
 
   const borderColor =
-    color === 'orange'
-      ? '#ff7a00'
-      : color === 'green'
-        ? '#4CAF50'
-        : color === 'purple'
-          ? '#B026FF'
-          : '#ccc';
+    color === 'orange' ? '#ff7a00' : color === 'green' ? '#4CAF50' : color === 'purple' ? '#B026FF' : '#ccc';
   const customStyles = {
     control: styles => ({
       ...styles,
@@ -120,10 +113,9 @@ export const FiltersHeader = ({
           <Select
             options={pageType === 'nuke' ? nukeSortingOptions : sortingOptions}
             onChange={option => handleFilterChange(option, 'sorting')}
-            value={(pageType === 'nuke'
-              ? nukeSortingOptions
-              : sortingOptions
-            ).find(option => option.value === sortingFilter)}
+            value={(pageType === 'nuke' ? nukeSortingOptions : sortingOptions).find(
+              option => option.value === sortingFilter
+            )}
             styles={customStyles}
           />
         )}

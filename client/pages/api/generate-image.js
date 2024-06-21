@@ -15,19 +15,11 @@ async function startProcessing() {
   for (let slotIndex = 0; slotIndex < 770; slotIndex++) {
     for (let numberIndex = 0; numberIndex < 13; numberIndex++) {
       try {
-        const paddedEntropy = await contract.getPublicEntropy(
-          slotIndex,
-          numberIndex
-        );
+        const paddedEntropy = await contract.getPublicEntropy(slotIndex, numberIndex);
         const url = await processImage(paddedEntropy, entityGeneration);
-        console.log(
-          `Processed ${paddedEntropy} in generation ${entityGeneration}: ${url}`
-        );
+        console.log(`Processed ${paddedEntropy} in generation ${entityGeneration}: ${url}`);
       } catch (error) {
-        console.error(
-          `Failed at slot ${slotIndex}, number ${numberIndex} in generation ${entityGeneration}:`,
-          error
-        );
+        console.error(`Failed at slot ${slotIndex}, number ${numberIndex} in generation ${entityGeneration}:`, error);
       }
       await new Promise(resolve => setTimeout(resolve, 500));
     }

@@ -14,13 +14,7 @@ import { ListNow } from '@/screens/forging/ListNow';
 import { createContract } from '@/utils/utils';
 
 const Forging = () => {
-  const {
-    isLoading,
-    setIsLoading,
-    ownerEntities,
-    entitiesForForging,
-    getEntitiesForForging,
-  } = useContextState();
+  const { isLoading, setIsLoading, ownerEntities, entitiesForForging, getEntitiesForForging } = useContextState();
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
@@ -35,10 +29,8 @@ const Forging = () => {
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
   const handleSelectedFromWallet = entity => setSelectedEntity(entity);
 
-  const handleEntityListModal = () =>
-    setIsEntityListModalOpen(prevState => !prevState);
-  const handleOwnerEntityList = () =>
-    setIsOwnerListOpen(prevState => !prevState);
+  const handleEntityListModal = () => setIsEntityListModalOpen(prevState => !prevState);
+  const handleOwnerEntityList = () => setIsOwnerListOpen(prevState => !prevState);
   const handleListingPage = () => setStep('two');
 
   const forgeEntity = async () => {
@@ -51,14 +43,10 @@ const Forging = () => {
         contractsConfig.entityMergingContractAbi
       );
       const feeInWei = BigInt(selectedFromPool.fee);
-      const transaction = await forgeContract.forgeWithListed(
-        selectedFromPool.tokenId,
-        selectedEntity.tokenId,
-        {
-          value: feeInWei,
-          gasLimit: 10000000,
-        }
-      );
+      const transaction = await forgeContract.forgeWithListed(selectedFromPool.tokenId, selectedEntity.tokenId, {
+        value: feeInWei,
+        gasLimit: 10000000,
+      });
       await transaction.wait();
       setProcessingText('Merging');
       toast.success('Forged successfully');
@@ -77,10 +65,7 @@ const Forging = () => {
         contractsConfig.entityMergingContractAbi
       );
       const feeInWei = ethers.parseEther(fee);
-      const transaction = await forgeContract.listForForging(
-        selectedForListing.tokenId,
-        feeInWei
-      );
+      const transaction = await forgeContract.listForForging(selectedForListing.tokenId, feeInWei);
       await transaction.wait();
       toast.success('Listed Successfully');
       setStep('one');
@@ -151,11 +136,7 @@ const Forging = () => {
             </Modal>
           )}
           {isOwnerListOpen && (
-            <Modal
-              isOpen={isOwnerListOpen}
-              closeModal={() => setIsOwnerListOpen(false)}
-              modalClasses="items-end pb-4"
-            >
+            <Modal isOpen={isOwnerListOpen} closeModal={() => setIsOwnerListOpen(false)} modalClasses="items-end pb-4">
               <WalletEntityModal
                 ownerEntities={ownerEntities}
                 handleOwnerEntityList={handleOwnerEntityList}

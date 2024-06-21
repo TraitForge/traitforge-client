@@ -8,27 +8,12 @@ import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
 import styles from './styles.module.scss';
 
-export const EntityCard = ({
-  entity,
-  onSelect,
-  borderType = 'blue',
-  wrapperClass,
-  showPrice,
-}) => {
+export const EntityCard = ({ entity, onSelect, borderType = 'blue', wrapperClass, showPrice }) => {
   const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;
   };
 
-  const {
-    paddedEntropy,
-    generation,
-    role,
-    forgePotential,
-    performanceFactor,
-    nukeFactor,
-    price,
-    fee,
-  } = entity;
+  const { paddedEntropy, generation, role, forgePotential, performanceFactor, nukeFactor, price, fee } = entity;
 
   const displayPrice = price || (fee ? ethers.formatEther(fee) : null);
 

@@ -1,8 +1,5 @@
 export const Button = ({ text, bg, borderColor, width, height, ...alt }) => (
-  <button
-    className="text-white relative hover:translate-y-[-2px] transition-all ease-in"
-    {...alt}
-  >
+  <button className="text-white relative hover:translate-y-[-2px] transition-all ease-in" {...alt}>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={width}
