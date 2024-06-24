@@ -276,6 +276,11 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        },
+        {
           "internalType": "uint256",
           "name": "parent1Id",
           "type": "uint256"

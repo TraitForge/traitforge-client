@@ -10,8 +10,7 @@ async function startProcessing() {
     contractsConfig.entropyGeneratorContractAbi,
     new JsonRpcProvider(contractsConfig.infuraRPCURL)
   );
-  console.log('starting fetch');
-  const entityGeneration = 1;
+  let entityGeneration = 2;
   for (let slotIndex = 0; slotIndex < 770; slotIndex++) {
     for (let numberIndex = 0; numberIndex < 13; numberIndex++) {
       try {
@@ -72,4 +71,4 @@ export default async function handler(req, res) {
   }
 }
 
-// startProcessing();
+startProcessing();
