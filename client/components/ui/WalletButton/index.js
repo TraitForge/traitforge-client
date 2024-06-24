@@ -31,7 +31,7 @@ export default function ConnectButton() {
         }}
       >
         <FaWallet />
-        <span className="hidden lg:block text-base text-gray-200 lg:text-[32px]">wallet</span>
+        <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">wallet</span>
       </button>
       {isOpen && <WalletModal isOpen={isOpen} closeModal={() => setIsOpen(false)} balanceInETH={balanceInETH} />}
     </>

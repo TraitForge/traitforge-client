@@ -59,8 +59,21 @@ const Home = () => {
         <Slider currentGeneration={currentGeneration} />
       </div>
       <div className="max-md:px-5 flex flex-col max-md:mt-5">
-        <Button onClick={handleMintEntity} bg="#023340" borderColor="#0ADFDB" text={`Mint 1 For ${entityPrice} ETH`} style={{ marginBottom: '25px' }} />
-        <Button onClick={() => setModalOpen(true)} bg="#023340" borderColor="#0ADFDB" text={`Mint With a Budget`} />
+        <Button
+          onClick={handleMintEntity}
+          bg="#023340"
+          borderColor="#0ADFDB"
+          text={`Mint 1 For ${entityPrice} ETH`}
+          style={{ marginBottom: '25px' }}
+          textClass="font-electrolize"
+        />
+        <Button
+          onClick={() => setModalOpen(true)}
+          bg="#023340"
+          borderColor="#0ADFDB"
+          text={`Mint With a Budget`}
+          textClass="font-electrolize"
+        />
         {isModalOpen && (
           <BudgetModal
             bg="#023340"
@@ -69,6 +82,7 @@ const Home = () => {
             setBudgetAmount={setBudgetAmount}
             onSubmit={handleMintBatchEntity}
             onClose={() => setModalOpen(false)}
+            className="font-bebas"
           />
         )}
       </div>

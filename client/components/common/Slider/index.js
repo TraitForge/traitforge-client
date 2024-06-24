@@ -59,25 +59,23 @@ const Slider = ({ currentGeneration }) => {
 
   return (
     <div className="w-full md:w-[90%] md:mx-auto relative">
-      <div className="md:px-20 lg:px-24 xl:px-[100px] ">
-        {upcomingMints.length > 0 && (
-          <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>
-            {upcomingMints.map((mint, index) => {
-              const price = getEntityPrice(entityPrice, index);
-              return (
-                <SwiperSlide key={mint.id}>
-                  <EntitySliderCard
-                    currentGeneration={currentGeneration}
-                    entropy={mint.entropy}
-                    index={index}
-                    price={price}
-                    showPrice
-                  />
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        )}
+      <div className="md:px-20 lg:px-24 xl:px-[100px] w-full">
+        <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>
+          {upcomingMints.map((mint, index) => {
+            const price = getEntityPrice(entityPrice, index);
+            return (
+              <SwiperSlide key={mint.id}>
+                <EntitySliderCard
+                  currentGeneration={currentGeneration}
+                  entropy={mint.entropy}
+                  index={index}
+                  price={price}
+                  showPrice
+                />
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
       </div>
       <button
         onClick={() => ref?.slidePrev()}

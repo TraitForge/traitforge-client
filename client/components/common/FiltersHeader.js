@@ -82,7 +82,7 @@ export const FiltersHeader = ({
         {filterOptions.map(type => (
           <button
             key={type}
-            className={`${sortOption === type ? activeClasses : ''} relative px-3 md:px-6`}
+            className={`${sortOption === type ? activeClasses : ''} relative px-3 md:px-6 font-bebas`}
             onClick={() => {
               if (color !== 'orange') {
                 handleSort(type);
@@ -93,7 +93,7 @@ export const FiltersHeader = ({
           </button>
         ))}
       </div>
-      <div className="flex gap-x-3 md:gap-x-6 text-[20px] justify-end">
+      <div className="flex gap-x-3 md:gap-x-6 text-[20px] justify-end font-bebas">
         <Select
           options={genOptions}
           onChange={option => handleFilterChange(option, 'generation')}

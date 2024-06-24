@@ -115,12 +115,12 @@ const Marketplace = () => {
 
   let content;
 
-  if (isLoading)
-    return (
-      <div className="h-full w-full flex justify-center items-center">
-        <LoadingSpinner color="#0EEB81" />
-      </div>
-    );
+  // if (isLoading)
+  //   return (
+  //     <div className="h-full w-full flex justify-center items-center">
+  //       <LoadingSpinner color="#0EEB81" />
+  //     </div>
+  //   );
 
   switch (step) {
     case 'four':

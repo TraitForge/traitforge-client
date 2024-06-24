@@ -98,8 +98,9 @@ const Forging = () => {
                 width="200"
                 height="90"
                 borderColor="#FD8D26"
-                className="relative md:absolute md:top-0 md:right-1"
+                className="relative md:absolute md:top-0 md:right-1 "
                 onClick={handleListingPage}
+                textClass="font-electrolize"
               />
             </div>
             <div className="py-7 md:py-10 3xl:py-20">
@@ -119,6 +120,7 @@ const Forging = () => {
                 height="92"
                 disabled={processing}
                 onClick={forgeEntity}
+                textClass="font-bebas text-[48px]"
               />
             </div>
           </div>

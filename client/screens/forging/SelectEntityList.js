@@ -1,11 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { EntityCard, FiltersHeader } from '@/components';
 
-export const SelectEntityList = ({
-  entitiesForForging,
-  handleSelectedFromPool,
-  handleEntityListModal,
-}) => {
+export const SelectEntityList = ({ entitiesForForging, handleSelectedFromPool, handleEntityListModal }) => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
 
@@ -20,10 +16,7 @@ export const SelectEntityList = ({
   const filteredAndSortedListings = useMemo(() => {
     let filtered = entitiesForForging.filter(listing => {
       if (!listing.isListed === true) return false;
-      if (
-        generationFilter &&
-        String(listing.generation) !== String(generationFilter)
-      ) {
+      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
         return false;
       }
       return true;
@@ -41,15 +34,11 @@ export const SelectEntityList = ({
   return (
     <div className="bg-dark-81 w-[95vw] md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[70vw] md:rounded-[30px] mx-auto py-10 px-5 flex flex-col">
       <div className="border-b border-white mb-10">
-        <h3 className="text-center pb-10 text-[40px] uppercase font-bebas-neue">
-          Select From Pool
-        </h3>
+        <h2 className="text-center pb-10 text-[40px] uppercase ">Select From Pool</h2>
         <FiltersHeader
           filterOptions={['Listed forgers']}
           color="orange"
-          handleFilterChange={(selectedOption, type) =>
-            handleFilterChange(selectedOption, type)
-          }
+          handleFilterChange={(selectedOption, type) => handleFilterChange(selectedOption, type)}
           generationFilter={generationFilter}
           sortingFilter={sortingFilter}
         />
