@@ -7,14 +7,14 @@ const BudgetModal = ({ budgetAmount, setBudgetAmount, onSubmit, onClose, bg, bor
 
   return (
     <div className={styles.modalOverlay}>
-      <div className="flex justify-center items-center relative h-full w-[95%] md:w-[70%] xl:w-[50%]">
+      <div className="flex justify-center items-center relative md:h-full max-md:border-[3px] rounded-xl w-[70%] h-[30vh] md:w-[95%] lg:w-[70%] xl:w-[50%] max-md:border-primary">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="408"
           height="92"
           fill="none"
           viewBox="0 0 408 92"
-          className="absolute top-0 left-0 w-full h-full"
+          className="absolute top-0 left-0 w-full h-full max-md:hidden"
         >
           <path
             fill={borderColor}
@@ -38,7 +38,7 @@ const BudgetModal = ({ budgetAmount, setBudgetAmount, onSubmit, onClose, bg, bor
           <h3 className="text-[24px]">Enter ETH Amount</h3>
           <input
             type="text"
-            className="w-[30%] text-base rounded-md mb-2 border-2 border-primary py-1 px-4 text-[#023340] focus:border-[#007ea1] outline-none"
+            className="w-[70%] md:w-[30%] text-base rounded-md mb-2 border-2 border-primary py-1 px-4 text-[#023340] focus:border-[#007ea1] outline-none"
             value={budgetAmount}
             onChange={handleInputChange}
             placeholder="ETH Amount"

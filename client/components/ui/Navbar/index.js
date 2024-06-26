@@ -32,7 +32,7 @@ const Navbar = () => {
     'after:bg-primary hover:text-primary': router.asPath === '/',
   });
 
-  const activeClass = classNames({
+  const activeClass = classNames('', {
     'text-neon-orange': router.asPath === '/forging',
     'text-neon-green': router.asPath === '/trading',
     'text-neon-purple': router.asPath === '/nuke-fund',
@@ -51,7 +51,7 @@ const Navbar = () => {
         <ul className="flex gap-x-[20px] xl:gap-x-[64px] max-lg:hidden">
           {links.map((link, index) => (
             <li key={index}>
-              <Link className={`${navLinkClasses} ${link.url === router.asPath && activeClass}`} href={link.url}>
+              <Link className={`${navLinkClasses} ${link.url === router.asPath ? activeClass : ''}`} href={link.url}>
                 {link.text}
               </Link>
             </li>

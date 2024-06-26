@@ -104,7 +104,7 @@
 
 .custom-slider-arrow:active {
   box-shadow: none;
-  transform: scale(1.2);
+  transform: translateY(-47%);
 }
 
 .custom-slider-arrow-left {

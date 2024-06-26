@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { ethers } from 'ethers';
-import { useWeb3Modal } from '@web3modal/ethers/react';
+import { useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { toast } from 'react-toastify';
 
 import styles from '@/styles/trading.module.scss';
@@ -31,13 +31,17 @@ const Marketplace = () => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const { open } = useWeb3Modal();
+  const { isConnected } = useWeb3ModalAccount();
+  const [loadingText, setLoadingText] = useState('');
 
   const handleSort = type => setSortOption(type);
 
   useEffect(() => {
-    getOwnersEntities();
+    if (isConnected) {
+      getOwnersEntities();
+    }
     getEntitiesForSale();
-  }, [walletProvider]);
+  }, [walletProvider, isConnected]);
 
   const handleFilterChange = (selectedOption, type) => {
     if (type === 'generation') {
@@ -70,6 +74,7 @@ const Marketplace = () => {
 
   const buyEntity = async entity => {
     setIsLoading(true);
+    setLoadingText('Buying entity...');
     if (!walletProvider) open();
     try {
       const tradeContract = await createContract(
@@ -89,11 +94,13 @@ const Marketplace = () => {
       toast.error(`Purchase failed. Please try again`);
     } finally {
       setIsLoading(false);
+      setLoadingText('');
     }
   };
 
   const listEntityForSale = async (entity, price) => {
     setIsLoading(true);
+    setLoadingText('Selling entity...');
     if (!walletProvider) open();
     try {
       await approveNFTForTrading(entity.tokenId, walletProvider);
@@ -113,6 +120,7 @@ const Marketplace = () => {
       toast.error('Listing failed. Please try again.');
     } finally {
       setIsLoading(false);
+      setLoadingText('');
     }
   };
 
@@ -120,12 +128,13 @@ const Marketplace = () => {
 
   let content;
 
-  // if (isLoading)
-  //   return (
-  //     <div className="h-full w-full flex justify-center items-center">
-  //       <LoadingSpinner color="#0EEB81" />
-  //     </div>
-  //   );
+  if (isLoading)
+    return (
+      <div className="h-full w-full flex justify-center items-center flex-col">
+        <LoadingSpinner color="#0EEB81" />
+        {loadingText && <p className="text-[#0EEB81] mt-4">{loadingText}</p>}
+      </div>
+    );
 
   switch (step) {
     case 'four':
@@ -180,7 +189,7 @@ const Marketplace = () => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="container pt-10 md:pt-[54px] flex flex-col h-full">
+      <div className="container pt-5 flex flex-col h-full">
         <TraidingHeader handleStep={handleStep} step={step} />
         {content}
       </div>

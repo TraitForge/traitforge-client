@@ -14,12 +14,14 @@ export default function ConnectButton() {
   const { address } = useWeb3ModalAccount();
 
   useEffect(() => {
-    const fetchBalance = async () => {
-      const balance = await getWalletBalance(walletProvider, address);
-      setBalanceInETH(balance);
-    };
-    fetchBalance();
-  }, [walletProvider]);
+    if (isConnected) {
+      const fetchBalance = async () => {
+        const balance = await getWalletBalance(walletProvider, address);
+        setBalanceInETH(balance);
+      };
+      fetchBalance();
+    }
+  }, [walletProvider, isConnected]);
 
   return (
     <>

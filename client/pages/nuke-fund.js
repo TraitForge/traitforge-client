@@ -23,6 +23,7 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const { open } = useWeb3Modal();
+  const [loadingText, setLoadingText] = useState('');
 
   const handleStep = nextStep => setStep(nextStep);
 
@@ -60,6 +61,7 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
   const nukeEntity = async entity => {
     if (!walletProvider) open();
     setIsLoading(true);
+    setLoadingText('Nuking entity...');
     try {
       await approveNFTForNuking(entity.tokenId, walletProvider);
       const nukeContract = await createContract(
@@ -83,6 +85,7 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
     return (
       <div className="h-full w-full flex justify-center items-center">
         <LoadingSpinner color="#9457EB" />
+        {loadingText && <p className="mt-3 text-[#9457EB]">{loadingText}</p>}
       </div>
     );
 
@@ -106,7 +109,7 @@ const HoneyPot = ({ usdAmount, ethAmount }) => {
             generationFilter={generationFilter}
             sortingFilter={sortingFilter}
           />
-          <div className="grid mt-10 grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-5 md:gap-y-10">
+          <div className="grid mt-10 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-5 md:gap-y-10">
             {filteredAndSortedListings.map(entity => (
               <EntityCard
                 key={entity.tokenId}
