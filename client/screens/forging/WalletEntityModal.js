@@ -10,7 +10,6 @@ export const WalletEntityModal = ({ ownerEntities, handleSelectedFromWallet, han
     const filterEntities = () => {
       try {
         const filtered = ownerEntities.filter(entity => entity.role === 'Merger');
-        console.log('Filtered entities:', filtered);
         setFilteredEntities(filtered);
       } catch (error) {
         console.error('Error in filterEntities:', error);
@@ -59,7 +58,7 @@ export const WalletEntityModal = ({ ownerEntities, handleSelectedFromWallet, han
         />
       </div>
       <div className="flex-1 overflow-y-scroll">
-        <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 gap-x-2 md:gap-x-[15px] gap-y-7 md:gap-y-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-2 md:gap-x-[15px] gap-y-7 md:gap-y-10">
           {filteredListings.map(entity => (
             <EntityCard
               key={entity.tokenId}

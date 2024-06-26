@@ -148,7 +148,6 @@ const ContextProvider = ({ children }) => {
         })
       );
       setOwnerEntities(enrichedEntities);
-      console.log('owners entities', enrichedEntities);
     } catch (error) {
       console.error('Error fetching NFTs:', error);
       setOwnerEntities([]);

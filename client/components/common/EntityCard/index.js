@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { ethers } from 'ethers';
 import classNames from 'classnames';
+import Skeleton from 'react-loading-skeleton';
 
 import orangeBorder from '@/public/images/orangeborder.svg';
 import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
 import styles from './styles.module.scss';
-import Skeleton from 'react-loading-skeleton';
 
 export const EntityCard = ({ entity, onSelect, borderType = 'blue', wrapperClass, showPrice }) => {
   const [imgLoaded, setImgLoaded] = useState(null);
@@ -38,7 +38,7 @@ export const EntityCard = ({ entity, onSelect, borderType = 'blue', wrapperClass
   }
 
   const wrapperClasses = classNames(
-    'overflow-hidden min-h-[300px] w-full 2xl:min-h-[350px] 3xl:min-h-[400px]',
+    'overflow-hidden min-h-[300px] md:min-h-[350px] 3xl:min-h-[400px] w-full',
     styles.cardContainer,
     wrapperClass
   );

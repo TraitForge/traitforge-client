@@ -57,9 +57,11 @@ const Forging = () => {
         gasLimit: 10000000,
       });
       setProcessingText('Merging');
-      await transaction.wait();
+      const res = await transaction.wait();
+      // console.log(res, res.tokenId);
       toast.success('Forged successfully');
     } catch (error) {
+      console.log(error);
       toast.error(`Failed to Forge`);
       setIsLoading(false);
     } finally {
@@ -85,6 +87,7 @@ const Forging = () => {
       await transaction.wait();
       toast.success('Listed Successfully');
       setStep('one');
+      getEntitiesForForging();
     } catch (error) {
       toast.error(`Failed to List Entity`);
     } finally {
