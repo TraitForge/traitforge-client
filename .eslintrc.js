@@ -3,6 +3,8 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:prettier/recommended', // Integrates Prettier with ESLint
+    'next/babel',
+    'next/core-web-vitals',
   ],
   plugins: ['prettier'],
   env: {
