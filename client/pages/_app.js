@@ -6,7 +6,6 @@ import '../styles/index.css';
 import 'swiper/css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import Logo from '@/public/images/websitelogo.png';
 import '@/styles/main.scss';

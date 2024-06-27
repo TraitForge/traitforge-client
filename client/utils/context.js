@@ -252,7 +252,7 @@ const ContextProvider = ({ children }) => {
 
   const getEntitiesListedByPlayer = async () => {
     if (!walletProvider) {
-      console.error('No wallet provider found.');
+      alert('No wallet provider found.');
       return;
     }
 
