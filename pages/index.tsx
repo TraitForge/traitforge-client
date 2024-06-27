@@ -1,47 +1,37 @@
-import { useEffect, useState } from 'react';
-import { useWeb3ModalProvider, useWeb3Modal } from '@web3modal/ethers/react';
-import { useContextState } from '~/utils/context';
+import { useState } from 'react';
 import { Slider, Button, BudgetModal, LoadingSpinner } from '~/components';
 import {
-  mintBatchEntityHandler,
-  mintEntityHandler,
-  getCurrentGenerationHook,
-} from '~/utils/utils';
+  useCurrentGeneration,
+  useMintPrice,
+  useMintToken,
+  useMintWithBudget,
+  useUpcomingMints,
+} from '~/hooks';
+import { formatEther, parseEther } from 'viem';
 
 const Home = () => {
-  const { isLoading, setIsLoading, entityPrice, infuraProvider } =
-    useContextState();
+  const { data: currentGeneration } = useCurrentGeneration();
+  const { data: mintPrice } = useMintPrice();
+  const { onWriteAsync: onMintToken, isPending: isMintTokenPending } =
+    useMintToken();
+  const { onWriteAsync: onMintWithBudget, isPending: isMintWithBudgetPending } =
+    useMintWithBudget();
+  const { data: upcomingMints, isFetching: isUpcomingMintsFetching } =
+    useUpcomingMints(mintPrice);
+
+  const isLoading =
+    isMintTokenPending || isMintWithBudgetPending || isUpcomingMintsFetching;
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState('');
-  const [currentGeneration, setCurrentGeneration] = useState(null);
-  const { open } = useWeb3Modal();
-  const { walletProvider } = useWeb3ModalProvider();
-  const [loadingText, setLoadingText] = useState('');
-
-  const getCurrentGeneration = async () => {
-    const generation = await getCurrentGenerationHook(infuraProvider);
-    setCurrentGeneration(generation);
-  };
-
-  useEffect(() => {
-    getCurrentGeneration();
-  }, [getCurrentGeneration]);
+  const [loadingText] = useState('');
 
   const handleMintEntity = async () => {
-    setLoadingText('Mint entity');
-    setIsLoading(true);
-    await mintEntityHandler(walletProvider, open, entityPrice);
-    setIsLoading(false);
-    setLoadingText('');
+    onMintToken(mintPrice);
   };
 
   const handleMintBatchEntity = async () => {
-    setLoadingText('Mint batch entity');
-    setIsLoading(true);
-    await mintBatchEntityHandler(walletProvider, open, budgetAmount);
-    setIsLoading(false);
-    setModalOpen(false);
-    setLoadingText('');
+    onMintWithBudget(parseEther(budgetAmount));
   };
 
   if (isLoading)
@@ -69,14 +59,18 @@ const Home = () => {
         Mint your traitforge entity
       </h1>
       <div className="w-full flex justify-center overflow-hidden">
-        <Slider currentGeneration={currentGeneration} />
+        <Slider
+          mintPrice={mintPrice}
+          currentGeneration={currentGeneration}
+          upcomingMints={upcomingMints}
+        />
       </div>
       <div className="max-md:px-5 flex flex-col max-md:mt-5">
         <Button
           onClick={handleMintEntity}
           bg="#023340"
           borderColor="#0ADFDB"
-          text={`Mint 1 For ${entityPrice} ETH`}
+          text={`Mint 1 For ${formatEther(mintPrice)} ETH`}
           style={{ marginBottom: '25px' }}
           textClass="font-electrolize"
         />
@@ -95,7 +89,6 @@ const Home = () => {
             setBudgetAmount={setBudgetAmount}
             onSubmit={handleMintBatchEntity}
             onClose={() => setModalOpen(false)}
-            className="font-bebas"
           />
         )}
       </div>
