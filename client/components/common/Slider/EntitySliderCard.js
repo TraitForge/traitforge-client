@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-import Skeleton from 'react-loading-skeleton';
 
 import { calculateEntityAttributes } from '@/utils/utils';
 import styles from './styles.module.scss';
 import blueBorder from '@/public/images/border.svg';
 
-export const EntitySliderCard = ({ entropy, price, wrapperClass, showPrice, currentGeneration }) => {
+export const EntitySliderCard = ({
+  entropy,
+  price,
+  wrapperClass,
+  showPrice,
+  currentGeneration,
+}) => {
   const [imgLoaded, setImgLoaded] = useState(null);
   const paddedEntropy = entropy.toString().padStart(6, '0');
   const generation = currentGeneration?.toString();
@@ -16,7 +21,8 @@ export const EntitySliderCard = ({ entropy, price, wrapperClass, showPrice, curr
   };
   const uri = calculateUri(paddedEntropy, generation);
 
-  const { role, forgePotential, performanceFactor, nukeFactor } = calculateEntityAttributes(paddedEntropy);
+  const { role, forgePotential, performanceFactor, nukeFactor } =
+    calculateEntityAttributes(paddedEntropy);
 
   const wrapperClasses = classNames(
     'mx-5 overflow-hidden items-center min-h-[300px] w-full 3xl:min-h-[400px]',

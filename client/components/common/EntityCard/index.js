@@ -8,15 +8,29 @@ import blueBorder from '@/public/images/border.svg';
 import purpleBorder from '@/public/images/purpleBorder.svg';
 import greenBorder from '@/public/images/greenBorder.svg';
 import styles from './styles.module.scss';
-import Skeleton from 'react-loading-skeleton';
 
-export const EntityCard = ({ entity, onSelect, borderType = 'blue', wrapperClass, showPrice }) => {
+export const EntityCard = ({
+  entity,
+  onSelect,
+  borderType = 'blue',
+  wrapperClass,
+  showPrice,
+}) => {
   const [imgLoaded, setImgLoaded] = useState(null);
   const calculateUri = (paddedEntropy, generation) => {
     return `${paddedEntropy}_${generation}`;
   };
 
-  const { paddedEntropy, generation, role, forgePotential, performanceFactor, nukeFactor, price, fee } = entity;
+  const {
+    paddedEntropy,
+    generation,
+    role,
+    forgePotential,
+    performanceFactor,
+    nukeFactor,
+    price,
+    fee,
+  } = entity;
 
   const displayPrice = price || (fee ? ethers.formatEther(fee) : null);
 
