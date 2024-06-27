@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
+import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
 
 import { useContextState } from '@/utils/context';
 import { contractsConfig } from '@/utils/contractsConfig';
-import { useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { Button, Modal, LoadingSpinner } from '@/components';
 import { SelectEntityList } from '@/screens/forging/SelectEntityList';
 import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
@@ -20,27 +20,30 @@ const Forging = () => {
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
   const [selectedFromPool, setSelectedFromPool] = useState(null);
-  const [processing, setProcessing] = useState(false);
   const { walletProvider } = useWeb3ModalProvider();
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedForListing, setSelectedForListing] = useState(null);
-  const [processingText, setProcessingText] = useState('');
+  const [processingText, setProcessingText] = useState('Forging');
   const [generationFilter, setGenerationFilter] = useState('');
+  const { isConnected } = useWeb3ModalAccount();
 
   const handleSelectedFromPool = entity => setSelectedFromPool(entity);
   const handleSelectedFromWallet = entity => setSelectedEntity(entity);
 
   const handleEntityListModal = () => setIsEntityListModalOpen(prevState => !prevState);
   const handleOwnerEntityList = () => setIsOwnerListOpen(prevState => !prevState);
+
   useEffect(() => {
-    getOwnersEntities();
-    getEntitiesForForging();
-  }, [walletProvider]);
+    if (isConnected) {
+      getOwnersEntities();
+      getEntitiesForForging();
+    }
+  }, [walletProvider, isConnected]);
 
   const handleListingPage = () => setStep('two');
 
   const forgeEntity = async () => {
-    setProcessing(true);
+    setIsLoading(true);
     setProcessingText('Forging');
     try {
       const forgeContract = await createContract(
@@ -53,17 +56,26 @@ const Forging = () => {
         value: feeInWei,
         gasLimit: 10000000,
       });
-      await transaction.wait();
       setProcessingText('Merging');
+      const res = await transaction.wait();
+      // console.log(res, res.tokenId);
       toast.success('Forged successfully');
     } catch (error) {
+      console.log(error);
       toast.error(`Failed to Forge`);
+      setIsLoading(false);
+    } finally {
+      setProcessingText('');
+      setGenerationFilter('');
+      setSelectedEntity(null);
+      setSelectedFromPool(null);
+      setIsLoading(false);
     }
-    setGenerationFilter('');
   };
 
   const listEntityForForging = async (selectedForListing, fee) => {
     setIsLoading(true);
+    setProcessingText('Listing entity');
     try {
       const forgeContract = await createContract(
         walletProvider,
@@ -75,10 +87,12 @@ const Forging = () => {
       await transaction.wait();
       toast.success('Listed Successfully');
       setStep('one');
+      getEntitiesForForging();
     } catch (error) {
       toast.error(`Failed to List Entity`);
     } finally {
       setIsLoading(false);
+      setProcessingText('');
     }
   };
 
@@ -86,8 +100,9 @@ const Forging = () => {
 
   if (isLoading)
     return (
-      <div className="h-full w-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center items-center flex-col">
         <LoadingSpinner color="#FF5F1F" />
+        {processingText && <p className="text-[#FF5F1F] mt-4">{processingText}</p>}
       </div>
     );
 
@@ -104,7 +119,7 @@ const Forging = () => {
                 width="200"
                 height="90"
                 borderColor="#FD8D26"
-                className="relative md:absolute md:top-0 md:right-1 "
+                className="relative md:absolute md:top-0 md:right-5"
                 onClick={handleListingPage}
                 textClass="font-electrolize"
               />
@@ -124,7 +139,7 @@ const Forging = () => {
                 borderColor="#FD8D26"
                 width="408"
                 height="92"
-                disabled={processing}
+                disabled={isLoading}
                 onClick={forgeEntity}
                 textClass="font-bebas text-[48px]"
               />

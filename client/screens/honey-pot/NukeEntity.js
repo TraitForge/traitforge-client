@@ -6,6 +6,7 @@ export const NukeEntity = ({ selectedForNuke, nukeEntity, handleStep }) => {
       <div className="max-md:order-1 py-3">
         <EntityCard entity={selectedForNuke} borderType="purple" />
       </div>
+      <p className="text-base">Enity cannot be nuked if acquired less then 3 days ago.</p>
       <div className="max-md:order-3 max-md:px-10 mt-5">
         <Button
           borderColor="#FC62FF"

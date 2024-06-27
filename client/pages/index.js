@@ -12,6 +12,7 @@ const Home = () => {
   const [currentGeneration, setCurrentGeneration] = useState(null);
   const { open } = useWeb3Modal();
   const { walletProvider } = useWeb3ModalProvider();
+  const [loadingText, setLoadingText] = useState('');
 
   const getCurrentGeneration = async () => {
     const generation = await getCurrentGenerationHook(infuraProvider);
@@ -23,22 +24,27 @@ const Home = () => {
   }, [getCurrentGeneration]);
 
   const handleMintEntity = async () => {
+    setLoadingText('Mint entity');
     setIsLoading(true);
     await mintEntityHandler(walletProvider, open, entityPrice);
     setIsLoading(false);
+    setLoadingText('');
   };
 
   const handleMintBatchEntity = async () => {
+    setLoadingText('Mint batch entity');
     setIsLoading(true);
     await mintBatchEntityHandler(walletProvider, open, budgetAmount);
     setIsLoading(false);
     setModalOpen(false);
+    setLoadingText('');
   };
 
   if (isLoading)
     return (
-      <div className="h-full w-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center items-center flex-col">
         <LoadingSpinner color="#0ff" />
+        {loadingText && <p className="mt-3 text-[#0ff]">{loadingText}</p>}
       </div>
     );
 

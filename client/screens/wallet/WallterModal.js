@@ -28,13 +28,16 @@ export const WalletModal = ({ isOpen, closeModal, balanceInETH }) => {
     });
   };
 
-  const containerClasses = classNames('bg-dark-81 flex justify-center items-center border-[5px] rounded-xl', {
-    'border-neon-orange': asPath === '/forging',
-    'border-neon-green': asPath === '/trading',
-    'border-neon-purple': asPath === '/nuke-fund',
-    'border-neon-green-yellow': asPath === '/stats',
-    'border-primary': asPath === '/',
-  });
+  const containerClasses = classNames(
+    'bg-dark-81 flex justify-center items-center border-[5px] rounded-xl max-w-[90%]',
+    {
+      'border-neon-orange': asPath === '/forging',
+      'border-neon-green': asPath === '/trading',
+      'border-neon-purple': asPath === '/nuke-fund',
+      'border-neon-green-yellow': asPath === '/stats',
+      'border-primary': asPath === '/',
+    }
+  );
 
   let borderType;
   let buttonColor;
@@ -60,7 +63,7 @@ export const WalletModal = ({ isOpen, closeModal, balanceInETH }) => {
   return (
     <Modal isOpen={isOpen} closeModal={closeModal} containerClass={containerClasses}>
       {currentStep === 1 && (
-        <div className="flex justify-center items-center flex-col">
+        <div className="flex items-center flex-col justify-center h-[80vh]">
           <div className="flex items-center justify-around mt-14 px-[150px] md:pb-[36px] gap-x-[50px]">
             <div className="flex items-center gap-x-2.5">
               <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="none" viewBox="0 0 46 46">
@@ -102,15 +105,17 @@ export const WalletModal = ({ isOpen, closeModal, balanceInETH }) => {
               onClick={() => setCurrentStep(2)}
             />
           </div>
-          <div className="w-8/12 pb-5 h-50 overflow-x-scroll flex flex-row md:text-large text-white md:mb-8 gap-x-4">
-            {ownerEntities.map(entity => (
-              <EntityCard key={entity.tokenId} entity={entity} borderType={borderType} />
-            ))}
-          </div>
+          {ownerEntities.length > 0 && (
+            <div className="pb-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
+              {ownerEntities.map(entity => (
+                <EntityCard key={entity.tokenId} entity={entity} borderType={borderType} />
+              ))}
+            </div>
+          )}
         </div>
       )}
       {currentStep === 2 && (
-        <div className="flex justify-center items-center flex-col">
+        <div className="flex justify-center items-center flex-col min-w-[40vw]">
           <h3 className="pt-10 text-[18px] md:text-[36px] pb-3">Unlist</h3>
           <Image src={'/images/border-bottom-line.png'} width={300} height={5} alt="" className="md:mb-[53px]" />
           <div className="overflow-x-scroll w-6/12 h-44 flex flex-row md:text-large text-white md:mb-5">

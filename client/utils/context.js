@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
 
 import { JsonRpcProvider } from 'ethers/providers';
@@ -42,11 +36,7 @@ const ContextProvider = ({ children }) => {
   const getUpcomingMints = async (startSlot = 0, startNumberIndex = 0) => {
     if (!infuraProvider) return;
     setIsLoading(true);
-    const { allEntropies, maxCount } = await getUpcomingMintsHook(
-      startSlot,
-      startNumberIndex,
-      infuraProvider
-    );
+    const { allEntropies, maxCount } = await getUpcomingMintsHook(startSlot, startNumberIndex, infuraProvider);
     setUpcomingMints(
       allEntropies.slice(0, maxCount).map((entropy, index) => ({
         id: startSlot * 13 + index,
@@ -68,8 +58,7 @@ const ContextProvider = ({ children }) => {
           const generation = await getEntityGeneration(walletProvider, tokenId);
           const entropy = await getEntityEntropyHook(walletProvider, tokenId);
           const paddedEntropy = entropy.toString().padStart(6, '0');
-          const { role, forgePotential, performanceFactor } =
-            calculateEntityAttributes(paddedEntropy);
+          const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
           return {
             tokenId,
             seller,
@@ -101,8 +90,7 @@ const ContextProvider = ({ children }) => {
           const generation = await getEntityGeneration(walletProvider, tokenId);
           const entropy = await getEntityEntropyHook(walletProvider, tokenId);
           const paddedEntropy = entropy.toString().padStart(6, '0');
-          const { role, forgePotential, performanceFactor } =
-            calculateEntityAttributes(paddedEntropy);
+          const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
           return {
             tokenId,
             isListed,
@@ -147,8 +135,7 @@ const ContextProvider = ({ children }) => {
           const generation = await getEntityGeneration(walletProvider, tokenId);
           const entropy = await getEntityEntropyHook(walletProvider, tokenId);
           const paddedEntropy = entropy.toString().padStart(6, '0');
-          const { role, forgePotential, performanceFactor } =
-            calculateEntityAttributes(paddedEntropy);
+          const { role, forgePotential, performanceFactor } = calculateEntityAttributes(paddedEntropy);
           return {
             tokenId,
             nukeFactor,
@@ -161,7 +148,6 @@ const ContextProvider = ({ children }) => {
         })
       );
       setOwnerEntities(enrichedEntities);
-      console.log('owners entities', enrichedEntities);
     } catch (error) {
       console.error('Error fetching NFTs:', error);
       setOwnerEntities([]);
@@ -266,7 +252,7 @@ const ContextProvider = ({ children }) => {
 
   const getEntitiesListedByPlayer = async () => {
     if (!walletProvider) {
-      console.error('No wallet provider found.');
+      alert('No wallet provider found.');
       return;
     }
 
@@ -290,11 +276,7 @@ const ContextProvider = ({ children }) => {
         }));
 
       const forgingEntities = entitiesForForging
-        .filter(entity =>
-          ownerEntities.some(
-            ownedEntity => ownedEntity.tokenId === entity.tokenId
-          )
-        )
+        .filter(entity => ownerEntities.some(ownedEntity => ownedEntity.tokenId === entity.tokenId))
         .map(entity => ({
           tokenId: entity.tokenId,
           price: entity.fee,
