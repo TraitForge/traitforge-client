@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { EntityCard } from '@/components';
-import { ListingHeader } from '@/screens/forging/ListingHeader';
+import { EntityCard } from '~/components';
+import { ListingHeader } from './ListingHeader';
+import { BorderType, Entity, EntityRole } from '~/types';
 
-export const ListEntity = ({ ownerEntities, handleStep, setSelectedForListing }) => {
-  const [filteredEntities, setFilteredEntities] = useState([]);
+type ListEntityTypes = {
+  ownerEntities: Entity[];
+  handleStep: (value: string) => void;
+  setSelectedForListing: (entity: Entity) => void;
+};
+
+export const ListEntity = ({
+  ownerEntities,
+  handleStep,
+  setSelectedForListing,
+}: ListEntityTypes) => {
+  const [filteredEntities, setFilteredEntities] = useState<Entity[]>([]);
 
   useEffect(() => {
     const fetchAndFilterEntities = async () => {
       try {
-        const filtered = ownerEntities.filter(entity => entity.role === 'Forger');
+        const filtered = ownerEntities.filter(
+          entity => entity.role === EntityRole.FORGER
+        );
         setFilteredEntities(filtered);
       } catch (error) {
         console.error('Error in fetchAndFilterEntities:', error);
@@ -27,7 +40,7 @@ export const ListEntity = ({ ownerEntities, handleStep, setSelectedForListing })
             <EntityCard
               key={entity.tokenId}
               entity={entity}
-              borderType="orange"
+              borderType={BorderType.ORANGE}
               onSelect={() => {
                 setSelectedForListing(entity);
                 handleStep('three');

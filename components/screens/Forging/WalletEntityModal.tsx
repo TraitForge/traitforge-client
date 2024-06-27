@@ -1,15 +1,29 @@
 import { useState, useEffect, useMemo } from 'react';
-import { EntityCard, FiltersHeader } from '@/components';
+import { SingleValue } from 'react-select';
+import { EntityCard, FiltersHeader } from '~/components';
+import { BorderType, Entity } from '~/types';
 
-export const WalletEntityModal = ({ ownerEntities, handleSelectedFromWallet, handleOwnerEntityList }) => {
-  const [filteredEntities, setFilteredEntities] = useState([]);
+type WalletEntityModalTypes = {
+  ownerEntities: Entity[];
+  handleSelectedFromWallet: (entity: Entity) => void;
+  handleOwnerEntityList: () => void;
+};
+
+export const WalletEntityModal = ({
+  ownerEntities,
+  handleSelectedFromWallet,
+  handleOwnerEntityList,
+}: WalletEntityModalTypes) => {
+  const [filteredEntities, setFilteredEntities] = useState<Entity[]>([]);
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
 
   useEffect(() => {
     const filterEntities = () => {
       try {
-        const filtered = ownerEntities.filter(entity => entity.role === 'Merger');
+        const filtered = ownerEntities.filter(
+          entity => entity.role === 'Merger'
+        );
         setFilteredEntities(filtered);
       } catch (error) {
         console.error('Error in filterEntities:', error);
@@ -19,26 +33,34 @@ export const WalletEntityModal = ({ ownerEntities, handleSelectedFromWallet, han
     filterEntities();
   }, [ownerEntities]);
 
-  const handleFilterChange = (selectedOption, type) => {
+  const handleFilterChange = (
+    selectedOption: SingleValue<
+      { value: number; label: string } | { value: string; label: string }
+    >,
+    type: string
+  ) => {
     if (type === 'generation') {
-      setGenerationFilter(selectedOption.value);
+      setGenerationFilter(String(selectedOption?.value || ''));
     } else if (type === 'sorting') {
-      setSortingFilter(selectedOption.value);
+      setSortingFilter(String(selectedOption?.value || ''));
     }
   };
 
   const filteredListings = useMemo(() => {
     let filtered = filteredEntities.filter(listing => {
-      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+      if (
+        generationFilter &&
+        String(listing.generation) !== String(generationFilter)
+      ) {
         return false;
       }
       return true;
     });
 
     if (sortingFilter === 'NukeFactor_low_to_high') {
-      filtered.sort((a, b) => parseFloat(a.nukeFactor) - parseFloat(b.nukeFactor));
+      filtered.sort((a, b) => Number(a.nukeFactor) - Number(b.nukeFactor));
     } else if (sortingFilter === 'NukeFactor_high_to_low') {
-      filtered.sort((a, b) => parseFloat(b.nukeFactor) - parseFloat(a.nukeFactor));
+      filtered.sort((a, b) => Number(b.nukeFactor) - Number(a.nukeFactor));
     }
 
     return filtered;
@@ -47,7 +69,9 @@ export const WalletEntityModal = ({ ownerEntities, handleSelectedFromWallet, han
   return (
     <div className="bg-dark-81 w-[95vw] md:w-[80vw] h-[100vh] md:h-[90vh] 2xl:w-[80vw] md:rounded-[30px] py-10 px-5 flex flex-col">
       <div className="border-b border-white mb-10">
-        <h2 className="text-center pb-10 text-[40px] uppercase font-electrolize">Select From Wallet</h2>
+        <h2 className="text-center pb-10 text-[40px] uppercase font-electrolize">
+          Select From Wallet
+        </h2>
         <FiltersHeader
           filterOptions={['your mergers']}
           pageType="nuke"
@@ -63,7 +87,7 @@ export const WalletEntityModal = ({ ownerEntities, handleSelectedFromWallet, han
             <EntityCard
               key={entity.tokenId}
               entity={entity}
-              borderType="orange"
+              borderType={BorderType.ORANGE}
               onSelect={() => {
                 handleSelectedFromWallet(entity);
                 handleOwnerEntityList();

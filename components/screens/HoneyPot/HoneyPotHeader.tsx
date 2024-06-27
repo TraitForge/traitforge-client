@@ -1,6 +1,11 @@
 import React from 'react';
 
-export const HoneyPotHeader = ({ step, handleStep }) => {
+type HoneyPotHeaderTypes = {
+  step: string;
+  handleStep: (value: string) => void;
+};
+
+export const HoneyPotHeader = ({ step, handleStep }: HoneyPotHeaderTypes) => {
   const getPreviousStep = () => {
     if (step === 'three') return 'two';
     if (step === 'two') return 'one';

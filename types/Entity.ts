@@ -4,6 +4,7 @@ export enum EntityRole {
 }
 
 export type Entity = {
+  tokenId: number;
   paddedEntropy: number;
   generation: number;
   role: EntityRole;
@@ -12,4 +13,5 @@ export type Entity = {
   nukeFactor: number;
   price: number;
   fee: number;
+  isListed: boolean;
 };

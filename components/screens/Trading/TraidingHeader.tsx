@@ -1,6 +1,11 @@
-import { Button } from '@/components';
+import { Button } from '~/components';
 
-export const TraidingHeader = ({ handleStep, step }) => {
+type TraidingHeaderTypes = {
+  handleStep: (value: string) => void;
+  step: string;
+};
+
+export const TraidingHeader = ({ handleStep, step }: TraidingHeaderTypes) => {
   return (
     <>
       <div className="relative max-md:flex max-md:flex-col max-md:items-center ">
@@ -48,8 +53,8 @@ export const TraidingHeader = ({ handleStep, step }) => {
           {step === 'one'
             ? 'Marketplace'
             : step === 'four'
-              ? 'Buy Entity'
-              : 'Sell Your Entity'}
+            ? 'Buy Entity'
+            : 'Sell Your Entity'}
         </h1>
         {step === 'one' && (
           <div className="md:absolute right-0 top-1/2 md:translate-y-[-50%] w-[265px]">

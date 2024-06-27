@@ -1,4 +1,12 @@
-export const StatsNavbar = ({ currentStat, handleCurrentStats }) => {
+type StatsNavbarTypes = {
+  currentStat: string;
+  handleCurrentStats: (value: string) => void;
+};
+
+export const StatsNavbar = ({
+  currentStat,
+  handleCurrentStats,
+}: StatsNavbarTypes) => {
   const statTypes = {
     addressWithMostEntities: 'most entities owned',
     highestTotalEntropy: 'Highest Total Entropy',
@@ -6,12 +14,13 @@ export const StatsNavbar = ({ currentStat, handleCurrentStats }) => {
     transactionsDisplay: 'Game Activity',
   };
 
-  const headerTitles = {
+  const headerTitles: { [key: string]: string[] } = {
     addressWithMostEntities: ['Entities Owned'],
     highestTotalEntropy: ['Total Entropy'],
     mostForges: ['Forges Executed'],
     transactionsDisplay: ['Entity'],
   };
+
   return (
     <>
       <div className="navbar">
@@ -19,7 +28,9 @@ export const StatsNavbar = ({ currentStat, handleCurrentStats }) => {
           <button
             key={key}
             onClick={() => handleCurrentStats(key)}
-            className={`${currentStat === key ? 'active' : ''} max-md:py-3 py-4 px-2 md:px-6 text-base md:text-[32px]`}
+            className={`${
+              currentStat === key ? 'active' : ''
+            } max-md:py-3 py-4 px-2 md:px-6 text-base md:text-[32px]`}
           >
             {title}
           </button>
@@ -30,7 +41,7 @@ export const StatsNavbar = ({ currentStat, handleCurrentStats }) => {
           <span className="basis-1/12 md:basis-2/12 text-center"> No.</span>
           <span className="basis-7/12 text-left"> Wallet Address</span>
           <span className="basis-4/12 md:basis-3/12 text-center">
-            {headerTitles[currentStat][0] || ''}
+            {headerTitles[currentStat]?.[0] || ''}
           </span>
         </div>
       )}

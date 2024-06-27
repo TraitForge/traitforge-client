@@ -1,22 +1,26 @@
 import React from 'react';
-import { Button } from '@/components';
 
-export const ListingHeader = ({ handleStep, step }) => {
-    const handleButtonClick = () => {
-      if (step === 'two') {
-        handleStep('one');
-      } else if (step === 'three') {
-        handleStep('two');
-      }
-    };
-  
-    return (
-      <div className="relative max-md:flex max-md:flex-col max-md:items-center">
-        {(step === 'two' || step === 'three') && (
-          <button
-            className="absolute left-0 top-1/2 -translate-y-1/2 max-md:w-[40px] max-md:h-auto"
-            onClick={handleButtonClick}
-          >
+type ListingHeaderTypes = {
+  handleStep: (value: string) => void;
+  step: string;
+};
+
+export const ListingHeader = ({ handleStep, step }: ListingHeaderTypes) => {
+  const handleButtonClick = () => {
+    if (step === 'two') {
+      handleStep('one');
+    } else if (step === 'three') {
+      handleStep('two');
+    }
+  };
+
+  return (
+    <div className="relative max-md:flex max-md:flex-col max-md:items-center">
+      {(step === 'two' || step === 'three') && (
+        <button
+          className="absolute left-0 top-1/2 -translate-y-1/2 max-md:w-[40px] max-md:h-auto"
+          onClick={handleButtonClick}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="59"

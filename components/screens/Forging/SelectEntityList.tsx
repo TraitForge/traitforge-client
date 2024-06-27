@@ -1,31 +1,51 @@
 import React, { useState, useMemo } from 'react';
-import { EntityCard, FiltersHeader } from '@/components';
+import { SingleValue } from 'react-select';
+import { EntityCard, FiltersHeader } from '~/components';
+import { BorderType, Entity } from '~/types';
 
-export const SelectEntityList = ({ entitiesForForging, handleSelectedFromPool, handleEntityListModal }) => {
+type SelectEntityListTypes = {
+  entitiesForForging: Entity[];
+  handleSelectedFromPool: (entity: Entity) => void;
+  handleEntityListModal: () => void;
+};
+
+export const SelectEntityList = ({
+  entitiesForForging,
+  handleSelectedFromPool,
+  handleEntityListModal,
+}: SelectEntityListTypes) => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
 
-  const handleFilterChange = (selectedOption, type) => {
+  const handleFilterChange = (
+    selectedOption: SingleValue<
+      { value: number; label: string } | { value: string; label: string }
+    >,
+    type: string
+  ) => {
     if (type === 'generation') {
-      setGenerationFilter(selectedOption.value);
+      setGenerationFilter(String(selectedOption?.value || ''));
     } else if (type === 'sorting') {
-      setSortingFilter(selectedOption.value);
+      setSortingFilter(String(selectedOption?.value || ''));
     }
   };
 
   const filteredAndSortedListings = useMemo(() => {
     let filtered = entitiesForForging.filter(listing => {
       if (!listing.isListed === true) return false;
-      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+      if (
+        generationFilter &&
+        String(listing.generation) !== String(generationFilter)
+      ) {
         return false;
       }
       return true;
     });
 
     if (sortingFilter === 'price_low_to_high') {
-      filtered.sort((a, b) => parseFloat(a.fee) - parseFloat(b.fee));
+      filtered.sort((a, b) => Number(a.fee) - Number(b.fee));
     } else if (sortingFilter === 'price_high_to_low') {
-      filtered.sort((a, b) => parseFloat(b.fee) - parseFloat(a.fee));
+      filtered.sort((a, b) => Number(b.fee) - Number(a.fee));
     }
 
     return filtered;
@@ -34,11 +54,15 @@ export const SelectEntityList = ({ entitiesForForging, handleSelectedFromPool, h
   return (
     <div className="bg-dark-81 w-[95vw] md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[80vw] md:rounded-[30px] mx-auto py-10 px-5 flex flex-col">
       <div className="border-b border-white mb-10">
-        <h2 className="text-center pb-10 text-[40px] uppercase ">Select From Pool</h2>
+        <h2 className="text-center pb-10 text-[40px] uppercase ">
+          Select From Pool
+        </h2>
         <FiltersHeader
           filterOptions={['Listed forgers']}
           color="orange"
-          handleFilterChange={(selectedOption, type) => handleFilterChange(selectedOption, type)}
+          handleFilterChange={(selectedOption, type) =>
+            handleFilterChange(selectedOption, type)
+          }
           generationFilter={generationFilter}
           sortingFilter={sortingFilter}
         />
@@ -49,8 +73,7 @@ export const SelectEntityList = ({ entitiesForForging, handleSelectedFromPool, h
             <EntityCard
               key={listing.tokenId}
               entity={listing}
-              borderType="orange"
-              price={listing.fee}
+              borderType={BorderType.ORANGE}
               onSelect={() => {
                 handleSelectedFromPool(listing);
                 handleEntityListModal();

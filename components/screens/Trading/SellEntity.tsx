@@ -1,11 +1,18 @@
 import { useState } from 'react';
-import { EntityCard, Button } from '@/components';
+import { EntityCard, Button } from '~/components';
+import { BorderType, Entity } from '~/types';
+
+type SellEntityTypes = {
+  selectedForSale: Entity;
+  listEntityForSale: (entity: Entity, price: string) => void;
+  handleStep: (value: string) => void;
+};
 
 export const SellEntity = ({
   selectedForSale,
   listEntityForSale,
   handleStep,
-}) => {
+}: SellEntityTypes) => {
   const [price, setPrice] = useState('');
   const [showPriceError, setShowPriceError] = useState(false);
 
@@ -29,7 +36,7 @@ export const SellEntity = ({
         )}
       </div>
       <div className="max-md:order-1">
-        <EntityCard borderType="green" entity={selectedForSale} />
+        <EntityCard borderType={BorderType.GREEN} entity={selectedForSale} />
       </div>
       <div className="max-md:order-3 max-md:px-10 mt-2">
         <Button

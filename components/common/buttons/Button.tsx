@@ -7,7 +7,7 @@ type ButtonTypes = {
   borderColor?: string;
   width?: string | number;
   height?: string | number;
-  textClass: string;
+  textClass?: string;
 } & DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
@@ -24,9 +24,7 @@ export const Button = ({
 }: ButtonTypes) => {
   const textClasses = classNames(
     'absolute-center whitespace-nowrap text-[24px]',
-    {
-      [textClass]: textClass,
-    }
+    textClass
   );
 
   return (

@@ -1,8 +1,16 @@
 import Image from 'next/image';
+import { EntityCard } from '~/components';
+import { BorderType, Entity } from '~/types';
 
-import { EntityCard } from '@/components';
+type ArenaCenterTypes = {
+  selectedFromPool: Entity;
+  areEntitiesForged: boolean;
+};
 
-export const ArenaCenter = ({ areEntitiesForged }) => {
+export const ArenaCenter = ({
+  selectedFromPool,
+  areEntitiesForged,
+}: ArenaCenterTypes) => {
   return (
     <div className="hidden md:flex items-center justify-center h-full  relative">
       <Image
@@ -14,7 +22,10 @@ export const ArenaCenter = ({ areEntitiesForged }) => {
       />
       {areEntitiesForged && (
         <div className="absolute top-1/2 left-1/2 max-h-[300p] -translate-x-1/2 -translate-y-1/2 scale-[0.65]">
-          <EntityCard entity={selectedFromPool} borderType="orange" />
+          <EntityCard
+            entity={selectedFromPool}
+            borderType={BorderType.ORANGE}
+          />
         </div>
       )}
     </div>

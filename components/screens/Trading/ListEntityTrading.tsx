@@ -1,24 +1,42 @@
-import { EntityCard, FiltersHeader } from '@/components';
 import { useState, useMemo } from 'react';
+import { SingleValue } from 'react-select';
+import { EntityCard, FiltersHeader } from '~/components';
+import { BorderType, Entity } from '~/types';
 
-export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) => {
+type ListEntityTradingTypes = {
+  ownerEntities: Entity[];
+  setSelectedForSale: (entity: Entity) => void;
+  handleStep: (value: string) => void;
+};
+
+export const ListEntityTrading = ({
+  ownerEntities,
+  setSelectedForSale,
+  handleStep,
+}: ListEntityTradingTypes) => {
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
 
-  const handleSort = type => setSortOption(type);
-
-  const handleFilterChange = (selectedOption, type) => {
+  const handleFilterChange = (
+    selectedOption: SingleValue<
+      { value: number; label: string } | { value: string; label: string }
+    >,
+    type: string
+  ) => {
     if (type === 'generation') {
-      setGenerationFilter(selectedOption.value);
+      setGenerationFilter(String(selectedOption?.value || ''));
     } else if (type === 'sorting') {
-      setSortingFilter(selectedOption.value);
+      setSortingFilter(String(selectedOption?.value || ''));
     }
   };
 
   const filteredAndSortedOwnerEntities = useMemo(() => {
     let filtered = ownerEntities.filter(listing => {
-      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+      if (
+        generationFilter &&
+        String(listing.generation) !== String(generationFilter)
+      ) {
         return false;
       }
 
@@ -29,9 +47,9 @@ export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) =>
     });
 
     if (sortingFilter === 'NukeFactor_low_to_high') {
-      filtered.sort((a, b) => parseFloat(a.nukeFactor) - parseFloat(b.nukeFactor));
+      filtered.sort((a, b) => Number(a.nukeFactor) - Number(b.nukeFactor));
     } else if (sortingFilter === 'NukeFactor_high_to_low') {
-      filtered.sort((a, b) => parseFloat(b.nukeFactor) - parseFloat(a.nukeFactor));
+      filtered.sort((a, b) => Number(b.nukeFactor) - Number(a.nukeFactor));
     }
 
     return filtered;
@@ -41,7 +59,7 @@ export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) =>
     <div className="overflow-y-auto flex-1">
       <FiltersHeader
         sortOption={sortOption}
-        handleSort={handleSort}
+        handleSort={setSortOption}
         pageType="nuke"
         color="green"
         handleFilterChange={handleFilterChange}
@@ -53,7 +71,7 @@ export const ListEntity = ({ ownerEntities, setSelectedForSale, handleStep }) =>
           <EntityCard
             key={entity.tokenId}
             entity={entity}
-            borderType="green"
+            borderType={BorderType.GREEN}
             onSelect={() => {
               setSelectedForSale(entity);
               handleStep('three');

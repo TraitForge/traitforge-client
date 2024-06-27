@@ -1,7 +1,16 @@
 import Image from 'next/image';
 import classNames from 'classnames';
+import { EntityCard } from '~/components';
+import { BorderType, Entity } from '~/types';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 
-import { EntityCard } from '@/components';
+type ArenaItemForgerTypes = {
+  handleEntityListModal?: () => void;
+  image: string | StaticImport;
+  selectedFromPool: Entity;
+  btnLabel?: string;
+  className?: string;
+};
 
 export const ArenaItemForger = ({
   handleEntityListModal,
@@ -9,9 +18,11 @@ export const ArenaItemForger = ({
   selectedFromPool,
   btnLabel,
   className,
-}) => {
+}: ArenaItemForgerTypes) => {
   if (selectedFromPool)
-    return <EntityCard entity={selectedFromPool} borderType="orange" />;
+    return (
+      <EntityCard entity={selectedFromPool} borderType={BorderType.ORANGE} />
+    );
 
   const buttonWrapper = classNames('flex flex-col gap-y-5', className);
 

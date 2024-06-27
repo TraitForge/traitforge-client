@@ -1,7 +1,16 @@
 import Image from 'next/image';
 import classNames from 'classnames';
+import { EntityCard } from '~/components';
+import { BorderType, Entity } from '~/types';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 
-import { EntityCard } from '@/components';
+type ArenaItemTypes = {
+  handleOwnerEntityList?: () => void;
+  image: string | StaticImport;
+  selectedFromWallet: Entity;
+  btnLabel?: string;
+  className?: string;
+};
 
 export const ArenaItem = ({
   handleOwnerEntityList,
@@ -9,14 +18,10 @@ export const ArenaItem = ({
   selectedFromWallet,
   btnLabel,
   className,
-}) => {
+}: ArenaItemTypes) => {
   if (selectedFromWallet)
     return (
-      <EntityCard
-        handleOwnerEntityList={handleOwnerEntityList}
-        entity={selectedFromWallet}
-        borderType="orange"
-      />
+      <EntityCard entity={selectedFromWallet} borderType={BorderType.ORANGE} />
     );
 
   const buttonWrapper = classNames('flex flex-col gap-y-5', className);

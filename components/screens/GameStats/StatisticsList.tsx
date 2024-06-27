@@ -1,7 +1,12 @@
-import { TransactionsDisplay } from '@/components';
+import { TransactionsDisplay } from '~/components';
 
-export const StatisticsList = ({ currentStat, stats }) => {
-  const formatRanking = index => {
+type StatisticsListTypes = {
+  currentStat: string;
+  stats: any;
+};
+
+export const StatisticsList = ({ currentStat, stats }: StatisticsListTypes) => {
+  const formatRanking = (index: number) => {
     const j = index % 10,
       k = index % 100;
     if (j === 1 && k !== 11) {
@@ -24,7 +29,7 @@ export const StatisticsList = ({ currentStat, stats }) => {
         <div className="stats-container2 overflow-y-scroll flex-1 max-md:bg-dark-81 max-md:px-2">
           <ul className="flex flex-col gap-6">
             {stats[currentStat].length > 0 ? (
-              stats[currentStat].map((item, index) => (
+              stats[currentStat].map((item: any, index: number) => (
                 <li className="listli md:text-large flex text-base" key={index}>
                   <p className="basis-1/12 md:basis-2/12">
                     {formatRanking(index + 1)}

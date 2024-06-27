@@ -1,20 +1,30 @@
 import { useEffect, useState } from 'react';
-
-import { Button } from '@/components';
-import { handlePrice } from '@/utils/utils';
-import { useContextState } from '@/utils/context';
+import { Button } from '~/components';
+import { handlePrice } from '~/utils/utils';
+import { useContextState } from '~/utils/context';
 import styles from '@/styles/honeypot.module.scss';
 
-export const HoneyPotBody = ({ handleStep, usdAmountInitial, ethAmountInitial }) => {
+type HoneyPotBodyTypes = {
+  handleStep: () => void;
+  usdAmountInitial?: string;
+  ethAmountInitial?: string;
+};
+
+export const HoneyPotBody = ({
+  handleStep,
+  usdAmountInitial,
+  ethAmountInitial,
+}: HoneyPotBodyTypes) => {
   const [ethAmount, setEthAmount] = useState(ethAmountInitial);
   const [usdAmount, setUsdAmount] = useState(usdAmountInitial);
   const { infuraProvider } = useContextState();
 
   useEffect(() => {
     const handleEthPrice = setInterval(async () => {
-      const { ethAmount, usdAmount } = await handlePrice(infuraProvider);
-      setEthAmount(ethAmount);
-      setUsdAmount(usdAmount);
+      const { ethAmount: _ethAmount, usdAmount: _usdAmount } =
+        await handlePrice(infuraProvider);
+      setEthAmount(_ethAmount);
+      setUsdAmount(_usdAmount);
     }, 5000);
     return () => clearInterval(handleEthPrice);
   }, []);

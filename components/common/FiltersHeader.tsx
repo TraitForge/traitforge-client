@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import Select, { CSSObjectWithLabel, SingleValue } from 'react-select';
 
 type FiltersHeaderTypes = {
-  handleSort: (value: string) => void;
-  sortOption: string;
+  handleSort?: (value: string) => void;
+  sortOption?: string;
   color: string;
   handleFilterChange: (
     option: SingleValue<
@@ -20,9 +20,9 @@ type FiltersHeaderTypes = {
   ) => void;
   generationFilter: string | number;
   sortingFilter: string | number;
-  hideSortingSelect: boolean;
-  filterOptions: string[];
-  pageType: string;
+  hideSortingSelect?: boolean;
+  filterOptions?: string[];
+  pageType?: string;
 };
 
 export const FiltersHeader = ({
@@ -117,7 +117,7 @@ export const FiltersHeader = ({
               sortOption === type ? activeClasses : ''
             } relative px-3 md:px-6 font-bebas`}
             onClick={() => {
-              if (color !== 'orange') {
+              if (color !== 'orange' && handleSort) {
                 handleSort(type);
               }
             }}

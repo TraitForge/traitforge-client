@@ -13,10 +13,10 @@ import { calculateUri } from '~/utils';
 
 type EntityCardTypes = {
   entity: Entity;
-  onSelect: () => void;
+  onSelect?: () => void;
   borderType?: BorderType;
   wrapperClass?: string;
-  showPrice: boolean;
+  showPrice?: boolean;
 };
 
 export const EntityCard = ({
