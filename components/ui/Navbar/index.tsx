@@ -2,10 +2,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-
-import { Logo } from '@/icons';
-import ConnectButton from '@/components/ui/WalletButton';
-import { icons } from '@/icons/icons';
+import { Logo } from '~/icons';
+import { icons } from '~/icons/icons';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const links = [
   { url: '/', text: 'HOME' },
@@ -27,8 +26,10 @@ const Navbar = () => {
   const navLinkClasses = classNames(commonClasses, {
     'after:bg-neon-orange hover:text-neon-orange': router.asPath === '/forging',
     'after:bg-neon-green hover:text-neon-green': router.asPath === '/trading',
-    'after:bg-neon-purple hover:text-neon-purple': router.asPath === '/nuke-fund',
-    'after:bg-neon-green-yellow hover:text-neon-green-yellow': router.asPath === '/stats',
+    'after:bg-neon-purple hover:text-neon-purple':
+      router.asPath === '/nuke-fund',
+    'after:bg-neon-green-yellow hover:text-neon-green-yellow':
+      router.asPath === '/stats',
     'after:bg-primary hover:text-primary': router.asPath === '/',
   });
 
@@ -40,7 +41,9 @@ const Navbar = () => {
     'text-primary': router.asPath === '/',
   });
 
-  const expandedClasses = classNames('container max-lg:py-1 flex items-center justify-between');
+  const expandedClasses = classNames(
+    'container max-lg:py-1 flex items-center justify-between'
+  );
 
   return (
     <header>
@@ -51,7 +54,12 @@ const Navbar = () => {
         <ul className="flex gap-x-[20px] xl:gap-x-[64px] max-lg:hidden">
           {links.map((link, index) => (
             <li key={index}>
-              <Link className={`${navLinkClasses} ${link.url === router.asPath ? activeClass : ''}`} href={link.url}>
+              <Link
+                className={`${navLinkClasses} ${
+                  link.url === router.asPath ? activeClass : ''
+                }`}
+                href={link.url}
+              >
                 {link.text}
               </Link>
             </li>
@@ -59,7 +67,10 @@ const Navbar = () => {
         </ul>
         <div className="walletbackground flex justify-center p-1 rounded-lg gap-x-6">
           <ConnectButton />
-          <button className="block lg:hidden" onClick={() => setIsMenuOpen(prevState => !prevState)}>
+          <button
+            className="block lg:hidden"
+            onClick={() => setIsMenuOpen(prevState => !prevState)}
+          >
             {icons.menu()}
           </button>
         </div>
@@ -68,7 +79,9 @@ const Navbar = () => {
             {links.map((link, index) => (
               <li key={index}>
                 <Link
-                  className={`${navLinkClasses} !text-[32px] ${link.url === router.asPath && activeClass}`}
+                  className={`${navLinkClasses} !text-[32px] ${
+                    link.url === router.asPath && activeClass
+                  }`}
                   href={link.url}
                 >
                   {link.text}

@@ -1,4 +1,8 @@
-import { faTwitter, faDiscord, faTelegram } from '@fortawesome/free-brands-svg-icons';
+import {
+  faTwitter,
+  faDiscord,
+  faTelegram,
+} from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './styles.module.scss';
 
@@ -17,7 +21,13 @@ const Footer = () => {
     <footer className={styles.container}>
       <div className={styles.footer}>
         {links.map(({ url, icon }, index) => (
-          <a href={url} key={index} target="_blank" rel="noopener noreferrer" className={styles.smIcons}>
+          <a
+            href={url}
+            key={index}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.smIcons}
+          >
             <FontAwesomeIcon icon={icon} size="1x" />
           </a>
         ))}
