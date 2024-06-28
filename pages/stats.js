@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import { useContextState } from `~/utils/context';
-import { StatsNavbar } from `~/screens/game-stats/StatsNavbar';
-import { StatisticsList } from `~/screens/game-stats/StatisticsList';
+import { useContextState } from '~/utils/context';
+import { StatsNavbar } from '~/screens/game-stats/StatsNavbar';
+import { StatisticsList } from '~/screens/game-stats/StatisticsList';
 
 const Stats = () => {
   const { subscribeToMintEvent } = useContextState();
@@ -26,7 +26,10 @@ const Stats = () => {
       <div className="md:container h-full md:pb-10">
         <div className="md:bg-dark-81 rounded-[30px] flex flex-col h-full md:p-10">
           <h1 className="text-[40px] mb-10">Statistics</h1>
-          <StatsNavbar handleCurrentStats={stat => setCurrentStat(stat)} currentStat={currentStat} />
+          <StatsNavbar
+            handleCurrentStats={stat => setCurrentStat(stat)}
+            currentStat={currentStat}
+          />
           <StatisticsList currentStat={currentStat} stats={stats} />
         </div>
       </div>

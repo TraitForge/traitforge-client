@@ -1,4 +1,4 @@
-import { contractsConfig } from `~/utils/contractsConfig';
+import { contractsConfig } from '~/utils/contractsConfig';
 import { JsonRpcProvider, ethers } from 'ethers';
 import { processImage } from './generate-image';
 

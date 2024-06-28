@@ -1,39 +1,22 @@
-import { useEffect, useState } from 'react';
 import { Button } from '~/components';
-import { handlePrice } from '~/utils/utils';
-import { useContextState } from '~/utils/context';
-import styles from `~/styles/honeypot.module.scss';
+import styles from '~/styles/honeypot.module.scss';
+import { useBalance } from 'wagmi';
+import { formatEther } from 'viem';
 
 type HoneyPotBodyTypes = {
   handleStep: () => void;
-  usdAmountInitial?: string;
-  ethAmountInitial?: string;
 };
 
-export const HoneyPotBody = ({
-  handleStep,
-  usdAmountInitial,
-  ethAmountInitial,
-}: HoneyPotBodyTypes) => {
-  const [ethAmount, setEthAmount] = useState(ethAmountInitial);
-  const [usdAmount, setUsdAmount] = useState(usdAmountInitial);
-  const { infuraProvider } = useContextState();
-
-  useEffect(() => {
-    const handleEthPrice = setInterval(async () => {
-      const { ethAmount: _ethAmount, usdAmount: _usdAmount } =
-        await handlePrice(infuraProvider);
-      setEthAmount(_ethAmount);
-      setUsdAmount(_usdAmount);
-    }, 5000);
-    return () => clearInterval(handleEthPrice);
-  }, []);
+export const HoneyPotBody = ({ handleStep }: HoneyPotBodyTypes) => {
+  const { data: balanceInfo } = useBalance();
+  const ethBalance = Number(formatEther(balanceInfo?.value || 0n));
 
   return (
     <>
       <div className={styles.frameContainer}>
-        <p className="text-extra-large font-bebas">{ethAmount} ETH</p>
-        <p className="text-[40px] font-bebas">= ${usdAmount} USD</p>
+        <p className="text-extra-large font-bebas">{ethBalance} ETH</p>
+        {/* TODO: Fetch USD Price later */}
+        {/* <p className="text-[40px] font-bebas">= ${usdAmount} USD</p> */}
       </div>
       <div className="flex flex-col justify-center items-center">
         <Button

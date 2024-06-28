@@ -3,16 +3,16 @@ import { ethers } from 'ethers';
 import { useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { toast } from 'react-toastify';
 
-import styles from `~/styles/trading.module.scss';
-import { EntityCard, LoadingSpinner } from `~/components';
-import { contractsConfig } from `~/utils/contractsConfig';
-import { useContextState } from `~/utils/context';
-import { TraidingHeader } from `~/screens/traiding/TraidingHeader';
-import { SellEntity } from `~/screens/traiding/SellEntity';
-import { BuyEntity } from `~/screens/traiding/BuyEntity';
-import { ListEntity } from `~/screens/traiding/ListEntity';
-import { FiltersHeader } from `~/components';
-import { createContract, approveNFTForTrading } from `~/utils/utils';
+import styles from '~/styles/trading.module.scss';
+import { EntityCard, LoadingSpinner } from '~/components';
+import { contractsConfig } from '~/utils/contractsConfig';
+import { useContextState } from '~/utils/context';
+import { TraidingHeader } from '~/screens/traiding/TraidingHeader';
+import { SellEntity } from '~/screens/traiding/SellEntity';
+import { BuyEntity } from '~/screens/traiding/BuyEntity';
+import { ListEntity } from '~/screens/traiding/ListEntity';
+import { FiltersHeader } from '~/components';
+import { createContract, approveNFTForTrading } from '~/utils/utils';
 
 const Marketplace = () => {
   const {
@@ -53,7 +53,10 @@ const Marketplace = () => {
 
   const filteredAndSortedListings = useMemo(() => {
     let filtered = entitiesForSale.filter(listing => {
-      if (generationFilter && String(listing.generation) !== String(generationFilter)) {
+      if (
+        generationFilter &&
+        String(listing.generation) !== String(generationFilter)
+      ) {
         return false;
       }
 
@@ -111,7 +114,10 @@ const Marketplace = () => {
         contractsConfig.entityTradingAbi
       );
       const priceInWei = ethers.parseEther(price);
-      const transaction = await tradeContract.listNFTForSale(entity.tokenId, priceInWei);
+      const transaction = await tradeContract.listNFTForSale(
+        entity.tokenId,
+        priceInWei
+      );
       await transaction.wait();
       getOwnersEntities();
       getEntitiesForSale();
@@ -138,11 +144,21 @@ const Marketplace = () => {
 
   switch (step) {
     case 'four':
-      content = <BuyEntity handleStep={handleStep} selectedListing={selectedListing} buyEntity={buyEntity} />;
+      content = (
+        <BuyEntity
+          handleStep={handleStep}
+          selectedListing={selectedListing}
+          buyEntity={buyEntity}
+        />
+      );
       break;
     case 'three':
       content = (
-        <SellEntity handleStep={handleStep} selectedForSale={selectedForSale} listEntityForSale={listEntityForSale} />
+        <SellEntity
+          handleStep={handleStep}
+          selectedForSale={selectedForSale}
+          listEntityForSale={listEntityForSale}
+        />
       );
       break;
     case 'two':
@@ -163,7 +179,9 @@ const Marketplace = () => {
               sortOption={sortOption}
               handleSort={handleSort}
               color="green"
-              handleFilterChange={(selectedOption, type) => handleFilterChange(selectedOption, type)}
+              handleFilterChange={(selectedOption, type) =>
+                handleFilterChange(selectedOption, type)
+              }
               generationFilter={generationFilter}
               sortingFilter={sortingFilter}
             />

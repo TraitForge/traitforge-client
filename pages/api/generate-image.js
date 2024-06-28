@@ -1,8 +1,8 @@
-import { composeIMG } from `~/utils/imageProcessing';
-import s3 from `~/aws-config';
+import { composeIMG } from '~/utils/imageProcessing';
+import s3 from '~/aws-config';
 import { ethers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { contractsConfig } from `~/utils/contractsConfig';
+import { contractsConfig } from '~/utils/contractsConfig';
 
 async function startProcessing() {
   const contract = new ethers.Contract(
@@ -14,11 +14,19 @@ async function startProcessing() {
   for (let slotIndex = 0; slotIndex < 770; slotIndex++) {
     for (let numberIndex = 0; numberIndex < 13; numberIndex++) {
       try {
-        const paddedEntropy = await contract.getPublicEntropy(slotIndex, numberIndex);
+        const paddedEntropy = await contract.getPublicEntropy(
+          slotIndex,
+          numberIndex
+        );
         const url = await processImage(paddedEntropy, entityGeneration);
-        console.log(`Processed ${paddedEntropy} in generation ${entityGeneration}: ${url}`);
+        console.log(
+          `Processed ${paddedEntropy} in generation ${entityGeneration}: ${url}`
+        );
       } catch (error) {
-        console.error(`Failed at slot ${slotIndex}, number ${numberIndex} in generation ${entityGeneration}:`, error);
+        console.error(
+          `Failed at slot ${slotIndex}, number ${numberIndex} in generation ${entityGeneration}:`,
+          error
+        );
       }
       await new Promise(resolve => setTimeout(resolve, 500));
     }

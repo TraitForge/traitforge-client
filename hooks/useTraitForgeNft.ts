@@ -262,6 +262,20 @@ export const useEntitiesForForging = () => {
   };
 };
 
+export const useApproval = (address: `0x${string}`, tokenId: number) => {
+  const { data, isFetching } = useReadContract({
+    abi: TraitForgeNftABI,
+    address: CONTRACT_ADDRESSES.TraitForgeNft,
+    functionName: 'isApprovedOrOwner',
+    args: [address, BigInt(tokenId)],
+  });
+
+  return {
+    data: data || false,
+    isFetching,
+  };
+};
+
 export const useMintToken = () => {
   const {
     data: hash,
@@ -442,6 +456,98 @@ export const useListForForging = () => {
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'listForForging',
       args: [BigInt(tokenId), fee],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useApproveNft = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Approved Successfully');
+    }
+    if (isCreationError) {
+      toast.error(`Failed to approve`);
+      console.error(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Failed to approve`);
+      console.error(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (address: `0x${string}`, tokenId: number) => {
+    await writeContractAsync({
+      abi: TraitForgeNftABI,
+      address: CONTRACT_ADDRESSES.TraitForgeNft,
+      functionName: 'approve',
+      args: [address, BigInt(tokenId)],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useNukeEntity = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity Nuked successfully!');
+    }
+    if (isCreationError) {
+      toast.error(`Nuke failed. Please try again`);
+      console.error(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Nuke failed. Please try again`);
+      console.error(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenId: number) => {
+    await writeContractAsync({
+      abi: NukeFundABI,
+      address: CONTRACT_ADDRESSES.NukeFund,
+      functionName: 'nuke',
+      args: [BigInt(tokenId)],
     });
   };
 

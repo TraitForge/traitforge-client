@@ -3,7 +3,7 @@ import { BorderType, Entity } from '~/types';
 
 type NukeEntityTypes = {
   selectedForNuke: Entity;
-  nukeEntity: (entity: Entity) => void;
+  nukeEntity: () => void;
   handleStep: (value: string) => void;
 };
 
@@ -26,7 +26,7 @@ export const NukeEntity = ({
           bg="rba(148, 87, 235, 0.8)"
           text="Nuke"
           onClick={() => {
-            nukeEntity(selectedForNuke);
+            nukeEntity();
             handleStep('one');
           }}
         />
