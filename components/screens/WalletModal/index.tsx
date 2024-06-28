@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import { FaWallet } from 'react-icons/fa';
-import { useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { useState } from 'react';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { Button, EntityCard, Modal } from '~/components';
-import { shortenAddress } from '~/utils/utils';
-import { useContextState } from '~/utils/context';
 import { BorderType, Entity } from '~/types';
+import { shortenAddress } from '~/utils';
+import { useAccount } from 'wagmi';
+import { useListedEntitiesByUser, useOwnerEntities } from '~/hooks';
 
 type WalletModalTypes = {
   isOpen: boolean;
@@ -20,15 +20,19 @@ export const WalletModal = ({
   closeModal,
   balanceInETH,
 }: WalletModalTypes) => {
-  const { ownerEntities, entitiesListedByUser } = useContextState();
   const { asPath } = useRouter();
-  const { address } = useWeb3ModalAccount();
+  const { address } = useAccount();
+  const { data: ownerEntities } = useOwnerEntities(address || '0x0');
+  const { data: entitiesListedByUser } = useListedEntitiesByUser(
+    address || '0x0'
+  );
+
   const [selectedForUnlisting, setSelectedForUnlisting] = useState<number[]>(
     []
   );
   const [currentStep, setCurrentStep] = useState(1);
 
-  const shortAddress = shortenAddress(address);
+  const shortAddress = address ? shortenAddress(address) : 'Not connected';
 
   const handleSelectEntity = (tokenId: number) => {
     setSelectedForUnlisting(prevSelected => {

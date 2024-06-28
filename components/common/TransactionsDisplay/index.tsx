@@ -1,7 +1,5 @@
-import { useContextState } from '~/utils/context';
-
 const TransactionsDisplay = () => {
-  const { transactions } = useContextState();
+  const transactions: any[] = [];
 
   return (
     <div className="transactions-container">

@@ -21,7 +21,7 @@ import { calculateEntityAttributes } from '~/utils';
 // Read Functions
 
 export const useCurrentGeneration = () => {
-  const { data, isFetching } = useReadContract({
+  const { data, isFetching, refetch } = useReadContract({
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'getGeneration',
@@ -31,11 +31,12 @@ export const useCurrentGeneration = () => {
   return {
     data: Number(data || 0),
     isFetching,
+    refetch,
   };
 };
 
 export const useMintPrice = () => {
-  const { data, isFetching } = useReadContract({
+  const { data, isFetching, refetch } = useReadContract({
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'calculateMintPrice',
@@ -45,6 +46,7 @@ export const useMintPrice = () => {
   return {
     data: BigInt(data || 0),
     isFetching,
+    refetch,
   };
 };
 
@@ -333,6 +335,31 @@ export const useApproval = (address: `0x${string}`, tokenId: number) => {
   };
 };
 
+export const useListedEntitiesByUser = (account: `0x${string}`) => {
+  const { data: ownerEntities, isFetching: isOwnerEntitiesFetching } =
+    useOwnerEntities(account);
+  const { data: entitiesForForging, isFetching: isForgingFetching } =
+    useEntitiesForForging();
+  const { data: entitiesForSale, isFetching: isTradingFetching } =
+    useEntitiesForSale();
+
+  const listedEntities = entitiesForSale.filter(
+    entity => entity.seller === account
+  );
+
+  const forgingEntities = entitiesForForging.filter(entity =>
+    ownerEntities.some(ownedEntity => ownedEntity.tokenId === entity.tokenId)
+  );
+
+  const combinedListedEntities = [...listedEntities, ...forgingEntities];
+
+  return {
+    data: combinedListedEntities,
+    isFetching:
+      isOwnerEntitiesFetching || isForgingFetching || isTradingFetching,
+  };
+};
+
 // Write Functions
 
 export const useMintToken = () => {
@@ -356,11 +383,11 @@ export const useMintToken = () => {
     }
     if (isCreationError) {
       toast.error(`Minting entity failed`);
-      console.error(errorCreation?.message);
+      console.log(errorCreation?.message);
     }
     if (isConfirmError) {
       toast.error(`Minting entity failed`);
-      console.error(errorConfirm?.message);
+      console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
@@ -403,11 +430,11 @@ export const useMintWithBudget = () => {
     }
     if (isCreationError) {
       toast.error(`Minting entity failed`);
-      console.error(errorCreation?.message);
+      console.log(errorCreation?.message);
     }
     if (isConfirmError) {
       toast.error(`Minting entity failed`);
-      console.error(errorConfirm?.message);
+      console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
@@ -450,11 +477,11 @@ export const useForgeWithListed = () => {
     }
     if (isCreationError) {
       toast.error(`Failed to Forge`);
-      console.error(errorCreation?.message);
+      console.log(errorCreation?.message);
     }
     if (isConfirmError) {
       toast.error(`Failed to Forge`);
-      console.error(errorConfirm?.message);
+      console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
@@ -501,11 +528,11 @@ export const useListForForging = () => {
     }
     if (isCreationError) {
       toast.error(`Failed to List Entity`);
-      console.error(errorCreation?.message);
+      console.log(errorCreation?.message);
     }
     if (isConfirmError) {
       toast.error(`Failed to List Entity`);
-      console.error(errorConfirm?.message);
+      console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
@@ -547,11 +574,11 @@ export const useApproveNft = () => {
     }
     if (isCreationError) {
       toast.error(`Failed to approve`);
-      console.error(errorCreation?.message);
+      console.log(errorCreation?.message);
     }
     if (isConfirmError) {
       toast.error(`Failed to approve`);
-      console.error(errorConfirm?.message);
+      console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
@@ -593,11 +620,11 @@ export const useNukeEntity = () => {
     }
     if (isCreationError) {
       toast.error(`Nuke failed. Please try again`);
-      console.error(errorCreation?.message);
+      console.log(errorCreation?.message);
     }
     if (isConfirmError) {
       toast.error(`Nuke failed. Please try again`);
-      console.error(errorConfirm?.message);
+      console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
@@ -639,11 +666,11 @@ export const useBuyEntity = () => {
     }
     if (isCreationError) {
       toast.error(`Purchase failed. Please try again`);
-      console.error(errorCreation?.message);
+      console.log(errorCreation?.message);
     }
     if (isConfirmError) {
       toast.error(`Purchase failed. Please try again`);
-      console.error(errorConfirm?.message);
+      console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
@@ -686,11 +713,11 @@ export const useListEntityForSale = () => {
     }
     if (isCreationError) {
       toast.error('Listing failed. Please try again.');
-      console.error(errorCreation?.message);
+      console.log(errorCreation?.message);
     }
     if (isConfirmError) {
       toast.error('Listing failed. Please try again.');
-      console.error(errorConfirm?.message);
+      console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 

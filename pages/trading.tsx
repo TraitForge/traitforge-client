@@ -1,12 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { ethers, parseEther } from 'ethers';
-import { useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers/react';
-import { toast } from 'react-toastify';
 import styles from '~/styles/trading.module.scss';
 import { EntityCard, LoadingSpinner } from '~/components';
-import { contractsConfig } from '~/utils/contractsConfig';
 import { FiltersHeader } from '~/components';
-import { createContract, approveNFTForTrading } from '~/utils/utils';
 import { SingleValue } from 'react-select';
 import { BorderType, Entity, EntityTrading } from '~/types';
 import {
@@ -25,6 +20,7 @@ import {
   TraidingHeader,
 } from '~/components/screens';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
+import { parseEther } from 'viem';
 
 const Marketplace = () => {
   const { address } = useAccount();

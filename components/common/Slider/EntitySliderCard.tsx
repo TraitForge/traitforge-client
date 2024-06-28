@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-import { calculateEntityAttributes } from '~/utils/utils';
 import styles from './styles.module.scss';
 import blueBorder from '~/public/images/border.svg';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
-import { calculateUri } from '~/utils';
+import { calculateEntityAttributes, calculateUri } from '~/utils';
 
 type EntitySliderCardTypes = {
   entropy: number;

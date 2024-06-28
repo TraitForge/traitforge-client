@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { Logo } from '~/icons';
 import { icons } from '~/icons/icons';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import WalletButton from '../WalletButton';
 
 const links = [
   { url: '/', text: 'HOME' },
@@ -66,7 +66,7 @@ const Navbar = () => {
           ))}
         </ul>
         <div className="walletbackground flex justify-center p-1 rounded-lg gap-x-6">
-          <ConnectButton />
+          <WalletButton />
           <button
             className="block lg:hidden"
             onClick={() => setIsMenuOpen(prevState => !prevState)}

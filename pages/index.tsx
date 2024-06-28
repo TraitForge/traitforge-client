@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Slider, Button, BudgetModal, LoadingSpinner } from '~/components';
 import {
   useCurrentGeneration,
@@ -10,12 +10,19 @@ import {
 import { formatEther, parseEther } from 'viem';
 
 const Home = () => {
-  const { data: currentGeneration } = useCurrentGeneration();
-  const { data: mintPrice } = useMintPrice();
-  const { onWriteAsync: onMintToken, isPending: isMintTokenPending } =
-    useMintToken();
-  const { onWriteAsync: onMintWithBudget, isPending: isMintWithBudgetPending } =
-    useMintWithBudget();
+  const { data: currentGeneration, refetch: refetchCurrentGeneration } =
+    useCurrentGeneration();
+  const { data: mintPrice, refetch: refetchMintPrice } = useMintPrice();
+  const {
+    onWriteAsync: onMintToken,
+    isPending: isMintTokenPending,
+    isConfirmed: isMintTokenConfirmed,
+  } = useMintToken();
+  const {
+    onWriteAsync: onMintWithBudget,
+    isPending: isMintWithBudgetPending,
+    isConfirmed: isMintWithBudgetConfirmed,
+  } = useMintWithBudget();
   const { data: upcomingMints, isFetching: isUpcomingMintsFetching } =
     useUpcomingMints(mintPrice);
 
@@ -25,6 +32,13 @@ const Home = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState('');
   const [loadingText] = useState('');
+
+  useEffect(() => {
+    if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
+      refetchCurrentGeneration();
+      refetchMintPrice();
+    }
+  }, [isMintTokenConfirmed, isMintWithBudgetConfirmed]);
 
   const handleMintEntity = async () => {
     onMintToken(mintPrice);

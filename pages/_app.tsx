@@ -1,26 +1,22 @@
 import { DefaultSeo } from 'next-seo';
 import { type AppType } from 'next/app';
-import { headers } from 'next/headers';
 import { ToastContainer } from 'react-toastify';
 import SEO from '~/next-seo.config';
 import { Wrapper } from '~/components';
 import { electroliceFont, bebasFont } from '~/public/fonts';
-import { config } from '~/lib/config';
 import WagmiProviderComp from '~/lib/wagmiProvider';
-import 'swiper/css';
-import 'react-toastify/dist/ReactToastify.css';
 import '~/styles/index.css';
-import '`/styles/main.scss';
-import { cookieToInitialState } from 'wagmi';
+import '~/styles/main.scss';
+import 'swiper/css';
+import '@rainbow-me/rainbowkit/styles.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: AppType = ({ Component, pageProps }) => {
-  const initialState = cookieToInitialState(config, headers().get('cookie'));
-
   return (
     <div
       className={`${electroliceFont.variable} ${bebasFont.variable} font-sans`}
     >
-      <WagmiProviderComp initialState={initialState}>
+      <WagmiProviderComp>
         <Wrapper>
           <DefaultSeo {...SEO} />
           <Component {...pageProps} />
