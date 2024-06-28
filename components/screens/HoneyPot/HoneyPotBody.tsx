@@ -1,6 +1,6 @@
 import { Button } from '~/components';
 import styles from '~/styles/honeypot.module.scss';
-import { useBalance } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 import { formatEther } from 'viem';
 
 type HoneyPotBodyTypes = {
@@ -8,13 +8,16 @@ type HoneyPotBodyTypes = {
 };
 
 export const HoneyPotBody = ({ handleStep }: HoneyPotBodyTypes) => {
-  const { data: balanceInfo } = useBalance();
+  const { address } = useAccount();
+  const { data: balanceInfo } = useBalance({ address });
   const ethBalance = Number(formatEther(balanceInfo?.value || 0n));
 
   return (
     <>
       <div className={styles.frameContainer}>
-        <p className="text-extra-large font-bebas">{ethBalance} ETH</p>
+        <p className="text-extra-large font-bebas">
+          {ethBalance.toFixed(4)} ETH
+        </p>
         {/* TODO: Fetch USD Price later */}
         {/* <p className="text-[40px] font-bebas">= ${usdAmount} USD</p> */}
       </div>

@@ -1,3 +1,5 @@
+'use client';
+
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { FaWallet } from 'react-icons/fa';
@@ -9,7 +11,7 @@ import { shortenAddress } from '~/utils';
 export default function WalletButton() {
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
-  const { data: balanceInfo } = useBalance();
+  const { data: balanceInfo } = useBalance({ address });
   const ethBalance = Number(formatEther(balanceInfo?.value || 0n));
 
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +38,7 @@ export default function WalletButton() {
         <WalletModal
           isOpen={isOpen}
           closeModal={() => setIsOpen(false)}
-          balanceInETH={ethBalance}
+          balanceInETH={ethBalance.toFixed(4)}
         />
       )}
     </>
