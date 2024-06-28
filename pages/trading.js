@@ -3,16 +3,16 @@ import { ethers } from 'ethers';
 import { useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { toast } from 'react-toastify';
 
-import styles from '@/styles/trading.module.scss';
-import { EntityCard, LoadingSpinner } from '@/components';
-import { contractsConfig } from '@/utils/contractsConfig';
-import { useContextState } from '@/utils/context';
-import { TraidingHeader } from '@/screens/traiding/TraidingHeader';
-import { SellEntity } from '@/screens/traiding/SellEntity';
-import { BuyEntity } from '@/screens/traiding/BuyEntity';
-import { ListEntity } from '@/screens/traiding/ListEntity';
-import { FiltersHeader } from '@/components';
-import { createContract, approveNFTForTrading } from '@/utils/utils';
+import styles from `~/styles/trading.module.scss';
+import { EntityCard, LoadingSpinner } from `~/components';
+import { contractsConfig } from `~/utils/contractsConfig';
+import { useContextState } from `~/utils/context';
+import { TraidingHeader } from `~/screens/traiding/TraidingHeader';
+import { SellEntity } from `~/screens/traiding/SellEntity';
+import { BuyEntity } from `~/screens/traiding/BuyEntity';
+import { ListEntity } from `~/screens/traiding/ListEntity';
+import { FiltersHeader } from `~/components';
+import { createContract, approveNFTForTrading } from `~/utils/utils';
 
 const Marketplace = () => {
   const {

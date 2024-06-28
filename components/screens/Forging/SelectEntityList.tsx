@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { SingleValue } from 'react-select';
 import { EntityCard, FiltersHeader } from '~/components';
-import { BorderType, Entity } from '~/types';
+import { BorderType, EntityForging } from '~/types';
 
 type SelectEntityListTypes = {
-  entitiesForForging: Entity[];
-  handleSelectedFromPool: (entity: Entity) => void;
+  entitiesForForging: EntityForging[];
+  handleSelectedFromPool: (entity: EntityForging) => void;
   handleEntityListModal: () => void;
 };
 
@@ -32,7 +32,7 @@ export const SelectEntityList = ({
 
   const filteredAndSortedListings = useMemo(() => {
     let filtered = entitiesForForging.filter(listing => {
-      if (!listing.isListed === true) return false;
+      if (!listing.isListed) return false;
       if (
         generationFilter &&
         String(listing.generation) !== String(generationFilter)
@@ -79,6 +79,7 @@ export const SelectEntityList = ({
                 handleEntityListModal();
               }}
               showPrice
+              displayPrice={listing.fee}
             />
           ))}
         </div>

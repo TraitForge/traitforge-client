@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ethers } from 'ethers';
 import classNames from 'classnames';
-import orangeBorder from '@/public/images/orangeborder.svg';
-import blueBorder from '@/public/images/border.svg';
-import purpleBorder from '@/public/images/purpleBorder.svg';
-import greenBorder from '@/public/images/greenBorder.svg';
+import orangeBorder from '~/public/images/orangeborder.svg';
+import blueBorder from '~/public/images/border.svg';
+import purpleBorder from '~/public/images/purpleBorder.svg';
+import greenBorder from '~/public/images/greenBorder.svg';
 import styles from './styles.module.scss';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
-import { BorderType, Entity } from '~/types';
+import { BorderType, Entity, EntityForging } from '~/types';
 import { calculateUri } from '~/utils';
 
 type EntityCardTypes = {
-  entity: Entity;
+  entity: Entity | EntityForging;
   onSelect?: () => void;
   borderType?: BorderType;
   wrapperClass?: string;
   showPrice?: boolean;
+  displayPrice?: string | number;
 };
 
 export const EntityCard = ({
@@ -25,6 +25,7 @@ export const EntityCard = ({
   borderType = BorderType.BLUE,
   wrapperClass,
   showPrice,
+  displayPrice,
 }: EntityCardTypes) => {
   const {
     paddedEntropy,
@@ -33,13 +34,8 @@ export const EntityCard = ({
     forgePotential,
     performanceFactor,
     nukeFactor,
-    price,
-    fee,
   } = entity;
-
   const [imgLoaded, setImgLoaded] = useState(false);
-
-  const displayPrice = price || (fee ? ethers.formatEther(fee) : null);
 
   const uri = calculateUri(paddedEntropy, generation);
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { SingleValue } from 'react-select';
 import { EntityCard, FiltersHeader } from '~/components';
-import { BorderType, Entity } from '~/types';
+import { BorderType, Entity, EntityRole } from '~/types';
 
 type WalletEntityModalTypes = {
   ownerEntities: Entity[];
@@ -22,7 +22,7 @@ export const WalletEntityModal = ({
     const filterEntities = () => {
       try {
         const filtered = ownerEntities.filter(
-          entity => entity.role === 'Merger'
+          entity => entity.role === EntityRole.MERGER
         );
         setFilteredEntities(filtered);
       } catch (error) {

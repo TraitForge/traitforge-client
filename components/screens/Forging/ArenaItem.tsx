@@ -7,7 +7,7 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 type ArenaItemTypes = {
   handleOwnerEntityList?: () => void;
   image: string | StaticImport;
-  selectedFromWallet: Entity;
+  selectedFromWallet: Entity | null;
   btnLabel?: string;
   className?: string;
 };

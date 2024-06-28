@@ -5,13 +5,17 @@ export enum EntityRole {
 
 export type Entity = {
   tokenId: number;
-  paddedEntropy: number;
+  paddedEntropy: string | number;
   generation: number;
   role: EntityRole;
   forgePotential: number;
   performanceFactor: number;
   nukeFactor: number;
-  price: number;
+  price?: number;
+};
+
+export type EntityForging = Entity & {
+  account: `0x${string}`;
   fee: number;
   isListed: boolean;
 };

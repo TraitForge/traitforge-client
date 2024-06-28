@@ -1,14 +1,14 @@
-import { Entity } from '~/types';
+import { Entity, EntityForging } from '~/types';
 import { ArenaCenter } from './ArenaCenter';
 import { ArenaItem } from './ArenaItem';
 import { ArenaItemForger } from './ArenaItemForger';
 
 type ForgingArenaTypes = {
-  selectedFromPool: Entity;
+  selectedFromPool: EntityForging | null;
   handleEntityListModal?: () => void;
   handleOwnerEntityList?: () => void;
   areEntitiesForged?: boolean;
-  selectedFromWallet: Entity;
+  selectedFromWallet: Entity | null;
 };
 
 export const ForgingArena = ({

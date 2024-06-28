@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import classNames from 'classnames';
 import { EntityCard } from '~/components';
-import { BorderType, Entity } from '~/types';
+import { BorderType, EntityForging } from '~/types';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 
 type ArenaItemForgerTypes = {
   handleEntityListModal?: () => void;
   image: string | StaticImport;
-  selectedFromPool: Entity;
+  selectedFromPool: EntityForging | null;
   btnLabel?: string;
   className?: string;
 };

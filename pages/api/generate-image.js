@@ -1,8 +1,8 @@
-import { composeIMG } from '@/utils/imageProcessing';
-import s3 from '@/aws-config';
+import { composeIMG } from `~/utils/imageProcessing';
+import s3 from `~/aws-config';
 import { ethers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { contractsConfig } from '@/utils/contractsConfig';
+import { contractsConfig } from `~/utils/contractsConfig';
 
 async function startProcessing() {
   const contract = new ethers.Contract(

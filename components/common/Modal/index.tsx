@@ -8,7 +8,7 @@ type ModalTypes = {
   isOpen: boolean;
   closeModal: () => void;
   modalClasses?: string;
-  containerClass: string;
+  containerClass?: string;
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
 
 const Modal = ({
@@ -30,9 +30,7 @@ const Modal = ({
 
   const contClasses = classNames(
     'relative bg-center bg-no-repeat object-contain',
-    {
-      [containerClass]: containerClass,
-    }
+    containerClass
   );
 
   return createPortal(

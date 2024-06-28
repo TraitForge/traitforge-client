@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '~/components';
 import { handlePrice } from '~/utils/utils';
 import { useContextState } from '~/utils/context';
-import styles from '@/styles/honeypot.module.scss';
+import styles from `~/styles/honeypot.module.scss';
 
 type HoneyPotBodyTypes = {
   handleStep: () => void;

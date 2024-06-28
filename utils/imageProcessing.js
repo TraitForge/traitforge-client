@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import path from 'path';
 import varConfig from './variablesConfig';
-import s3 from '@/aws-config';
+import s3 from `~/aws-config';
 
 export const composeIMG = async (paddedEntropy, entityGeneration) => {
   console.log('starting next image:', paddedEntropy, entityGeneration);

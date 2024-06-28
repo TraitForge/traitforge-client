@@ -1,99 +1,84 @@
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
-import { toast } from 'react-toastify';
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers/react';
-
-import { useContextState } from '@/utils/context';
-import { contractsConfig } from '@/utils/contractsConfig';
-import { Button, Modal, LoadingSpinner } from '@/components';
-import { SelectEntityList } from '@/screens/forging/SelectEntityList';
-import { WalletEntityModal } from '@/screens/forging/WalletEntityModal';
-import { ListEntity } from '@/screens/forging/ListEntity';
-import { ForgingArena } from '@/screens/forging/ForgingArena';
-import { ListNow } from '@/screens/forging/ListNow';
-import { createContract } from '@/utils/utils';
+import { Button, Modal, LoadingSpinner } from '~/components';
+import {
+  useEntitiesForForging,
+  useForgeWithListed,
+  useListForForging,
+  useOwnerEntities,
+} from '~/hooks';
+import { useAccount } from 'wagmi';
+import {
+  ForgingArena,
+  ListEntity,
+  ListNow,
+  SelectEntityList,
+  WalletEntityModal,
+} from '~/components/screens';
+import { Entity, EntityForging } from '~/types';
+import { parseEther } from 'viem';
 
 const Forging = () => {
-  const { isLoading, setIsLoading, ownerEntities, getOwnersEntities, entitiesForForging, getEntitiesForForging } =
-    useContextState();
+  const { address } = useAccount();
+  const { data: ownerEntities } = useOwnerEntities(address || '0x0');
+  const { data: entitiesForForging } = useEntitiesForForging();
+  const {
+    onWriteAsync: onForge,
+    isPending: isForgePending,
+    isConfirmed: isForgeConfirmed,
+  } = useForgeWithListed();
+  const { onWriteAsync: onList, isPending: isListPending } =
+    useListForForging();
+
+  const isLoading = isForgePending || isListPending;
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
-  const [selectedFromPool, setSelectedFromPool] = useState(null);
-  const { walletProvider } = useWeb3ModalProvider();
-  const [selectedEntity, setSelectedEntity] = useState(null);
-  const [selectedForListing, setSelectedForListing] = useState(null);
+  const [selectedFromPool, setSelectedFromPool] =
+    useState<EntityForging | null>(null);
+  const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
+  const [selectedForListing, setSelectedForListing] = useState<Entity | null>(
+    null
+  );
   const [processingText, setProcessingText] = useState('Forging');
   const [generationFilter, setGenerationFilter] = useState('');
-  const { isConnected } = useWeb3ModalAccount();
 
-  const handleSelectedFromPool = entity => setSelectedFromPool(entity);
-  const handleSelectedFromWallet = entity => setSelectedEntity(entity);
+  const handleSelectedFromPool = (entity: EntityForging) =>
+    setSelectedFromPool(entity);
+  const handleSelectedFromWallet = (entity: Entity) =>
+    setSelectedEntity(entity);
 
-  const handleEntityListModal = () => setIsEntityListModalOpen(prevState => !prevState);
-  const handleOwnerEntityList = () => setIsOwnerListOpen(prevState => !prevState);
-
-  useEffect(() => {
-    if (isConnected) {
-      getOwnersEntities();
-      getEntitiesForForging();
-    }
-  }, [walletProvider, isConnected]);
+  const handleEntityListModal = () =>
+    setIsEntityListModalOpen(prevState => !prevState);
+  const handleOwnerEntityList = () =>
+    setIsOwnerListOpen(prevState => !prevState);
 
   const handleListingPage = () => setStep('two');
 
   const forgeEntity = async () => {
-    setIsLoading(true);
+    if (!selectedFromPool || !selectedEntity) {
+      return;
+    }
     setProcessingText('Forging');
-    try {
-      const forgeContract = await createContract(
-        walletProvider,
-        contractsConfig.entityMergingAddress,
-        contractsConfig.entityMergingContractAbi
-      );
-      const feeInWei = BigInt(selectedFromPool.fee);
-      const transaction = await forgeContract.forgeWithListed(selectedFromPool.tokenId, selectedEntity.tokenId, {
-        value: feeInWei,
-        gasLimit: 10000000,
-      });
-      setProcessingText('Merging');
-      const res = await transaction.wait();
-      // console.log(res, res.tokenId);
-      toast.success('Forged successfully');
-    } catch (error) {
-      console.log(error);
-      toast.error(`Failed to Forge`);
-      setIsLoading(false);
-    } finally {
+    const feeInWei = parseEther(String(selectedFromPool.fee));
+    onForge(selectedFromPool.tokenId, selectedEntity.tokenId, feeInWei);
+  };
+
+  useEffect(() => {
+    if (isForgeConfirmed) {
       setProcessingText('');
       setGenerationFilter('');
       setSelectedEntity(null);
       setSelectedFromPool(null);
-      setIsLoading(false);
     }
-  };
+  }, [isForgeConfirmed]);
 
-  const listEntityForForging = async (selectedForListing, fee) => {
-    setIsLoading(true);
+  const listEntityForForging = async (
+    selectedForListing: Entity,
+    fee: string
+  ) => {
     setProcessingText('Listing entity');
-    try {
-      const forgeContract = await createContract(
-        walletProvider,
-        contractsConfig.entityMergingAddress,
-        contractsConfig.entityMergingContractAbi
-      );
-      const feeInWei = ethers.parseEther(fee);
-      const transaction = await forgeContract.listForForging(selectedForListing.tokenId, feeInWei);
-      await transaction.wait();
-      toast.success('Listed Successfully');
-      setStep('one');
-      getEntitiesForForging();
-    } catch (error) {
-      toast.error(`Failed to List Entity`);
-    } finally {
-      setIsLoading(false);
-      setProcessingText('');
-    }
+    const feeInWei = parseEther(fee);
+    onList(selectedForListing.tokenId, feeInWei);
   };
 
   let content;
@@ -102,7 +87,9 @@ const Forging = () => {
     return (
       <div className="h-full w-full flex justify-center items-center flex-col">
         <LoadingSpinner color="#FF5F1F" />
-        {processingText && <p className="text-[#FF5F1F] mt-4">{processingText}</p>}
+        {processingText && (
+          <p className="text-[#FF5F1F] mt-4">{processingText}</p>
+        )}
       </div>
     );
 
@@ -159,12 +146,14 @@ const Forging = () => {
             </Modal>
           )}
           {isOwnerListOpen && (
-            <Modal isOpen={isOwnerListOpen} closeModal={() => setIsOwnerListOpen(false)} modalClasses="items-end pb-4">
+            <Modal
+              isOpen={isOwnerListOpen}
+              closeModal={() => setIsOwnerListOpen(false)}
+              modalClasses="items-end pb-4"
+            >
               <WalletEntityModal
                 ownerEntities={ownerEntities}
                 handleOwnerEntityList={handleOwnerEntityList}
-                walletProvider={walletProvider}
-                filterType="merger"
                 handleSelectedFromWallet={handleSelectedFromWallet}
               />
             </Modal>
@@ -175,16 +164,14 @@ const Forging = () => {
     case 'two':
       content = (
         <ListEntity
-          closeModal={() => setStep('one')}
           ownerEntities={ownerEntities}
-          walletProvider={walletProvider}
           setSelectedForListing={setSelectedForListing}
           handleStep={step => setStep(step)}
         />
       );
       break;
     case 'three':
-      content = (
+      content = selectedForListing && (
         <ListNow
           selectedForListing={selectedForListing}
           listEntityForForging={listEntityForForging}

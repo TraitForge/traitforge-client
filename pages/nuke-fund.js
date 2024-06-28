@@ -3,15 +3,15 @@ import { useWeb3Modal } from '@web3modal/ethers/react';
 import { toast } from 'react-toastify';
 import { JsonRpcProvider } from 'ethers/providers';
 
-import styles from '@/styles/honeypot.module.scss';
-import { contractsConfig } from '@/utils/contractsConfig';
-import { HoneyPotHeader } from '@/screens/honey-pot/HoneyPotHeader';
-import { EntityCard, LoadingSpinner } from '@/components';
-import { HoneyPotBody } from '@/screens/honey-pot/HoneyPotBody';
-import { NukeEntity } from '@/screens/honey-pot/NukeEntity';
-import { FiltersHeader } from '@/components';
-import { useContextState } from '@/utils/context';
-import { handlePrice, approveNFTForNuking, createContract } from '@/utils/utils';
+import styles from `~/styles/honeypot.module.scss';
+import { contractsConfig } from `~/utils/contractsConfig';
+import { HoneyPotHeader } from `~/screens/honey-pot/HoneyPotHeader';
+import { EntityCard, LoadingSpinner } from `~/components';
+import { HoneyPotBody } from `~/screens/honey-pot/HoneyPotBody';
+import { NukeEntity } from `~/screens/honey-pot/NukeEntity';
+import { FiltersHeader } from `~/components';
+import { useContextState } from `~/utils/context';
+import { handlePrice, approveNFTForNuking, createContract } from `~/utils/utils';
 
 const infuraProvider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import { useContextState } from '@/utils/context';
-import { StatsNavbar } from '@/screens/game-stats/StatsNavbar';
-import { StatisticsList } from '@/screens/game-stats/StatisticsList';
+import { useContextState } from `~/utils/context';
+import { StatsNavbar } from `~/screens/game-stats/StatsNavbar';
+import { StatisticsList } from `~/screens/game-stats/StatisticsList';
 
 const Stats = () => {
   const { subscribeToMintEvent } = useContextState();

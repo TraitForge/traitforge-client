@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { contractsConfig } from '@/utils/contractsConfig';
-import { processImage } from '@/pages/api/generate-image';
+import { contractsConfig } from `~/utils/contractsConfig';
+import { processImage } from `~/pages/api/generate-image';
 import cron from 'node-cron';
 
 const provider = new JsonRpcProvider(contractsConfig.infuraRPCURL);
