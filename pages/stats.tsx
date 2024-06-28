@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
-
-import { useContextState } from '~/utils/context';
-import { StatsNavbar } from '~/screens/game-stats/StatsNavbar';
-import { StatisticsList } from '~/screens/game-stats/StatisticsList';
+import { StatisticsList, StatsNavbar } from '~/components/screens';
 
 const Stats = () => {
-  const { subscribeToMintEvent } = useContextState();
   const [currentStat, setCurrentStat] = useState('addressWithMostEntities');
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<any>({
     addressWithMostEntities: [],
     highestTotalEntropy: [],
     mostForges: [],

@@ -4,16 +4,19 @@ import { BorderType, Entity } from '~/types';
 
 type SellEntityTypes = {
   selectedForSale: Entity;
-  listEntityForSale: (entity: Entity, price: string) => void;
+  listEntityForSale: () => void;
   handleStep: (value: string) => void;
+  price: string;
+  setPrice: (value: string) => void;
 };
 
 export const SellEntity = ({
   selectedForSale,
   listEntityForSale,
   handleStep,
+  price,
+  setPrice,
 }: SellEntityTypes) => {
-  const [price, setPrice] = useState('');
   const [showPriceError, setShowPriceError] = useState(false);
 
   return (
@@ -45,7 +48,7 @@ export const SellEntity = ({
           text="List for Sale"
           onClick={async () => {
             if (price !== '') {
-              await listEntityForSale(selectedForSale, price);
+              await listEntityForSale();
               handleStep('one');
             } else {
               setShowPriceError(true);

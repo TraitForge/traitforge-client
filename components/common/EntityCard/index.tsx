@@ -7,11 +7,11 @@ import purpleBorder from '~/public/images/purpleBorder.svg';
 import greenBorder from '~/public/images/greenBorder.svg';
 import styles from './styles.module.scss';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
-import { BorderType, Entity, EntityForging } from '~/types';
+import { BorderType, Entity } from '~/types';
 import { calculateUri } from '~/utils';
 
 type EntityCardTypes = {
-  entity: Entity | EntityForging;
+  entity: Entity;
   onSelect?: () => void;
   borderType?: BorderType;
   wrapperClass?: string;

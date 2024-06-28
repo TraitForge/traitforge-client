@@ -1,9 +1,9 @@
 import { EntityCard, Button } from '~/components';
-import { BorderType, Entity } from '~/types';
+import { BorderType, EntityTrading } from '~/types';
 
 type BuyEntityTypes = {
-  selectedListing: Entity;
-  buyEntity: (entity: Entity, price: number) => void;
+  selectedListing: EntityTrading;
+  buyEntity: () => void;
   handleStep: (value: string) => void;
 };
 
@@ -27,7 +27,7 @@ export const BuyEntity = ({
           bg="rba(8, 30, 14,0.8)"
           text="Buy Now"
           onClick={() => {
-            buyEntity(selectedListing, selectedListing.price);
+            buyEntity();
             handleStep('one');
           }}
         />
