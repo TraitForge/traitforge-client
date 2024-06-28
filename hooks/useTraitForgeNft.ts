@@ -29,7 +29,7 @@ export const useCurrentGeneration = () => {
   });
 
   return {
-    data: Number(data || 0),
+    data: Number(data ?? 0),
     isFetching,
     refetch,
   };
@@ -44,7 +44,7 @@ export const useMintPrice = () => {
   });
 
   return {
-    data: BigInt(data || 0),
+    data: BigInt(data ?? 0),
     isFetching,
     refetch,
   };
@@ -89,9 +89,9 @@ export const useUpcomingMints = (mintPrice: bigint) => {
         (res, index) =>
           ({
             id: startSlot * 13 + index,
-            entropy: Number(res.result || 0),
+            entropy: Number(res.result ?? 0),
           }) as Entropy
-      ) || [],
+      ) ?? [],
     isFetching,
   };
 };
@@ -105,7 +105,7 @@ export const useNftBalance = (address: `0x${string}`) => {
   });
 
   return {
-    data: Number(data || 0),
+    data: Number(data ?? 0),
     isFetching,
   };
 };
@@ -124,7 +124,9 @@ export const useTokenIds = (address: `0x${string}`) => {
   });
 
   return {
-    data,
+    data: ((data as any) ?? []).map((res: any) =>
+      Number(res.result ?? 0)
+    ) as number[],
     isFetching: isFetching || isBalanceFetching,
   };
 };
@@ -140,7 +142,7 @@ export const useNukeFactors = (tokenIds: number[]) => {
   });
 
   return {
-    data: (data || []).map(res => Number(res.result || 0)),
+    data: (data ?? []).map(res => Number(res.result ?? 0)),
     isFetching,
   };
 };
@@ -156,7 +158,7 @@ export const useTokenGenerations = (tokenIds: number[]) => {
   });
 
   return {
-    data: (data || []).map(res => Number(res.result || 0)),
+    data: (data as any)?.map((res: any) => Number(res.result ?? 0)) ?? [],
     isFetching,
   };
 };
@@ -172,15 +174,14 @@ export const useTokenEntropies = (tokenIds: number[]) => {
   });
 
   return {
-    data: (data || []).map(res => Number(res.result || 0)),
+    data: (data as any)?.map((res: any) => Number(res.result ?? 0)) ?? [],
     isFetching,
   };
 };
 
 export const useOwnerEntities = (address: `0x${string}`) => {
-  const { data: tokenList, isFetching: isTokenIdsFetching } =
+  const { data: tokenIds, isFetching: isTokenIdsFetching } =
     useTokenIds(address);
-  const tokenIds = tokenList?.map(res => Number(res.result || 0)) || [];
   const { data: nukeFactors, isFetching: isNukeFactorsFetching } =
     useNukeFactors(tokenIds);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
@@ -190,9 +191,9 @@ export const useOwnerEntities = (address: `0x${string}`) => {
 
   return {
     data: tokenIds.map((tokenId, index) => {
-      const nukeFactor = nukeFactors?.[index] || 0;
-      const generation = tokenGenerations?.[index] || 0;
-      const entropy = tokenEntropies?.[index] || 0;
+      const nukeFactor = nukeFactors?.[index] ?? 0;
+      const generation = tokenGenerations?.[index] ?? 0;
+      const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
       const { role, forgePotential, performanceFactor } =
         calculateEntityAttributes(paddedEntropy);
@@ -223,7 +224,7 @@ export const useForgeListings = () => {
   });
 
   return {
-    data: data || [],
+    data: data ?? [],
     isFetching,
   };
 };
@@ -241,9 +242,9 @@ export const useEntitiesForForging = () => {
 
   return {
     data: listings.map((listing, index) => {
-      const nukeFactor = nukeFactors?.[index] || 0;
-      const generation = tokenGenerations?.[index] || 0;
-      const entropy = tokenEntropies?.[index] || 0;
+      const nukeFactor = nukeFactors?.[index] ?? 0;
+      const generation = tokenGenerations?.[index] ?? 0;
+      const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
       const { role, forgePotential, performanceFactor } =
         calculateEntityAttributes(paddedEntropy);
@@ -277,7 +278,7 @@ export const useTradingListings = () => {
   });
 
   return {
-    data: data || [[], [], []],
+    data: data ?? [[], [], []],
     isFetching,
   };
 };
@@ -296,9 +297,9 @@ export const useEntitiesForSale = () => {
 
   return {
     data: tokenIds.map((tokenId, index) => {
-      const nukeFactor = nukeFactors?.[index] || 0;
-      const generation = tokenGenerations?.[index] || 0;
-      const entropy = tokenEntropies?.[index] || 0;
+      const nukeFactor = nukeFactors?.[index] ?? 0;
+      const generation = tokenGenerations?.[index] ?? 0;
+      const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
       const { role, forgePotential, performanceFactor } =
         calculateEntityAttributes(paddedEntropy);
@@ -310,8 +311,8 @@ export const useEntitiesForSale = () => {
         role,
         forgePotential,
         performanceFactor,
-        seller: sellers[index] || '0x0',
-        price: Number(formatEther(prices[index] || 0n)),
+        seller: sellers[index] ?? '0x0',
+        price: Number(formatEther(prices[index] ?? 0n)),
       } as EntityTrading;
     }),
     isFetching:
@@ -331,7 +332,7 @@ export const useApproval = (address: `0x${string}`, tokenId: number) => {
   });
 
   return {
-    data: data || false,
+    data: data ?? false,
     isFetching,
   };
 };
