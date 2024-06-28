@@ -90,7 +90,7 @@ export const useUpcomingMints = (mintPrice: bigint) => {
           ({
             id: startSlot * 13 + index,
             entropy: Number(res.result || 0),
-          } as Entropy)
+          }) as Entropy
       ) || [],
     isFetching,
   };
@@ -124,7 +124,7 @@ export const useTokenIds = (address: `0x${string}`) => {
   });
 
   return {
-    data: (data || []).map(res => Number(res.result || 0)),
+    data: data?.map(res => Number(res.result || 0)) || [],
     isFetching: isFetching || isBalanceFetching,
   };
 };
