@@ -2,8 +2,12 @@ import sharp from 'sharp';
 import path from 'path';
 import varConfig from './variablesConfig';
 import s3 from '~/aws-config';
+import { S3 } from 'aws-sdk';
 
-export const composeIMG = async (paddedEntropy, entityGeneration) => {
+export const composeIMG = async (
+  paddedEntropy: string | number,
+  entityGeneration: string | number
+) => {
   console.log('starting next image:', paddedEntropy, entityGeneration);
   try {
     const baseCharacterBuffer = await baseCharacterImg(
@@ -22,7 +26,7 @@ export const composeIMG = async (paddedEntropy, entityGeneration) => {
     }
 
     const backgroundImage = await getS3Object('backgroundfinish.png');
-    const backgroundBuffer = await sharp(backgroundImage).toBuffer();
+    const backgroundBuffer = await sharp(backgroundImage as any).toBuffer();
 
     const composedImage = await sharp({
       create: {
@@ -47,50 +51,53 @@ export const composeIMG = async (paddedEntropy, entityGeneration) => {
   }
 };
 
-const variablesLayer = async (paddedEntropy, entityGeneration) => {
+const variablesLayer = async (
+  paddedEntropy: string | number,
+  entityGeneration: string | number
+) => {
   const entropy = paddedEntropy ? paddedEntropy.toString() : '';
   const generation = entityGeneration ? entityGeneration.toString() : '';
 
   const optionIndex1 =
-    parseInt(entropy[0]) % varConfig.varOptions.varOptions1.length;
+    Number(entropy[0]) % varConfig.varOptions.varOptions1.length;
   const optionIndex2 =
-    parseInt(entropy[1]) % varConfig.varOptions.varOptions2.length;
+    Number(entropy[1]) % varConfig.varOptions.varOptions2.length;
   const optionIndex3 =
-    parseInt(entropy[2]) % varConfig.varOptions.varOptions3.length;
+    Number(entropy[2]) % varConfig.varOptions.varOptions3.length;
   const optionIndex4 =
-    parseInt(entropy[3]) % varConfig.varOptions.varOptions4.length;
-  const color1ArrayIndex = parseInt(entropy[5]);
-  const color2ArrayIndex = parseInt(entropy[4]);
-  const color3ArrayIndex = parseInt(entropy[3]);
-  const color4ArrayIndex = parseInt(entropy[2]);
+    Number(entropy[3]) % varConfig.varOptions.varOptions4.length;
+  const color1ArrayIndex = Number(entropy[5]);
+  const color2ArrayIndex = Number(entropy[4]);
+  const color3ArrayIndex = Number(entropy[3]);
+  const color4ArrayIndex = Number(entropy[2]);
   const color1 =
     varConfig.colorOptions[`colorOptions${color1ArrayIndex}`][
-      parseInt(entropy[5]) %
+      Number(entropy[5]) %
         varConfig.colorOptions[`colorOptions${color1ArrayIndex}`].length
     ];
   const color2 =
     varConfig.colorOptions[`colorOptions${color2ArrayIndex}`][
-      parseInt(entropy[4]) %
+      Number(entropy[4]) %
         varConfig.colorOptions[`colorOptions${color2ArrayIndex}`].length
     ];
   const color3 =
     varConfig.colorOptions[`colorOptions${color3ArrayIndex}`][
-      parseInt(entropy[3]) %
+      Number(entropy[3]) %
         varConfig.colorOptions[`colorOptions${color3ArrayIndex}`].length
     ];
   const color4 =
     varConfig.colorOptions[`colorOptions${color4ArrayIndex}`][
-      parseInt(entropy[2]) %
+      Number(entropy[2]) %
         varConfig.colorOptions[`colorOptions${color4ArrayIndex}`].length
     ];
   const color5 =
     varConfig.colorOptions2[`colorOptions${color3ArrayIndex}`][
-      parseInt(entropy[3]) %
+      Number(entropy[3]) %
         varConfig.colorOptions2[`colorOptions${color3ArrayIndex}`].length
     ];
   const color6 =
     varConfig.colorOptions2[`colorOptions${color4ArrayIndex}`][
-      parseInt(entropy[2]) %
+      Number(entropy[2]) %
         varConfig.colorOptions2[`colorOptions${color4ArrayIndex}`].length
     ];
 
@@ -150,9 +157,9 @@ const variablesLayer = async (paddedEntropy, entityGeneration) => {
 };
 
 const baseCharacterImg = async (
-  entityGeneration,
-  paddedEntropy,
-  overlayBuffer = null,
+  entityGeneration: string | number,
+  paddedEntropy: string | number,
+  overlayBuffer: Buffer | null = null,
   offsetX = 0,
   offsetY = 0
 ) => {
@@ -162,37 +169,39 @@ const baseCharacterImg = async (
 
   const hexColorWhite =
     varConfig.colorOptions.characterColorOptions1[
-      parseInt(entropy[5]) %
-        varConfig.colorOptions.characterColorOptions1.length
+      Number(entropy[5]) % varConfig.colorOptions.characterColorOptions1.length
     ];
   const hexColorGrey =
     varConfig.colorOptions.characterColorOptions2[
-      parseInt(entropy[5]) %
-        varConfig.colorOptions.characterColorOptions2.length
+      Number(entropy[5]) % varConfig.colorOptions.characterColorOptions2.length
     ];
   // let baseCharacter = sharp(imagePath);
   let baseCharacter = await tintCharacter(
     imagePath,
-    hexColorWhite,
-    hexColorGrey
+    hexColorWhite || '',
+    hexColorGrey || ''
   );
 
   if (overlayBuffer) {
-    baseCharacter = sharp(await baseCharacter.toBuffer()).composite([
-      { input: overlayBuffer, top: offsetY, left: offsetX },
-    ]);
+    baseCharacter = await sharp(baseCharacter)
+      .composite([{ input: overlayBuffer, top: offsetY, left: offsetX }])
+      .toBuffer();
   }
 
   return baseCharacter;
 };
 
-const tintCharacter = async (imagePath, hexColorWhite, hexColorGrey) => {
+const tintCharacter = async (
+  imagePath: string,
+  hexColorWhite: string,
+  hexColorGrey: string
+) => {
   const rgbWhite = hexToRgb(hexColorWhite);
   const rgbGrey = hexToRgb(hexColorGrey);
 
   const imageObj = await getS3Object(imagePath);
 
-  const originalImage = sharp(imageObj);
+  const originalImage = sharp(imageObj as any);
   const { data, info } = await originalImage
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -228,13 +237,17 @@ const tintCharacter = async (imagePath, hexColorWhite, hexColorGrey) => {
     .toBuffer();
 };
 
-const tintVariables = async (imagePath, firstColor, secondColor) => {
+const tintVariables = async (
+  imagePath: string,
+  firstColor: string,
+  secondColor: string
+) => {
   const rgbWhite = hexToRgb(firstColor);
   const rgbGrey = hexToRgb(secondColor);
 
   const imageObj = await getS3Object(imagePath);
 
-  const originalImage = sharp(imageObj);
+  const originalImage = sharp(imageObj as any);
   const { data, info } = await originalImage
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -270,7 +283,7 @@ const tintVariables = async (imagePath, firstColor, secondColor) => {
     .toBuffer();
 };
 
-const hexToRgb = hex => {
+const hexToRgb = (hex: string) => {
   hex = hex.replace(/^#/, '');
   const bigint = parseInt(hex, 16);
   const r = (bigint >> 16) & 255;
@@ -279,17 +292,17 @@ const hexToRgb = hex => {
   return { r, g, b };
 };
 
-const getS3Object = async fileName => {
+const getS3Object = async (fileName: string) => {
   try {
-    const params = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
+    const params: S3.GetObjectRequest = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME || '',
       Key: fileName,
     };
 
     const data = await s3.getObject(params).promise();
 
     return data.Body;
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(`Could not retrieve file from S3: ${e.message}`);
   }
 };

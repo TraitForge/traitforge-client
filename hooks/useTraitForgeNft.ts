@@ -124,7 +124,7 @@ export const useTokenIds = (address: `0x${string}`) => {
   });
 
   return {
-    data: data?.map(res => Number(res.result || 0)) || [],
+    data,
     isFetching: isFetching || isBalanceFetching,
   };
 };
@@ -178,8 +178,9 @@ export const useTokenEntropies = (tokenIds: number[]) => {
 };
 
 export const useOwnerEntities = (address: `0x${string}`) => {
-  const { data: tokenIds, isFetching: isTokenIdsFetching } =
+  const { data: tokenList, isFetching: isTokenIdsFetching } =
     useTokenIds(address);
+  const tokenIds = tokenList?.map(res => Number(res.result || 0)) || [];
   const { data: nukeFactors, isFetching: isNukeFactorsFetching } =
     useNukeFactors(tokenIds);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =

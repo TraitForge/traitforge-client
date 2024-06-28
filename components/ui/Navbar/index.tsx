@@ -2,9 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { Logo } from '~/icons';
-import { icons } from '~/icons/icons';
 import WalletButton from '../WalletButton';
+import { Logo, icons } from '~/components/icons';
 
 const links = [
   { url: '/', text: 'HOME' },
