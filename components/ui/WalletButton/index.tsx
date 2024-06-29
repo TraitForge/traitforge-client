@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { FaWallet } from 'react-icons/fa';
 import { formatEther } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
+
 import { WalletModal } from '~/components/screens';
 import { shortenAddress } from '~/utils';
 
@@ -30,9 +31,9 @@ export default function WalletButton() {
         }}
       >
         <FaWallet />
-        <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
+        {/* <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
           {isConnected ? shortenAddress(address || '0x0') : 'Connect'}
-        </span>
+        </span> */}
       </button>
       {isOpen && (
         <WalletModal

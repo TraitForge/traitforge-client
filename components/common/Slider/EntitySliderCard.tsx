@@ -54,7 +54,7 @@ export const EntitySliderCard = ({
   const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
 
   return (
-    <>
+    <div>
       <EntityCardSkeleton className={skeletonClasses} />
       <div className={wrapperClasses} style={borderStyles}>
         <div className="mb-4 h-full w-full">
@@ -84,6 +84,6 @@ export const EntitySliderCard = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
