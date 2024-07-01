@@ -35,6 +35,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-/node_modulesl
-smart-contracts
-client
+/node_modules
+

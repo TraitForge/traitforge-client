@@ -10,7 +10,7 @@ import { WalletModal } from '~/components/screens';
 import { shortenAddress } from '~/utils';
 
 export default function WalletButton() {
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { data: balanceInfo } = useBalance({ address });
   const ethBalance = Number(formatEther(balanceInfo?.value || 0n));
@@ -23,7 +23,7 @@ export default function WalletButton() {
         aria-label="connect wallet button"
         className="flex items-center gap-x-4 xl:gap-x-8"
         onClick={() => {
-          if (isConnected) {
+          if (address) {
             setIsOpen(true);
           } else if (openConnectModal) {
             openConnectModal();
@@ -31,9 +31,9 @@ export default function WalletButton() {
         }}
       >
         <FaWallet />
-        {/* <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
-          {isConnected ? shortenAddress(address || '0x0') : 'Connect'}
-        </span> */}
+        <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
+          {address ? shortenAddress(address) : 'Connect'}
+        </span>
       </button>
       {isOpen && (
         <WalletModal

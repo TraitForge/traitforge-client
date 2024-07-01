@@ -191,11 +191,10 @@ export const useOwnerEntities = (address: `0x${string}`) => {
 
   return {
     data: tokenIds.map((tokenId, index) => {
-      const nukeFactor = nukeFactors?.[index] ?? 0;
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor } =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId,
@@ -242,11 +241,10 @@ export const useEntitiesForForging = () => {
 
   return {
     data: listings.map((listing, index) => {
-      const nukeFactor = nukeFactors?.[index] ?? 0;
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor } =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId: Number(listing.tokenId),
@@ -297,11 +295,10 @@ export const useEntitiesForSale = () => {
 
   return {
     data: tokenIds.map((tokenId, index) => {
-      const nukeFactor = nukeFactors?.[index] ?? 0;
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor } =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId,
