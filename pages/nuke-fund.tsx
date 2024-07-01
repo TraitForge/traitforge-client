@@ -43,7 +43,9 @@ const HoneyPot = () => {
   const isLoading = isApprovePending || isNukePending;
 
   useEffect(() => {
-    refetch();
+    if (isNukeConfirmed) {
+      refetch();
+    }
   }, [isNukeConfirmed]);
 
   const handleFilterChange = (
