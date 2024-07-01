@@ -57,7 +57,7 @@ export const WalletModal = ({
     }
   );
 
-  let borderType;
+  let borderType:BorderType;
   let buttonColor;
 
   switch (asPath) {

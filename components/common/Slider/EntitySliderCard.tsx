@@ -30,7 +30,7 @@ export const EntitySliderCard = ({
     calculateEntityAttributes(paddedEntropy);
 
   const wrapperClasses = classNames(
-    'mx-5 overflow-hidden items-center w-full  min-h-[300px] 3xl:min-h-[400px]',
+    ' overflow-hidden items-center w-full  min-h-[300px] 3xl:min-h-[400px]',
     styles.cardContainer,
     wrapperClass,
     {
@@ -54,7 +54,7 @@ export const EntitySliderCard = ({
   const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
 
   return (
-    <div>
+    <div className='mx-5'>
       <EntityCardSkeleton className={skeletonClasses} />
       <div className={wrapperClasses} style={borderStyles}>
         <div className="mb-4 h-full w-full">

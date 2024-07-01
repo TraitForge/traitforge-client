@@ -1,5 +1,3 @@
-'use client';
-
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { FaWallet } from 'react-icons/fa';
@@ -17,6 +15,8 @@ export default function WalletButton() {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const shortAddress = address ? shortenAddress(address) : 'Connect';
+
   return (
     <>
       <button
@@ -32,7 +32,7 @@ export default function WalletButton() {
       >
         <FaWallet />
         <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
-          {address ? shortenAddress(address) : 'Connect'}
+          {shortAddress}
         </span>
       </button>
       {isOpen && (
