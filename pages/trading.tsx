@@ -24,11 +24,20 @@ import { parseEther } from 'viem';
 
 const Marketplace = () => {
   const { address } = useAccount();
-  const { data: ownerEntities } = useOwnerEntities(address || '0x0');
-  const { data: entitiesForSale } = useEntitiesForSale();
-  const { onWriteAsync: onBuy, isPending: isBuyPending } = useBuyEntity();
-  const { onWriteAsync: onList, isPending: isListPending } =
-    useListEntityForSale();
+  const { data: ownerEntities, refetch: refetchOwnerEntities } =
+    useOwnerEntities(address || '0x0');
+  const { data: entitiesForSale, refetch: refetchEntitiesForSale } =
+    useEntitiesForSale();
+  const {
+    onWriteAsync: onBuy,
+    isPending: isBuyPending,
+    isConfirmed: isBuyConfirmed,
+  } = useBuyEntity();
+  const {
+    onWriteAsync: onList,
+    isPending: isListPending,
+    isConfirmed: isListConfirmed,
+  } = useListEntityForSale();
   const {
     onWriteAsync: onApprove,
     isPending: isApprovePending,
@@ -52,6 +61,13 @@ const Marketplace = () => {
     CONTRACT_ADDRESSES.EntityTrading,
     selectedForSale?.tokenId || 0
   );
+
+  useEffect(() => {
+    if (isBuyConfirmed || isListConfirmed) {
+      refetchOwnerEntities();
+      refetchEntitiesForSale();
+    }
+  }, [isBuyConfirmed, isListConfirmed]);
 
   const handleFilterChange = (
     selectedOption: SingleValue<

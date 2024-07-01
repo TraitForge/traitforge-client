@@ -16,7 +16,7 @@ import { CONTRACT_ADDRESSES } from '~/constants/address';
 
 const HoneyPot = () => {
   const { address } = useAccount();
-  const { data: ownerEntities } = useOwnerEntities(address || '0x0');
+  const { data: ownerEntities, refetch } = useOwnerEntities(address || '0x0');
 
   const [selectedForNuke, setSelectedForNuke] = useState<Entity | null>(null);
   const [step, setStep] = useState('one');
@@ -34,9 +34,17 @@ const HoneyPot = () => {
     isPending: isApprovePending,
     isConfirmed: isApproveConfirmed,
   } = useApproveNft();
-  const { onWriteAsync: onNuke, isPending: isNukePending } = useNukeEntity();
+  const {
+    onWriteAsync: onNuke,
+    isPending: isNukePending,
+    isConfirmed: isNukeConfirmed,
+  } = useNukeEntity();
 
   const isLoading = isApprovePending || isNukePending;
+
+  useEffect(() => {
+    refetch();
+  }, [isNukeConfirmed]);
 
   const handleFilterChange = (
     selectedOption: SingleValue<

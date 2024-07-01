@@ -13,6 +13,7 @@ export const config = createConfig({
   transports: {
     [sepolia.id]: http(process.env.NEXT_PUBLIC_ALCHEMY_RPCURL),
   },
+  ssr: true,
 });
 
 export const publicClient = createPublicClient({
