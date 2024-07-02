@@ -1,18 +1,24 @@
 import { createPublicClient } from 'viem';
 import { http, createConfig } from 'wagmi';
-import { injected } from '@wagmi/connectors';
 import { sepolia } from 'viem/chains';
+import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 
 export const projectId = 'db99d4d311764dbfb7e4563ce13e71fb';
 
 if (!projectId) throw new Error('Project ID is not defined');
 
+const { connectors } = getDefaultWallets({
+  appName: 'traitforge',
+  projectId,
+});
+
 export const config = createConfig({
   chains: [sepolia],
-  connectors: [injected()],
+  connectors,
   transports: {
     [sepolia.id]: http(process.env.NEXT_PUBLIC_ALCHEMY_RPCURL),
   },
+  ssr: true,
 });
 
 export const publicClient = createPublicClient({
