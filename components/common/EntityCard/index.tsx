@@ -77,7 +77,7 @@ export const EntityCard = ({
   };
 
   return (
-    <>
+    <div className='px-1'>
       <EntityCardSkeleton className={skeletonClasses} />
       <div onClick={onSelect} className={wrapperClasses} style={borderStyles}>
         <div>
@@ -109,6 +109,6 @@ export const EntityCard = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
