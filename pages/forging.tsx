@@ -19,8 +19,10 @@ import { parseEther } from 'viem';
 
 const Forging = () => {
   const { address } = useAccount();
-  const { data: ownerEntities } = useOwnerEntities(address || '0x0');
-  const { data: entitiesForForging } = useEntitiesForForging();
+  const { data: ownerEntities, refetch: refetchOwnerEntities } =
+    useOwnerEntities(address || '0x0');
+  const { data: entitiesForForging, refetch: refetchEntitiesForForging } =
+    useEntitiesForForging();
   const {
     onWriteAsync: onForge,
     isPending: isForgePending,
@@ -69,6 +71,8 @@ const Forging = () => {
       setGenerationFilter('');
       setSelectedEntity(null);
       setSelectedFromPool(null);
+      refetchOwnerEntities();
+      refetchEntitiesForForging();
     }
   }, [isForgeConfirmed]);
 

@@ -97,7 +97,7 @@ export const useUpcomingMints = (mintPrice: bigint) => {
 };
 
 export const useNftBalance = (address: `0x${string}`) => {
-  const { data, isFetching } = useReadContract({
+  const { data, isFetching, refetch } = useReadContract({
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'balanceOf',
@@ -107,12 +107,16 @@ export const useNftBalance = (address: `0x${string}`) => {
   return {
     data: Number(data ?? 0),
     isFetching,
+    refetch,
   };
 };
 
 export const useTokenIds = (address: `0x${string}`) => {
-  const { data: balance, isFetching: isBalanceFetching } =
-    useNftBalance(address);
+  const {
+    data: balance,
+    isFetching: isBalanceFetching,
+    refetch,
+  } = useNftBalance(address);
 
   const { data, isFetching } = useReadContracts({
     contracts: new Array(balance).fill(0).map((_, index) => ({
@@ -128,6 +132,7 @@ export const useTokenIds = (address: `0x${string}`) => {
       Number(res.result ?? 0)
     ) as number[],
     isFetching: isFetching || isBalanceFetching,
+    refetch,
   };
 };
 
@@ -180,10 +185,11 @@ export const useTokenEntropies = (tokenIds: number[]) => {
 };
 
 export const useOwnerEntities = (address: `0x${string}`) => {
-  const { data: tokenIds, isFetching: isTokenIdsFetching } =
-    useTokenIds(address);
-  const { data: nukeFactors, isFetching: isNukeFactorsFetching } =
-    useNukeFactors(tokenIds);
+  const {
+    data: tokenIds,
+    isFetching: isTokenIdsFetching,
+    refetch,
+  } = useTokenIds(address);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
     useTokenGenerations(tokenIds);
   const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
@@ -208,14 +214,14 @@ export const useOwnerEntities = (address: `0x${string}`) => {
     }),
     isFetching:
       isTokenIdsFetching ||
-      isNukeFactorsFetching ||
       isTokenGenerationsFetching ||
       isTokenEntropiesFetching,
+    refetch,
   };
 };
 
 export const useForgeListings = () => {
-  const { data, isFetching } = useReadContract({
+  const { data, isFetching, refetch } = useReadContract({
     abi: EntityForgingABI,
     address: CONTRACT_ADDRESSES.EntityForging,
     functionName: 'fetchListings',
@@ -225,15 +231,17 @@ export const useForgeListings = () => {
   return {
     data: data ?? [],
     isFetching,
+    refetch,
   };
 };
 
 export const useEntitiesForForging = () => {
-  const { data: listings, isFetching: isForgeListingsFetching } =
-    useForgeListings();
+  const {
+    data: listings,
+    isFetching: isForgeListingsFetching,
+    refetch,
+  } = useForgeListings();
   const tokenIds = listings.map(listing => Number(listing.tokenId));
-  const { data: nukeFactors, isFetching: isNukeFactorsFetching } =
-    useNukeFactors(tokenIds);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
     useTokenGenerations(tokenIds);
   const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
@@ -261,14 +269,14 @@ export const useEntitiesForForging = () => {
     }),
     isFetching:
       isForgeListingsFetching ||
-      isNukeFactorsFetching ||
       isTokenGenerationsFetching ||
       isTokenEntropiesFetching,
+    refetch,
   };
 };
 
 export const useTradingListings = () => {
-  const { data, isFetching } = useReadContract({
+  const { data, isFetching, refetch } = useReadContract({
     abi: EntityTradingABI,
     address: CONTRACT_ADDRESSES.EntityTrading,
     functionName: 'fetchListedEntities',
@@ -278,16 +286,18 @@ export const useTradingListings = () => {
   return {
     data: data ?? [[], [], []],
     isFetching,
+    refetch,
   };
 };
 
 export const useEntitiesForSale = () => {
-  const { data: listings, isFetching: isTradingListingFetching } =
-    useTradingListings();
+  const {
+    data: listings,
+    isFetching: isTradingListingFetching,
+    refetch,
+  } = useTradingListings();
   const [tokenList, sellers, prices] = listings;
   const tokenIds = tokenList.map(tokenId => Number(tokenId));
-  const { data: nukeFactors, isFetching: isNukeFactorsFetching } =
-    useNukeFactors(tokenIds);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
     useTokenGenerations(tokenIds);
   const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
@@ -314,9 +324,9 @@ export const useEntitiesForSale = () => {
     }),
     isFetching:
       isTradingListingFetching ||
-      isNukeFactorsFetching ||
       isTokenGenerationsFetching ||
       isTokenEntropiesFetching,
+    refetch,
   };
 };
 
