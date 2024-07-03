@@ -9,11 +9,10 @@ import { WalletModal } from '~/components/screens';
 import { shortenAddress } from '~/utils';
 
 export default function WalletButton() {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { data: balanceInfo } = useBalance({ address });
   const ethBalance = Number(formatEther(balanceInfo?.value || 0n));
-
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -31,7 +30,7 @@ export default function WalletButton() {
       >
         <FaWallet />
         <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
-          {address ? shortenAddress(address) : 'Connect'}
+          {address && isConnected ? shortenAddress(address) : 'Connect'}
         </span>
       </button>
       {isOpen && (

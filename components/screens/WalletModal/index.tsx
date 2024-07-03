@@ -1,14 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { FaWallet } from 'react-icons/fa';
+import { useAccount } from 'wagmi';
 import { useState } from 'react';
+
+import { FaWallet } from 'react-icons/fa';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { Button, EntityCard, Modal } from '~/components';
 import { BorderType, Entity } from '~/types';
 import { shortenAddress } from '~/utils';
-import { useAccount } from 'wagmi';
 import { useListedEntitiesByUser, useOwnerEntities } from '~/hooks';
 
 type WalletModalTypes = {
@@ -57,7 +58,7 @@ export const WalletModal = ({
     }
   );
 
-  let borderType;
+  let borderType:BorderType;
   let buttonColor;
 
   switch (asPath) {
