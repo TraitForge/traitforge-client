@@ -77,7 +77,7 @@ export const EntityCard = ({
   };
 
   return (
-    <div className='px-1'>
+    <div>
       <EntityCardSkeleton className={skeletonClasses} />
       <div onClick={onSelect} className={wrapperClasses} style={borderStyles}>
         <div>
