@@ -46,7 +46,7 @@ export const ArenaItemForger = ({
           {icons.plus()}
         </div>
         <Image
-          src="/images/poolSelectedCardSm.png"
+          src="/images/poolSelectedCardSm.svg"
           alt="forge place holder"
           width={600}
           height={600}

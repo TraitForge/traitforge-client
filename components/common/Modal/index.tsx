@@ -46,7 +46,7 @@ const Modal = ({
         {children}
         <button
           aria-label="close modal button"
-          className={styles.closebutton}
+          className="text-white absolute top-10 right-3 md:top-14 md:right-10"
           onClick={closeModal}
         >
           <svg
