@@ -101,4 +101,5 @@ export const icons = {
       </defs>
     </svg>
   ),
+
 };

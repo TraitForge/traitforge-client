@@ -30,7 +30,7 @@ export const ArenaItemForger = ({
     <div className={buttonWrapper}>
       <button
         aria-label={btnLabel}
-        className="items-center justify-center cursor-pointer h-auto"
+        className="items-center justify-center cursor-pointer h-auto relative"
         onClick={handleEntityListModal}
       >
         <Image

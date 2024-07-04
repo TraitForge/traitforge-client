@@ -30,7 +30,7 @@ export const EntitySliderCard = ({
     calculateEntityAttributes(paddedEntropy);
 
   const wrapperClasses = classNames(
-    'overflow-hidden items-center w-full  min-h-[350px] 3xl:min-h-[450px]',
+    'overflow-hidden items-center w-full  min-h-[300px] 3xl:min-h-[400px]',
     styles.cardContainer,
     wrapperClass,
     {

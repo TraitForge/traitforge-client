@@ -31,7 +31,6 @@ const Home = () => {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState('');
-  const [loadingText] = useState('');
 
   useEffect(() => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
@@ -52,7 +51,11 @@ const Home = () => {
     return (
       <div className="h-full w-full flex justify-center items-center flex-col">
         <LoadingSpinner color="#0ff" />
-        {loadingText && <p className="mt-3 text-[#0ff]">{loadingText}</p>}
+        {(isMintTokenPending || isMintWithBudgetPending) && (
+          <p className="mt-3 text-[#0ff]">
+            {isMintTokenPending ? 'Minting entity' : 'Minting entities'}
+          </p>
+        )}
       </div>
     );
 
@@ -72,7 +75,7 @@ const Home = () => {
       >
         Mint your traitforge entity
       </h1>
-      <div className="w-full flex justify-center overflow-hidden">
+      <div className="w-full flex justify-center overflow-hidden h-[500px]">
         <Slider
           mintPrice={mintPrice}
           currentGeneration={currentGeneration}
