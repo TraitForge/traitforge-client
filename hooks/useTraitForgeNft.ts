@@ -50,6 +50,21 @@ export const useMintPrice = () => {
   };
 };
 
+export const useNukeFundBalance = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    abi: NukeFundABI,
+    address: CONTRACT_ADDRESSES.NukeFund,
+    functionName: 'getFundBalance',
+    args: [],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
 export const useUpcomingMints = (mintPrice: bigint) => {
   const entityPrice = Number(formatEther(mintPrice));
   const priceToIndex = Math.floor(entityPrice * 10000);
