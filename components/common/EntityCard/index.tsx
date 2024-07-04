@@ -82,7 +82,7 @@ export const EntityCard = ({
       <div onClick={onSelect} className={wrapperClasses} style={borderStyles}>
         <div>
         <div className="text-center items-center justify-center flex flex-col">
-        {showPrice && <p className="absolute top-2 text-base bg-gray-400 px-3 bg-opacity-30 rounded">{displayPrice} ETH</p>}
+        {showPrice && <p className="absolute top-2 text-base bg-gray-900 px-3 bg-opacity-70 rounded">{displayPrice} ETH</p>}
           <div className="mb-4 max-h-[170px] md:max-h-[310px]">
             <Image
               loading="lazy"

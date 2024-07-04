@@ -68,7 +68,7 @@ export const SelectEntityList = ({
         />
       </div>
       <div className="flex-1 overflow-y-scroll">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-2 md:gap-x-[15px] gap-y-7 md:gap-y-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-2 md:gap-x-[15px] gap-y-3 md:gap-y-10">
           {filteredAndSortedListings.map(listing => (
             <EntityCard
               key={listing.tokenId}

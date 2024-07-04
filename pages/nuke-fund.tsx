@@ -137,7 +137,7 @@ const HoneyPot = () => {
             generationFilter={generationFilter}
             sortingFilter={sortingFilter}
           />
-          <div className="grid mt-10 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-5 md:gap-y-10">
+          <div className="grid mt-10 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-3 md:gap-y-10">
             {filteredAndSortedListings.map(entity => (
               <EntityCard
                 key={entity.tokenId}
