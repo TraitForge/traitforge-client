@@ -41,7 +41,7 @@ export const ArenaItem = ({
           className="w-full h-full hidden md:block"
         />
         <Image
-          src="/images/walletSelectCardSm.png"
+          src="/images/walletSelectCardSm.svg"
           alt="forge place holder"
           width={600}
           height={600}
