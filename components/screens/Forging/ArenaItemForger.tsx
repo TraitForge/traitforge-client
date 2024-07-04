@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { EntityCard } from '~/components';
 import { BorderType, EntityForging } from '~/types';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import { icons } from '~/components/icons';
 
 type ArenaItemForgerTypes = {
   handleEntityListModal?: () => void;
@@ -40,6 +41,10 @@ export const ArenaItemForger = ({
           height={800}
           className="w-full h-full hidden md:block"
         />
+         <div className="hidden md:flex flex-col items-center absolute top-1/2 left-1/2 w-[80%] uppercase -translate-x-1/2 -translate-y-1/2">
+          <span className='font-bebas'>{btnLabel}</span>
+          {icons.plus()}
+        </div>
         <Image
           src="/images/poolSelectedCardSm.png"
           alt="forge place holder"

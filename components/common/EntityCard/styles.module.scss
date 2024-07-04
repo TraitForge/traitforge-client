@@ -15,15 +15,13 @@
   position: relative;
 
   .cardInfo {
-    position: absolute;
-    left: 0;
-    font-size: 24px;
-    right: 0;
+    // position: absolute;
+    // left: 0;
+    // right: 0;
     color: white;
     transition: transform 0.3s ease-in-out;
-    transform: translateY(-100%);
+    // transform: translateY(-100%);
     // font-family: 'Bebas Neue', sans-serif;
     font-style: normal;
-    padding: 10px 0;
   }
 }

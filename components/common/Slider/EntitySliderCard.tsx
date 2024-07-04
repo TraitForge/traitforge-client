@@ -53,11 +53,15 @@ export const EntitySliderCard = ({
 
   const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
 
+  const textClasses = classNames(
+    'pt-5 pb-5 text-center text-sm md:text-[18px] bg-[#00181F] bg-opacity-80 w-full'
+  );
+
   return (
-    <div className='mx-4'>
+    <div className="mx-4">
       <EntityCardSkeleton className={skeletonClasses} />
       <div className={wrapperClasses} style={borderStyles}>
-        <div className="mb-4 h-full w-full">
+        <div className="h-full w-full">
           <Image
             loading="lazy"
             src={imageUrl}
@@ -71,9 +75,9 @@ export const EntitySliderCard = ({
             }}
           />
         </div>
-        <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
+        <div className={textClasses}>
           <div className={styles.cardInfo}>
-            <h3 className="card-name"> GEN{currentGeneration}</h3>
+            <h3 className="card-name mb-2"> GEN{currentGeneration}</h3>
             {showPrice && <h4 className="">{price} ETH</h4>}
           </div>
           <div className="text-[14px] md:text-base 3xl:text-[18px] !font-electrolize">

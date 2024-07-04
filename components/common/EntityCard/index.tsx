@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
+import { useRouter } from 'next/router';
+
 import orangeBorder from '~/public/images/orangeborder.svg';
 import blueBorder from '~/public/images/border.svg';
 import purpleBorder from '~/public/images/purpleBorder.svg';
@@ -36,6 +38,7 @@ export const EntityCard = ({
     nukeFactor,
   } = entity;
   const [imgLoaded, setImgLoaded] = useState(false);
+  const { asPath } = useRouter();
 
   const uri = calculateUri(paddedEntropy, generation);
 
@@ -55,7 +58,7 @@ export const EntityCard = ({
   }
 
   const wrapperClasses = classNames(
-    'overflow-hidden min-h-[300px] md:min-h-[350px] 3xl:min-h-[400px] w-full',
+    'overflow-hidden  w-full',
     styles.cardContainer,
     wrapperClass,
     {
@@ -70,18 +73,41 @@ export const EntityCard = ({
   });
 
   const borderStyles = {
-    borderWidth: '15px', // Set the border width to match the border image slice value
+    borderWidth: '12px', // Set the border width to match the border image slice value
     borderStyle: 'solid', // Ensure a border style is set
     borderColor: 'transparent', // To avoid conflicts with borderColor, set it to transparent
     borderImage: `url(${activeBorder.src}) 15 stretch`,
   };
+
+  const priceClasses = classNames(
+    'absolute top-2 text-xs md:text-lg rounded-md left-1/2 -translate-x-1/2 py-1 px-2',
+    {
+      'bg-neon-orange bg-opacity-60': asPath === '/forging',
+      'bg-neon-green bg-opacity-60': asPath === '/trading',
+      'bg-neon-purple bg-opacity-60': asPath === '/nuke-fund',
+      'bg-neon-primary bg-opacity-60': asPath === '/',
+    }
+  );
+
+  const textClasses = classNames(
+    'lg:pt-4 lg:pb-4 text-center text-sm md:text-[18px]',
+    {
+      'bg-[#1F0F00] bg-opacity-80 border-t-2 border-neon-orange rounded-b-lg':
+        asPath === '/forging',
+      'bg-[#081E0E] bg-opacity-80 border-t-2 border-neon-green':
+        asPath === '/trading',
+      'bg-[#0C001F] bg-opacity-80 border-t-2 border-neon-purple ':
+        asPath === '/nuke-fund',
+    }
+  );
 
   return (
     <div>
       <EntityCardSkeleton className={skeletonClasses} />
       <div onClick={onSelect} className={wrapperClasses} style={borderStyles}>
         <div>
-          <div className="mb-4 max-h-[170px] md:max-h-[310px]">
+          <div className="max-h-[170px] md:max-h-[310px] relative">
+            {showPrice && <h4 className={priceClasses}>{displayPrice} ETH</h4>}
             <Image
               loading="lazy"
               src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
@@ -95,13 +121,12 @@ export const EntityCard = ({
               }}
             />
           </div>
-          <div className="mt-5 mb-5 text-center text-sm md:text-[18px]">
+          <div className={textClasses}>
             <div className={styles.cardInfo}>
-              <h1 className="card-name"> GEN{generation}</h1>
-              {showPrice && <h4 className="">{displayPrice} ETH</h4>}
+              <h4 className="text-lg md:text-2xl 3xl:text-3xl"> GEN{generation}</h4>
+              {role && <h4 className='mb-1'>{role}</h4>}
             </div>
-            {role && <h4>{role}</h4>}
-            <div className="text-[14px] lg:text-base 3xl:text-[18px] w-full">
+            <div className="text-xs md:text-md lg:text-base 3xl:text-[18px] w-full">
               <p>Forge Potential: {forgePotential}</p>
               <p>Nuke Factor: {nukeFactor} %</p>
               <p>Performance Factor: {performanceFactor}</p>
