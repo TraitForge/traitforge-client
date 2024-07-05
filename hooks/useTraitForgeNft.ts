@@ -244,7 +244,7 @@ export const useForgeListings = () => {
   });
 
   return {
-    data: data ?? [],
+    data: data?.slice(1) ?? [],
     isFetching,
     refetch,
   };
