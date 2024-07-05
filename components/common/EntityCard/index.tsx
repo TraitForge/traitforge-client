@@ -81,6 +81,8 @@ export const EntityCard = ({
       <EntityCardSkeleton className={skeletonClasses} />
       <div onClick={onSelect} className={wrapperClasses} style={borderStyles}>
         <div>
+        <div className="text-center items-center justify-center flex flex-col">
+        {showPrice && <p className="absolute top-2 text-base bg-gray-900 px-3 bg-opacity-70 rounded">{displayPrice} ETH</p>}
           <div className="mb-4 max-h-[170px] md:max-h-[310px]">
             <Image
               loading="lazy"
@@ -95,10 +97,10 @@ export const EntityCard = ({
               }}
             />
           </div>
-          <div className="mt-5 mb-5 text-center text-sm md:text-[18px]">
+          </div>
+          <div className="mt-6 mb-2 text-center text-sm md:text-[18px]">
             <div className={styles.cardInfo}>
               <h1 className="card-name"> GEN{generation}</h1>
-              {showPrice && <h4 className="">{displayPrice} ETH</h4>}
             </div>
             {role && <h4>{role}</h4>}
             <div className="text-[14px] lg:text-base 3xl:text-[18px] w-full">
@@ -112,3 +114,4 @@ export const EntityCard = ({
     </div>
   );
 };
+
