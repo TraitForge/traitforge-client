@@ -83,6 +83,7 @@ export const EntityCard = ({
         <div>
         <div className="text-center items-center justify-center flex flex-col">
         {showPrice && <p className="absolute top-2 text-base bg-gray-900 px-3 bg-opacity-70 rounded">{displayPrice} ETH</p>}
+        <p className="absolute top-1 left-1 text-[12px] lg:text-base 3xl:text-[18px]"> GEN{generation}</p>
           <div className="mb-4 max-h-[170px] md:max-h-[310px]">
             <Image
               loading="lazy"
@@ -98,10 +99,7 @@ export const EntityCard = ({
             />
           </div>
           </div>
-          <div className="mt-6 mb-2 text-center text-sm md:text-[18px]">
-            <div className={styles.cardInfo}>
-              <h1 className="card-name"> GEN{generation}</h1>
-            </div>
+          <div className="mb-2 text-center text-sm md:text-[18px]">
             {role && <h4>{role}</h4>}
             <div className="text-[14px] lg:text-base 3xl:text-[18px] w-full">
               <p>Forge Potential: {forgePotential}</p>

@@ -30,21 +30,15 @@ export const WalletModal = ({
     address || '0x0'
   );
 
-  const [selectedForUnlisting, setSelectedForUnlisting] = useState<number[]>(
-    []
-  );
+  const [selectedForUnlisting, setSelectedForUnlisting] = useState<Entity | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
 
   const shortAddress = address ? shortenAddress(address) : 'Not connected';
 
   const handleSelectEntity = (tokenId: number) => {
-    setSelectedForUnlisting(prevSelected => {
-      if (prevSelected.includes(tokenId)) {
-        return prevSelected.filter(id => id !== tokenId);
-      } else {
-        return [...prevSelected, tokenId];
-      }
-    });
+    const entity = entitiesListedByUser.find(e => e.tokenId === tokenId) || null;
+    setSelectedForUnlisting(entity);
+    setCurrentStep(3); // Move to step 3
   };
 
   const containerClasses = classNames(
@@ -158,37 +152,51 @@ export const WalletModal = ({
         </div>
       )}
       {currentStep === 2 && (
-        <div className="flex justify-center items-center flex-col min-w-[40vw]">
-          <h3 className="pt-10 text-[18px] md:text-[36px] pb-3">Unlist</h3>
-          <Image
-            src={'/images/border-bottom-line.png'}
-            width={300}
-            height={5}
-            alt=""
-            className="md:mb-[53px]"
-          />
-          <div className="overflow-x-scroll w-6/12 h-44 flex flex-row md:text-large text-white md:mb-5">
+        <div className="flex items-center flex-col justify-center h-[80vh]">
+          <h3 className="pt-10 text-[18px] md:text-[36px] pb-3">Select an entity to unlist</h3>
+          <div className="pb-5 pt-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
             {entitiesListedByUser.map((entity: Entity) => (
-              <EntityCard
-                key={entity.tokenId}
-                entity={entity}
-                onSelect={() => handleSelectEntity(entity.tokenId)}
-                borderType={BorderType.BLUE}
-              />
+           <EntityCard
+              key={entity.tokenId}
+              entity={entity}
+              onSelect={() => handleSelectEntity(entity.tokenId)}
+              borderType={borderType}
+           />
             ))}
           </div>
           <div className="w-2/12 flex flex-col justify-center gap-3 pb-5">
             <Button
               bg="#023340"
               borderColor={buttonColor}
-              text="unlist entity"
-            />
-            <Button
-              bg="#023340"
-              borderColor="#0ADFDB"
               text="Back to Wallet"
               onClick={() => setCurrentStep(1)}
             />
+          </div>
+        </div>
+      )}
+      {currentStep === 3 && selectedForUnlisting && (
+        <div className="w-full justify-center flex flex-col h-[80vh] pt-3 md:px-[100px] rounded-[20px] items-center">
+          <div className="mt-3 mb-4 w-7/12 px-2 md:w-6/12 lg:w-4/12 xl:w-3/12 xl:px-4">
+            <EntityCard
+               entity={selectedForUnlisting}
+               onSelect={() => handleSelectEntity(selectedForUnlisting.tokenId)}
+               borderType={borderType}
+            />
+            </div>
+          <div className="w-6/12 flex flex-col justify-center items-center gap-3 pb-3 mt-5">
+            <Button
+              bg="#023340"
+              borderColor={buttonColor}
+              text="Unlist Entity"
+            />
+            <div className="w-8/12 md:w-7/12 lg:w-5/12 xl:w-3/12 justify-center mt-1">
+            <Button
+              bg="#023340"
+              borderColor={buttonColor}
+              text="Back"
+              onClick={() => setCurrentStep(2)}
+            />
+            </div>
           </div>
         </div>
       )}

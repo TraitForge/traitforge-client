@@ -57,6 +57,7 @@ export const EntitySliderCard = ({
     <div className='mx-4'>
       <EntityCardSkeleton className={skeletonClasses} />
       <div className={wrapperClasses} style={borderStyles}>
+      <p className="absolute top-1 left-1 text-[10px] lg:text-base 3xl:text-[16px]"> GEN{generation}</p>
         <div className="mb-4 h-full w-full">
           <Image
             loading="lazy"
@@ -73,7 +74,6 @@ export const EntitySliderCard = ({
         </div>
         <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
           <div className={styles.cardInfo}>
-            <h3 className="card-name"> GEN{currentGeneration}</h3>
             {showPrice && <h4 className="">{price} ETH</h4>}
           </div>
           <div className="text-[14px] md:text-base 3xl:text-[18px] !font-electrolize">
