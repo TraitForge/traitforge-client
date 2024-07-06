@@ -81,7 +81,7 @@ export const WalletModal = ({
     >
       {currentStep === 1 && (
         <div className="flex items-center flex-col justify-center h-[80vh]">
-          <div className="flex items-center justify-around mt-14 px-[150px] md:pb-[36px] gap-x-[50px]">
+          <div className="flex items-center mt-8 px-[50px] pb-[36px] gap-x-[20px] sm:gap-x-[70px]">
             <div className="flex items-center gap-x-2.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -115,8 +115,8 @@ export const WalletModal = ({
                 ></path>
               </svg>
               <div>
-                <p className="text-neutral-100 text-base">ETH</p>
-                <span className="text-white text-large">{balanceInETH}</span>
+                <p className="text-neutral-100 text-sm sm:text-base">ETH</p>
+                <span className="text-white text-md sm:text-large">{balanceInETH}</span>
               </div>
             </div>
             <div className="flex items-center gap-x-2.5">
@@ -124,8 +124,8 @@ export const WalletModal = ({
                 <FaWallet color="#0EEB81" />
               </span>
               <div>
-                <p className="text-neutral-100 text-base">Wallet Address</p>
-                <span className="text-white text-large">{shortAddress}</span>
+                <p className="text-neutral-100 text-sm sm:text-base">Wallet Address</p>
+                <span className="text-white text-md sm:text-large">{shortAddress}</span>
               </div>
             </div>
           </div>
@@ -139,7 +139,7 @@ export const WalletModal = ({
             />
           </div>
           {ownerEntities.length > 0 && (
-            <div className="pb-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
+            <div className="pb-5 w-11/12 grid grid-cols-1 xs:grid-cols-2 xs:w-full sm:grid-cols-3 sm:w-11/12 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
               {ownerEntities.map((entity: Entity) => (
                 <EntityCard
                   key={entity.tokenId}
@@ -154,7 +154,7 @@ export const WalletModal = ({
       {currentStep === 2 && (
         <div className="flex items-center flex-col justify-center h-[80vh]">
           <h3 className="pt-10 text-[18px] md:text-[36px] pb-3">Select an entity to unlist</h3>
-          <div className="pb-5 pt-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
+          <div className="pb-5 w-12/12 pt-10 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
             {entitiesListedByUser.map((entity: Entity) => (
            <EntityCard
               key={entity.tokenId}
