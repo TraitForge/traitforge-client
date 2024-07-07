@@ -21,7 +21,7 @@ export const ArenaItemForger = ({
 }: ArenaItemForgerTypes) => {
   if (selectedFromPool)
     return (
-      <EntityCard entity={selectedFromPool} borderType={BorderType.ORANGE} />
+      <EntityCard entity={selectedFromPool} borderType={BorderType.ORANGE} onSelect={handleEntityListModal}/>
     );
 
   const buttonWrapper = classNames('flex flex-col gap-y-5', className);
