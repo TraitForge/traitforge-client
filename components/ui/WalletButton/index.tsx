@@ -1,44 +1,48 @@
 'use client';
 
+import Link from 'next/link';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useState } from 'react';
 import { FaWallet } from 'react-icons/fa';
-import { formatEther } from 'viem';
-import { useAccount, useBalance } from 'wagmi';
-import { WalletModal } from '~/components/screens';
+import { useAccount } from 'wagmi';
 import { shortenAddress } from '~/utils';
 
 export default function WalletButton() {
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
-  const { data: balanceInfo } = useBalance({ address });
-  const ethBalance = Number(formatEther(balanceInfo?.value || 0n));
-  const [isOpen, setIsOpen] = useState(false);
+
+  const handleButtonClick = () => {
+    if (!address && openConnectModal) {
+      openConnectModal();
+    }
+  };
+
+  const link = {url: '/wallet'}
 
   return (
     <>
-      <button
-        aria-label="connect wallet button"
-        className="flex items-center gap-x-4 xl:gap-x-8"
-        onClick={() => {
-          if (address) {
-            setIsOpen(true);
-          } else if (openConnectModal) {
-            openConnectModal();
-          }
-        }}
-      >
-        <FaWallet />
-        <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
-          {address && isConnected ? shortenAddress(address) : 'Connect'}
-        </span>
-      </button>
-      {isOpen && (
-        <WalletModal
-          isOpen={isOpen}
-          closeModal={() => setIsOpen(false)}
-          balanceInETH={ethBalance.toFixed(4)}
-        />
+      {address ? (
+        <Link href={link.url} passHref>
+          <li
+            aria-label="wallet button"
+            className="flex items-center gap-x-4 xl:gap-x-8"
+          >
+            <FaWallet />
+            <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
+              {shortenAddress(address)}
+            </span>
+          </li>
+        </Link>
+      ) : (
+        <button
+          aria-label="connect wallet button"
+          className="flex items-center gap-x-4 xl:gap-x-8"
+          onClick={handleButtonClick}
+        >
+          <FaWallet />
+          <span className="hidden lg:block text-base text-gray-200 lg:text-[32px] font-bebas">
+            Connect
+          </span>
+        </button>
       )}
     </>
   );

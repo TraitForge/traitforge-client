@@ -5,7 +5,6 @@ import { useAccount } from 'wagmi';
 import { useState } from 'react';
 
 import { FaWallet } from 'react-icons/fa';
-import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { Button, EntityCard, Modal } from '~/components';
 import { BorderType, Entity } from '~/types';
@@ -13,22 +12,16 @@ import { shortenAddress } from '~/utils';
 import { useListedEntitiesByUser, useOwnerEntities } from '~/hooks';
 
 type WalletModalTypes = {
-  isOpen: boolean;
-  closeModal: () => void;
   balanceInETH: string | number;
 };
 
-export const WalletModal = ({
-  isOpen,
-  closeModal,
+export const Wallet = ({
   balanceInETH,
 }: WalletModalTypes) => {
   const { asPath } = useRouter();
   const { address } = useAccount();
   const { data: ownerEntities } = useOwnerEntities(address || '0x0');
-  const { data: entitiesListedByUser } = useListedEntitiesByUser(
-    address || '0x0'
-  );
+  const { data: entitiesListedByUser } = useListedEntitiesByUser(address || '0x0');
 
   const [selectedForUnlisting, setSelectedForUnlisting] = useState<Entity | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
@@ -41,46 +34,12 @@ export const WalletModal = ({
     setCurrentStep(3); // Move to step 3
   };
 
-  const containerClasses = classNames(
-    'bg-dark-81 flex justify-center items-center border-[5px] rounded-xl max-w-[90%]',
-    {
-      'border-neon-orange': asPath === '/forging',
-      'border-neon-green': asPath === '/trading',
-      'border-neon-purple': asPath === '/nuke-fund',
-      'border-neon-green-yellow': asPath === '/stats',
-      'border-primary': asPath === '/',
-    }
-  );
-
-  let borderType:BorderType;
-  let buttonColor;
-
-  switch (asPath) {
-    case '/forging':
-      borderType = BorderType.ORANGE;
-      buttonColor = '#FD8D26';
-      break;
-    case '/trading':
-      borderType = BorderType.GREEN;
-      buttonColor = '#0EEB81';
-      break;
-    case '/nuke-fund':
-      borderType = BorderType.PURPLE;
-      buttonColor = '#FC62FF';
-      break;
-    default:
-      borderType = BorderType.BLUE;
-      buttonColor = '#0ADFDB';
-  }
+  let borderType: BorderType;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      closeModal={closeModal}
-      containerClass={containerClasses}
-    >
+    <div>
       {currentStep === 1 && (
-        <div className="flex items-center flex-col justify-center h-[80vh]">
+        <div className="flex items-center flex-col justify-center h-full">
           <div className="flex items-center mt-8 px-[50px] pb-[36px] gap-x-[20px] sm:gap-x-[70px]">
             <div className="flex items-center gap-x-2.5">
               <svg
@@ -132,7 +91,7 @@ export const WalletModal = ({
           <div className="w-1/2 mx-auto flex justify-center">
             <Button
               bg="#023340"
-              borderColor={buttonColor}
+              borderColor="#0ADFDB"
               text="Unlist an Entity"
               style={{ marginBottom: '40px' }}
               onClick={() => setCurrentStep(2)}
@@ -154,20 +113,20 @@ export const WalletModal = ({
       {currentStep === 2 && (
         <div className="flex items-center flex-col justify-center h-[80vh]">
           <h3 className="pt-10 text-[18px] md:text-[36px] pb-3">Select an entity to unlist</h3>
-          <div className="pb-5 w-12/12 pt-10 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
+          <div className="pb-5 w-full pt-10 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
             {entitiesListedByUser.map((entity: Entity) => (
-           <EntityCard
-              key={entity.tokenId}
-              entity={entity}
-              onSelect={() => handleSelectEntity(entity.tokenId)}
-              borderType={borderType}
-           />
+              <EntityCard
+                key={entity.tokenId}
+                entity={entity}
+                onSelect={() => handleSelectEntity(entity.tokenId)}
+                borderType={borderType}
+              />
             ))}
           </div>
           <div className="w-2/12 flex flex-col justify-center gap-3 pb-5">
             <Button
               bg="#023340"
-              borderColor={buttonColor}
+              borderColor="#0ADFDB"
               text="Back to Wallet"
               onClick={() => setCurrentStep(1)}
             />
@@ -175,31 +134,31 @@ export const WalletModal = ({
         </div>
       )}
       {currentStep === 3 && selectedForUnlisting && (
-        <div className="w-full justify-center flex flex-col h-[80vh] pt-3 md:px-[100px] rounded-[20px] items-center">
+        <div className="w-full flex flex-col justify-center items-center h-[80vh] pt-3 md:px-[100px] rounded-[20px]">
           <div className="mt-3 mb-4 w-7/12 px-2 md:w-6/12 lg:w-4/12 xl:w-3/12 xl:px-4">
             <EntityCard
-               entity={selectedForUnlisting}
-               onSelect={() => handleSelectEntity(selectedForUnlisting.tokenId)}
-               borderType={borderType}
+              entity={selectedForUnlisting}
+              onSelect={() => handleSelectEntity(selectedForUnlisting.tokenId)}
+              borderType={BorderType.ORANGE}
             />
-            </div>
+          </div>
           <div className="w-6/12 flex flex-col justify-center items-center gap-3 pb-3 mt-5">
             <Button
               bg="#023340"
-              borderColor={buttonColor}
+              borderColor="#0ADFDB"
               text="Unlist Entity"
             />
             <div className="w-8/12 md:w-7/12 lg:w-5/12 xl:w-3/12 justify-center mt-1">
-            <Button
-              bg="#023340"
-              borderColor={buttonColor}
-              text="Back"
-              onClick={() => setCurrentStep(2)}
-            />
+              <Button
+                bg="#023340"
+                borderColor="#0ADFDB"
+                text="Back"
+                onClick={() => setCurrentStep(2)}
+              />
             </div>
           </div>
         </div>
       )}
-    </Modal>
+    </div>
   );
 };
