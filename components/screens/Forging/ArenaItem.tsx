@@ -21,7 +21,7 @@ export const ArenaItem = ({
 }: ArenaItemTypes) => {
   if (selectedFromWallet)
     return (
-      <EntityCard entity={selectedFromWallet} borderType={BorderType.ORANGE} />
+      <EntityCard entity={selectedFromWallet} borderType={BorderType.ORANGE} onSelect={handleOwnerEntityList} />
     );
 
   const buttonWrapper = classNames('flex flex-col gap-y-5', className);
