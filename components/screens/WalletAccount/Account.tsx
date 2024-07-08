@@ -33,93 +33,101 @@ export const Account = ({
 
   let borderType: BorderType;
 
-  return (
-    <div className="h-screen">
-      {currentStep === 1 && (
-        <div className="flex items-center flex-col justify-center">
-          <div className="w-8/12 mt-10 flex justify-between items-start">
-        <div className="flex flex-row gap-10 justify-center items-center">
-        <FaWallet color="white" className="text-8xl"/> 
-          <div className="flex flex-col items-start">
-           <p className="text-5xl pb-3">Name</p>
-           <p className="text-xl">@TwitterName</p>
-          </div>
-         </div>
-   <div className="flex items-center mt-3 pl-[50px] pb-[36px] gap-x-[20px] sm:gap-x-[70px]">
-    <div className="flex items-center gap-x-2.5">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="46"
-        height="46"
-        fill="none"
-        viewBox="0 0 46 46"
-      >
-        <path
-          fill="#FC62FF"
-          fillOpacity="0.4"
-          d="M23 46c12.703 0 23-10.297 23-23S35.703 0 23 0 0 10.297 0 23s10.297 23 23 23z"
-        ></path>
-        <path
-          fill="#FEC8FF"
-          d="M22.996 30.449L14 25l8.996 13L32 25l-9.004 5.449z"
-        ></path>
-        <path
-          fill="#FEC8FF"
-          d="M32 23.485L23 29l-9-5.515L23 8l9 15.485z"
-        ></path>
-        <path
-          fill="#F866FB"
-          fillOpacity="0.96"
-          d="M31.995 23.273l-8.997-4.09V8.343l8.997 14.93zM32 24.978l-9.002 12.679v-7.365L32 24.978zM22.997 19.183v9.407l-8.995-5.317 8.995-4.09z"
-        ></path>
-        <path
-          fill="#EC3BEF"
-          fillOpacity="0.99"
-          d="M32 23.348L23 29V19l9 4.348z"
-        ></path>
-      </svg>
-      <div>
-        <p className="text-neutral-100 text-sm sm:text-base">ETH</p>
-        <span className="text-white text-md sm:text-large">{balanceInETH}</span>
-      </div>
-    </div>
-    <div className="flex items-center gap-x-2.5">
-      <span className="rounded-full w-[46px] flex justify-center items-center h-[46px] bg-[rgba(14,235,129,0.39)]">
-        <FaWallet color="#0EEB81" />
-      </span>
-      <div>
-        <p className="text-neutral-100 text-sm sm:text-base">Wallet Address</p>
-        <span className="text-white text-md sm:text-large">{shortAddress}</span>
-      </div>
-          </div>
+    return (
+      <div className="h-screen flex items-center flex-col justify-center">
+        <div className="w-8/12 mt-10 flex justify-between items-start">
+          <div className="flex flex-row gap-10 justify-center items-center">
+            <FaWallet color="white" className="text-8xl" />
+            <div className="flex flex-col items-start">
+              <p className="text-5xl pb-3">Name</p>
+              <p className="text-xl">@TwitterName</p>
             </div>
           </div>
+          <div className="flex items-center mt-3 pl-[50px] pb-[36px] gap-x-[20px] sm:gap-x-[70px]">
+            <div className="flex items-center gap-x-2.5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="46"
+                height="46"
+                fill="none"
+                viewBox="0 0 46 46"
+              >
+                <path
+                  fill="#FC62FF"
+                  fillOpacity="0.4"
+                  d="M23 46c12.703 0 23-10.297 23-23S35.703 0 23 0 0 10.297 0 23s10.297 23 23 23z"
+                ></path>
+                <path
+                  fill="#FEC8FF"
+                  d="M22.996 30.449L14 25l8.996 13L32 25l-9.004 5.449z"
+                ></path>
+                <path
+                  fill="#FEC8FF"
+                  d="M32 23.485L23 29l-9-5.515L23 8l9 15.485z"
+                ></path>
+                <path
+                  fill="#F866FB"
+                  fillOpacity="0.96"
+                  d="M31.995 23.273l-8.997-4.09V8.343l8.997 14.93zM32 24.978l-9.002 12.679v-7.365L32 24.978zM22.997 19.183v9.407l-8.995-5.317 8.995-4.09z"
+                ></path>
+                <path
+                  fill="#EC3BEF"
+                  fillOpacity="0.99"
+                  d="M32 23.348L23 29V19l9 4.348z"
+                ></path>
+              </svg>
+              <div>
+                <p className="text-neutral-100 text-sm sm:text-base">ETH</p>
+                <span className="text-white text-md sm:text-lg">{balanceInETH}</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-x-2.5">
+              <span className="rounded-full w-[46px] flex justify-center items-center h-[46px] bg-[rgba(14,235,129,0.39)]">
+                <FaWallet color="#0EEB81" />
+              </span>
+              <div>
+                <p className="text-neutral-100 text-sm sm:text-base">Wallet Address</p>
+                <span className="text-white text-md sm:text-lg">{shortAddress}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        {currentStep === 1 && (
           <div className="w-8/12 mb-5 flex justify-between items-center">
-             <h1 className="flex-grow text-4xl text-left">Entities owned</h1>
-             <Button
+            <h1 className="flex-grow text-4xl text-left">Entities owned</h1>
+            <Button
               bg="#023340"
               borderColor="#0ADFDB"
               text="Unlist an Entity"
               onClick={() => setCurrentStep(2)}
             />
           </div>
-          {ownerEntities.length > 0 && (
-            <div className="w-11/12 p-14 rounded-3xl bg-zinc-900 bg-opacity-85 grid grid-cols-1 xs:grid-cols-2 xs:w-full md:grid-cols-3 sm:w-11/12 lg:grid-cols-3 xl:grid-cols-4 md:text-large md:w-8/12 text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
-              {ownerEntities.map((entity: Entity) => (
-                <EntityCard
-                  key={entity.tokenId}
-                  entity={entity}
-                  borderType={borderType}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-       )}
+        )}
+  
+        {currentStep === 1 && ownerEntities.length > 0 && (
+          <div className="w-11/12 p-14 rounded-3xl bg-zinc-900 bg-opacity-85 grid grid-cols-1 xs:grid-cols-2 xs:w-full md:grid-cols-3 sm:w-11/12 lg:grid-cols-3 xl:grid-cols-4 md:text-lg md:w-8/12 text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
+            {ownerEntities.map((entity) => (
+              <EntityCard
+                key={entity.tokenId}
+                entity={entity}
+                borderType={borderType}
+              />
+            ))}
+          </div>
+        )}
       {currentStep === 2 && (
         <div className="flex items-center flex-col justify-center h-[80vh]">
+          <div className="w-8/12 mb-5 flex justify-between items-center">
           <h3 className="pt-10 text-[18px] md:text-[36px] pb-3">Select an entity to unlist</h3>
-          <div className="pb-5 w-full pt-10 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
+            <Button
+              bg="#023340"
+              borderColor="#0ADFDB"
+              text="Back"
+              onClick={() => setCurrentStep(1)}
+            />
+          </div>
+          <div className="w-11/12 p-14 rounded-3xl bg-zinc-900 bg-opacity-85 grid grid-cols-1 xs:grid-cols-2 xs:w-full md:grid-cols-3 sm:w-11/12 lg:grid-cols-3 xl:grid-cols-4 md:text-large md:w-8/12 text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
             {entitiesListedByUser.map((entity: Entity) => (
               <EntityCard
                 key={entity.tokenId}
@@ -128,14 +136,6 @@ export const Account = ({
                 borderType={borderType}
               />
             ))}
-          </div>
-          <div className="w-2/12 flex flex-col justify-center gap-3 pb-5">
-            <Button
-               bg="#023340"
-               borderColor="#0ADFDB"
-              text="Back to Wallet"
-              onClick={() => setCurrentStep(1)}
-            />
           </div>
         </div>
       )}

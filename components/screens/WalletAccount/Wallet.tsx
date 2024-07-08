@@ -1,24 +1,21 @@
 'use client';
 
-import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { useState } from 'react';
 
 import { FaWallet } from 'react-icons/fa';
-import { useRouter } from 'next/router';
-import { Button, EntityCard, Modal } from '~/components';
+import { Button, EntityCard} from '~/components';
 import { BorderType, Entity } from '~/types';
 import { shortenAddress } from '~/utils';
 import { useListedEntitiesByUser, useOwnerEntities } from '~/hooks';
 
-type WalletModalTypes = {
+type AccountModalTypes = {
   balanceInETH: string | number;
 };
 
 export const Wallet = ({
   balanceInETH,
-}: WalletModalTypes) => {
-  const { asPath } = useRouter();
+}: AccountModalTypes) => {
   const { address } = useAccount();
   const { data: ownerEntities } = useOwnerEntities(address || '0x0');
   const { data: entitiesListedByUser } = useListedEntitiesByUser(address || '0x0');
@@ -36,11 +33,10 @@ export const Wallet = ({
 
   let borderType: BorderType;
 
-  return (
-    <div>
-      {currentStep === 1 && (
-        <div className="flex items-center flex-col justify-center h-full">
-          <div className="flex items-center mt-8 px-[50px] pb-[36px] gap-x-[20px] sm:gap-x-[70px]">
+    return (
+      <div className="h-screen flex items-center flex-col justify-center">
+        <div className="w-8/12 mt-10 flex justify-center">
+          <div className="flex items-center mt-3 pb-[36px] gap-x-[20px] sm:gap-x-[70px]">
             <div className="flex items-center gap-x-2.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +71,7 @@ export const Wallet = ({
               </svg>
               <div>
                 <p className="text-neutral-100 text-sm sm:text-base">ETH</p>
-                <span className="text-white text-md sm:text-large">{balanceInETH}</span>
+                <span className="text-white text-md sm:text-lg">{balanceInETH}</span>
               </div>
             </div>
             <div className="flex items-center gap-x-2.5">
@@ -84,36 +80,47 @@ export const Wallet = ({
               </span>
               <div>
                 <p className="text-neutral-100 text-sm sm:text-base">Wallet Address</p>
-                <span className="text-white text-md sm:text-large">{shortAddress}</span>
+                <span className="text-white text-md sm:text-lg">{shortAddress}</span>
               </div>
             </div>
           </div>
-          <div className="w-1/2 mx-auto flex justify-center">
+        </div>
+  
+        {currentStep === 1 && (
+          <div className="w-8/12 mb-5 flex justify-between items-center">
+            <h1 className="flex-grow text-4xl text-left">Entities owned</h1>
             <Button
               bg="#023340"
               borderColor="#0ADFDB"
               text="Unlist an Entity"
-              style={{ marginBottom: '40px' }}
               onClick={() => setCurrentStep(2)}
             />
           </div>
-          {ownerEntities.length > 0 && (
-            <div className="pb-5 w-11/12 grid grid-cols-1 xs:grid-cols-2 xs:w-full sm:grid-cols-3 sm:w-11/12 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
-              {ownerEntities.map((entity: Entity) => (
-                <EntityCard
-                  key={entity.tokenId}
-                  entity={entity}
-                  borderType={borderType}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+        )}
+  
+        {currentStep === 1 && ownerEntities.length > 0 && (
+          <div className="w-11/12 p-14 rounded-3xl bg-zinc-900 bg-opacity-85 grid grid-cols-1 xs:grid-cols-2 xs:w-full md:grid-cols-3 sm:w-11/12 lg:grid-cols-3 xl:grid-cols-4 md:text-lg md:w-8/12 text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
+            {ownerEntities.map((entity) => (
+              <EntityCard
+                key={entity.tokenId}
+                entity={entity}
+                borderType={borderType}
+              />
+            ))}
+          </div>
+        )}
       {currentStep === 2 && (
         <div className="flex items-center flex-col justify-center h-[80vh]">
+          <div className="w-8/12 mb-5 flex justify-between items-center">
           <h3 className="pt-10 text-[18px] md:text-[36px] pb-3">Select an entity to unlist</h3>
-          <div className="pb-5 w-full pt-10 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:text-large text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
+            <Button
+              bg="#023340"
+              borderColor="#0ADFDB"
+              text="Back"
+              onClick={() => setCurrentStep(1)}
+            />
+          </div>
+          <div className="w-11/12 p-14 rounded-3xl bg-zinc-900 bg-opacity-85 grid grid-cols-1 xs:grid-cols-2 xs:w-full md:grid-cols-3 sm:w-11/12 lg:grid-cols-3 xl:grid-cols-4 md:text-large md:w-8/12 text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
             {entitiesListedByUser.map((entity: Entity) => (
               <EntityCard
                 key={entity.tokenId}
@@ -123,14 +130,6 @@ export const Wallet = ({
               />
             ))}
           </div>
-          <div className="w-2/12 flex flex-col justify-center gap-3 pb-5">
-            <Button
-              bg="#023340"
-              borderColor="#0ADFDB"
-              text="Back to Wallet"
-              onClick={() => setCurrentStep(1)}
-            />
-          </div>
         </div>
       )}
       {currentStep === 3 && selectedForUnlisting && (
@@ -139,13 +138,12 @@ export const Wallet = ({
             <EntityCard
               entity={selectedForUnlisting}
               onSelect={() => handleSelectEntity(selectedForUnlisting.tokenId)}
-              borderType={BorderType.ORANGE}
             />
           </div>
           <div className="w-6/12 flex flex-col justify-center items-center gap-3 pb-3 mt-5">
             <Button
-              bg="#023340"
-              borderColor="#0ADFDB"
+               bg="#023340"
+               borderColor="#0ADFDB"
               text="Unlist Entity"
             />
             <div className="w-8/12 md:w-7/12 lg:w-5/12 xl:w-3/12 justify-center mt-1">

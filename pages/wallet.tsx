@@ -19,9 +19,10 @@ const wallet = () => {
         backgroundAttachment: 'fixed',
       }}>
         {address ? (
-          <Account balanceInETH={ethBalance.toFixed(4)} />
-        ) : (
           <Wallet balanceInETH={ethBalance.toFixed(4)} />
+          
+        ) : (
+          <Account balanceInETH={ethBalance.toFixed(4)} />
         )}
       </div>
     );
