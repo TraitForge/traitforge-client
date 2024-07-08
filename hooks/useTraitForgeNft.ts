@@ -362,10 +362,16 @@ export const useApproval = (address: `0x${string}`, tokenId: number) => {
 export const useListedEntitiesByUser = (account: `0x${string}`) => {
   const { data: ownerEntities, isFetching: isOwnerEntitiesFetching } =
     useOwnerEntities(account);
-  const { data: entitiesForForging, isFetching: isForgingFetching } =
-    useEntitiesForForging();
-  const { data: entitiesForSale, isFetching: isTradingFetching } =
-    useEntitiesForSale();
+  const {
+    data: entitiesForForging,
+    isFetching: isForgingFetching,
+    refetch: refetchForging,
+  } = useEntitiesForForging();
+  const {
+    data: entitiesForSale,
+    isFetching: isTradingFetching,
+    refetch: refetchTrading,
+  } = useEntitiesForSale();
 
   const listedEntities = entitiesForSale.filter(
     entity => entity.seller === account
@@ -381,6 +387,10 @@ export const useListedEntitiesByUser = (account: `0x${string}`) => {
     data: combinedListedEntities,
     isFetching:
       isOwnerEntitiesFetching || isForgingFetching || isTradingFetching,
+    refetch: () => {
+      refetchForging();
+      refetchTrading();
+    },
   };
 };
 
@@ -751,6 +761,98 @@ export const useListEntityForSale = () => {
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'listNFTForSale',
       args: [BigInt(tokenId), price],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useUnlistEntityForSale = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity unlisted for sale successfully');
+    }
+    if (isCreationError) {
+      toast.error('Unlisting failed. Please try again.');
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error('Unlisting failed. Please try again.');
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenId: number) => {
+    await writeContractAsync({
+      abi: EntityTradingABI,
+      address: CONTRACT_ADDRESSES.EntityTrading,
+      functionName: 'cancelListing',
+      args: [BigInt(tokenId)],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useUnlistEntityForForging = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity unlisted for forging successfully');
+    }
+    if (isCreationError) {
+      toast.error('Unlisting failed. Please try again.');
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error('Unlisting failed. Please try again.');
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenId: number) => {
+    await writeContractAsync({
+      abi: EntityForgingABI,
+      address: CONTRACT_ADDRESSES.EntityForging,
+      functionName: 'cancelListingForForging',
+      args: [BigInt(tokenId)],
     });
   };
 
