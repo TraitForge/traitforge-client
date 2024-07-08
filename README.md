@@ -12,15 +12,15 @@ TraitForge offers an enduring game experience, transcending the typical NFT mode
 
 - **Entities**: NFTs with unique traits and parameters impacting the game.
 - **Generations & Minting**: Starting with Gen 1 entities, the game evolves through a breeding mechanism, expanding the ecosystem.
-- **Honeypot/Nuke Fund**: Central economic feature where players can claim shares by "nuking" their entities.
+- **Nuke Fund**: Central economic feature where players can claim shares by "nuking" their entities.
 - **Entropy System**: A unique mechanism dictating entity traits and strategic parameters.
 
 ## Strategic Gameplay
 
-Involves managing entities through aging, merging, and strategic decisions impacting the honeypot's dynamics and player's potential gains.
+Involves managing entities through aging, forging, and strategic decisions impacting the nukefund's dynamics and players potential gains.
 
 ## Development and Community
 
-Built with Next.js, Hardhat, and ethers.js, featuring a community-driven approach with DAO governance, allowing token holders to influence game direction.
+Built with Next.js, Hardhat, Wagmi/Viem and Sharp.
 
 TraitForge is not just a game; it's an evolving NFT ecosystem designed for strategic depth, community involvement, and sustainable value growth.
