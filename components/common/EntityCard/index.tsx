@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-import orangeBorder from '~/public/images/orangeborder.svg';
-import blueBorder from '~/public/images/border.svg';
-import purpleBorder from '~/public/images/purpleBorder.svg';
-import greenBorder from '~/public/images/greenBorder.svg';
-import styles from './styles.module.scss';
+import { useRouter } from 'next/router';
+
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { BorderType, Entity } from '~/types';
 import { calculateUri } from '~/utils';
@@ -36,80 +33,75 @@ export const EntityCard = ({
     nukeFactor,
   } = entity;
   const [imgLoaded, setImgLoaded] = useState(false);
+  const { asPath } = useRouter();
 
   const uri = calculateUri(paddedEntropy, generation);
 
-  let activeBorder;
-  switch (borderType) {
-    case BorderType.ORANGE:
-      activeBorder = orangeBorder;
-      break;
-    case BorderType.PURPLE:
-      activeBorder = purpleBorder;
-      break;
-    case BorderType.GREEN:
-      activeBorder = greenBorder;
-      break;
-    default:
-      activeBorder = blueBorder;
-  }
-
   const wrapperClasses = classNames(
-    'overflow-hidden min-h-[300px] md:min-h-[350px] 3xl:min-h-[400px] w-full',
-    styles.cardContainer,
+    'overflow-hidden border-[1.33px] rounded-[20px] px-4 py-5 bg-gradient-to-tr to-light-dark',
     wrapperClass,
     {
       'opacity-1': imgLoaded,
       'opacity-0': !imgLoaded,
+      'from-light-green border-neon-green': asPath === '/trading',
+      'from-neon-orange border-neon-orange': asPath === '/forging',
+      'from-neon-purple border-neon-purple': asPath === '/nuke-fund',
     }
   );
-
   const skeletonClasses = classNames({
     block: !imgLoaded,
     hidden: imgLoaded,
   });
 
-  const borderStyles = {
-    borderWidth: '15px', // Set the border width to match the border image slice value
-    borderStyle: 'solid', // Ensure a border style is set
-    borderColor: 'transparent', // To avoid conflicts with borderColor, set it to transparent
-    borderImage: `url(${activeBorder.src}) 15 stretch`,
-  };
+  const badgeClasses = classNames(
+    'text-[10px] lg:text-base 3xl:text-[20px] py-2.5 px-[14px] bg-opacity-20 rounded-xl',
+    {
+      'bg-[#0EEB81]': asPath === '/trading',
+      'bg-[#FD8D26]': asPath === '/forging',
+      'bg-neon-purple': asPath === '/nuke-fund',
+    }
+  );
 
   return (
     <div>
       <EntityCardSkeleton className={skeletonClasses} />
-      <div onClick={onSelect} className={wrapperClasses} style={borderStyles}>
-        <div>
-        <div className="text-center items-center justify-center flex flex-col">
-        {showPrice && <p className="absolute top-2 text-base bg-gray-900 px-3 bg-opacity-70 rounded">{displayPrice} ETH</p>}
-        <p className="absolute top-1 left-1 text-[12px] lg:text-base 3xl:text-[18px]"> GEN{generation}</p>
-          <div className="mb-4 max-h-[170px] md:max-h-[310px]">
-            <Image
-              loading="lazy"
-              src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
-              alt="IMG"
-              className="w-full"
-              width={250}
-              height={250}
-              onLoad={e => {
-                const { naturalWidth } = e.target as HTMLImageElement;
-                setImgLoaded(!!naturalWidth);
-              }}
-            />
+      <div className={wrapperClasses} onClick={onSelect}>
+        <div className="flex justify-between items-center">
+          <p className={badgeClasses}>GEN{generation}</p>
+          <p className="text-[20px]">{role}</p>
+        </div>
+        {showPrice && (
+          <h4 className="text-[24px] text-left py-5">{displayPrice} ETH</h4>
+        )}
+        <Image
+          loading="lazy"
+          src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
+          alt="IMG"
+          className="w-full rounded-xl max-h-[280px] object-cover"
+          width={250}
+          height={250}
+          onLoad={e => {
+            const { naturalWidth } = e.target as HTMLImageElement;
+            setImgLoaded(!!naturalWidth);
+          }}
+        />
+        <div className="mt-5 text-[24px] grid grid-cols-3 text-left 2xl:gap-x-3">
+          <div className="flex flex-col">
+            <span className="text-[24px]">{nukeFactor}</span>
+            <span className="text-base">
+              Nuke <br /> Factor
+            </span>
           </div>
+          <div className="flex flex-col">
+            <span>{forgePotential}</span>
+            <span className="text-base">Forge Potential</span>
           </div>
-          <div className="mb-2 text-center text-sm md:text-[18px]">
-            {role && <h4>{role}</h4>}
-            <div className="text-[14px] lg:text-base 3xl:text-[18px] w-full">
-              <p>Forge Potential: {forgePotential}</p>
-              <p>Nuke Factor: {nukeFactor} %</p>
-              <p>Performance Factor: {performanceFactor}</p>
-            </div>
+          <div className="flex flex-col">
+            <span>{performanceFactor}</span>
+            <span className="text-base">Performance Factor</span>
           </div>
         </div>
       </div>
     </div>
   );
 };
-

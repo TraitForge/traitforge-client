@@ -19,8 +19,13 @@ module.exports = {
         'neon-orange': '#FD8D26',
         'dark-81': 'rgba(0, 0, 0, 0.81)',
         'neon-green': '#0EEB81',
+        'light-green': 'rgba(14, 235, 129, 0.49)',
         'neon-purple': '#FC62FF',
         'neon-green-yellow': '#AAFF3E',
+        'neon-blue': '#0ADFDB',
+        'light-blue': 'rgba(53, 255, 231, 0.54)',
+        'light-dark': 'rgba(0, 0, 0, 0)',
+        'light-orange': 'rgba(253, 141, 38,0.8)',
       },
       container: {
         center: true,
@@ -46,7 +51,7 @@ module.exports = {
         ],
       },
       screens: {
-        'xs': '490px',
+        xs: '490px',
         ...defaultTheme.screens,
         '2xl': '1440px',
         '3xl': '1536px',

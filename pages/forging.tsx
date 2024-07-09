@@ -108,11 +108,10 @@ const Forging = () => {
                 text="List for forging"
                 bg="rgba(31, 15, 0,0.6)"
                 width="200"
+                variant='orange'
                 height="90"
-                borderColor="#FD8D26"
-                className="relative md:absolute md:top-0 md:right-5"
                 onClick={handleListingPage}
-                textClass="font-electrolize"
+                textClass="font-electrolize relative md:absolute md:top-0 md:right-5 !text-[24px]"
               />
             </div>
             <div className="py-7 md:py-10 3xl:py-20">
@@ -127,12 +126,12 @@ const Forging = () => {
               <Button
                 text="forge entity"
                 bg="rgba(31, 15, 0,0.6)"
-                borderColor="#FD8D26"
                 width="408"
                 height="92"
+                variant='orange'
+                textClass="!px-28 !py-2 capitalize text-[40px]"
                 disabled={isLoading}
                 onClick={forgeEntity}
-                textClass="font-bebas text-[48px]"
               />
             </div>
           </div>
@@ -187,7 +186,7 @@ const Forging = () => {
 
   return (
     <div
-      className="mint-container h-full overflow-auto"
+      className="mint-container h-full"
       style={{
         backgroundImage: "url('/images/forge-background.jpg')",
         backgroundPosition: 'center',

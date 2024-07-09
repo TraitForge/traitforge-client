@@ -47,7 +47,7 @@ const Navbar = () => {
   );
 
   return (
-    <header>
+    <header className='z-50'>
       <nav className={expandedClasses}>
         <Link href="/" className="inline-block">
           <Logo />

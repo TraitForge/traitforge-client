@@ -21,8 +21,8 @@ export const HoneyPotBody = ({ handleStep }: HoneyPotBodyTypes) => {
       </div>
       <div className="flex flex-col justify-center items-center">
         <Button
-          borderColor="#FC62FF"
           bg="rgba(12, 0, 31,0.8)"
+          variant='purple'
           text="nuke entity"
           onClick={handleStep}
           textClass="font-bebas text-[40px]"
