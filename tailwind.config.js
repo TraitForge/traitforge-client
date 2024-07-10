@@ -25,7 +25,8 @@ module.exports = {
         'neon-blue': '#0ADFDB',
         'light-blue': 'rgba(53, 255, 231, 0.54)',
         'light-dark': 'rgba(0, 0, 0, 0)',
-        'light-orange': 'rgba(253, 141, 38,0.8)',
+        'light-orange': 'rgba(253, 141, 38,0.48)',
+        'light-purple': 'rgba(252, 98, 255, 0.48)',
       },
       container: {
         center: true,
@@ -55,6 +56,12 @@ module.exports = {
         ...defaultTheme.screens,
         '2xl': '1440px',
         '3xl': '1536px',
+      },
+      boxShadow: {
+        'custom-green': '3.98px -2.65px 6.5px rgba(53, 255, 231, 0.4)',
+        'custom-forge': '6px -4px 9.8px rgba(253, 141, 38, 0.41)',
+        'custom-purple': '6px -4px 9.8px rgba(252, 98, 255, 0.41)',
+        'custom-blue': '6px -4px 9.8px rgba(53, 255, 231, 0.41)',
       },
     },
   },

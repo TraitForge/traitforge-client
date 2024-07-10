@@ -27,34 +27,34 @@ const Slider = ({
     breakpoints: {
       // when window width is >= 320px
       320: {
-        slidesPerView: 1.8,
-        spaceBetween: 0,
+        slidesPerView: 1.2,
+        spaceBetween: 20,
         centeredSlides: true,
       },
       520: {
         slidesPerView: 2.2,
-        spaceBetween: 0,
+        spaceBetween: 15,
         centeredSlides: false,
       },
       // when window width is >= 640px
       769: {
         slidesPerView: 2,
-        spaceBetween: 0,
+        spaceBetween: 10,
         centeredSlides: false,
       },
       1024: {
         slidesPerView: 3,
-        spaceBetween: 0,
+        spaceBetween: 15,
         centeredSlides: false,
       },
       1224: {
         slidesPerView: 3,
-        spaceBetween: 0,
+        spaceBetween: 20,
         centeredSlides: false,
       },
       1440: {
         slidesPerView: 4,
-        spaceBetween: 0,
+        spaceBetween: 20,
         centeredSlides: false,
       },
     },

@@ -19,15 +19,11 @@ export const ArenaItemForger = ({
 }: ArenaItemForgerTypes) => {
   if (selectedFromPool)
     return (
-      <EntityCard
-        entity={selectedFromPool}
-        borderType={BorderType.ORANGE}
-        onSelect={handleEntityListModal}
-      />
+      <EntityCard entity={selectedFromPool} onSelect={handleEntityListModal} />
     );
 
   const buttonWrapper = classNames(
-    'h-[400px] overflow-hidden border font-bebas text-[36px] bg-opacity-60 -from-30% uppercase border-neon-orange rounded-[20px] py-5 bg-gradient-to-bl from-light-orange to-dark px-5 3xl:px-10 flex flex-col items-center justify-center',
+    'h-[400px] overflow-hidden border font-bebas text-[36px] bg-opacity-60 shadow-custom-forge uppercase border-neon-orange rounded-[20px] py-5 bg-gradient-to-bl from-light-orange to-dark px-5 3xl:px-10 flex flex-col items-center justify-center',
     className
   );
 

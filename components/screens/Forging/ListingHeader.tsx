@@ -17,7 +17,7 @@ export const ListingHeader = ({ handleStep, step }: ListingHeaderTypes) => {
   };
 
   return (
-    <div className="relative max-md:flex max-md:flex-col max-md:items-center">
+    <div className="relative max-md:flex max-md:flex-col max-md:items-center mb-5">
       {(step === 'two' || step === 'three') && (
         <button
           className="absolute left-0  top-1/2 -translate-y-1/2 max-md:w-[40px] max-md:h-auto bg-[#23160A] bg-opacity-80 p-5 px-6 rounded-md "

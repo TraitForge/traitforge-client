@@ -125,7 +125,7 @@ const HoneyPot = () => {
       break;
     case 'two':
       content = (
-        <div className="overflow-y-scroll flex-1">
+        <div className="overflow-y-auto flex-1">
           <FiltersHeader
             pageType="nuke"
             sortOption={sortOption}
@@ -137,12 +137,11 @@ const HoneyPot = () => {
             generationFilter={generationFilter}
             sortingFilter={sortingFilter}
           />
-          <div className="grid mt-10 grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[15px] gap-y-3 md:gap-y-4">
+          <div className="grid mt-10 grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-[15px] gap-y-3 md:gap-y-4">
             {filteredAndSortedListings.map(entity => (
               <EntityCard
                 key={entity.tokenId}
                 entity={entity}
-                borderType={BorderType.PURPLE}
                 onSelect={() => {
                   setSelectedForNuke(entity);
                   setStep('three');

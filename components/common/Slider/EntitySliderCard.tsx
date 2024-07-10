@@ -28,7 +28,7 @@ export const EntitySliderCard = ({
     calculateEntityAttributes(paddedEntropy);
 
   const wrapperClasses = classNames(
-    'overflow-hidden border border-neon-blue rounded-[20px] px-4 py-5 bg-gradient-to-tr from-light-blue to-light-dark',
+    'overflow-hidden border border-neon-blue rounded-[20px] px-4 py-5 bg-gradient-to-bl from-light-blue to-light-dark shadow-custom-blue',
     wrapperClass,
     {
       'opacity-1': imgLoaded,
@@ -44,7 +44,7 @@ export const EntitySliderCard = ({
   const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
 
   return (
-    <div className="mx-4">
+    <div>
       <EntityCardSkeleton className={skeletonClasses} />
       <div className={wrapperClasses}>
         <div className="flex justify-between items-center">
@@ -68,18 +68,18 @@ export const EntitySliderCard = ({
               setImgLoaded(!!naturalWidth);
             }}
           />
-        <div className="mt-5 text-[24px] grid grid-cols-3 text-left 2xl:gap-x-3">
-          <div className='flex flex-col'>
-            <span className='text-[24px]'>{nukeFactor}</span>
-            <span className='text-base'>Nuke <br /> Factor</span>
+        <div className="mt-5 text-[18px] xl:text-[24px] grid grid-cols-3 text-left 2xl:gap-x-3">
+          <div className='flex flex-col gap-2'>
+            <span >{nukeFactor}</span>
+            <span className='text-md xl:text-base'>Nuke <br /> Factor</span>
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col gap-2'>
             <span>{forgePotential}</span>
-            <span className='text-base'>Forge Potential</span>
+            <span className='text-md xl:text-base'>Forge Potential</span>
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col gap-2'>
             <span>{performanceFactor}</span>
-            <span className='text-base'>Performance Factor</span>
+            <span className='text-md xl:text-base'>Performance Factor</span>
           </div>
         </div>
       </div>

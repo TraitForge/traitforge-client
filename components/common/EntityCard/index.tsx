@@ -10,8 +10,8 @@ import { calculateUri } from '~/utils';
 type EntityCardTypes = {
   entity: Entity;
   onSelect?: () => void;
-  borderType?: BorderType;
   wrapperClass?: string;
+  borderType?:BorderType
   showPrice?: boolean;
   displayPrice?: string | number;
 };
@@ -19,10 +19,10 @@ type EntityCardTypes = {
 export const EntityCard = ({
   entity,
   onSelect,
-  borderType = BorderType.BLUE,
   wrapperClass,
   showPrice,
   displayPrice,
+  borderType
 }: EntityCardTypes) => {
   const {
     paddedEntropy,
@@ -38,14 +38,14 @@ export const EntityCard = ({
   const uri = calculateUri(paddedEntropy, generation);
 
   const wrapperClasses = classNames(
-    'overflow-hidden border-[1.33px] rounded-[20px] px-4 py-5 bg-gradient-to-tr to-light-dark',
+    'overflow-hidden border-[1.33px] rounded-[20px] px-4 py-5 bg-gradient-to-bl to-light-dark',
     wrapperClass,
     {
       'opacity-1': imgLoaded,
       'opacity-0': !imgLoaded,
-      'from-light-green border-neon-green': asPath === '/trading',
-      'from-neon-orange border-neon-orange': asPath === '/forging',
-      'from-neon-purple border-neon-purple': asPath === '/nuke-fund',
+      'from-light-green border-neon-green shadow-custom-green': asPath === '/trading',
+      'from-light-orange border-neon-orange shadow-custom-forge': asPath === '/forging',
+      'from-light-purple border-neon-purple shaow-custom-purple': asPath === '/nuke-fund',
     }
   );
   const skeletonClasses = classNames({
@@ -66,18 +66,18 @@ export const EntityCard = ({
     <div>
       <EntityCardSkeleton className={skeletonClasses} />
       <div className={wrapperClasses} onClick={onSelect}>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-5">
           <p className={badgeClasses}>GEN{generation}</p>
           <p className="text-[20px]">{role}</p>
         </div>
         {showPrice && (
-          <h4 className="text-[24px] text-left py-5">{displayPrice} ETH</h4>
+          <h4 className="text-[24px] text-left">{displayPrice} ETH</h4>
         )}
         <Image
           loading="lazy"
           src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
           alt="IMG"
-          className="w-full rounded-xl max-h-[280px] object-cover"
+          className="w-full rounded-xl md:max-h-[280px] object-cover mt-5"
           width={250}
           height={250}
           onLoad={e => {
@@ -85,20 +85,20 @@ export const EntityCard = ({
             setImgLoaded(!!naturalWidth);
           }}
         />
-        <div className="mt-5 text-[24px] grid grid-cols-3 text-left 2xl:gap-x-3">
+        <div className="mt-5 text-[18px] xl:text-[24px] grid grid-cols-3 text-left 2xl:gap-x-3">
           <div className="flex flex-col">
-            <span className="text-[24px]">{nukeFactor}</span>
-            <span className="text-base">
+            <span>{nukeFactor}</span>
+            <span className="text-md xl:text-base gap-2">
               Nuke <br /> Factor
             </span>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-2">
             <span>{forgePotential}</span>
-            <span className="text-base">Forge Potential</span>
+            <span className="text-md xl:text-base">Forge Potential</span>
           </div>
           <div className="flex flex-col">
             <span>{performanceFactor}</span>
-            <span className="text-base">Performance Factor</span>
+            <span className="text-md xl:text-base gap-2">Performance Factor</span>
           </div>
         </div>
       </div>

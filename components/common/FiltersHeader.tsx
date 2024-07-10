@@ -108,14 +108,14 @@ export const FiltersHeader = ({
   };
 
   return (
-    <div className="flex items-center flex-wrap  w-full uppercase pt-6 z-50 justify-between mb-3 max-md:gap-3">
+    <div className="flex items-center flex-wrap w-full uppercase pt-6 z-50 justify-between mb-3 max-md:gap-3">
       <div className="flex gap-x-2 md:gap-x-6 text-[24px]">
         {filterOptions.map(type => (
           <button
             key={type}
             className={`${
               sortOption === type ? activeClasses : ''
-            } relative px-3 md:px-6 font-bebas`}
+            } relative px-3 md:px-6 pb-2 font-bebas`}
             onClick={() => {
               if (color !== 'orange' && handleSort) {
                 handleSort(type);

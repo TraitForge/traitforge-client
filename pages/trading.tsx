@@ -189,12 +189,11 @@ const Marketplace = () => {
               generationFilter={generationFilter}
               sortingFilter={sortingFilter}
             />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-2 md:gap-x-[15px] mt-10 gap-y-3 lg:gap-y-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-2 md:gap-x-[15px] mt-10 gap-y-3 lg:gap-y-10">
               {filteredAndSortedListings.map(entity => (
                 <EntityCard
                   key={entity.tokenId}
                   entity={entity}
-                  borderType={BorderType.GREEN}
                   onSelect={() => {
                     setSelectedListing(entity);
                     setStep('four');

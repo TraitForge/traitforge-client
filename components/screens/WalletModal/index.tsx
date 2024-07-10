@@ -176,10 +176,10 @@ export const WalletModal = ({
           <div className="w-1/2 mx-auto flex justify-center">
             <Button
               bg="#023340"
-              borderColor={buttonColor}
               text="Unlist an Entity"
               style={{ marginBottom: '40px' }}
               onClick={() => setCurrentStep(2)}
+              variant='blue'
             />
           </div>
           {ownerEntities.length > 0 && (
@@ -213,7 +213,7 @@ export const WalletModal = ({
           <div className="w-2/12 flex flex-col justify-center gap-3 pb-5">
             <Button
               bg="#023340"
-              borderColor={buttonColor}
+              variant='blue'
               text="Back to Wallet"
               onClick={() => setCurrentStep(1)}
             />
@@ -236,7 +236,7 @@ export const WalletModal = ({
               <>
                 <Button
                   bg="#023340"
-                  borderColor={buttonColor}
+                  variant='blue'
                   text="Unlist Entity"
                   onClick={handleUnlist}
                   disabled={isLoading}
@@ -244,7 +244,7 @@ export const WalletModal = ({
                 <div className="justify-center mt-1">
                   <Button
                     bg="#023340"
-                    borderColor={buttonColor}
+                    variant='blue'
                     text="Back"
                     onClick={() => setCurrentStep(2)}
                     disabled={isLoading}

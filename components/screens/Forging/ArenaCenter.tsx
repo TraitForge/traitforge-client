@@ -24,7 +24,6 @@ export const ArenaCenter = ({
         <div className="absolute top-1/2 left-1/2 max-h-[300p] -translate-x-1/2 -translate-y-1/2 scale-[0.65]">
           <EntityCard
             entity={selectedFromPool}
-            borderType={BorderType.ORANGE}
           />
         </div>
       )}

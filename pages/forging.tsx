@@ -107,11 +107,9 @@ const Forging = () => {
               <Button
                 text="List for forging"
                 bg="rgba(31, 15, 0,0.6)"
-                width="200"
-                variant='orange'
-                height="90"
+                variant="orange"
                 onClick={handleListingPage}
-                textClass="font-electrolize relative md:absolute md:top-0 md:right-5 !text-[24px]"
+                textClass="font-electrolize relative md:absolute md:top-0 !py-3 md:right-5 !text-[24px]"
               />
             </div>
             <div className="py-7 md:py-10 3xl:py-20">
@@ -128,7 +126,7 @@ const Forging = () => {
                 bg="rgba(31, 15, 0,0.6)"
                 width="408"
                 height="92"
-                variant='orange'
+                variant="orange"
                 textClass="!px-28 !py-2 capitalize text-[40px]"
                 disabled={isLoading}
                 onClick={forgeEntity}

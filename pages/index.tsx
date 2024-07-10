@@ -61,7 +61,7 @@ const Home = () => {
 
   return (
     <div
-      className="mint-container py-5"
+      className="mint-container h-full py-5"
       style={{
         backgroundImage: "url('/images/home.png')",
         backgroundPosition: 'center',
@@ -86,7 +86,8 @@ const Home = () => {
         <Button
           onClick={handleMintEntity}
           bg="#023340"
-          text={`Mint 1 For ${formatEther(mintPrice)} ETH`}
+          variant='blue'
+          text={`Mint For ${formatEther(mintPrice)} ETH`}
           style={{ marginBottom: '25px' }}
           textClass="font-electrolize"
         />
