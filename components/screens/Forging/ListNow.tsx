@@ -48,7 +48,7 @@ export const ListNow = ({
               entity={selectedForListing}
             />
           </div>
-          <div className="max-md:order-3 max-md:px-10">
+          <div className="max-md:order-3 max-md:px-10 mt-5">
             <Button
               bg="rgba(24, 12, 0,0.7)"
               text="List for Forging"

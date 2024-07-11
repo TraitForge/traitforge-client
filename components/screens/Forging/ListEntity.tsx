@@ -32,21 +32,23 @@ export const ListEntity = ({
   }, [ownerEntities]);
 
   return (
-    <div className="h-full w-full">
-      <div className="container pt-5 flex flex-col h-full">
-        <ListingHeader handleStep={handleStep} step="two" />
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-[15px] gap-y-3 lg:gap-y-4">
-          {filteredEntities?.map(entity => (
-            <EntityCard
-              key={entity.tokenId}
-              entity={entity}
-              borderType={BorderType.ORANGE}
-              onSelect={() => {
-                setSelectedForListing(entity);
-                handleStep('three');
-              }}
-            />
-          ))}
+    <div className="h-full w-full ">
+      <div className="pt-5 h-full bg-custom-radial">
+        <div className="container flex flex-col ">
+          <ListingHeader handleStep={handleStep} step="two" />
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-[15px] gap-y-3 lg:gap-y-4">
+            {filteredEntities?.map(entity => (
+              <EntityCard
+                key={entity.tokenId}
+                entity={entity}
+                borderType={BorderType.ORANGE}
+                onSelect={() => {
+                  setSelectedForListing(entity);
+                  handleStep('three');
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
