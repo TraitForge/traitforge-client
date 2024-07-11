@@ -20,7 +20,7 @@ export const SellEntity = ({
   const [showPriceError, setShowPriceError] = useState(false);
 
   return (
-    <div className="md:bg-dark-81 w-full md:w-1/2 mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
+    <div className="md:bg-dark-81 w-full md:w-[60%] xl:w-[40%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
       <div className="max-md:order-2 w-full mb-[14px]">
         <h3 className="text-large font-electrolize mb-8">
           Set a price for your entity:
@@ -39,13 +39,13 @@ export const SellEntity = ({
         )}
       </div>
       <div className="max-md:order-1">
-        <EntityCard borderType={BorderType.GREEN} entity={selectedForSale} />
+        <EntityCard entity={selectedForSale} />
       </div>
       <div className="max-md:order-3 max-md:px-10 mt-2">
         <Button
-          borderColor="#0EEB81"
           bg="rba(8, 30, 14,0.8)"
           text="List for Sale"
+          variant='green'
           onClick={async () => {
             if (price !== '') {
               await listEntityForSale();

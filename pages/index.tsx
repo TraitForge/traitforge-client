@@ -61,7 +61,7 @@ const Home = () => {
 
   return (
     <div
-      className="mint-container h-full overflow-auto pb-5"
+      className="mint-container h-full py-5"
       style={{
         backgroundImage: "url('/images/home.png')",
         backgroundPosition: 'center',
@@ -75,7 +75,7 @@ const Home = () => {
       >
         Mint your traitforge entity
       </h1>
-      <div className="w-full flex justify-center overflow-hidden h-[500px]">
+      <div className="w-full flex justify-center">
         <Slider
           mintPrice={mintPrice}
           currentGeneration={currentGeneration}
@@ -86,17 +86,17 @@ const Home = () => {
         <Button
           onClick={handleMintEntity}
           bg="#023340"
-          borderColor="#0ADFDB"
-          text={`Mint 1 For ${formatEther(mintPrice)} ETH`}
+          variant='blue'
+          text={`Mint For ${formatEther(mintPrice)} ETH`}
           style={{ marginBottom: '25px' }}
           textClass="font-electrolize"
         />
         <Button
           onClick={() => setModalOpen(true)}
           bg="#023340"
-          borderColor="#0ADFDB"
           text={`Mint With a Budget`}
           textClass="font-electrolize"
+          variant='secondary'
         />
         {isModalOpen && (
           <BudgetModal

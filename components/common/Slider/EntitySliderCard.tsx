@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-import styles from './styles.module.scss';
-import blueBorder from '~/public/images/border.svg';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { calculateEntityAttributes, calculateUri } from '~/utils';
 
@@ -30,8 +28,7 @@ export const EntitySliderCard = ({
     calculateEntityAttributes(paddedEntropy);
 
   const wrapperClasses = classNames(
-    'overflow-hidden items-center w-full  min-h-[300px] 3xl:min-h-[400px]',
-    styles.cardContainer,
+    'overflow-hidden border border-neon-blue rounded-[20px] px-4 py-5 bg-gradient-to-bl from-light-blue to-light-dark shadow-custom-blue',
     wrapperClass,
     {
       'opacity-1': imgLoaded,
@@ -44,26 +41,26 @@ export const EntitySliderCard = ({
     hidden: imgLoaded,
   });
 
-  const borderStyles = {
-    borderWidth: '15px', // Set the border width to match the border image slice value
-    borderStyle: 'solid', // Ensure a border style is set
-    borderColor: 'transparent', // To avoid conflicts with borderColor, set it to transparent
-    borderImage: `url("${blueBorder.src}") 15 stretch`,
-  };
-
   const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
 
   return (
-    <div className='mx-4'>
+    <div>
       <EntityCardSkeleton className={skeletonClasses} />
-      <div className={wrapperClasses} style={borderStyles}>
-      <p className="absolute top-1 left-1 text-[10px] lg:text-base 3xl:text-[16px]"> GEN{generation}</p>
-        <div className="mb-4 h-full w-full">
+      <div className={wrapperClasses}>
+        <div className="flex justify-between items-center">
+          <p className="text-[10px] lg:text-base 3xl:text-[20px] py-2.5 px-[14px] bg-[#35FFE7] bg-opacity-20 rounded-xl">
+            GEN{generation}
+          </p>
+          <p className="text-[20px]">{role}</p>
+        </div>
+        {showPrice && (
+          <h4 className="text-[24px] text-left py-5">{price} ETH</h4>
+        )}
           <Image
             loading="lazy"
             src={imageUrl}
             alt="IMG"
-            className="w-full max-h-[170px] md:max-h-[310px]"
+            className="w-full rounded-xl max-h-[280px] object-cover"
             width={250}
             height={250}
             onLoad={e => {
@@ -71,16 +68,18 @@ export const EntitySliderCard = ({
               setImgLoaded(!!naturalWidth);
             }}
           />
-        </div>
-        <div className="mt-5 mb-5 h-full text-center text-sm md:text-[18px]">
-          <div className={styles.cardInfo}>
-            {showPrice && <h4 className="">{price} ETH</h4>}
+        <div className="mt-5 text-[18px] xl:text-[24px] grid grid-cols-3 text-left 2xl:gap-x-3">
+          <div className='flex flex-col gap-2'>
+            <span >{nukeFactor}</span>
+            <span className='text-md xl:text-base'>Nuke <br /> Factor</span>
           </div>
-          <div className="text-[14px] md:text-base 3xl:text-[18px] !font-electrolize">
-            <p>{role}</p>
-            <p>Forge Potential: {forgePotential}</p>
-            <p>Nuke Factor: {nukeFactor} %</p>
-            <p>Performance Factor: {performanceFactor}</p>
+          <div className='flex flex-col gap-2'>
+            <span>{forgePotential}</span>
+            <span className='text-md xl:text-base'>Forge Potential</span>
+          </div>
+          <div className='flex flex-col gap-2'>
+            <span>{performanceFactor}</span>
+            <span className='text-md xl:text-base'>Performance Factor</span>
           </div>
         </div>
       </div>
