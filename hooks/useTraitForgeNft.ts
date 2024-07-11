@@ -7,6 +7,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';
+import { sepolia } from 'wagmi/chains';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import {
   EntityForgingABI,
@@ -427,6 +428,7 @@ export const useMintToken = () => {
 
   const onWriteAsync = async (mintPrice: bigint) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintToken',
@@ -474,6 +476,7 @@ export const useMintWithBudget = () => {
 
   const onWriteAsync = async (mintPrice: bigint) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintWithBudget',
@@ -525,6 +528,7 @@ export const useForgeWithListed = () => {
     fee: bigint
   ) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'forgeWithListed',
@@ -572,6 +576,7 @@ export const useListForForging = () => {
 
   const onWriteAsync = async (tokenId: number, fee: bigint) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'listForForging',
@@ -618,6 +623,7 @@ export const useApproveNft = () => {
 
   const onWriteAsync = async (address: `0x${string}`, tokenId: number) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'approve',
@@ -664,6 +670,7 @@ export const useNukeEntity = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: NukeFundABI,
       address: CONTRACT_ADDRESSES.NukeFund,
       functionName: 'nuke',
@@ -710,6 +717,7 @@ export const useBuyEntity = () => {
 
   const onWriteAsync = async (tokenId: number, price: bigint) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'buyNFT',
@@ -757,6 +765,7 @@ export const useListEntityForSale = () => {
 
   const onWriteAsync = async (tokenId: number, price: bigint) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'listNFTForSale',
@@ -803,6 +812,8 @@ export const useUnlistEntityForSale = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
+      chainId: sepolia.id,
+
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'cancelListing',
@@ -849,6 +860,7 @@ export const useUnlistEntityForForging = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
+      chainId: sepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'cancelListingForForging',
