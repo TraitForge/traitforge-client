@@ -14,9 +14,9 @@ datasource db {
 }
 
 model User {
-  id            Int    @id @default(autoincrement())
-  walletAddress String @db.VarChar(50)
-  name          String @db.VarChar(50)
-  twitter       String @db.VarChar(255)
-  pfp           String @db.VarChar(255)
+  id            Int     @id @default(autoincrement())
+  walletAddress String  @unique @db.VarChar(50)
+  name          String? @db.VarChar(50)
+  twitter       String? @db.VarChar(255)
+  pfp           String? @db.VarChar(255)
 }
