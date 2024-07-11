@@ -66,7 +66,7 @@ const Navbar = () => {
             </li>
           ))}
         </ul>
-        <div className="walletbackground flex justify-center p-1 rounded-lg gap-x-6">
+        <div className="flex justify-center gap-x-6">
           <WalletButton />
           <button
             className="block lg:hidden"
