@@ -219,6 +219,66 @@ export const EntityForgingABI = [
     inputs: [
       {
         internalType: 'uint256',
+        name: 'tokenId_',
+        type: 'uint256',
+      },
+    ],
+    name: 'getListedTokenIds',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'id',
+        type: 'uint256',
+      },
+    ],
+    name: 'getListings',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'account',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'tokenId',
+            type: 'uint256',
+          },
+          {
+            internalType: 'bool',
+            name: 'isListed',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint256',
+            name: 'fee',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct IEntityForging.Listing',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
         name: 'tokenId',
         type: 'uint256',
       },

@@ -1854,6 +1854,11 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
+"@types/lodash@^4.17.6":
+  version "4.17.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.6.tgz#193ced6a40c8006cfc1ca3f4553444fb38f0e543"
+  integrity sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==
+
 "@types/ms@*":
   version "0.7.34"
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.34.tgz#10964ba0dee6ac4cd462e2795b6bebd407303433"
@@ -7433,6 +7438,13 @@ react-content-loader@^7.0.2:
   resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-7.0.2.tgz#5d5e0f723cb937db88f9fec1c5b0651cd301c42e"
   integrity sha512-773S98JTyC8VB2nu7LXUhpHx8tZMieGxMcx3qTe7IkohT6Br7d9AXnIXs/wQ6IhlUdKQcw6JLKk1QKigYCWDRA==
 
+react-countdown@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/react-countdown/-/react-countdown-2.3.5.tgz#70c035b5cbc7e8fdb4ad91fe5f44afd7a7933a68"
+  integrity sha512-K26ENYEesMfPxhRRtm1r+Pf70SErrvW3g4CArLi/x6MPFjgfDFYePT4UghEj8p2nI0cqVV7/JjDgjyr//U60Og==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-dom@>=17, react-dom@^18, react-dom@^18.2.0:
   version "18.3.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.1.tgz#c2265d79511b57d479b3dd3fdfa51536494c5cb4"
@@ -7936,7 +7948,7 @@ sha.js@^2.4.0, sha.js@^2.4.11, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-sharp@^0.33.3:
+sharp@^0.33.4:
   version "0.33.4"
   resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.33.4.tgz#b88e6e843e095c6ab5e1a0c59c4885e580cd8405"
   integrity sha512-7i/dt5kGl7qR4gwPRD2biwD2/SvBn3O04J77XKFgL2OnZtQw+AG9wnuS/csmu80nPRHLYE9E41fyEiG8nhH6/Q==

@@ -655,14 +655,26 @@ export const TraitForgeNftABI = [
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'bytes32[]',
+        name: 'proof',
+        type: 'bytes32[]',
+      },
+    ],
     name: 'mintToken',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'bytes32[]',
+        name: 'proof',
+        type: 'bytes32[]',
+      },
+    ],
     name: 'mintWithBudget',
     outputs: [],
     stateMutability: 'payable',
@@ -760,6 +772,19 @@ export const TraitForgeNftABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'rootHash',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -814,7 +839,7 @@ export const TraitForgeNftABI = [
     inputs: [
       {
         internalType: 'address',
-        name: '_airdrop',
+        name: 'airdrop_',
         type: 'address',
       },
     ],
@@ -845,7 +870,7 @@ export const TraitForgeNftABI = [
     inputs: [
       {
         internalType: 'address',
-        name: '_entityForgingAddress',
+        name: 'entityForgingAddress_',
         type: 'address',
       },
     ],
@@ -858,7 +883,7 @@ export const TraitForgeNftABI = [
     inputs: [
       {
         internalType: 'address',
-        name: '_entropyGeneratorAddress',
+        name: 'entropyGeneratorAddress_',
         type: 'address',
       },
     ],
@@ -909,12 +934,38 @@ export const TraitForgeNftABI = [
   {
     inputs: [
       {
+        internalType: 'bytes32',
+        name: 'rootHash_',
+        type: 'bytes32',
+      },
+    ],
+    name: 'setRootHash',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint256',
         name: '_startPrice',
         type: 'uint256',
       },
     ],
     name: 'setStartPrice',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'endTime_',
+        type: 'uint256',
+      },
+    ],
+    name: 'setWhitelistEndTime',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1143,6 +1194,19 @@ export const TraitForgeNftABI = [
     name: 'transferOwnership',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'whitelistEndTime',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
 ] as const;

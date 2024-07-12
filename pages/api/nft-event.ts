@@ -1,4 +1,4 @@
-import { processImage } from './generate-image';
+import { processImage } from './entropy/process';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { publicClient } from '~/lib/config';
 import { CONTRACT_ADDRESSES } from '~/constants/address';

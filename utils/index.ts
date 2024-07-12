@@ -5,7 +5,7 @@ export const calculateUri = (
   _paddedEntropy: number | string,
   _generation: number | string
 ) => {
-  return `${_paddedEntropy}_${_generation}`;
+  return `entity/${_generation}/${_paddedEntropy}`;
 };
 
 export const getEntityPrice = (mintPrice: bigint, index: number) => {

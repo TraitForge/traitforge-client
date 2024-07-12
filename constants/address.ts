@@ -1,12 +1,12 @@
 export const CONTRACT_ADDRESSES = {
-  Trait: '0xa1567eBE9dc8170Def52895f420bBa64E0C64A64' as `0x${string}`,
-  TraitForgeNft: '0x15D18ED9d77aB50AdDb0156540f4a9f55E73E013' as `0x${string}`,
+  Trait: '0x9627c909917e63A718299B1724CC53316ce6de5C' as `0x${string}`,
+  TraitForgeNft: '0x587f1DCfcCD7Ca9c1b163a1B98bdf652c7F43Eb7' as `0x${string}`,
   EntropyGenerator:
-    '0xA1273948E7F0b5e28E2e1fa01d61927f1a93d0aF' as `0x${string}`,
-  EntityTrading: '0x4Ca6f630171194b4a6974B057F18152c25eE3ead' as `0x${string}`,
-  EntityForging: '0x8C89d1F7cDe6AC6D708EC2cF0F2b539aAB0dd49e' as `0x${string}`,
-  DevFund: '0x03D50b74Ec12386c47A904D0526489994f003036' as `0x${string}`,
-  Airdrop: '0xE8368156A698A1a481cCeA29886f74848b9D57A9' as `0x${string}`,
-  DAOFund: '0x94757fF3d68CE96Ee0A586E04243D3CD6e169cc2' as `0x${string}`,
-  NukeFund: '0x493796EC8b6BB7b480F38557519C6F343B988B03' as `0x${string}`,
+    '0x14CEFFFF1A726Ecf520c4daf995703d98da5Dd0a' as `0x${string}`,
+  EntityTrading: '0x58c6C316C2b3cc019F7501e55b83609d2F123C5f' as `0x${string}`,
+  EntityForging: '0x3Cf5288752528Ad71D8446BA1704C42f66BA335B' as `0x${string}`,
+  DevFund: '0x39051d67f02eD5888FE196d2F446F5aa263dE044' as `0x${string}`,
+  Airdrop: '0x33BC3DB25889641A3A389C0232BdB692928D475C' as `0x${string}`,
+  DAOFund: '0x04680EE660Ce101ed21c028000090fbE1F6FDDb0' as `0x${string}`,
+  NukeFund: '0x5700b4199d27D3340D7ea02DD28fc6Ad8bd05621' as `0x${string}`,
 };

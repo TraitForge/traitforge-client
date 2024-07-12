@@ -296,7 +296,7 @@ const getS3Object = async (fileName: string) => {
   try {
     const params: S3.GetObjectRequest = {
       Bucket: process.env.AWS_S3_BUCKET_NAME || '',
-      Key: fileName,
+      Key: `variables/${fileName}`,
     };
 
     const data = await s3.getObject(params).promise();
@@ -306,3 +306,9 @@ const getS3Object = async (fileName: string) => {
     throw new Error(`Could not retrieve file from S3: ${e.message}`);
   }
 };
+
+// // Local method for faster processing
+// const getS3Object = async (fileName: string) => {
+//   const imagePath = path.join(varConfig.variablesPath, fileName);
+//   return await sharp(imagePath).toBuffer();
+// };
