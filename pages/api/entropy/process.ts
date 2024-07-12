@@ -2,6 +2,8 @@ import { composeIMG } from '~/utils/imageProcessing';
 import s3 from '~/aws-config';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { S3 } from 'aws-sdk';
+import path from 'path';
+import fs from 'fs';
 
 export async function processImage(
   paddedEntropy: string | number,
@@ -28,6 +30,11 @@ async function uploadToS3(imageBuffer: Buffer, fileName: string) {
   };
   return s3.upload(params).promise();
 }
+
+// // Local save for faster processing
+// async function uploadToS3(imageBuffer: Buffer, fileName: string) {
+//   fs.writeFileSync(path.join('assets', fileName), imageBuffer, { flag: 'w' });
+// }
 
 async function generateUri(
   paddedEntropy: string | number,

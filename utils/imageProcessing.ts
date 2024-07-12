@@ -306,3 +306,9 @@ const getS3Object = async (fileName: string) => {
     throw new Error(`Could not retrieve file from S3: ${e.message}`);
   }
 };
+
+// // Local method for faster processing
+// const getS3Object = async (fileName: string) => {
+//   const imagePath = path.join(varConfig.variablesPath, fileName);
+//   return await sharp(imagePath).toBuffer();
+// };
