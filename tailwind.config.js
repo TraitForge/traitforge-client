@@ -13,6 +13,10 @@ module.exports = {
         bebas: ['var(--font-bebas)'],
         electrolize: ['var(--font-electrolize)'],
       },
+      backgroundImage: {
+        'custom-radial':
+          'radial-gradient(circle, rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%)',
+      },
       colors: {
         primary: '#58DCDE',
         'neutral-100': '#CECECE',

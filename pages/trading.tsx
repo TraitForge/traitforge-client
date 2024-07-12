@@ -178,7 +178,7 @@ const Marketplace = () => {
     default:
       content = (
         <>
-          <div className="overflow-y-auto flex-1 border-t">
+          <div className="container overflow-y-auto flex-1 border-t">
             <FiltersHeader
               sortOption={sortOption}
               handleSort={setSortOption}
@@ -210,7 +210,7 @@ const Marketplace = () => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="container pt-5 flex flex-col h-full">
+      <div className="flex flex-col h-full">
         <TraidingHeader handleStep={setStep} step={step} />
         {content}
       </div>

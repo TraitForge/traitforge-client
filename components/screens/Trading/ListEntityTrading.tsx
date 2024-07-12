@@ -56,28 +56,30 @@ export const ListEntityTrading = ({
   }, [sortOption, generationFilter, sortingFilter, ownerEntities]);
 
   return (
-    <div className="overflow-y-auto flex-1">
-      <FiltersHeader
-        sortOption={sortOption}
-        handleSort={setSortOption}
-        pageType="nuke"
-        color="green"
-        handleFilterChange={handleFilterChange}
-        generationFilter={generationFilter}
-        sortingFilter={sortingFilter}
-      />
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 mt-10 gap-x-3  md:gap-x-[15px] gap-y-7 lg:gap-y-4">
-        {filteredAndSortedOwnerEntities.map(entity => (
-          <EntityCard
-            key={entity.tokenId}
-            entity={entity}
-            onSelect={() => {
-              setSelectedForSale(entity);
-              handleStep('three');
-              console.log('Selected entity:', entity);
-            }}
-          />
-        ))}
+    <div className="overflow-y-auto flex-1 bg-custom-radial">
+      <div className="container ">
+        <FiltersHeader
+          sortOption={sortOption}
+          handleSort={setSortOption}
+          pageType="nuke"
+          color="green"
+          handleFilterChange={handleFilterChange}
+          generationFilter={generationFilter}
+          sortingFilter={sortingFilter}
+        />
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 mt-10 gap-x-3  md:gap-x-[15px] gap-y-7 lg:gap-y-4">
+          {filteredAndSortedOwnerEntities.map(entity => (
+            <EntityCard
+              key={entity.tokenId}
+              entity={entity}
+              onSelect={() => {
+                setSelectedForSale(entity);
+                handleStep('three');
+                console.log('Selected entity:', entity);
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

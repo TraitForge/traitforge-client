@@ -105,7 +105,7 @@ const HoneyPot = () => {
 
   if (isLoading)
     return (
-      <div className="h-full w-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center items-center flex-col">
         <LoadingSpinner color="#9457EB" />
         {loadingText && <p className="mt-3 text-[#9457EB]">{loadingText}</p>}
       </div>
@@ -125,29 +125,31 @@ const HoneyPot = () => {
       break;
     case 'two':
       content = (
-        <div className="overflow-y-auto flex-1">
-          <FiltersHeader
-            pageType="nuke"
-            sortOption={sortOption}
-            handleSort={setSortOption}
-            color="purple"
-            handleFilterChange={(selectedOption, type) =>
-              handleFilterChange(selectedOption, type)
-            }
-            generationFilter={generationFilter}
-            sortingFilter={sortingFilter}
-          />
-          <div className="grid mt-10 grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-[15px] gap-y-3 md:gap-y-4">
-            {filteredAndSortedListings.map(entity => (
-              <EntityCard
-                key={entity.tokenId}
-                entity={entity}
-                onSelect={() => {
-                  setSelectedForNuke(entity);
-                  setStep('three');
-                }}
-              />
-            ))}
+        <div className="overflow-y-auto flex-1 bg-custom-radial">
+          <div className="container">
+            <FiltersHeader
+              pageType="nuke"
+              sortOption={sortOption}
+              handleSort={setSortOption}
+              color="purple"
+              handleFilterChange={(selectedOption, type) =>
+                handleFilterChange(selectedOption, type)
+              }
+              generationFilter={generationFilter}
+              sortingFilter={sortingFilter}
+            />
+            <div className="grid mt-10 grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-[15px] gap-y-3 md:gap-y-4">
+              {filteredAndSortedListings.map(entity => (
+                <EntityCard
+                  key={entity.tokenId}
+                  entity={entity}
+                  onSelect={() => {
+                    setSelectedForNuke(entity);
+                    setStep('three');
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
       );
@@ -158,7 +160,7 @@ const HoneyPot = () => {
 
   return (
     <div className={styles.honeyPotContainer}>
-      <div className="container flex flex-col h-full ">
+      <div className="flex flex-col h-full w-full">
         <HoneyPotHeader step={step} handleStep={setStep} />
         {content}
       </div>
