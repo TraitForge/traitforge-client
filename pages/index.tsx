@@ -6,10 +6,17 @@ import {
   useMintToken,
   useMintWithBudget,
   useUpcomingMints,
+  useWhitelistEndTime,
 } from '~/hooks';
 import { formatEther, parseEther } from 'viem';
+import { useAccount } from 'wagmi';
+import { WHITELIST } from '~/constants/whitelist';
+import Countdown from 'react-countdown';
+import _ from 'lodash';
 
 const Home = () => {
+  const { address } = useAccount();
+  const { data: whitelistEndTime } = useWhitelistEndTime();
   const { data: currentGeneration, refetch: refetchCurrentGeneration } =
     useCurrentGeneration();
   const { data: mintPrice, refetch: refetchMintPrice } = useMintPrice();
@@ -39,12 +46,19 @@ const Home = () => {
     }
   }, [isMintTokenConfirmed, isMintWithBudgetConfirmed]);
 
+  const getProof = () => {
+    const res = WHITELIST.find(
+      item => item.address.toLowerCase() === address?.toLowerCase()
+    );
+    return res?.proof ?? [];
+  };
+
   const handleMintEntity = async () => {
-    onMintToken(mintPrice);
+    onMintToken(mintPrice, getProof());
   };
 
   const handleMintBatchEntity = async () => {
-    onMintWithBudget(parseEther(budgetAmount));
+    onMintWithBudget(parseEther(budgetAmount), getProof());
   };
 
   if (isLoading)
@@ -75,6 +89,25 @@ const Home = () => {
       >
         Mint your traitforge entity
       </h1>
+      <h2>
+        <Countdown
+          renderer={({ days, hours, minutes, seconds, completed }) => {
+            if (completed) {
+              return null;
+            } else {
+              return (
+                <span>
+                  {_.padStart(String(days), 2, '0')}:
+                  {_.padStart(String(hours), 2, '0')}:
+                  {_.padStart(String(minutes), 2, '0')}:
+                  {_.padStart(String(seconds), 2, '0')}
+                </span>
+              );
+            }
+          }}
+          date={new Date(whitelistEndTime * 1000)}
+        />
+      </h2>
       <div className="w-full flex justify-center">
         <Slider
           mintPrice={mintPrice}
@@ -86,7 +119,7 @@ const Home = () => {
         <Button
           onClick={handleMintEntity}
           bg="#023340"
-          variant='blue'
+          variant="blue"
           text={`Mint For ${formatEther(mintPrice)} ETH`}
           style={{ marginBottom: '25px' }}
           textClass="font-electrolize"
@@ -96,7 +129,7 @@ const Home = () => {
           bg="#023340"
           text={`Mint With a Budget`}
           textClass="font-electrolize"
-          variant='secondary'
+          variant="secondary"
         />
         {isModalOpen && (
           <BudgetModal

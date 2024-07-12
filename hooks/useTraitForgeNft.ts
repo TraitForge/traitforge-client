@@ -21,6 +21,21 @@ import { calculateEntityAttributes } from '~/utils';
 
 // Read Functions
 
+export const useWhitelistEndTime = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    abi: TraitForgeNftABI,
+    address: CONTRACT_ADDRESSES.TraitForgeNft,
+    functionName: 'whitelistEndTime',
+    args: [],
+  });
+
+  return {
+    data: Number(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
 export const useCurrentGeneration = () => {
   const { data, isFetching, refetch } = useReadContract({
     abi: TraitForgeNftABI,
@@ -426,13 +441,13 @@ export const useMintToken = () => {
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
-  const onWriteAsync = async (mintPrice: bigint) => {
+  const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[]) => {
     await writeContractAsync({
       chainId: sepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintToken',
-      args: [],
+      args: [proof],
       value: mintPrice,
     });
   };
@@ -474,13 +489,13 @@ export const useMintWithBudget = () => {
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
-  const onWriteAsync = async (mintPrice: bigint) => {
+  const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[]) => {
     await writeContractAsync({
       chainId: sepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintWithBudget',
-      args: [],
+      args: [proof],
       value: mintPrice,
     });
   };
