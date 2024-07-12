@@ -210,7 +210,7 @@ const Marketplace = () => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full bg-custom-radial">
         <TraidingHeader handleStep={setStep} step={step} />
         {content}
       </div>

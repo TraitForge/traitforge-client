@@ -1,13 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useState } from 'react';
+
 import { FaWallet } from 'react-icons/fa';
-import { WalletModal } from '~/components/screens';
 
 const WalletButton = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <ConnectButton.Custom>
       {({
@@ -94,27 +92,18 @@ const WalletButton = () => {
                       {chain.name}
                     </span>
                   </button>
-
-                  <button
+                  <Link
+                    href="/profile"
                     className="walletbackground flex items-center gap-2 p-2 rounded-lg h-10"
-                    onClick={() => setIsOpen(true)}
                   >
                     <FaWallet size={24} />
                     <span className="hidden lg:block text-2xl text-gray-200 font-bebas">
                       {account.displayName}
                     </span>
-                  </button>
+                  </Link>
                 </div>
               );
             })()}
-
-            {isOpen && (
-              <WalletModal
-                isOpen={isOpen}
-                closeModal={() => setIsOpen(false)}
-                balanceInETH={account?.displayBalance ?? '0'}
-              />
-            )}
           </div>
         );
       }}

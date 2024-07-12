@@ -1,10 +1,10 @@
 'use client';
-
+import { useRouter } from 'next/router';
 import { useAccount } from 'wagmi';
 import { useEffect, useState } from 'react';
 import { FaWallet } from 'react-icons/fa';
+
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
 import { Button, EntityCard, LoadingSpinner, Modal } from '~/components';
 import { BorderType, Entity, EntityForging, EntityTrading } from '~/types';
 import { shortenAddress } from '~/utils';

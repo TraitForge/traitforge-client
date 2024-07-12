@@ -31,6 +31,8 @@ module.exports = {
         'light-dark': 'rgba(0, 0, 0, 0)',
         'light-orange': 'rgba(253, 141, 38,0.48)',
         'light-purple': 'rgba(252, 98, 255, 0.48)',
+        blue: 'rgba(2, 51, 64, 0.8)',
+        green: 'rgba(8, 18, 20, 0.8)',
       },
       container: {
         center: true,

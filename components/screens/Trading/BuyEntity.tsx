@@ -13,7 +13,7 @@ export const BuyEntity = ({
   handleStep,
 }: BuyEntityTypes) => {
   return (
-    <div className="md:bg-dark-81 w-full md:w-[60%] xl:w-[40%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[50px] xl:px-[100px] flex flex-col rounded-[20px] items-center">
+    <div className="md:bg-green w-full md:w-[60%] xl:w-[40%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[50px] xl:px-[100px] flex flex-col rounded-[20px] items-center">
       <div className="max-md:order-1 py-5">
         <EntityCard
           entity={selectedListing}
