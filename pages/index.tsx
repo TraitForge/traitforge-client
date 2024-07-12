@@ -71,7 +71,7 @@ const Home = () => {
     >
       <h1
         title="Mint Your Traitforge Entity"
-        className="headers text-[36px] mb-2.5 text-center md:text-extra-large"
+        className="headers text-[36px] my-6 text-center md:text-extra-large"
       >
         Mint your traitforge entity
       </h1>

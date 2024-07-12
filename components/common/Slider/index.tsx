@@ -62,7 +62,7 @@ const Slider = ({
 
   return (
     <div className="w-full md:w-[90%] md:mx-auto relative">
-      <div className="md:px-20 lg:px-24 xl:px-[100px] h-full w-full">
+      <div className="md:px-10 lg:px-14 xl:px-[50px] h-full w-90">
         <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>
           {upcomingMints.map((mint: any, index: number) => {
             const price = getEntityPrice(mintPrice, index);
