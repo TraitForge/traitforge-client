@@ -87,18 +87,18 @@ export const EntityCard = ({
         />
         <div className="mt-5 text-base xl:text-[24px] flex max-md:flex-wrap gap-y-2 text-left 2xl:gap-x-3">
           <div className="flex flex-col gap-2 basis-1/3 flex-1">
-            <span>{nukeFactor}</span>
-            <span className="text-xs md:text-sm xl:text-base ">
+            <h1>{nukeFactor}%</h1>
+            <span className="text-xs md:text-sm ">
               Nuke <br /> Factor
             </span>
           </div>
           <div className="flex flex-col gap-2 basis-1/3 flex-1">
-            <span>{forgePotential}</span>
-            <span className="text-xs md:text-sm xl:text-base">Forge Potential</span>
+            <h1>{forgePotential}</h1>
+            <span className="text-xs md:text-sm">Forge Potential</span>
           </div>
           <div className="flex flex-col gap-2 basis-1/3 flex-1">
-            <span>{performanceFactor}</span>
-            <span className="text-sm xl:text-base gap-2">Performance Factor</span>
+            <h1>{performanceFactor}</h1>
+            <span className="text-xs md:text-sm gap-2">Performance Factor</span>
           </div>
         </div>
       </div>

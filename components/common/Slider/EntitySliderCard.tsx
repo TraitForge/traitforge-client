@@ -68,18 +68,18 @@ export const EntitySliderCard = ({
               setImgLoaded(!!naturalWidth);
             }}
           />
-        <div className="mt-5 text-[18px] xl:text-[24px] grid grid-cols-3 text-left 2xl:gap-x-3">
+        <div className="mt-5 text-[21px] xl:text-[20px] grid grid-cols-3 text-left 2xl:gap-x-3">
           <div className='flex flex-col gap-2'>
-            <span >{nukeFactor}</span>
-            <span className='text-md xl:text-base'>Nuke <br /> Factor</span>
+            <h1>{nukeFactor}%</h1>
+            <span className='text-xs xl:text-sm'>Nuke <br /> Factor</span>
           </div>
           <div className='flex flex-col gap-2'>
-            <span>{forgePotential}</span>
-            <span className='text-md xl:text-base'>Forge Potential</span>
+            <h1>{forgePotential}</h1>
+            <span className='text-xs xl:text-sm'>Forge Potential</span>
           </div>
           <div className='flex flex-col gap-2'>
-            <span>{performanceFactor}</span>
-            <span className='text-md xl:text-base'>Performance Factor</span>
+            <h1>{performanceFactor}</h1>
+            <span className='text-xs xl:text-sm'>Performance Factor</span>
           </div>
         </div>
       </div>
