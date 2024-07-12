@@ -296,7 +296,7 @@ const getS3Object = async (fileName: string) => {
   try {
     const params: S3.GetObjectRequest = {
       Bucket: process.env.AWS_S3_BUCKET_NAME || '',
-      Key: fileName,
+      Key: `variables/${fileName}`,
     };
 
     const data = await s3.getObject(params).promise();

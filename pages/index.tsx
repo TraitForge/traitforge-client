@@ -96,12 +96,16 @@ const Home = () => {
               return null;
             } else {
               return (
-                <span>
-                  {_.padStart(String(days), 2, '0')}:
-                  {_.padStart(String(hours), 2, '0')}:
-                  {_.padStart(String(minutes), 2, '0')}:
-                  {_.padStart(String(seconds), 2, '0')}
-                </span>
+                <>
+                  <span>Whitelist mint finishes in</span>
+                  &nbsp;
+                  <span>
+                    {_.padStart(String(days), 2, '0')}:
+                    {_.padStart(String(hours), 2, '0')}:
+                    {_.padStart(String(minutes), 2, '0')}:
+                    {_.padStart(String(seconds), 2, '0')}
+                  </span>
+                </>
               );
             }
           }}

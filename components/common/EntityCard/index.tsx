@@ -11,7 +11,7 @@ type EntityCardTypes = {
   entity: Entity;
   onSelect?: () => void;
   wrapperClass?: string;
-  borderType?:BorderType
+  borderType?: BorderType;
   showPrice?: boolean;
   displayPrice?: string | number;
 };
@@ -22,7 +22,7 @@ export const EntityCard = ({
   wrapperClass,
   showPrice,
   displayPrice,
-  borderType
+  borderType,
 }: EntityCardTypes) => {
   const {
     paddedEntropy,
@@ -43,9 +43,12 @@ export const EntityCard = ({
     {
       'opacity-1': imgLoaded,
       'opacity-0': !imgLoaded,
-      'from-light-green border-neon-green shadow-custom-green': asPath === '/trading',
-      'from-light-orange border-neon-orange shadow-custom-forge': asPath === '/forging',
-      'from-light-purple border-neon-purple shaow-custom-purple': asPath === '/nuke-fund',
+      'from-light-green border-neon-green shadow-custom-green':
+        asPath === '/trading',
+      'from-light-orange border-neon-orange shadow-custom-forge':
+        asPath === '/forging',
+      'from-light-purple border-neon-purple shaow-custom-purple':
+        asPath === '/nuke-fund',
     }
   );
   const skeletonClasses = classNames({

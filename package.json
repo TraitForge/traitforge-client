@@ -52,7 +52,7 @@
     "react-toastify": "^10.0.5",
     "sass": "^1.72.0",
     "scss-reset": "^1.4.2",
-    "sharp": "^0.33.3",
+    "sharp": "^0.33.4",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.1.0",
     "typescript": "^5.4.3",

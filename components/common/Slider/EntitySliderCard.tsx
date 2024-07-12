@@ -56,30 +56,32 @@ export const EntitySliderCard = ({
         {showPrice && (
           <h4 className="text-[24px] text-left py-5">{price} ETH</h4>
         )}
-          <Image
-            loading="lazy"
-            src={imageUrl}
-            alt="IMG"
-            className="w-full rounded-xl max-h-[280px] object-cover"
-            width={250}
-            height={250}
-            onLoad={e => {
-              const { naturalWidth } = e.target as HTMLImageElement;
-              setImgLoaded(!!naturalWidth);
-            }}
-          />
+        <Image
+          loading="lazy"
+          src={imageUrl}
+          alt="IMG"
+          className="w-full rounded-xl max-h-[280px] object-cover"
+          width={250}
+          height={250}
+          onLoad={e => {
+            const { naturalWidth } = e.target as HTMLImageElement;
+            setImgLoaded(!!naturalWidth);
+          }}
+        />
         <div className="mt-5 text-[21px] xl:text-[20px] grid grid-cols-3 text-left 2xl:gap-x-3">
-          <div className='flex flex-col gap-2'>
+          <div className="flex flex-col gap-2">
             <h1>{nukeFactor}%</h1>
-            <span className='text-xs xl:text-sm'>Nuke <br /> Factor</span>
+            <span className="text-xs xl:text-sm">
+              Nuke <br /> Factor
+            </span>
           </div>
-          <div className='flex flex-col gap-2'>
+          <div className="flex flex-col gap-2">
             <h1>{forgePotential}</h1>
-            <span className='text-xs xl:text-sm'>Forge Potential</span>
+            <span className="text-xs xl:text-sm">Forge Potential</span>
           </div>
-          <div className='flex flex-col gap-2'>
+          <div className="flex flex-col gap-2">
             <h1>{performanceFactor}</h1>
-            <span className='text-xs xl:text-sm'>Performance Factor</span>
+            <span className="text-xs xl:text-sm">Performance Factor</span>
           </div>
         </div>
       </div>
