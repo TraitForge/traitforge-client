@@ -41,6 +41,7 @@ const Forging = () => {
   const [selectedForListing, setSelectedForListing] = useState<Entity | null>(
     null
   );
+  const [areEntitiesForged, setEntitiesForged] = useState(false);
   const [processingText, setProcessingText] = useState('Forging');
   const [generationFilter, setGenerationFilter] = useState('');
 
@@ -63,6 +64,7 @@ const Forging = () => {
     setProcessingText('Forging');
     const feeInWei = parseEther(String(selectedFromPool.fee));
     onForge(selectedFromPool.tokenId, selectedEntity.tokenId, feeInWei);
+    setEntitiesForged(true);
   };
 
   useEffect(() => {
@@ -116,6 +118,7 @@ const Forging = () => {
               <ForgingArena
                 selectedFromPool={selectedFromPool}
                 selectedFromWallet={selectedEntity}
+                areEntitiesForged={areEntitiesForged}
                 handleEntityListModal={handleEntityListModal}
                 handleOwnerEntityList={handleOwnerEntityList}
               />

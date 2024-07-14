@@ -48,13 +48,13 @@ const Slider = ({
         centeredSlides: false,
       },
       1224: {
-        slidesPerView: 3,
+        slidesPerView: 4,
         spaceBetween: 20,
         centeredSlides: false,
       },
       1440: {
-        slidesPerView: 4,
-        spaceBetween: 20,
+        slidesPerView: 5,
+        spaceBetween: 15,
         centeredSlides: false,
       },
     },

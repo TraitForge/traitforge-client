@@ -3,6 +3,8 @@ import { SingleValue } from 'react-select';
 import { EntityCard, FiltersHeader } from '~/components';
 import { BorderType, EntityForging } from '~/types';
 
+import { useAccount } from 'wagmi';
+
 type SelectEntityListTypes = {
   entitiesForForging: EntityForging[];
   handleSelectedFromPool: (entity: EntityForging) => void;
@@ -16,6 +18,7 @@ export const SelectEntityList = ({
 }: SelectEntityListTypes) => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
+  const { address } = useAccount();
 
   const handleFilterChange = (
     selectedOption: SingleValue<
@@ -51,6 +54,8 @@ export const SelectEntityList = ({
     return filtered;
   }, [generationFilter, sortingFilter, entitiesForForging]);
 
+  console.log(filteredAndSortedListings);
+
   return (
     <div className="bg-dark-81 w-[98vw] md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[80vw] md:rounded-[30px] mx-auto py-10 px-3 md:px-5 flex flex-col">
       <div className="border-b border-white mb-10">
@@ -68,19 +73,26 @@ export const SelectEntityList = ({
         />
       </div>
       <div className="flex-1 overflow-y-scroll">
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-2 md:gap-x-[15px] gap-y-3 md:gap-y-3">
-          {filteredAndSortedListings.map(listing => (
-            <EntityCard
-              key={listing.tokenId}
-              entity={listing}
-              onSelect={() => {
-                handleSelectedFromPool(listing);
-                handleEntityListModal();
-              }}
-              showPrice
-              displayPrice={listing.fee}
-            />
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-2 md:gap-x-[15px] gap-y-3 md:gap-y-3">
+          {filteredAndSortedListings.map(listing => {
+            const isOwnedByUser = listing.account === address;
+
+            return (
+              <EntityCard
+                key={listing.tokenId}
+                entity={listing}
+                onSelect={() => {
+                  if (!isOwnedByUser) {
+                    handleSelectedFromPool(listing);
+                    handleEntityListModal();
+                  }
+                }}
+                showPrice
+                displayPrice={listing.fee}
+                isOwnedByUser={isOwnedByUser}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

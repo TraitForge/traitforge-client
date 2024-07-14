@@ -14,15 +14,19 @@ type EntityCardTypes = {
   borderType?: BorderType;
   showPrice?: boolean;
   displayPrice?: string | number;
+  className?: string;
+  isOwnedByUser?: boolean;
 };
 
 export const EntityCard = ({
   entity,
   onSelect,
   wrapperClass,
+  className,
   showPrice,
   displayPrice,
   borderType,
+  isOwnedByUser,
 }: EntityCardTypes) => {
   const {
     paddedEntropy,
@@ -49,6 +53,7 @@ export const EntityCard = ({
         asPath === '/forging',
       'from-light-purple border-neon-purple shaow-custom-purple':
         asPath === '/nuke-fund',
+        'bg-gray-800 opacity-50 pointer-events-none': isOwnedByUser, 
     }
   );
   const skeletonClasses = classNames({
