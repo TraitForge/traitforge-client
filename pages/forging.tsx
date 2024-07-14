@@ -128,7 +128,7 @@ const Forging = () => {
             </div>
             <div className="max-md:px-5">
             <Button
-              text={isGenerationsDifferent ? "MUST BE SAME GENERATION" : "FORGE ENTITY"}
+              text={isGenerationsDifferent ? "SAME GENERATION ONLY" : "FORGE ENTITY"}
               bg="rgba(31, 15, 0, 0.6)"
               width="408"
               height="92"
