@@ -1,7 +1,5 @@
 import { ProfileHeader, OwnedEntities } from '~/components/screens';
 
-import { WalletModal } from '~/components/screens';
-
 const ProfilePage = () => {
   return (
     <div
