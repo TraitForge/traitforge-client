@@ -16,7 +16,7 @@ export const ForgingArena = ({
   handleEntityListModal,
   handleOwnerEntityList,
   // TODO:add this latter
-  areEntitiesForged = false,
+  areEntitiesForged,
   selectedFromWallet,
 }: ForgingArenaTypes) => {
   return (
@@ -28,6 +28,7 @@ export const ForgingArena = ({
       />
       <ArenaCenter
         selectedFromPool={selectedFromPool}
+        selectedFromWallet={selectedFromWallet}
         areEntitiesForged={areEntitiesForged}
       />
       <ArenaItem
