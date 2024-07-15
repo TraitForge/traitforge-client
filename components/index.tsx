@@ -8,6 +8,7 @@ export { default as TransactionsDisplay } from './common/TransactionsDisplay';
 export { default as BudgetModal } from './common/BudgetModal';
 export { Button } from './common/buttons/Button';
 export { EntityCard } from './common/EntityCard';
+export { PossibleEntityCard } from './common/PossibleEntityCard';
 export { default as Modal } from './common/Modal';
 
 export { FiltersHeader } from './common/FiltersHeader';

@@ -41,6 +41,7 @@ const Forging = () => {
   const [selectedForListing, setSelectedForListing] = useState<Entity | null>(
     null
   );
+  const [areEntitiesForged, setEntitiesForged] = useState(false);
   const [processingText, setProcessingText] = useState('Forging');
   const [generationFilter, setGenerationFilter] = useState('');
 
@@ -63,6 +64,7 @@ const Forging = () => {
     setProcessingText('Forging');
     const feeInWei = parseEther(String(selectedFromPool.fee));
     onForge(selectedFromPool.tokenId, selectedEntity.tokenId, feeInWei);
+    setEntitiesForged(true);
   };
 
   useEffect(() => {
@@ -84,6 +86,9 @@ const Forging = () => {
     const feeInWei = parseEther(fee);
     onList(selectedForListing.tokenId, feeInWei);
   };
+
+  const isGenerationsDifferent = selectedEntity?.generation !== selectedFromPool?.generation;
+  console.log('isGenerationsDifferent:', isGenerationsDifferent);
 
   let content;
 
@@ -116,21 +121,22 @@ const Forging = () => {
               <ForgingArena
                 selectedFromPool={selectedFromPool}
                 selectedFromWallet={selectedEntity}
+                areEntitiesForged={areEntitiesForged}
                 handleEntityListModal={handleEntityListModal}
                 handleOwnerEntityList={handleOwnerEntityList}
               />
             </div>
             <div className="max-md:px-5">
-              <Button
-                text="forge entity"
-                bg="rgba(31, 15, 0,0.6)"
-                width="408"
-                height="92"
-                variant="orange"
-                textClass="!px-28 !py-2 capitalize text-[40px]"
-                disabled={isLoading}
-                onClick={forgeEntity}
-              />
+            <Button
+              text={isGenerationsDifferent ? "SAME GENERATION ONLY" : "FORGE ENTITY"}
+              bg="rgba(31, 15, 0, 0.6)"
+              width="408"
+              height="92"
+              variant={isGenerationsDifferent ? "null" : "orange"}
+              textClass="!px-28 !py-2 capitalize text-[40px]"
+              disabled={isGenerationsDifferent || isLoading}
+              onClick={forgeEntity}
+            />
             </div>
           </div>
           {isEntityListModalOpen && (
