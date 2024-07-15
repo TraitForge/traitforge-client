@@ -3,7 +3,7 @@ import styles from '~/styles/trading.module.scss';
 import { EntityCard, LoadingSpinner } from '~/components';
 import { FiltersHeader } from '~/components';
 import { SingleValue } from 'react-select';
-import { BorderType, Entity, EntityTrading } from '~/types';
+import { Entity, EntityTrading } from '~/types';
 import {
   useApproval,
   useApproveNft,
@@ -210,7 +210,7 @@ const Marketplace = () => {
 
   return (
     <div className={styles.tradingPage}>
-      <div className="flex flex-col h-full bg-custom-radial">
+      <div className="flex flex-col h-full">
         <TraidingHeader handleStep={setStep} step={step} />
         {content}
       </div>

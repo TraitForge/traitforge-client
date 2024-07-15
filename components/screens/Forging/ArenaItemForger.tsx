@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 
 import { EntityCard } from '~/components';
-import { BorderType, EntityForging } from '~/types';
+import { EntityForging } from '~/types';
 import { icons } from '~/components/icons';
 
 type ArenaItemForgerTypes = {

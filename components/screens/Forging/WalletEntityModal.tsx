@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { SingleValue } from 'react-select';
 import { EntityCard, FiltersHeader } from '~/components';
-import { BorderType, Entity, EntityRole } from '~/types';
+import { Entity, EntityRole } from '~/types';
 
 type WalletEntityModalTypes = {
   ownerEntities: Entity[];

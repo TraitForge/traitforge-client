@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { SingleValue } from 'react-select';
 import { EntityCard, FiltersHeader } from '~/components';
-import { BorderType, Entity } from '~/types';
+import { Entity } from '~/types';
 
 type ListEntityTradingTypes = {
   ownerEntities: Entity[];
@@ -75,7 +75,6 @@ export const ListEntityTrading = ({
               onSelect={() => {
                 setSelectedForSale(entity);
                 handleStep('three');
-                console.log('Selected entity:', entity);
               }}
             />
           ))}

@@ -4,7 +4,7 @@ $border-color-dropdown: rgba(255, 123, 0, 0.24);
 
 .tradingPage {
   // font-family: 'Bebas Neue', sans-serif;
-  background: url('/images/marketplace-background.jpg') center / cover no-repeat;
+  background: radial-gradient(rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%), url('/images/marketplace-background.jpg') center / cover no-repeat;
   background-attachment: fixed;
   height: 100%;
   padding-bottom: 20px;

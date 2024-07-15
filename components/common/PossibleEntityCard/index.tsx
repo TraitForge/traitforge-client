@@ -4,13 +4,12 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
-import { BorderType, Entity } from '~/types';
+import { Entity } from '~/types';
 
 type EntityCardTypes = {
   entity: Entity;
   onSelect?: () => void;
   wrapperClass?: string;
-  borderType?: BorderType;
   showPrice?: boolean;
   displayPrice?: string | number;
 };
@@ -20,25 +19,20 @@ export const PossibleEntityCard = ({
   onSelect,
   wrapperClass,
 }: EntityCardTypes) => {
-  const {
-    generation,
-    role,
-    forgePotential,
-    performanceFactor,
-    nukeFactor,
-  } = entity;
+  const { generation, role, forgePotential, performanceFactor, nukeFactor } =
+    entity;
   const { asPath } = useRouter();
   const wrapperClasses = classNames(
     'overflow-hidden border-[1.33px] border-orange rounded-[20px] px-2 md:px-4 py-3 md:py-5 bg-gradient-to-bl to-light-dark',
     {
-    'from-light-orange border-neon-orange shadow-custom-forge':
-    asPath === '/forging',
-   },
-    wrapperClass,
+      'from-light-orange border-neon-orange shadow-custom-forge':
+        asPath === '/forging',
+    },
+    wrapperClass
   );
 
   const badgeClasses = classNames(
-    'text-[10px] lg:text-base 3xl:text-[20px] py-2.5 px-[14px] bg-opacity-20 rounded-xl',
+    'text-[10px] lg:text-base 3xl:text-[20px] py-2.5 px-[14px] bg-opacity-20 rounded-xl'
   );
 
   return (

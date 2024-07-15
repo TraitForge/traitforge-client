@@ -1,5 +1,5 @@
 import { EntityCard, Button } from '~/components';
-import { BorderType, Entity } from '~/types';
+import { Entity } from '~/types';
 
 type NukeEntityTypes = {
   selectedForNuke: Entity;

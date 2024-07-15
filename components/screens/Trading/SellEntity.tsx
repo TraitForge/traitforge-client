@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { EntityCard, Button } from '~/components';
-import { BorderType, Entity } from '~/types';
+import { Entity } from '~/types';
 
 type SellEntityTypes = {
   selectedForSale: Entity;
@@ -20,7 +20,7 @@ export const SellEntity = ({
   const [showPriceError, setShowPriceError] = useState(false);
 
   return (
-    <div className="md:bg-dark-81 w-full md:w-[60%] xl:w-[40%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
+    <div className="md:bg-green w-full md:w-[60%] xl:w-[40%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
       <div className="max-md:order-2 w-full mb-[14px]">
         <h3 className="text-large font-electrolize mb-8">
           Set a price for your entity:
@@ -41,7 +41,7 @@ export const SellEntity = ({
       <div className="max-md:order-1">
         <EntityCard entity={selectedForSale} />
       </div>
-      <div className="max-md:order-3 max-md:px-10 mt-2">
+      <div className="max-md:order-3 max-md:px-10 mt-4">
         <Button
           bg="rba(8, 30, 14,0.8)"
           text="List for Sale"

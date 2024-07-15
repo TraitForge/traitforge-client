@@ -6,7 +6,7 @@ import { FaWallet } from 'react-icons/fa';
 
 import classNames from 'classnames';
 import { Button, EntityCard, LoadingSpinner, Modal } from '~/components';
-import { BorderType, Entity, EntityForging, EntityTrading } from '~/types';
+import { Entity, EntityForging, EntityTrading } from '~/types';
 import { shortenAddress } from '~/utils';
 import {
   useListedEntitiesByUser,
@@ -61,27 +61,6 @@ export const WalletModal = ({
       'border-primary': asPath === '/',
     }
   );
-
-  let borderType: BorderType;
-  let buttonColor;
-
-  switch (asPath) {
-    case '/forging':
-      borderType = BorderType.ORANGE;
-      buttonColor = '#FD8D26';
-      break;
-    case '/trading':
-      borderType = BorderType.GREEN;
-      buttonColor = '#0EEB81';
-      break;
-    case '/nuke-fund':
-      borderType = BorderType.PURPLE;
-      buttonColor = '#FC62FF';
-      break;
-    default:
-      borderType = BorderType.BLUE;
-      buttonColor = '#0ADFDB';
-  }
 
   const handleSelectEntity = (tokenId: number) => {
     const entity =
@@ -179,17 +158,13 @@ export const WalletModal = ({
               text="Unlist an Entity"
               style={{ marginBottom: '40px' }}
               onClick={() => setCurrentStep(2)}
-              variant='blue'
+              variant="blue"
             />
           </div>
           {ownerEntities.length > 0 && (
             <div className="pb-5 w-11/12 grid grid-cols-1 xs:grid-cols-2 xs:w-full sm:grid-cols-3 sm:w-11/12 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 px-10 flex-1 overflow-y-scroll">
               {ownerEntities.map((entity: Entity) => (
-                <EntityCard
-                  key={entity.tokenId}
-                  entity={entity}
-                  borderType={borderType}
-                />
+                <EntityCard key={entity.tokenId} entity={entity} />
               ))}
             </div>
           )}
@@ -206,14 +181,13 @@ export const WalletModal = ({
                 key={entity.tokenId}
                 entity={entity}
                 onSelect={() => handleSelectEntity(entity.tokenId)}
-                borderType={borderType}
               />
             ))}
           </div>
           <div className="w-2/12 flex flex-col justify-center gap-3 pb-5">
             <Button
               bg="#023340"
-              variant='blue'
+              variant="blue"
               text="Back to Wallet"
               onClick={() => setCurrentStep(1)}
             />
@@ -226,7 +200,6 @@ export const WalletModal = ({
             <EntityCard
               entity={selectedForUnlisting}
               onSelect={() => handleSelectEntity(selectedForUnlisting.tokenId)}
-              borderType={borderType}
             />
           </div>
           <div className="flex flex-col justify-center items-center gap-3 pb-3 mt-5">
@@ -236,7 +209,7 @@ export const WalletModal = ({
               <>
                 <Button
                   bg="#023340"
-                  variant='blue'
+                  variant="blue"
                   text="Unlist Entity"
                   onClick={handleUnlist}
                   disabled={isLoading}
@@ -244,7 +217,7 @@ export const WalletModal = ({
                 <div className="justify-center mt-1">
                   <Button
                     bg="#023340"
-                    variant='blue'
+                    variant="blue"
                     text="Back"
                     onClick={() => setCurrentStep(2)}
                     disabled={isLoading}
