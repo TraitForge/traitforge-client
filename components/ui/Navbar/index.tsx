@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import classNames from 'classnames';
 import { useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { motion, MotionProps } from 'framer-motion';
+
 import WalletButton from '../WalletButton';
-import { Logo, icons } from '~/components/icons';
+import { Logo } from '~/components/icons';
 
 const links = [
   { url: '/', text: 'HOME' },
@@ -47,7 +49,7 @@ const Navbar = () => {
   );
 
   return (
-    <header className='z-50'>
+    <header className="z-50">
       <nav className={expandedClasses}>
         <Link href="/" className="inline-block">
           <Logo />
@@ -69,10 +71,36 @@ const Navbar = () => {
         <div className="flex justify-center gap-x-6">
           <WalletButton />
           <button
-            className="block lg:hidden"
+            className={"focus:outline-none block lg:hidden"}
             onClick={() => setIsMenuOpen(prevState => !prevState)}
           >
-            {icons.menu()}
+            <motion.svg
+              animate={isMenuOpen ? 'open' : 'closed'}
+              className={'fill-current stroke-current'}
+              height="1rem"
+              viewBox="0 0 24 24"
+              width="1rem"
+            >
+              <Line
+                height={2}
+                y1="10"
+                x2="24"
+                y2="20"
+                variants={{
+                  closed: { y1: 6, y2: 6 },
+                  open: { y1: 0, y2: 20 },
+                }}
+              />
+              <Line
+                y1="20"
+                x2="24"
+                y2="20"
+                variants={{
+                  closed: { y1: 16, y2: 16 },
+                  open: { y1: 20, y2: 0 },
+                }}
+              />
+            </motion.svg>
           </button>
         </div>
         {isMenuOpen && (
@@ -97,3 +125,15 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+const Line = (
+  props: Omit<JSX.IntrinsicElements['line'] & MotionProps, 'ref'>
+) => (
+  <motion.line
+    fill="#fff"
+    stroke="#fff"
+    strokeLinecap="round"
+    strokeWidth="1.5"
+    {...props}
+  />
+);
