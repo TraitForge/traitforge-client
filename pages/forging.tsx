@@ -88,7 +88,6 @@ const Forging = () => {
   };
 
   const isGenerationsDifferent = selectedEntity?.generation !== selectedFromPool?.generation;
-  console.log('isGenerationsDifferent:', isGenerationsDifferent);
 
   let content;
 
@@ -187,7 +186,6 @@ const Forging = () => {
       );
       break;
   }
-
   return (
     <div
       className="mint-container h-full"
