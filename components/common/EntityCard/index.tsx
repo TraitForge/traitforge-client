@@ -4,17 +4,15 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
-import { BorderType, Entity } from '~/types';
+import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
 
 type EntityCardTypes = {
   entity: Entity;
   onSelect?: () => void;
   wrapperClass?: string;
-  borderType?: BorderType;
   showPrice?: boolean;
   displayPrice?: string | number;
-  className?: string;
   isOwnedByUser?: boolean;
 };
 
@@ -22,10 +20,8 @@ export const EntityCard = ({
   entity,
   onSelect,
   wrapperClass,
-  className,
   showPrice,
   displayPrice,
-  borderType,
   isOwnedByUser,
 }: EntityCardTypes) => {
   const {
@@ -42,18 +38,21 @@ export const EntityCard = ({
   const uri = calculateUri(paddedEntropy, generation);
 
   const wrapperClasses = classNames(
-    'overflow-hidden border-[1.33px] rounded-[20px] px-2 md:px-4 py-2 md:py-3 bg-gradient-to-bl to-light-dark',
+    ' border-[1.33px] rounded-[20px] px-2 md:px-4 py-2 md:py-5 bg-gradient-to-bl to-light-dark',
     wrapperClass,
     {
       'opacity-1': imgLoaded,
       'opacity-0': !imgLoaded,
       'from-light-green border-neon-green shadow-custom-green':
         asPath === '/trading',
+      'from-light-blue border-neon-blue shadow-custom-blue':
+        asPath === '/profile',
       'from-light-orange border-neon-orange shadow-custom-forge':
         asPath === '/forging',
       'from-light-purple border-neon-purple shaow-custom-purple':
         asPath === '/nuke-fund',
-        'bg-gray-800 opacity-50 pointer-events-none': isOwnedByUser, 
+      'bg-gray-800 opacity-50 pointer-events-none': isOwnedByUser,
+      'cursor-pointer': onSelect,
     }
   );
   const skeletonClasses = classNames({
@@ -67,6 +66,7 @@ export const EntityCard = ({
       'bg-[#0EEB81]': asPath === '/trading',
       'bg-[#FD8D26]': asPath === '/forging',
       'bg-neon-purple': asPath === '/nuke-fund',
+      'bg-neon-blue': asPath === '/profile',
     }
   );
 
@@ -74,7 +74,7 @@ export const EntityCard = ({
     <div>
       <EntityCardSkeleton className={skeletonClasses} />
       <div className={wrapperClasses} onClick={onSelect}>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center pb-3">
           <p className={badgeClasses}>GEN{generation}</p>
           <p className="text-[20px]">{role}</p>
         </div>
@@ -93,7 +93,7 @@ export const EntityCard = ({
             setImgLoaded(!!naturalWidth);
           }}
         />
-        <div className="mt-3 text-base xl:text-[24px] flex max-md:flex-wrap gap-y-2 md:gap-x-2 text-left 2xl:gap-x-3">
+        <div className="mt-3 text-base xl:text-[24px] flex max-xl:flex-wrap gap-y-2 md:gap-x-2 text-left 2xl:gap-x-3 overflow-hidden">
           <div className="flex flex-col gap-1 basis-1/3 flex-1">
             <h1>{nukeFactor}%</h1>
             <span className="text-xs md:text-sm ">
@@ -102,7 +102,9 @@ export const EntityCard = ({
           </div>
           <div className="flex flex-col gap-1 basis-1/3 flex-1">
             <h1>{forgePotential}</h1>
-            <span className="text-xs md:text-sm sm:pr-4 md:pr-0">Forge Potential</span>
+            <span className="text-xs md:text-sm sm:pr-4 md:pr-0">
+              Forge Potential
+            </span>
           </div>
           <div className="flex flex-col gap-1 basis-1/3 flex-1">
             <h1>{performanceFactor}</h1>

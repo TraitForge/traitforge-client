@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { PossibleEntityCard } from '~/components';
 import { calculateEntityAttributes } from '~/utils';
-import { BorderType, Entity, EntityRole } from '~/types';
+import { Entity, EntityRole } from '~/types';
 
 type ArenaCenterTypes = {
   selectedFromPool: Entity | null;

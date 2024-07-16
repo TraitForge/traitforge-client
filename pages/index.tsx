@@ -75,9 +75,9 @@ const Home = () => {
 
   return (
     <div
-      className="mint-container h-full py-5"
+      className="mint-container h-full py-5 "
       style={{
-        backgroundImage: "url('/images/home.png')",
+        backgroundImage: "radial-gradient(rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%), url('/images/home.png')",
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundAttachment: 'fixed',
