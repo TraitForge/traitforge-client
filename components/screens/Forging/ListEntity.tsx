@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { EntityCard } from '~/components';
 import { ListingHeader } from './ListingHeader';
-import { BorderType, Entity, EntityRole } from '~/types';
+import { Entity, EntityRole } from '~/types';
 
 type ListEntityTypes = {
   ownerEntities: Entity[];
@@ -41,7 +41,6 @@ export const ListEntity = ({
               <EntityCard
                 key={entity.tokenId}
                 entity={entity}
-                borderType={BorderType.ORANGE}
                 onSelect={() => {
                   setSelectedForListing(entity);
                   handleStep('three');

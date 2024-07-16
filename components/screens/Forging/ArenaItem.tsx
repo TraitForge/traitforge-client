@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 
 import { EntityCard } from '~/components';
-import { BorderType, Entity } from '~/types';
+import { Entity } from '~/types';
 import { icons } from '~/components/icons';
 
 type ArenaItemTypes = {

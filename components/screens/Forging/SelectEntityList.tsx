@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { SingleValue } from 'react-select';
 import { EntityCard, FiltersHeader } from '~/components';
-import { BorderType, EntityForging } from '~/types';
+import { EntityForging } from '~/types';
 
 import { useAccount } from 'wagmi';
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { EntityCard, Button } from '~/components';
 import { ListingHeader } from './ListingHeader';
-import { BorderType, Entity } from '~/types';
+import { Entity } from '~/types';
 
 type ListNowTypes = {
   selectedForListing: Entity;
