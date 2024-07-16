@@ -37,11 +37,9 @@ export const OwnedEntities = () => {
 
   const isLoading = isUnlistTradingPending || isUnlistForgingPending;
 
-  const handleSelectEntity = (tokenId: number) => {
-    const entity =
-      entitiesListedByUser.find(e => e.tokenId === tokenId) ?? null;
+  const handleSelectEntity = (entity: EntityTrading | EntityForging) => {
     setSelectedForUnlisting(entity);
-    setCurrentStep(3); // Move to step 3
+    setCurrentStep(3);
   };
 
   const handleUnlist = () => {
@@ -49,7 +47,7 @@ export const OwnedEntities = () => {
       return;
     }
     if ((selectedForUnlisting as EntityTrading).seller) {
-      // EntityTrading
+
       onUnlistTrading(selectedForUnlisting.tokenId);
     } else {
       onUnlistForging(selectedForUnlisting.tokenId);
@@ -70,7 +68,7 @@ export const OwnedEntities = () => {
       {currentStep === 1 && (
         <>
           <div className="flex max-md:flex-col gap-y-5 items-center justify-between">
-            <h2 className="text-[48px]">Entites owned</h2>
+            <h2 className="text-[48px]">Entities owned</h2>
             <Button
               bg="#023340"
               text="Unlist an Entity"
@@ -81,7 +79,7 @@ export const OwnedEntities = () => {
           </div>
           {ownerEntities.length > 0 && (
             <div className="bg-blue rounded-2xl p-[30px]">
-              <div className="pb-5  grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
+              <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
                 {ownerEntities.map((entity: Entity) => (
                   <EntityCard key={entity.tokenId} entity={entity} />
                 ))}
@@ -92,23 +90,23 @@ export const OwnedEntities = () => {
       )}
       {currentStep === 2 && (
         <>
-          <div className="flex gap-y-5 items-center ">
+          <div className="flex gap-y-5 items-center">
             <button
-              className=" bg-blue p-5 px-6 rounded-md "
+              className="bg-blue p-5 px-6 rounded-md"
               onClick={() => setCurrentStep(1)}
             >
               {icons.arrow({ className: 'text-neon-blue' })}
             </button>
             <h2 className="text-[48px] ml-8">Select entity to unlist</h2>
           </div>
-          {ownerEntities.length > 0 && (
+          {entitiesListedByUser.length > 0 && (
             <div className="bg-blue rounded-2xl p-[30px] mt-10">
-              <div className="pb-5  grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
-                {ownerEntities.map((entity: Entity) => (
+              <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
+                {entitiesListedByUser.map((entity: EntityTrading | EntityForging) => (
                   <EntityCard
                     key={entity.tokenId}
                     entity={entity}
-                    onSelect={() => handleSelectEntity(entity.tokenId)}
+                    onSelect={() => handleSelectEntity(entity)}
                   />
                 ))}
               </div>
@@ -121,12 +119,12 @@ export const OwnedEntities = () => {
           <div className="mt-3 mb-4 px-2 xl:px-4">
             <EntityCard
               entity={selectedForUnlisting}
-              onSelect={() => handleSelectEntity(selectedForUnlisting.tokenId)}
+              onSelect={() => handleSelectEntity(selectedForUnlisting)}
             />
           </div>
           <div className="flex flex-col justify-center items-center gap-3 pb-3 mt-5">
             {isLoading ? (
-              <LoadingSpinner color="#FF5F1F" />
+              <LoadingSpinner color="#0ff" />
             ) : (
               <>
                 <Button
