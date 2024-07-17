@@ -5,6 +5,7 @@ import {
   useMintPrice,
   useMintToken,
   useMintWithBudget,
+  usePriceIncrement,
   useUpcomingMints,
   useWhitelistEndTime,
 } from '~/hooks';
@@ -20,6 +21,8 @@ const Home = () => {
   const { data: currentGeneration, refetch: refetchCurrentGeneration } =
     useCurrentGeneration();
   const { data: mintPrice, refetch: refetchMintPrice } = useMintPrice();
+  const { data: priceIncrement, refetch: refetchPriceIncrement } =
+    usePriceIncrement();
   const {
     onWriteAsync: onMintToken,
     isPending: isMintTokenPending,
@@ -43,6 +46,7 @@ const Home = () => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
       refetchCurrentGeneration();
       refetchMintPrice();
+      refetchPriceIncrement();
     }
   }, [isMintTokenConfirmed, isMintWithBudgetConfirmed]);
 
@@ -77,7 +81,8 @@ const Home = () => {
     <div
       className="mint-container h-full py-5 "
       style={{
-        backgroundImage: "radial-gradient(rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%), url('/images/home.png')",
+        backgroundImage:
+          "radial-gradient(rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%), url('/images/home.png')",
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundAttachment: 'fixed',
@@ -115,6 +120,7 @@ const Home = () => {
       <div className="w-full flex justify-center">
         <Slider
           mintPrice={mintPrice}
+          priceIncrement={priceIncrement}
           currentGeneration={currentGeneration}
           upcomingMints={upcomingMints}
         />

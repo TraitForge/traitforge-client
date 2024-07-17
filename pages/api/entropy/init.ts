@@ -6,6 +6,7 @@ import { processImage } from './process';
 
 async function startProcessing() {
   let entityGeneration = 1;
+  let finalIndex = 1;
   for (let slotIndex = 0; slotIndex < 770; slotIndex++) {
     for (let numberIndex = 0; numberIndex < 13; numberIndex++) {
       try {
@@ -18,14 +19,15 @@ async function startProcessing() {
         const paddedEntropy = String(result);
         const url = await processImage(paddedEntropy, entityGeneration);
         console.log(
-          `Processed ${paddedEntropy} in generation ${entityGeneration}: ${url}`
+          `${finalIndex}: Processed ${paddedEntropy} in generation ${entityGeneration}: ${url}`
         );
       } catch (error) {
         console.error(
-          `Failed at slot ${slotIndex}, number ${numberIndex} in generation ${entityGeneration}:`,
+          `${finalIndex}: Failed at slot ${slotIndex}, number ${numberIndex} in generation ${entityGeneration}:`,
           error
         );
       }
+      finalIndex++;
       await new Promise(resolve => setTimeout(resolve, 500));
     }
   }

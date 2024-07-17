@@ -67,6 +67,21 @@ export const useMintPrice = () => {
   };
 };
 
+export const usePriceIncrement = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    abi: TraitForgeNftABI,
+    address: CONTRACT_ADDRESSES.TraitForgeNft,
+    functionName: 'priceIncrement',
+    args: [],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
 export const useApproval = (address: `0x${string}`, tokenId: number) => {
   const { data, isFetching } = useReadContract({
     abi: TraitForgeNftABI,
@@ -309,10 +324,16 @@ export const useTradingListings = () => {
     })),
   });
 
-  console.log(data);
-
   return {
-    data,
+    data:
+      data
+        ?.map((res: any) => ({
+          seller: (res.result?.[0] ?? '0x0') as `0x${string}`,
+          tokenId: Number(res.result?.[1] ?? 0),
+          price: BigInt(res.result?.[2] ?? 0),
+          isActive: Boolean(res.result?.[3] ?? false),
+        }))
+        .filter(listing => listing.isActive) ?? [],
     isFetching: isCountFetching || isListFetching,
     refetch,
   };
@@ -324,38 +345,36 @@ export const useEntitiesForSale = () => {
     isFetching: isTradingListingFetching,
     refetch,
   } = useTradingListings();
-  // const [tokenList, sellers, prices] = listings;
-  // const tokenIds = tokenList.map(tokenId => Number(tokenId));
-  // const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
-  //   useTokenGenerations(tokenIds);
-  // const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
-  //   useTokenEntropies(tokenIds);
+  const tokenIds = listings.map(listing => listing.tokenId);
+  const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
+    useTokenGenerations(tokenIds);
+  const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
+    useTokenEntropies(tokenIds);
 
   return {
-    // data: tokenIds.map((tokenId, index) => {
-    //   const generation = tokenGenerations?.[index] ?? 0;
-    //   const entropy = tokenEntropies?.[index] ?? 0;
-    //   const paddedEntropy = entropy.toString().padStart(6, '0');
-    //   const { role, forgePotential, performanceFactor, nukeFactor } =
-    //     calculateEntityAttributes(paddedEntropy);
-    //   return {
-    //     tokenId,
-    //     nukeFactor,
-    //     generation,
-    //     paddedEntropy,
-    //     role,
-    //     forgePotential,
-    //     performanceFactor,
-    //     seller: sellers[index] ?? '0x0',
-    //     price: Number(formatEther(prices[index] ?? 0n)),
-    //   } as EntityTrading;
-    // }),
-    // isFetching:
-    // isTradingListingFetching ||
-    // isTokenGenerationsFetching ||
-    // isTokenEntropiesFetching,
-    data: [] as EntityTrading[],
-    isFetching: isTradingListingFetching,
+    data: listings.map((listing, index) => {
+      const generation = tokenGenerations?.[index] ?? 0;
+      const entropy = tokenEntropies?.[index] ?? 0;
+      const paddedEntropy = entropy.toString().padStart(6, '0');
+      const { role, forgePotential, performanceFactor, nukeFactor } =
+        calculateEntityAttributes(paddedEntropy);
+      return {
+        tokenId: listing.tokenId,
+        nukeFactor,
+        generation,
+        paddedEntropy,
+        role,
+        forgePotential,
+        performanceFactor,
+        seller: listing.seller,
+        price: Number(formatEther(listing.price)),
+        isActive: listing.isActive,
+      } as EntityTrading;
+    }),
+    isFetching:
+      isTradingListingFetching ||
+      isTokenGenerationsFetching ||
+      isTokenEntropiesFetching,
     refetch,
   };
 };
