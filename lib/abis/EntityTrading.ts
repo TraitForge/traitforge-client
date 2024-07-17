@@ -182,29 +182,6 @@ export const EntityTradingABI = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'fetchListedEntities',
-    outputs: [
-      {
-        internalType: 'uint256[]',
-        name: 'tokenIds',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'address[]',
-        name: 'sellers',
-        type: 'address[]',
-      },
-      {
-        internalType: 'uint256[]',
-        name: 'prices',
-        type: 'uint256[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'uint256',
@@ -230,12 +207,49 @@ export const EntityTradingABI = [
         type: 'uint256',
       },
     ],
+    name: 'listedTokenIds',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'listingCount',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     name: 'listings',
     outputs: [
       {
         internalType: 'address',
         name: 'seller',
         type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
