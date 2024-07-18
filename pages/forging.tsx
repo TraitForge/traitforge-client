@@ -87,7 +87,8 @@ const Forging = () => {
     onList(selectedForListing.tokenId, feeInWei);
   };
 
-  const isGenerationsDifferent = selectedEntity?.generation !== selectedFromPool?.generation;
+  const isGenerationsDifferent =
+    selectedEntity?.generation !== selectedFromPool?.generation;
 
   let content;
 
@@ -126,16 +127,20 @@ const Forging = () => {
               />
             </div>
             <div className="max-md:px-5">
-            <Button
-              text={isGenerationsDifferent ? "SAME GENERATION ONLY" : "FORGE ENTITY"}
-              bg="rgba(31, 15, 0, 0.6)"
-              width="408"
-              height="92"
-              variant={isGenerationsDifferent ? "null" : "orange"}
-              textClass="!px-28 !py-2 capitalize text-[40px]"
-              disabled={isGenerationsDifferent || isLoading}
-              onClick={forgeEntity}
-            />
+              <Button
+                text={
+                  isGenerationsDifferent
+                    ? 'SAME GENERATION ONLY'
+                    : 'FORGE ENTITY'
+                }
+                bg="rgba(31, 15, 0, 0.6)"
+                width="408"
+                height="92"
+                variant={isGenerationsDifferent ? 'null' : 'orange'}
+                textClass="!px-28 !py-2 capitalize text-[40px]"
+                disabled={isGenerationsDifferent || isLoading}
+                onClick={forgeEntity}
+              />
             </div>
           </div>
           {isEntityListModalOpen && (
