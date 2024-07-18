@@ -7,12 +7,14 @@ import { icons } from '~/components/icons';
 
 type SliderTypes = {
   mintPrice: bigint;
+  priceIncrement: bigint;
   currentGeneration: number;
   upcomingMints: Entropy[];
 };
 
 const Slider = ({
   mintPrice,
+  priceIncrement,
   currentGeneration,
   upcomingMints,
 }: SliderTypes) => {
@@ -65,7 +67,7 @@ const Slider = ({
       <div className="md:px-10 lg:px-14 xl:px-[50px] h-full w-90">
         <Swiper centeredSlides={true} {...sliderOption} onSwiper={setRef}>
           {upcomingMints.map((mint: any, index: number) => {
-            const price = getEntityPrice(mintPrice, index);
+            const price = getEntityPrice(mintPrice, priceIncrement, index);
             return (
               <SwiperSlide key={mint.id}>
                 <EntitySliderCard

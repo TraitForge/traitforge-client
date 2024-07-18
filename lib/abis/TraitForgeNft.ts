@@ -474,25 +474,6 @@ export const TraitForgeNftABI = [
         type: 'uint256',
       },
     ],
-    name: 'getTokenAge',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
-      },
-    ],
     name: 'getTokenCreationTimestamp',
     outputs: [
       {
@@ -532,6 +513,25 @@ export const TraitForgeNftABI = [
       },
     ],
     name: 'getTokenGeneration',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+    ],
+    name: 'getTokenLastTransferredTimestamp',
     outputs: [
       {
         internalType: 'uint256',
@@ -623,6 +623,25 @@ export const TraitForgeNftABI = [
         internalType: 'bool',
         name: '',
         type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'lastTokenTransferredTimestamp',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
