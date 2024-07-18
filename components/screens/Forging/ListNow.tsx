@@ -44,15 +44,13 @@ export const ListNow = ({
             )}
           </div>
           <div className="max-md:order-1 py-4">
-            <EntityCard
-              entity={selectedForListing}
-            />
+            <EntityCard entity={selectedForListing} />
           </div>
           <div className="max-md:order-3 max-md:px-10 mt-5">
             <Button
               bg="rgba(24, 12, 0,0.7)"
               text="List for Forging"
-              variant='orange'
+              variant="orange"
               onClick={() => {
                 if (fee !== '') {
                   listEntityForForging(selectedForListing, fee);

@@ -1,5 +1,6 @@
 import { useAccount } from 'wagmi';
 import { useState, useEffect } from 'react';
+import classNames from 'classnames';
 
 import { Button, EntityCard, LoadingSpinner } from '~/components';
 import { Entity, EntityForging, EntityTrading } from '~/types';
@@ -21,6 +22,7 @@ export const OwnedEntities = () => {
 
   const { data: ownerEntities, refetch: refetchOwnerEntities } =
     useOwnerEntities(address || '0x0');
+
   const { data: entitiesListedByUser, refetch: refetchListedEntities } =
     useListedEntitiesByUser(address || '0x0');
 
@@ -47,7 +49,6 @@ export const OwnedEntities = () => {
       return;
     }
     if ((selectedForUnlisting as EntityTrading).seller) {
-
       onUnlistTrading(selectedForUnlisting.tokenId);
     } else {
       onUnlistForging(selectedForUnlisting.tokenId);
@@ -63,6 +64,10 @@ export const OwnedEntities = () => {
     }
   }, [isUnlistTradingConfirmed, isUnlistForgingConfirmed]);
 
+  const entitiesWrapper = classNames('rounded-2xl p-[30px]', {
+    'bg-blue ': ownerEntities.length > 0,
+  });
+
   return (
     <section className="container mt-10">
       {currentStep === 1 && (
@@ -77,15 +82,13 @@ export const OwnedEntities = () => {
               variant="blue"
             />
           </div>
-          {ownerEntities.length > 0 && (
-            <div className="bg-blue rounded-2xl p-[30px]">
-              <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
-                {ownerEntities.map((entity: Entity) => (
-                  <EntityCard key={entity.tokenId} entity={entity} />
-                ))}
-              </div>
+          <div className={entitiesWrapper}>
+            <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
+              {ownerEntities.map((entity: Entity) => (
+                <EntityCard key={entity.tokenId} entity={entity} />
+              ))}
             </div>
-          )}
+          </div>
         </>
       )}
       {currentStep === 2 && (
@@ -102,20 +105,22 @@ export const OwnedEntities = () => {
           {entitiesListedByUser.length > 0 && (
             <div className="bg-blue rounded-2xl p-[30px] mt-10">
               <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
-                {entitiesListedByUser.map((entity: EntityTrading | EntityForging) => (
-                  <EntityCard
-                    key={entity.tokenId}
-                    entity={entity}
-                    onSelect={() => handleSelectEntity(entity)}
-                  />
-                ))}
+                {entitiesListedByUser.map(
+                  (entity: EntityTrading | EntityForging) => (
+                    <EntityCard
+                      key={entity.tokenId}
+                      entity={entity}
+                      onSelect={() => handleSelectEntity(entity)}
+                    />
+                  )
+                )}
               </div>
             </div>
           )}
         </>
       )}
       {currentStep === 3 && selectedForUnlisting && (
-        <div className="w-full justify-center flex flex-col h-[80vh] pt-3 md:px-[100px] rounded-[20px] items-center">
+        <div className="w-full md:w-[60%] xl:w-[40%] 2xl:w-[35%] mx-auto py-5  justify-center flex flex-col bg-blue rounded-[20px] items-center h-full">
           <div className="mt-3 mb-4 px-2 xl:px-4">
             <EntityCard
               entity={selectedForUnlisting}

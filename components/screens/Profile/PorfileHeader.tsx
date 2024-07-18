@@ -1,32 +1,44 @@
 import { useAccount } from 'wagmi';
+import { useState } from 'react';
 
 import { shortenAddress } from '~/utils';
 import { FaWallet } from 'react-icons/fa';
 import { icons } from '~/components/icons';
+import { ImageUpload } from './UploadImage';
 
 export const ProfileHeader = () => {
   const { address } = useAccount();
+  const [isEditing, setIsEditing] = useState(false);
+  const [userName, setUserName] = useState('User');
 
   const shortAddress = address ? shortenAddress(address) : 'Not connected';
 
   return (
     <section className="flex max-md:flex-col gap-y-10 justify-between items-center container mt-16">
       <div className="flex items-center gap-x-[28px]">
-        <div className="flex flex-col gap-3">
-          <div className="rounded-full bg-blue border border-neon-blue p-8">
-            {icons.user()}
-          </div>
-          <p className="text-neon-blue underline text-base">Upload image</p>
-        </div>
+        <ImageUpload />
         <div className="flex flex-col gap-4 justify-center">
           <div className="flex items-center gap-x-4">
-            <span className="text-[40px] py-[14px]">User</span>{' '}
-            <span className="bg-blue rounded-full p-2 bg-opacity-80">
+            <span
+              className="bg-blue rounded-full p-2 "
+              onClick={() => setIsEditing(p => !p)}
+            >
               {icons.pen()}
             </span>
+            {isEditing ? (
+              <input
+                className="bg-transparent focus-within:outline-none inline text-[40px] py-[10.5px]"
+                onChange={e => setUserName(e.target.value)}
+                value={userName}
+                onBlur={() => setIsEditing(false)}
+                autoFocus
+              />
+            ) : (
+              <p className="text-[40px] py-[14px]">{userName}</p>
+            )}
           </div>
           <div className="flex gap-x-3">
-            {icons.x()} <p className='text-xl'>@twitterhandle</p>
+            {icons.x()} <p className="text-xl">@twitterhandle</p>
           </div>
         </div>
       </div>

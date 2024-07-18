@@ -18,6 +18,7 @@ export const BuyEntity = ({
         <EntityCard
           entity={selectedListing}
           showPrice={!!selectedListing.price}
+          displayPrice={selectedListing.price}
         />
       </div>
       <div className="max-md:order-3 max-md:px-10 mt-3">

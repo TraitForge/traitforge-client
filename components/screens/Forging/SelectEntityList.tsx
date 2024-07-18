@@ -54,8 +54,6 @@ export const SelectEntityList = ({
     return filtered;
   }, [generationFilter, sortingFilter, entitiesForForging]);
 
-  console.log(filteredAndSortedListings);
-
   return (
     <div className="bg-dark-81 w-[98vw] md:w-[80vw] h-[100vh] md:h-[85vh] 2xl:w-[80vw] md:rounded-[30px] mx-auto py-10 px-3 md:px-5 flex flex-col">
       <div className="border-b border-white mb-10">
