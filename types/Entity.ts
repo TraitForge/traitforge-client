@@ -22,4 +22,5 @@ export type EntityForging = Entity & {
 export type EntityTrading = Entity & {
   seller: `0x${string}`;
   price: number;
+  isActive: boolean;
 };

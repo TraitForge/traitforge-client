@@ -8,6 +8,12 @@ export const DevFundABI = [
         name: 'dev',
         type: 'address',
       },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'weight',
+        type: 'uint256',
+      },
     ],
     name: 'AddDev',
     type: 'event',
@@ -109,11 +115,35 @@ export const DevFundABI = [
     type: 'event',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'dev',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'weight',
+        type: 'uint256',
+      },
+    ],
+    name: 'UpdateDev',
+    type: 'event',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
         name: 'user',
         type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'weight',
+        type: 'uint256',
       },
     ],
     name: 'addDev',
@@ -140,6 +170,11 @@ export const DevFundABI = [
     outputs: [
       {
         internalType: 'uint256',
+        name: 'weight',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
         name: 'rewardDebt',
         type: 'uint256',
       },
@@ -147,25 +182,6 @@ export const DevFundABI = [
         internalType: 'uint256',
         name: 'pendingRewards',
         type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    name: 'isDev',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
       },
     ],
     stateMutability: 'view',
@@ -238,7 +254,7 @@ export const DevFundABI = [
   },
   {
     inputs: [],
-    name: 'rewardPerDev',
+    name: 'totalDevWeight',
     outputs: [
       {
         internalType: 'uint256',
@@ -251,7 +267,7 @@ export const DevFundABI = [
   },
   {
     inputs: [],
-    name: 'totalDevCount',
+    name: 'totalRewardDebt',
     outputs: [
       {
         internalType: 'uint256',
@@ -271,6 +287,24 @@ export const DevFundABI = [
       },
     ],
     name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'weight',
+        type: 'uint256',
+      },
+    ],
+    name: 'updateDev',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

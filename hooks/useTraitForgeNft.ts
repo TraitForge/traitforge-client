@@ -19,8 +19,9 @@ import {
 import { Entity, EntityForging, EntityTrading, Entropy } from '~/types';
 import { calculateEntityAttributes } from '~/utils';
 
-// Read Functions
+// --------- Read Functions -----------
 
+// NFT
 export const useWhitelistEndTime = () => {
   const { data, isFetching, refetch } = useReadContract({
     abi: TraitForgeNftABI,
@@ -66,11 +67,11 @@ export const useMintPrice = () => {
   };
 };
 
-export const useNukeFundBalance = () => {
+export const usePriceIncrement = () => {
   const { data, isFetching, refetch } = useReadContract({
-    abi: NukeFundABI,
-    address: CONTRACT_ADDRESSES.NukeFund,
-    functionName: 'getFundBalance',
+    abi: TraitForgeNftABI,
+    address: CONTRACT_ADDRESSES.TraitForgeNft,
+    functionName: 'priceIncrement',
     args: [],
   });
 
@@ -78,6 +79,20 @@ export const useNukeFundBalance = () => {
     data: BigInt(data ?? 0),
     isFetching,
     refetch,
+  };
+};
+
+export const useApproval = (address: `0x${string}`, tokenId: number) => {
+  const { data, isFetching } = useReadContract({
+    abi: TraitForgeNftABI,
+    address: CONTRACT_ADDRESSES.TraitForgeNft,
+    functionName: 'isApprovedOrOwner',
+    args: [address, BigInt(tokenId)],
+  });
+
+  return {
+    data: data ?? false,
+    isFetching,
   };
 };
 
@@ -167,22 +182,6 @@ export const useTokenIds = (address: `0x${string}`) => {
   };
 };
 
-export const useNukeFactors = (tokenIds: number[]) => {
-  const { data, isFetching } = useReadContracts({
-    contracts: tokenIds.map(tokenId => ({
-      abi: NukeFundABI,
-      address: CONTRACT_ADDRESSES.NukeFund,
-      functionName: 'calculateNukeFactor',
-      args: [tokenId],
-    })),
-  });
-
-  return {
-    data: (data ?? []).map(res => Number(res.result ?? 0)),
-    isFetching,
-  };
-};
-
 export const useTokenGenerations = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({
@@ -215,42 +214,39 @@ export const useTokenEntropies = (tokenIds: number[]) => {
   };
 };
 
-export const useOwnerEntities = (address: `0x${string}`) => {
-  const {
-    data: tokenIds,
-    isFetching: isTokenIdsFetching,
-    refetch,
-  } = useTokenIds(address);
-  const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
-    useTokenGenerations(tokenIds);
-  const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
-    useTokenEntropies(tokenIds);
+// NukeFund
+export const useNukeFundBalance = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    abi: NukeFundABI,
+    address: CONTRACT_ADDRESSES.NukeFund,
+    functionName: 'getFundBalance',
+    args: [],
+  });
 
   return {
-    data: tokenIds.map((tokenId, index) => {
-      const generation = tokenGenerations?.[index] ?? 0;
-      const entropy = tokenEntropies?.[index] ?? 0;
-      const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor, nukeFactor } =
-        calculateEntityAttributes(paddedEntropy);
-      return {
-        tokenId,
-        nukeFactor,
-        generation,
-        paddedEntropy,
-        role,
-        forgePotential,
-        performanceFactor,
-      } as Entity;
-    }),
-    isFetching:
-      isTokenIdsFetching ||
-      isTokenGenerationsFetching ||
-      isTokenEntropiesFetching,
+    data: BigInt(data ?? 0),
+    isFetching,
     refetch,
   };
 };
 
+export const useNukeFactors = (tokenIds: number[]) => {
+  const { data, isFetching } = useReadContracts({
+    contracts: tokenIds.map(tokenId => ({
+      abi: NukeFundABI,
+      address: CONTRACT_ADDRESSES.NukeFund,
+      functionName: 'calculateNukeFactor',
+      args: [tokenId],
+    })),
+  });
+
+  return {
+    data: (data ?? []).map(res => Number(res.result ?? 0)),
+    isFetching,
+  };
+};
+
+// EntityForging
 export const useForgeListings = () => {
   const { data, isFetching, refetch } = useReadContract({
     abi: EntityForgingABI,
@@ -260,7 +256,7 @@ export const useForgeListings = () => {
   });
 
   return {
-    data: data?.slice(1) ?? [],
+    data: data?.slice(1).filter(item => item.isListed) ?? [],
     isFetching,
     refetch,
   };
@@ -306,17 +302,39 @@ export const useEntitiesForForging = () => {
   };
 };
 
+// EntityTrading
 export const useTradingListings = () => {
-  const { data, isFetching, refetch } = useReadContract({
+  const {
+    data: count,
+    isFetching: isCountFetching,
+    refetch,
+  } = useReadContract({
     abi: EntityTradingABI,
     address: CONTRACT_ADDRESSES.EntityTrading,
-    functionName: 'fetchListedEntities',
+    functionName: 'listingCount',
     args: [],
   });
 
+  const { data, isFetching: isListFetching } = useReadContracts({
+    contracts: new Array(Number(count ?? 0)).fill(0).map((_, index) => ({
+      abi: EntityTradingABI,
+      address: CONTRACT_ADDRESSES.EntityTrading,
+      functionName: 'listings',
+      args: [index + 1],
+    })),
+  });
+
   return {
-    data: data ?? [[], [], []],
-    isFetching,
+    data:
+      data
+        ?.map((res: any) => ({
+          seller: (res.result?.[0] ?? '0x0') as `0x${string}`,
+          tokenId: Number(res.result?.[1] ?? 0),
+          price: BigInt(res.result?.[2] ?? 0),
+          isActive: Boolean(res.result?.[3] ?? false),
+        }))
+        .filter(listing => listing.isActive) ?? [],
+    isFetching: isCountFetching || isListFetching,
     refetch,
   };
 };
@@ -327,8 +345,47 @@ export const useEntitiesForSale = () => {
     isFetching: isTradingListingFetching,
     refetch,
   } = useTradingListings();
-  const [tokenList, sellers, prices] = listings;
-  const tokenIds = tokenList.map(tokenId => Number(tokenId));
+  const tokenIds = listings.map(listing => listing.tokenId);
+  const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
+    useTokenGenerations(tokenIds);
+  const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
+    useTokenEntropies(tokenIds);
+
+  return {
+    data: listings.map((listing, index) => {
+      const generation = tokenGenerations?.[index] ?? 0;
+      const entropy = tokenEntropies?.[index] ?? 0;
+      const paddedEntropy = entropy.toString().padStart(6, '0');
+      const { role, forgePotential, performanceFactor, nukeFactor } =
+        calculateEntityAttributes(paddedEntropy);
+      return {
+        tokenId: listing.tokenId,
+        nukeFactor,
+        generation,
+        paddedEntropy,
+        role,
+        forgePotential,
+        performanceFactor,
+        seller: listing.seller,
+        price: Number(formatEther(listing.price)),
+        isActive: listing.isActive,
+      } as EntityTrading;
+    }),
+    isFetching:
+      isTradingListingFetching ||
+      isTokenGenerationsFetching ||
+      isTokenEntropiesFetching,
+    refetch,
+  };
+};
+
+// User Entities
+export const useOwnerEntities = (address: `0x${string}`) => {
+  const {
+    data: tokenIds,
+    isFetching: isTokenIdsFetching,
+    refetch,
+  } = useTokenIds(address);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
     useTokenGenerations(tokenIds);
   const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
@@ -349,29 +406,13 @@ export const useEntitiesForSale = () => {
         role,
         forgePotential,
         performanceFactor,
-        seller: sellers[index] ?? '0x0',
-        price: Number(formatEther(prices[index] ?? 0n)),
-      } as EntityTrading;
+      } as Entity;
     }),
     isFetching:
-      isTradingListingFetching ||
+      isTokenIdsFetching ||
       isTokenGenerationsFetching ||
       isTokenEntropiesFetching,
     refetch,
-  };
-};
-
-export const useApproval = (address: `0x${string}`, tokenId: number) => {
-  const { data, isFetching } = useReadContract({
-    abi: TraitForgeNftABI,
-    address: CONTRACT_ADDRESSES.TraitForgeNft,
-    functionName: 'isApprovedOrOwner',
-    args: [address, BigInt(tokenId)],
-  });
-
-  return {
-    data: data ?? false,
-    isFetching,
   };
 };
 
@@ -410,8 +451,9 @@ export const useListedEntitiesByUser = (account: `0x${string}`) => {
   };
 };
 
-// Write Functions
+// --------- Write Functions -----------
 
+// NFT
 export const useMintToken = () => {
   const {
     data: hash,
@@ -508,6 +550,148 @@ export const useMintWithBudget = () => {
   };
 };
 
+export const useApproveNft = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Approved Successfully');
+    }
+    if (isCreationError) {
+      toast.error(`Failed to approve`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Failed to approve`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (address: `0x${string}`, tokenId: number) => {
+    await writeContractAsync({
+      chainId: sepolia.id,
+      abi: TraitForgeNftABI,
+      address: CONTRACT_ADDRESSES.TraitForgeNft,
+      functionName: 'approve',
+      args: [address, BigInt(tokenId)],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+// EntityForging
+export const useListForForging = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Listed Successfully');
+    }
+    if (isCreationError) {
+      toast.error(`Failed to List Entity`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Failed to List Entity`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenId: number, fee: bigint) => {
+    await writeContractAsync({
+      chainId: sepolia.id,
+      abi: EntityForgingABI,
+      address: CONTRACT_ADDRESSES.EntityForging,
+      functionName: 'listForForging',
+      args: [BigInt(tokenId), fee],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useUnlistEntityForForging = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity unlisted for forging successfully');
+    }
+    if (isCreationError) {
+      toast.error('Unlisting failed. Please try again.');
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error('Unlisting failed. Please try again.');
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenId: number) => {
+    await writeContractAsync({
+      chainId: sepolia.id,
+      abi: EntityForgingABI,
+      address: CONTRACT_ADDRESSES.EntityForging,
+      functionName: 'cancelListingForForging',
+      args: [BigInt(tokenId)],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
 export const useForgeWithListed = () => {
   const {
     data: hash,
@@ -560,195 +744,7 @@ export const useForgeWithListed = () => {
   };
 };
 
-export const useListForForging = () => {
-  const {
-    data: hash,
-    error: errorCreation,
-    isPending: isTxCreating,
-    isError: isCreationError,
-    writeContractAsync,
-  } = useWriteContract();
-  const {
-    isLoading: isTxConfirming,
-    error: errorConfirm,
-    isError: isConfirmError,
-    isSuccess: isConfirmed,
-  } = useWaitForTransactionReceipt({ hash });
-
-  useEffect(() => {
-    if (isConfirmed) {
-      toast.success('Listed Successfully');
-    }
-    if (isCreationError) {
-      toast.error(`Failed to List Entity`);
-      console.log(errorCreation?.message);
-    }
-    if (isConfirmError) {
-      toast.error(`Failed to List Entity`);
-      console.log(errorConfirm?.message);
-    }
-  }, [isConfirmed, isCreationError, isConfirmError]);
-
-  const onWriteAsync = async (tokenId: number, fee: bigint) => {
-    await writeContractAsync({
-      chainId: sepolia.id,
-      abi: EntityForgingABI,
-      address: CONTRACT_ADDRESSES.EntityForging,
-      functionName: 'listForForging',
-      args: [BigInt(tokenId), fee],
-    });
-  };
-
-  return {
-    isPending: isTxCreating || isTxConfirming,
-    hash,
-    onWriteAsync,
-    isConfirmed,
-  };
-};
-
-export const useApproveNft = () => {
-  const {
-    data: hash,
-    error: errorCreation,
-    isPending: isTxCreating,
-    isError: isCreationError,
-    writeContractAsync,
-  } = useWriteContract();
-  const {
-    isLoading: isTxConfirming,
-    error: errorConfirm,
-    isError: isConfirmError,
-    isSuccess: isConfirmed,
-  } = useWaitForTransactionReceipt({ hash });
-
-  useEffect(() => {
-    if (isConfirmed) {
-      toast.success('Approved Successfully');
-    }
-    if (isCreationError) {
-      toast.error(`Failed to approve`);
-      console.log(errorCreation?.message);
-    }
-    if (isConfirmError) {
-      toast.error(`Failed to approve`);
-      console.log(errorConfirm?.message);
-    }
-  }, [isConfirmed, isCreationError, isConfirmError]);
-
-  const onWriteAsync = async (address: `0x${string}`, tokenId: number) => {
-    await writeContractAsync({
-      chainId: sepolia.id,
-      abi: TraitForgeNftABI,
-      address: CONTRACT_ADDRESSES.TraitForgeNft,
-      functionName: 'approve',
-      args: [address, BigInt(tokenId)],
-    });
-  };
-
-  return {
-    isPending: isTxCreating || isTxConfirming,
-    hash,
-    onWriteAsync,
-    isConfirmed,
-  };
-};
-
-export const useNukeEntity = () => {
-  const {
-    data: hash,
-    error: errorCreation,
-    isPending: isTxCreating,
-    isError: isCreationError,
-    writeContractAsync,
-  } = useWriteContract();
-  const {
-    isLoading: isTxConfirming,
-    error: errorConfirm,
-    isError: isConfirmError,
-    isSuccess: isConfirmed,
-  } = useWaitForTransactionReceipt({ hash });
-
-  useEffect(() => {
-    if (isConfirmed) {
-      toast.success('Entity Nuked successfully!');
-    }
-    if (isCreationError) {
-      toast.error(`Nuke failed. Please try again`);
-      console.log(errorCreation?.message);
-    }
-    if (isConfirmError) {
-      toast.error(`Nuke failed. Please try again`);
-      console.log(errorConfirm?.message);
-    }
-  }, [isConfirmed, isCreationError, isConfirmError]);
-
-  const onWriteAsync = async (tokenId: number) => {
-    await writeContractAsync({
-      chainId: sepolia.id,
-      abi: NukeFundABI,
-      address: CONTRACT_ADDRESSES.NukeFund,
-      functionName: 'nuke',
-      args: [BigInt(tokenId)],
-    });
-  };
-
-  return {
-    isPending: isTxCreating || isTxConfirming,
-    hash,
-    onWriteAsync,
-    isConfirmed,
-  };
-};
-
-export const useBuyEntity = () => {
-  const {
-    data: hash,
-    error: errorCreation,
-    isPending: isTxCreating,
-    isError: isCreationError,
-    writeContractAsync,
-  } = useWriteContract();
-  const {
-    isLoading: isTxConfirming,
-    error: errorConfirm,
-    isError: isConfirmError,
-    isSuccess: isConfirmed,
-  } = useWaitForTransactionReceipt({ hash });
-
-  useEffect(() => {
-    if (isConfirmed) {
-      toast.success('Entity purchased successfully!');
-    }
-    if (isCreationError) {
-      toast.error(`Purchase failed. Please try again`);
-      console.log(errorCreation?.message);
-    }
-    if (isConfirmError) {
-      toast.error(`Purchase failed. Please try again`);
-      console.log(errorConfirm?.message);
-    }
-  }, [isConfirmed, isCreationError, isConfirmError]);
-
-  const onWriteAsync = async (tokenId: number, price: bigint) => {
-    await writeContractAsync({
-      chainId: sepolia.id,
-      abi: EntityTradingABI,
-      address: CONTRACT_ADDRESSES.EntityTrading,
-      functionName: 'buyNFT',
-      args: [BigInt(tokenId)],
-      value: price,
-    });
-  };
-
-  return {
-    isPending: isTxCreating || isTxConfirming,
-    hash,
-    onWriteAsync,
-    isConfirmed,
-  };
-};
-
+// EntityTrading
 export const useListEntityForSale = () => {
   const {
     data: hash,
@@ -844,7 +840,7 @@ export const useUnlistEntityForSale = () => {
   };
 };
 
-export const useUnlistEntityForForging = () => {
+export const useBuyEntity = () => {
   const {
     data: hash,
     error: errorCreation,
@@ -861,14 +857,63 @@ export const useUnlistEntityForForging = () => {
 
   useEffect(() => {
     if (isConfirmed) {
-      toast.success('Entity unlisted for forging successfully');
+      toast.success('Entity purchased successfully!');
     }
     if (isCreationError) {
-      toast.error('Unlisting failed. Please try again.');
+      toast.error(`Purchase failed. Please try again`);
       console.log(errorCreation?.message);
     }
     if (isConfirmError) {
-      toast.error('Unlisting failed. Please try again.');
+      toast.error(`Purchase failed. Please try again`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenId: number, price: bigint) => {
+    await writeContractAsync({
+      chainId: sepolia.id,
+      abi: EntityTradingABI,
+      address: CONTRACT_ADDRESSES.EntityTrading,
+      functionName: 'buyNFT',
+      args: [BigInt(tokenId)],
+      value: price,
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+// NukeFund
+export const useNukeEntity = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity Nuked successfully!');
+    }
+    if (isCreationError) {
+      toast.error(`Nuke failed. Please try again`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Nuke failed. Please try again`);
       console.log(errorConfirm?.message);
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
@@ -876,9 +921,9 @@ export const useUnlistEntityForForging = () => {
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
       chainId: sepolia.id,
-      abi: EntityForgingABI,
-      address: CONTRACT_ADDRESSES.EntityForging,
-      functionName: 'cancelListingForForging',
+      abi: NukeFundABI,
+      address: CONTRACT_ADDRESSES.NukeFund,
+      functionName: 'nuke',
       args: [BigInt(tokenId)],
     });
   };
