@@ -1,16 +1,29 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { recoverMessageAddress } from 'viem';
 import prisma from '~/lib/prisma';
 
 const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { walletAddress } = req.body;
-  try {
-    const user = await prisma.user.create({
-      data: { walletAddress },
-    });
-    res.status(200).send({ user });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ error });
+  const { walletAddress, messageData, originalMessage } = await JSON.parse(
+    req.body
+  );
+
+  const recoveredAddress = await recoverMessageAddress({
+    message: originalMessage,
+    signature: messageData,
+  });
+
+  if (recoveredAddress.toLowerCase() === walletAddress.toLowerCase()) {
+    try {
+      const user = await prisma.user.create({
+        data: { walletAddress },
+      });
+      res.status(200).send({ user });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ error });
+    }
+  } else {
+    res.status(500).send({ error: 'Invalid signature' });
   }
 };
 

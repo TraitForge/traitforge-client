@@ -5,9 +5,11 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { motion, MotionProps } from 'framer-motion';
+import { useAccount, useSignMessage } from 'wagmi';
 
 import WalletButton from '../WalletButton';
 import { Logo } from '~/components/icons';
+import { timeStamp } from 'console';
 
 const links = [
   { url: '/', text: 'HOME' },
@@ -20,6 +22,40 @@ const links = [
 const Navbar = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { address } = useAccount();
+  const [originalMessage, setOriginalMessage] = useState('');
+
+  const { data: signMessageData, signMessage } = useSignMessage();
+
+  useEffect(() => {
+    // check user already registered
+    (async () => {
+      if (address) {
+        const response = await fetch(`/api/user?walletAddress=${address}`);
+        const { error } = await response.json();
+        if (error === 'User does not exist') {
+          const timestamp = Date.now();
+          signMessage({ message: `${timestamp}` });
+          setOriginalMessage(`${timestamp}`);
+        }
+      }
+    })();
+  }, [address]);
+
+  useEffect(() => {
+    (async () => {
+      if (signMessageData && originalMessage) {
+        const response = await fetch('/api/user', {
+          method: 'POST',
+          body: JSON.stringify({
+            messageData: signMessageData,
+            originalMessage: originalMessage,
+            walletAddress: address
+          })
+        });
+      }
+    })();
+  }, [signMessageData, originalMessage, address]);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -71,7 +107,7 @@ const Navbar = () => {
         <div className="flex justify-center gap-x-6">
           <WalletButton />
           <button
-            className={"focus:outline-none block lg:hidden"}
+            className={'focus:outline-none block lg:hidden'}
             onClick={() => setIsMenuOpen(prevState => !prevState)}
           >
             <motion.svg
