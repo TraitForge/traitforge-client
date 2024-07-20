@@ -2,8 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useAccount } from 'wagmi'
 ;
 import styles from '~/styles/honeypot.module.scss';
-import { EntityCard, LoadingSpinner } from '~/components';
-import { FiltersHeader } from '~/components';
+import { EntityCard, LoadingSpinner, FiltersHeader, RewardModal } from '~/components';
 import {
   useApproval,
   useApproveNft,
@@ -11,7 +10,7 @@ import {
   useOwnerEntities,
 } from '~/hooks';
 import { SingleValue } from 'react-select';
-import { HoneyPotBody, HoneyPotHeader, NukeEntity } from '~/components/screens';
+import { HoneyPotBody, HoneyPotHeader, NukeEntity, ForgingReceipt } from '~/components/screens';
 import {  Entity } from '~/types';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 
@@ -25,6 +24,8 @@ const HoneyPot = () => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const [loadingText, setLoadingText] = useState('');
+  const [isModalOpen, setModalOpen] = useState(false);
+  const closeModal = () => setModalOpen(false);
 
   const { data: approved } = useApproval(
     CONTRACT_ADDRESSES.NukeFund,
@@ -45,6 +46,7 @@ const HoneyPot = () => {
 
   useEffect(() => {
     if (isNukeConfirmed) {
+      setModalOpen(true);
       refetch();
     }
   }, [isNukeConfirmed]);
@@ -162,6 +164,16 @@ const HoneyPot = () => {
   return (
     <div className={styles.honeyPotContainer}>
       <div className="flex flex-col h-full w-full">
+      <RewardModal
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+        modalClasses="pb-4"
+        page="nuke"
+      >
+      <ForgingReceipt
+      entityJustNuked={selectedForNuke}
+      />
+      </RewardModal>
         <HoneyPotHeader step={step} handleStep={setStep} />
         {content}
       </div>
