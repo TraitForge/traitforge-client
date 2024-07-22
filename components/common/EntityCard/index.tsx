@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
+import { useIsSafari } from '~/hooks/useIsSafari';
 
 type EntityCardTypes = {
   entity: Entity;
@@ -34,6 +35,7 @@ export const EntityCard = ({
   } = entity;
   const [imgLoaded, setImgLoaded] = useState(false);
   const { asPath } = useRouter();
+  const isSafari = useIsSafari();
 
   const uri = calculateUri(paddedEntropy, generation);
 
@@ -72,7 +74,7 @@ export const EntityCard = ({
 
   return (
     <div>
-      <EntityCardSkeleton className={skeletonClasses} />
+      {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
       <div className={wrapperClasses} onClick={onSelect}>
         <div className="flex justify-between items-center pb-3">
           <p className={badgeClasses}>GEN{generation}</p>

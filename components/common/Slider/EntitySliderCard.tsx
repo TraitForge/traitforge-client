@@ -3,6 +3,7 @@ import Image from 'next/image';
 import classNames from 'classnames';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { calculateEntityAttributes, calculateUri } from '~/utils';
+import { useIsSafari } from '~/hooks/useIsSafari';
 
 type EntitySliderCardTypes = {
   entropy: number;
@@ -23,6 +24,7 @@ export const EntitySliderCard = ({
   const paddedEntropy = entropy.toString().padStart(6, '0');
   const generation = currentGeneration?.toString();
   const uri = calculateUri(paddedEntropy, generation);
+  const isSafari = useIsSafari();
 
   const { role, forgePotential, performanceFactor, nukeFactor } =
     calculateEntityAttributes(paddedEntropy);
@@ -45,7 +47,7 @@ export const EntitySliderCard = ({
 
   return (
     <div>
-      <EntityCardSkeleton className={skeletonClasses} />
+      {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
       <div className={wrapperClasses}>
         <div className="flex justify-between items-center">
           <p className="text-[10px] lg:text-base 3xl:text-[20px] py-2.5 px-[14px] bg-[#35FFE7] bg-opacity-20 rounded-xl">
