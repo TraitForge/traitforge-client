@@ -9,7 +9,6 @@ import { useAccount, useSignMessage } from 'wagmi';
 
 import WalletButton from '../WalletButton';
 import { Logo } from '~/components/icons';
-import { timeStamp } from 'console';
 
 const links = [
   { url: '/', text: 'HOME' },
@@ -31,12 +30,16 @@ const Navbar = () => {
     // check user already registered
     (async () => {
       if (address) {
-        const response = await fetch(`/api/user?walletAddress=${address}`);
-        const { error } = await response.json();
-        if (error === 'User does not exist') {
-          const timestamp = Date.now();
-          signMessage({ message: `${timestamp}` });
-          setOriginalMessage(`${timestamp}`);
+        try {
+          const response = await fetch(`/api/user?walletAddress=${address}`);
+          const data = await response.json();
+          if (data.error === 'User does not exist') {
+            const timestamp = Date.now();
+            signMessage({ message: `${timestamp}` });
+            setOriginalMessage(`${timestamp}`);
+          }
+        } catch (err) {
+          console.error('Failed to check user registration:', err);
         }
       }
     })();
@@ -45,14 +48,21 @@ const Navbar = () => {
   useEffect(() => {
     (async () => {
       if (signMessageData && originalMessage) {
-        const response = await fetch('/api/user', {
-          method: 'POST',
-          body: JSON.stringify({
-            messageData: signMessageData,
-            originalMessage: originalMessage,
-            walletAddress: address
-          })
-        });
+        try {
+          const response = await fetch('/api/user', {
+            method: 'POST',
+            body: JSON.stringify({
+              messageData: signMessageData,
+              originalMessage: originalMessage,
+              walletAddress: address,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error('Failed to register user');
+          }
+        } catch (err) {
+          console.error('Failed to register user:', err);
+        }
       }
     })();
   }, [signMessageData, originalMessage, address]);

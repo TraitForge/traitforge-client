@@ -74,7 +74,7 @@ export default async function handler(
   } else if (req.method === 'GET') {
     await getUser(req, res);
   } else {
-    res.setHeader('Allow', ['GET']);
+    res.setHeader('Allow', ['GET', 'POST', 'PUT']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
