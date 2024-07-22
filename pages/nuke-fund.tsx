@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useAccount } from 'wagmi'
-;
+import { useAccount } from 'wagmi';
 import styles from '~/styles/honeypot.module.scss';
 import { EntityCard, LoadingSpinner } from '~/components';
 import { FiltersHeader } from '~/components';
@@ -12,8 +11,9 @@ import {
 } from '~/hooks';
 import { SingleValue } from 'react-select';
 import { HoneyPotBody, HoneyPotHeader, NukeEntity } from '~/components/screens';
-import {  Entity } from '~/types';
+import { Entity } from '~/types';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
+import { publicClient } from '~/lib/config';
 
 const HoneyPot = () => {
   const { address } = useAccount();
@@ -36,6 +36,7 @@ const HoneyPot = () => {
     isConfirmed: isApproveConfirmed,
   } = useApproveNft();
   const {
+    hash,
     onWriteAsync: onNuke,
     isPending: isNukePending,
     isConfirmed: isNukeConfirmed,
@@ -103,6 +104,15 @@ const HoneyPot = () => {
       onNuke(selectedForNuke.tokenId);
     }
   }, [selectedForNuke, isApproveConfirmed]);
+
+  useEffect(() => {
+    if (hash && isNukeConfirmed) {
+      (async () => {
+        const res = await publicClient.getTransactionReceipt({ hash });
+        console.log('tx receipt:', res);
+      })();
+    }
+  }, [hash, isNukeConfirmed]);
 
   if (isLoading)
     return (
