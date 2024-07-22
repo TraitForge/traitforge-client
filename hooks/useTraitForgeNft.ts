@@ -5,7 +5,7 @@ import {
   useReadContract,
   useReadContracts,
   useWaitForTransactionReceipt,
-  useWriteContract,
+  useWriteContract
 } from 'wagmi';
 import { sepolia } from 'wagmi/chains';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
@@ -16,6 +16,7 @@ import {
   NukeFundABI,
   TraitForgeNftABI,
 } from '~/lib/abis';
+import { publicClient } from '~/lib/config';
 import { Entity, EntityForging, EntityTrading, Entropy } from '~/types';
 import { calculateEntityAttributes } from '~/utils';
 
@@ -926,12 +927,15 @@ export const useNukeEntity = () => {
       functionName: 'nuke',
       args: [BigInt(tokenId)],
     });
-  };
+  }
+  
+  const receipt = publicClient.getTransactionReceipt({ hash: hash });
 
   return {
     isPending: isTxCreating || isTxConfirming,
     hash,
     onWriteAsync,
-    isConfirmed,
+    receipt,
+    isConfirmed
   };
 };
