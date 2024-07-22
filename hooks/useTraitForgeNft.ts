@@ -929,13 +929,10 @@ export const useNukeEntity = () => {
     });
   }
   
-  const receipt = publicClient.getTransactionReceipt({ hash: hash });
-
   return {
     isPending: isTxCreating || isTxConfirming,
     hash,
     onWriteAsync,
-    receipt,
     isConfirmed
   };
 };

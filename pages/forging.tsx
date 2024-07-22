@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, LoadingSpinner } from '~/components';
+import { Button, Modal, LoadingSpinner, RewardModal } from '~/components';
 import {
   useEntitiesForForging,
   useForgeWithListed,
@@ -13,6 +13,7 @@ import {
   ListNow,
   SelectEntityList,
   WalletEntityModal,
+  ForgingReceipt
 } from '~/components/screens';
 import { Entity, EntityForging } from '~/types';
 import { parseEther } from 'viem';
@@ -44,6 +45,8 @@ const Forging = () => {
   const [areEntitiesForged, setEntitiesForged] = useState(false);
   const [processingText, setProcessingText] = useState('Forging');
   const [generationFilter, setGenerationFilter] = useState('');
+  const [isModalOpen, setModalOpen] = useState(false);
+  const closeModal = () => setModalOpen(false);
 
   const handleSelectedFromPool = (entity: EntityForging) =>
     setSelectedFromPool(entity);
@@ -201,6 +204,20 @@ const Forging = () => {
         backgroundAttachment: 'fixed',
       }}
     >
+{selectedFromPool && selectedEntity && (
+  <RewardModal
+    isOpen={isModalOpen}
+    closeModal={closeModal}
+    modalClasses="pb-4"
+    page="nuke"
+  >
+    <ForgingReceipt
+      forger={selectedFromPool}
+      merger={selectedEntity}
+      // offspring={newlyCreatedEntity} // Uncomment this line if `newlyCreatedEntity` is defined and should be passed
+    />
+  </RewardModal>
+)}
       {content}
     </div>
   );
