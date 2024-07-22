@@ -20,9 +20,9 @@ export const SellEntity = ({
   const [showPriceError, setShowPriceError] = useState(false);
 
   return (
-    <div className="md:bg-green w-full md:w-[60%] xl:w-[40%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
+    <div className="md:bg-green max-md:px-5 w-full md:w-[60%] xl:w-[40%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
       <div className="max-md:order-2 w-full mb-[14px]">
-        <h3 className="text-large font-electrolize mb-8">
+        <h3 className="text-large font-electrolize mb-8 max-md:pt-5">
           Set a price for your entity:
         </h3>
         <input

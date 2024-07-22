@@ -105,7 +105,7 @@ const Forging = () => {
   switch (step) {
     case 'one':
       content = (
-        <div className="max-md:h-full py-10 pt-5">
+        <div className=" py-10  overflow-y-auto">
           <div className="h-full w-full">
             <div className="flex flex-col md:flex-row justify-center relative items-center">
               <h1 className="text-[36px] md:text-extra-large">Forging Arena</h1>
@@ -114,7 +114,7 @@ const Forging = () => {
                 bg="rgba(31, 15, 0,0.6)"
                 variant="orange"
                 onClick={handleListingPage}
-                textClass="font-electrolize relative md:absolute md:top-0 !py-3 md:right-5 !text-[24px]"
+                textClass="font-electrolize relative md:absolute md:top-0 !py-3 md:right-5 !text-[24px] max-md:mt-5"
               />
             </div>
             <div className="py-7 md:py-10 3xl:py-20">
@@ -137,7 +137,7 @@ const Forging = () => {
                 width="408"
                 height="92"
                 variant={isGenerationsDifferent ? 'null' : 'orange'}
-                textClass="!px-28 !py-2 capitalize text-[40px]"
+                textClass="!px-28 !py-2 capitalize text-[40px] pb-10"
                 disabled={isGenerationsDifferent || isLoading}
                 onClick={forgeEntity}
               />

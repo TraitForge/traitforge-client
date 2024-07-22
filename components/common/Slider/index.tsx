@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
+
 import { EntitySliderCard } from './EntitySliderCard';
 import { getEntityPrice } from '~/utils';
 import { Entropy } from '~/types';

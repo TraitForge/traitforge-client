@@ -100,7 +100,7 @@ export const OwnedEntities = () => {
             >
               {icons.arrow({ className: 'text-neon-blue' })}
             </button>
-            <h2 className="text-[48px] ml-8">Select entity to unlist</h2>
+            <h2 className="text-[28px] lg:text-[48px] ml-8">Select entity to unlist</h2>
           </div>
           {entitiesListedByUser.length > 0 && (
             <div className="bg-blue rounded-2xl p-[30px] mt-10">
