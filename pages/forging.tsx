@@ -56,12 +56,12 @@ const Forging = () => {
   const openModal = () => setModalOpen(true);
 
   const [tokenID, setTokenID] = useState<number | null>(null);
-  const { data: entityEntropyData } = useTokenEntropies(tokenID ? [tokenID] : []);
-  const { data: entityGenerationData } = useTokenGenerations(tokenID ? [tokenID] : []);
+  const { data: entityEntropyData, isFetching: isFetchingEntropy } = useTokenEntropies(tokenID ? [tokenID] : []);
+  const { data: entityGenerationData, isFetching: isFetchingGeneration } = useTokenGenerations(tokenID ? [tokenID] : []);
 
-  const createNewEntity = async (tokenID: number, entropy: any, generation: any) => {
+  const createNewEntity = (tokenID: number, entropy: number[], generation: number[]) => {
     if (entropy.length > 0 && generation.length > 0) {
-      const paddedEntropy = entropy[0].toString();
+      const paddedEntropy = entropy.toString();
       const newGeneration = Number(generation[0]);
       const attributes = calculateEntityAttributes(paddedEntropy);
       return {
@@ -119,30 +119,34 @@ const Forging = () => {
   const isGenerationsDifferent =
     selectedEntity?.generation !== selectedFromPool?.generation;
 
-  useEffect(() => {
-    if (hash && isForgeConfirmed) {
-      (async () => {
-        try {
-          const res = await publicClient.getTransactionReceipt({ hash });
-          if (res && res.logs && res.logs.length > 7 && res.logs[7] && res.logs[7].topics[1]) {
-            const hexString = res.logs[7].topics[1].toString();
-            const tokenID = parseInt(hexString, 16);
-            setTokenID(tokenID); 
-              const newEntity = await createNewEntity(tokenID, entityEntropyData, entityGenerationData);
-              if (newEntity) {
-                setNewlyCreatedEntity(newEntity);
-                openModal();
-              } else {
-                console.log('Failed to create new entity.');
+    useEffect(() => {
+      if (hash && isForgeConfirmed) {
+        (async () => {
+          try {
+            const res = await publicClient.getTransactionReceipt({ hash });
+            if (res && res.logs && res.logs.length > 7 && res.logs[7] && res.logs[7].topics[1]) {
+              const hexString = res.logs[7].topics[1].toString();
+              const tokenID = parseInt(hexString, 16);
+              setTokenID(tokenID);
+  
+              if (!isFetchingEntropy && !isFetchingGeneration) {
+                const newEntity = createNewEntity(tokenID, entityEntropyData, entityGenerationData);
+                if (newEntity) {
+                  setNewlyCreatedEntity(newEntity);
+                  openModal();
+                } else {
+                  console.log('Failed to create new entity.');
+                }
               }
+            } else {
+              console.log('Log data not found or not enough logs.');
             }
-        } catch (error) {
-          console.error('Failed to fetch transaction receipt:', error);
-        }
-      })();
-    }
-  }, [hash, isForgeConfirmed]);
-
+          } catch (error) {
+            console.error('Failed to fetch transaction receipt:', error);
+          }
+        })();
+      }
+    }, [hash, isForgeConfirmed, isFetchingEntropy, isFetchingGeneration]);
   let content;
   
   if (isLoading)
