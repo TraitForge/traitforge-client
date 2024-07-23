@@ -1,8 +1,8 @@
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { EntropyGeneratorABI } from '~/lib/abis';
 import { publicClient } from '~/lib/config';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { processImage } from './process';
+import { processImage } from '../process/route';
+import { NextResponse } from 'next/server';
 
 async function startProcessing() {
   let entityGeneration = 1;
@@ -33,21 +33,15 @@ async function startProcessing() {
   }
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === 'POST') {
-    try {
-      await startProcessing();
-      res.setHeader('Content-Type', 'text/plain');
-      res.status(200).send('Init success');
-    } catch (error) {
-      console.error('Failed to generate or upload:', error);
-      res.status(500).send('Failed to compose or upload image');
-    }
-  } else {
-    res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+export const POST = async () => {
+  try {
+    await startProcessing();
+    return NextResponse.json({ status: 'success' }, { status: 200 });
+  } catch (error) {
+    console.error('Failed to generate or upload:', error);
+    return NextResponse.json(
+      { error: 'Failed to compose or upload image' },
+      { status: 500 }
+    );
   }
-}
+};
