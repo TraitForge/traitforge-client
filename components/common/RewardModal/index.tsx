@@ -25,7 +25,7 @@ const RewardModal = ({
   const modalStyle = {
     ...(background && { backgroundImage: `url(${background})` }),
     ...(page === 'nuke' && { boxShadow: '0px 0px 14px 4px rgba(128, 0, 128, 0.8)' }), // Purple shadow
-    ...(page === 'forging' && { boxShadow: '0px 0px 8px 10px rgba(255, 0, 0, 0.8)' }), // Red shadow
+    ...(page === 'forging' && { boxShadow: '0px 0px 14px 4px rgba(255, 0, 0, 0.7)' }), // Red shadow
   };
 
   if (!isOpen || !modalRoot) return null;

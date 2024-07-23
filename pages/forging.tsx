@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, LoadingSpinner, RewardModal } from '~/components';
+import { publicClient } from '~/lib/config';
 import {
   useEntitiesForForging,
   useForgeWithListed,
   useListForForging,
   useOwnerEntities,
+  useTokenEntropies,
+  useTokenGenerations
 } from '~/hooks';
 import { useAccount } from 'wagmi';
 import {
@@ -17,6 +20,7 @@ import {
 } from '~/components/screens';
 import { Entity, EntityForging } from '~/types';
 import { parseEther } from 'viem';
+import { calculateEntityAttributes } from '~/utils';
 
 const Forging = () => {
   const { address } = useAccount();
@@ -25,6 +29,7 @@ const Forging = () => {
   const { data: entitiesForForging, refetch: refetchEntitiesForForging } =
     useEntitiesForForging();
   const {
+    hash,
     onWriteAsync: onForge,
     isPending: isForgePending,
     isConfirmed: isForgeConfirmed,
@@ -42,11 +47,32 @@ const Forging = () => {
   const [selectedForListing, setSelectedForListing] = useState<Entity | null>(
     null
   );
+  const [newlyCreatedEntity, setNewlyCreatedEntity] = useState<Entity | null>(null);
   const [areEntitiesForged, setEntitiesForged] = useState(false);
   const [processingText, setProcessingText] = useState('Forging');
   const [generationFilter, setGenerationFilter] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
   const closeModal = () => setModalOpen(false);
+  const openModal = () => setModalOpen(true);
+
+  const [tokenID, setTokenID] = useState<number | null>(null);
+  const { data: entityEntropyData } = useTokenEntropies(tokenID ? [tokenID] : []);
+  const { data: entityGenerationData } = useTokenGenerations(tokenID ? [tokenID] : []);
+
+  const createNewEntity = async (tokenID: number, entropy: any, generation: any) => {
+    if (entropy.length > 0 && generation.length > 0) {
+      const paddedEntropy = entropy[0].toString();
+      const newGeneration = Number(generation[0]);
+      const attributes = calculateEntityAttributes(paddedEntropy);
+      return {
+        tokenId: tokenID,
+        paddedEntropy,
+        generation: newGeneration,
+        ...attributes,
+      };
+    }
+    return null;
+  };
 
   const handleSelectedFromPool = (entity: EntityForging) =>
     setSelectedFromPool(entity);
@@ -66,7 +92,7 @@ const Forging = () => {
     }
     setProcessingText('Forging');
     const feeInWei = parseEther(String(selectedFromPool.fee));
-    onForge(selectedFromPool.tokenId, selectedEntity.tokenId, feeInWei);
+    await onForge(selectedFromPool.tokenId, selectedEntity.tokenId, feeInWei);
     setEntitiesForged(true);
   };
 
@@ -87,14 +113,38 @@ const Forging = () => {
   ) => {
     setProcessingText('Listing entity');
     const feeInWei = parseEther(fee);
-    onList(selectedForListing.tokenId, feeInWei);
+    await onList(selectedForListing.tokenId, feeInWei);
   };
 
   const isGenerationsDifferent =
     selectedEntity?.generation !== selectedFromPool?.generation;
 
-  let content;
+  useEffect(() => {
+    if (hash && isForgeConfirmed) {
+      (async () => {
+        try {
+          const res = await publicClient.getTransactionReceipt({ hash });
+          if (res && res.logs && res.logs.length > 7 && res.logs[7] && res.logs[7].topics[1]) {
+            const hexString = res.logs[7].topics[1].toString();
+            const tokenID = parseInt(hexString, 16);
+            setTokenID(tokenID); 
+              const newEntity = await createNewEntity(tokenID, entityEntropyData, entityGenerationData);
+              if (newEntity) {
+                setNewlyCreatedEntity(newEntity);
+                openModal();
+              } else {
+                console.log('Failed to create new entity.');
+              }
+            }
+        } catch (error) {
+          console.error('Failed to fetch transaction receipt:', error);
+        }
+      })();
+    }
+  }, [hash, isForgeConfirmed]);
 
+  let content;
+  
   if (isLoading)
     return (
       <div className="h-full w-full flex justify-center items-center flex-col">
@@ -204,17 +254,15 @@ const Forging = () => {
         backgroundAttachment: 'fixed',
       }}
     >
-{selectedFromPool && selectedEntity && (
+{newlyCreatedEntity && (
   <RewardModal
     isOpen={isModalOpen}
     closeModal={closeModal}
     modalClasses="pb-4"
-    page="nuke"
+    page="forging"
   >
     <ForgingReceipt
-      forger={selectedFromPool}
-      merger={selectedEntity}
-      // offspring={newlyCreatedEntity} // Uncomment this line if `newlyCreatedEntity` is defined and should be passed
+      offspring={newlyCreatedEntity} 
     />
   </RewardModal>
 )}
