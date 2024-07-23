@@ -1,44 +1,160 @@
-import { useAccount } from 'wagmi';
-import { useState } from 'react';
+import { useAccount, useSignMessage } from 'wagmi';
+import { useEffect, useState } from 'react';
 
 import { shortenAddress } from '~/utils';
 import { FaWallet } from 'react-icons/fa';
 import { icons } from '~/components/icons';
 import { ImageUpload } from './UploadImage';
+import axios from 'axios';
+
+interface User {
+  id: number;
+  walletAddress: string;
+  name: string | null;
+  twitter: string | null;
+  pfp: string | null;
+}
 
 export const ProfileHeader = () => {
   const { address } = useAccount();
   const [isEditing, setIsEditing] = useState(false);
-  const [userName, setUserName] = useState('User');
+  const [user, setUser] = useState<User>();
+  const [userName, setUserName] = useState(user?.name || 'User');
+  const [twitterHandle, setTwitterHandle] = useState(
+    user?.twitter || 'twitterhandle'
+  );
+  const [pfpUrl, setPfpUrl] = useState();
+  const [file, setFile] = useState<File | undefined>(undefined);
+  const [originalMessage, setOriginalMessage] = useState('');
+
+  const { data: signMessageData, signMessage } = useSignMessage();
 
   const shortAddress = address ? shortenAddress(address) : 'Not connected';
+
+  useEffect(() => {
+    // check user already registered
+    (async () => {
+      if (address) {
+        try {
+          const response = await fetch(`/api/user?walletAddress=${address}`);
+          const data = await response.json();
+
+          if (data.error === 'User does not exist') {
+          } else {
+            setUser(data.user);
+
+            const { name, pfp, twitter } = data.user;
+            if (name) setUserName(name);
+            if (twitter) setTwitterHandle(twitter);
+            if (pfp) setPfpUrl(pfp);
+          }
+        } catch (err) {
+          console.error('Failed to check user registration:', err);
+        }
+      }
+    })();
+  }, [address]);
+
+  const handleSave = async () => {
+    setIsEditing(false);
+    const timestamp = Date.now();
+    signMessage({ message: `${timestamp}` });
+    setOriginalMessage(`${timestamp}`);
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (signMessageData && originalMessage) {
+        const formData = new FormData();
+        if (file) formData.append('pfp', file);
+        formData.append('name', userName);
+        formData.append('twitter', twitterHandle);
+        formData.append('messageData', signMessageData);
+        formData.append('originalMessage', originalMessage);
+        if (address) formData.append('walletAddress', address);
+
+        try {
+          const response = await axios.put('/api/user', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    })();
+  }, [signMessageData, originalMessage, address]);
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    if (user?.name) setUserName(user?.name);
+    if (user?.twitter) setTwitterHandle(user?.twitter);
+  };
+
+  const handleImageUpdate = (f: File) => {
+    setFile(f);
+  };
 
   return (
     <section className="flex max-md:flex-col gap-y-10 justify-between items-center container mt-16">
       <div className="flex items-center gap-x-[28px]">
-        <ImageUpload />
+        <ImageUpload
+          pfpUrl={pfpUrl}
+          isEditing={isEditing}
+          handleImageUpdate={(f: File) => handleImageUpdate(f)}
+        />
         <div className="flex flex-col gap-4 justify-center">
+          <div className="flex gap-x-3 items-center">
+            {isEditing ? (
+              <>
+                <span
+                  className="bg-blue rounded-full p-2 "
+                  onClick={() => handleSave()}
+                >
+                  <img src="/images/save.svg" alt="" className="size-6" />
+                </span>
+                <span
+                  className="bg-blue rounded-full p-2 "
+                  onClick={() => handleCancel()}
+                >
+                  <img src="/images/close.svg" alt="" className="size-6" />
+                </span>
+              </>
+            ) : (
+              <>
+                <span>Edit profile</span>
+                <span
+                  className="bg-blue rounded-full p-2 "
+                  onClick={() => setIsEditing(p => !p)}
+                >
+                  {icons.pen()}
+                </span>
+              </>
+            )}
+          </div>
           <div className="flex items-center gap-x-4">
-            <span
-              className="bg-blue rounded-full p-2 "
-              onClick={() => setIsEditing(p => !p)}
-            >
-              {icons.pen()}
-            </span>
             {isEditing ? (
               <input
                 className="bg-transparent focus-within:outline-none inline text-[40px] py-[10.5px]"
                 onChange={e => setUserName(e.target.value)}
                 value={userName}
-                onBlur={() => setIsEditing(false)}
-                autoFocus
               />
             ) : (
               <p className="text-[40px] py-[14px]">{userName}</p>
             )}
           </div>
           <div className="flex gap-x-3">
-            {icons.x()} <p className="text-xl">@twitterhandle</p>
+            {icons.x()}
+            {isEditing ? (
+              <input
+                className="bg-transparent focus-within:outline-none inline text-xl"
+                onChange={e => setTwitterHandle(e.target.value)}
+                value={twitterHandle}
+              />
+            ) : (
+              <p className="text-xl">{`@${twitterHandle}`}</p>
+            )}
           </div>
         </div>
       </div>
