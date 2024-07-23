@@ -1,6 +1,7 @@
+'use client';
+
 import React, { useState, useMemo, useEffect } from 'react';
-import { useAccount } from 'wagmi'
-;
+import { useAccount } from 'wagmi';
 import styles from '~/styles/honeypot.module.scss';
 import { EntityCard, LoadingSpinner } from '~/components';
 import { FiltersHeader } from '~/components';
@@ -12,7 +13,7 @@ import {
 } from '~/hooks';
 import { SingleValue } from 'react-select';
 import { HoneyPotBody, HoneyPotHeader, NukeEntity } from '~/components/screens';
-import {  Entity } from '~/types';
+import { Entity } from '~/types';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 
 const HoneyPot = () => {

@@ -1,3 +1,5 @@
+'use client';
+
 import { ProfileHeader, OwnedEntities } from '~/components/screens';
 
 const ProfilePage = () => {

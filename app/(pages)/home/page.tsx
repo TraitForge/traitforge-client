@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { Slider, Button, BudgetModal, LoadingSpinner } from '~/components';
 import {

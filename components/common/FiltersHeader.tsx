@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames';
 import Select, { CSSObjectWithLabel, SingleValue } from 'react-select';
 
@@ -68,10 +70,10 @@ export const FiltersHeader = ({
     color === 'orange'
       ? '#ff7a00'
       : color === 'green'
-      ? '#4CAF50'
-      : color === 'purple'
-      ? '#B026FF'
-      : '#ccc';
+        ? '#4CAF50'
+        : color === 'purple'
+          ? '#B026FF'
+          : '#ccc';
   const customStyles = {
     control: (styles: CSSObjectWithLabel) => ({
       ...styles,
