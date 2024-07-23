@@ -1,8 +1,8 @@
-import { processImage } from '../entropy/process/route';
 import { publicClient } from '~/lib/config';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { TraitForgeNftABI } from '~/lib/abis';
 import { NextRequest, NextResponse } from 'next/server';
+import { processImage } from '~/utils/entropy';
 
 export const POST = async (req: NextRequest) => {
   try {
