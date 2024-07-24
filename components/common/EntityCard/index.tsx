@@ -1,12 +1,12 @@
+'use client';
+
 import React, { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
-
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
-import { useIsSafari } from '~/hooks/useIsSafari';
+import { usePathname } from 'next/navigation';
 
 type EntityCardTypes = {
   entity: Entity;
@@ -35,7 +35,6 @@ export const EntityCard = ({
   } = entity;
   const [imgLoaded, setImgLoaded] = useState(false);
   const { asPath } = useRouter();
-  const isSafari = useIsSafari();
 
   const uri = calculateUri(paddedEntropy, generation);
 
@@ -46,13 +45,13 @@ export const EntityCard = ({
       'opacity-1': imgLoaded,
       'opacity-0': !imgLoaded,
       'from-light-green border-neon-green shadow-custom-green':
-        asPath === '/trading',
+        pathname === '/trading',
       'from-light-blue border-neon-blue shadow-custom-blue':
-        asPath === '/profile',
+        pathname === '/profile',
       'from-light-orange border-neon-orange shadow-custom-forge':
-        asPath === '/forging',
+        pathname === '/forging',
       'from-light-purple border-neon-purple shaow-custom-purple':
-        asPath === '/nuke-fund',
+        pathname === '/nuke-fund',
       'bg-gray-800 opacity-50 pointer-events-none': isOwnedByUser,
       'cursor-pointer': onSelect,
     }
@@ -65,10 +64,10 @@ export const EntityCard = ({
   const badgeClasses = classNames(
     'text-[10px] lg:text-base 3xl:text-[20px] py-2.5 px-[14px] bg-opacity-20 rounded-xl',
     {
-      'bg-[#0EEB81]': asPath === '/trading',
-      'bg-[#FD8D26]': asPath === '/forging',
-      'bg-neon-purple': asPath === '/nuke-fund',
-      'bg-neon-blue': asPath === '/profile',
+      'bg-[#0EEB81]': pathname === '/trading',
+      'bg-[#FD8D26]': pathname === '/forging',
+      'bg-neon-purple': pathname === '/nuke-fund',
+      'bg-neon-blue': pathname === '/profile',
     }
   );
 

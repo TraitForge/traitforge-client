@@ -4,16 +4,27 @@ import axios from 'axios';
 import { icons } from '~/components/icons';
 import Image from 'next/image';
 
-export const ImageUpload = () => {
+interface IImageUploadProps {
+  pfpUrl: string | undefined;
+  isEditing: boolean;
+  handleImageUpdate: (f: File) => void;
+}
+export const ImageUpload = ({
+  pfpUrl,
+  handleImageUpdate,
+  isEditing,
+}: IImageUploadProps) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [message, setMessage] = useState('');
   const fileInputRef = useRef<any>(null);
 
   const handleFileChange = (e: any) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
     setPreview(URL.createObjectURL(selectedFile));
+    if (selectedFile) {
+      handleImageUpdate(selectedFile);
+    }
   };
 
   const handleButtonClick = () => {
@@ -23,20 +34,7 @@ export const ImageUpload = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!file) return;
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const response = await axios.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      setMessage('Image uploaded successfully');
-    } catch (error) {
-      setMessage('Error uploading image');
-    }
+    handleImageUpdate(file);
   };
 
   return (
@@ -51,16 +49,22 @@ export const ImageUpload = () => {
         />
       ) : (
         <div className="bg-[#023340] rounded-full h-[130px] w-[130px] flex justify-center items-center ">
-          {icons.user()}
+          {pfpUrl ? (
+            <img src={pfpUrl} className="rounded-full" alt="profile image" />
+          ) : (
+            icons.user()
+          )}
         </div>
       )}
-      <button
-        type="button"
-        onClick={handleButtonClick}
-        className="text-neon-blue underline text-base"
-      >
-        Upload image
-      </button>
+      {isEditing && (
+        <button
+          type="button"
+          onClick={handleButtonClick}
+          className="text-neon-blue underline text-base"
+        >
+          Upload image
+        </button>
+      )}
       <input
         type="file"
         ref={fileInputRef}

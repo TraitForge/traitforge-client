@@ -1,9 +1,7 @@
 'use client';
-import { useRouter } from 'next/router';
 import { useAccount } from 'wagmi';
 import { useEffect, useState } from 'react';
 import { FaWallet } from 'react-icons/fa';
-
 import classNames from 'classnames';
 import { Button, EntityCard, LoadingSpinner, Modal } from '~/components';
 import { Entity, EntityForging, EntityTrading } from '~/types';
@@ -14,6 +12,7 @@ import {
   useUnlistEntityForForging,
   useUnlistEntityForSale,
 } from '~/hooks';
+import { usePathname } from 'next/navigation';
 
 type WalletModalTypes = {
   isOpen: boolean;
@@ -26,7 +25,7 @@ export const WalletModal = ({
   closeModal,
   balanceInETH,
 }: WalletModalTypes) => {
-  const { asPath } = useRouter();
+  const pathname = usePathname();
   const { address } = useAccount();
   const { data: ownerEntities, refetch: refetchOwnerEntities } =
     useOwnerEntities(address || '0x0');
@@ -54,11 +53,11 @@ export const WalletModal = ({
   const containerClasses = classNames(
     'bg-dark-81 flex justify-center items-center border-[5px] rounded-xl max-w-[90%]',
     {
-      'border-neon-orange': asPath === '/forging',
-      'border-neon-green': asPath === '/trading',
-      'border-neon-purple': asPath === '/nuke-fund',
-      'border-neon-green-yellow': asPath === '/stats',
-      'border-primary': asPath === '/',
+      'border-neon-orange': pathname === '/forging',
+      'border-neon-green': pathname === '/trading',
+      'border-neon-purple': pathname === '/nuke-fund',
+      'border-neon-green-yellow': pathname === '/stats',
+      'border-primary': pathname === '/',
     }
   );
 
