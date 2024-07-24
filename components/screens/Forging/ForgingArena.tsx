@@ -20,7 +20,7 @@ export const ForgingArena = ({
   selectedFromWallet,
 }: ForgingArenaTypes) => {
   return (
-    <div className="flex px-5 flex-col max-md:gap-y-10 md:grid md:grid-cols-3 max-w-[1440px] md:px-[100px] xl:px-[200px] lg:gap-x-[80px] 3xl:gap-x-[111px]">
+    <div className="hidden px-5 flex-col max-md:gap-y-10 md:gap-x-5 md:grid md:grid-cols-3 max-w-[1440px] md:px-[15px] lg:px-[100px] xl:px-[200px] lg:gap-x-[80px] 3xl:gap-x-[111px] ">
       <ArenaItemForger
         handleEntityListModal={handleEntityListModal}
         selectedFromPool={selectedFromPool}

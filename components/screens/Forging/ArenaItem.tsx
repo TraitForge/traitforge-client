@@ -26,7 +26,7 @@ export const ArenaItem = ({
     );
 
   const buttonWrapper = classNames(
-    'h-[400px] border font-bebas text-[36px] bg-opacity-60 shadow-custom-forge uppercase border-neon-orange rounded-[20px] py-5 bg-gradient-to-bl from-light-orange to-dark px-5 3xl:px-10 flex flex-col items-center justify-center',
+    'h-[300px] md:h-[400px] border font-bebas text-[28px] md:text-[36px] bg-opacity-60 shadow-custom-forge uppercase border-neon-orange rounded-[20px] py-5 bg-gradient-to-bl from-light-orange to-dark px-5 3xl:px-10 flex flex-col items-center justify-center',
     className
   );
 

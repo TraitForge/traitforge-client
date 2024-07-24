@@ -13,6 +13,7 @@ import {
   ListNow,
   SelectEntityList,
   WalletEntityModal,
+  MobileForgingArena,
 } from '~/components/screens';
 import { Entity, EntityForging } from '~/types';
 import { parseEther } from 'viem';
@@ -114,11 +115,18 @@ const Forging = () => {
                 bg="rgba(31, 15, 0,0.6)"
                 variant="orange"
                 onClick={handleListingPage}
-                textClass="font-electrolize relative md:absolute md:top-0 !py-3 md:right-5 !text-[24px] max-md:mt-5"
+                textClass="font-electrolize relative md:absolute md:top-1/2 md:-translate-y-1/2 !py-3 md:right-5 md:!px-10 !text-[18px] lg:!text-[24px] max-md:mt-5"
               />
             </div>
             <div className="py-7 md:py-10 3xl:py-20">
               <ForgingArena
+                selectedFromPool={selectedFromPool}
+                selectedFromWallet={selectedEntity}
+                areEntitiesForged={areEntitiesForged}
+                handleEntityListModal={handleEntityListModal}
+                handleOwnerEntityList={handleOwnerEntityList}
+              />
+              <MobileForgingArena
                 selectedFromPool={selectedFromPool}
                 selectedFromWallet={selectedEntity}
                 areEntitiesForged={areEntitiesForged}
@@ -137,7 +145,7 @@ const Forging = () => {
                 width="408"
                 height="92"
                 variant={isGenerationsDifferent ? 'null' : 'orange'}
-                textClass="!px-28 !py-2 capitalize text-[40px] pb-10"
+                textClass="md:!px-28 !py-2 capitalize !text-[18px] md:!text-[40px] pb-10"
                 disabled={isGenerationsDifferent || isLoading}
                 onClick={forgeEntity}
               />

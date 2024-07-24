@@ -7,3 +7,4 @@ export * from './ListingHeader';
 export * from './ListNow';
 export * from './SelectEntityList';
 export * from './WalletEntityModal';
+export * from './MobileForgingArena';
