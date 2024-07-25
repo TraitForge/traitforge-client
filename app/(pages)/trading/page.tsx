@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState, useMemo } from 'react';
 import styles from '~/styles/trading.module.scss';
 import { EntityCard, LoadingSpinner } from '~/components';

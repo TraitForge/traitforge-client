@@ -1,10 +1,10 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
-
-import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { Entity } from '~/types';
+import { usePathname } from 'next/navigation';
 
 type EntityCardTypes = {
   entity: Entity;
@@ -21,12 +21,12 @@ export const PossibleEntityCard = ({
 }: EntityCardTypes) => {
   const { generation, role, forgePotential, performanceFactor, nukeFactor } =
     entity;
-  const { asPath } = useRouter();
+  const pathname = usePathname();
   const wrapperClasses = classNames(
     'overflow-hidden border-[1.33px] border-orange rounded-[20px] px-2 md:px-4 py-3 md:py-5 bg-gradient-to-bl to-light-dark',
     {
       'from-light-orange border-neon-orange shadow-custom-forge':
-        asPath === '/forging',
+        pathname === '/forging',
     },
     wrapperClass
   );

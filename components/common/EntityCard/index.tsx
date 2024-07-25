@@ -1,11 +1,12 @@
+'use client';
+
 import React, { useState } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
-
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
+import { usePathname } from 'next/navigation';
 import { useIsSafari } from '~/hooks/useIsSafari';
 
 type EntityCardTypes = {
@@ -34,8 +35,9 @@ export const EntityCard = ({
     nukeFactor,
   } = entity;
   const [imgLoaded, setImgLoaded] = useState(false);
-  const { asPath } = useRouter();
   const isSafari = useIsSafari();
+
+  const asPath = usePathname();
 
   const uri = calculateUri(paddedEntropy, generation);
 
@@ -46,13 +48,13 @@ export const EntityCard = ({
       'opacity-1': imgLoaded,
       'opacity-0': !imgLoaded,
       'from-light-green border-neon-green shadow-custom-green':
-        asPath === '/trading',
+      asPath === '/trading',
       'from-light-blue border-neon-blue shadow-custom-blue':
-        asPath === '/profile',
+      asPath === '/profile',
       'from-light-orange border-neon-orange shadow-custom-forge':
-        asPath === '/forging',
+      asPath === '/forging',
       'from-light-purple border-neon-purple shaow-custom-purple':
-        asPath === '/nuke-fund',
+      asPath === '/nuke-fund',
       'bg-gray-800 opacity-50 pointer-events-none': isOwnedByUser,
       'cursor-pointer': onSelect,
     }
