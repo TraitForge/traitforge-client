@@ -1,4 +1,4 @@
-import { publicClient } from '~/lib/config';
+import { publicClient } from '~/lib/client';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { TraitForgeNftABI } from '~/lib/abis';
 import { NextRequest, NextResponse } from 'next/server';

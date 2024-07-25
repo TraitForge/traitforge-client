@@ -1,5 +1,4 @@
-import { createPublicClient } from 'viem';
-import { http, createConfig } from 'wagmi';
+import { createConfig, http } from 'wagmi';
 import { sepolia } from 'viem/chains';
 import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 
@@ -19,11 +18,6 @@ export const config = createConfig({
     [sepolia.id]: http(process.env.NEXT_PUBLIC_ALCHEMY_RPCURL),
   },
   ssr: true,
-});
-
-export const publicClient = createPublicClient({
-  chain: sepolia,
-  transport: http(process.env.NEXT_PUBLIC_ALCHEMY_RPCURL),
 });
 
 declare module 'wagmi' {
