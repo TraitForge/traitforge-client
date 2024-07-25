@@ -1,15 +1,13 @@
-import { processImage } from './entropy/process';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { publicClient } from '~/lib/config';
+import { publicClient } from '~/lib/client';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { TraitForgeNftABI } from '~/lib/abis';
+import { NextRequest, NextResponse } from 'next/server';
+import { processImage } from '~/utils/entropy';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export const POST = async (req: NextRequest) => {
   try {
-    const { event } = req.body;
+    const data = await req.json();
+    const { event } = data;
     const activity = event.activity[0];
     if (activity.fromAddress === '0x0000000000000000000000000000000000000000') {
       // Mints new NFT
@@ -43,9 +41,9 @@ export default async function handler(
         await processImage(tokenEntropy, tokenGen);
       }
     }
-    res.status(200).send('Ok');
+    return NextResponse.json({ status: 'ok' }, { status: 200 });
   } catch (e) {
     console.log('Nft event error:', e);
-    res.status(500).send(e);
+    return NextResponse.json({ e }, { status: 500 });
   }
-}
+};
