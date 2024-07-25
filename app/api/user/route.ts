@@ -84,7 +84,7 @@ export const PUT = async (req: NextRequest) => {
       const parts = file.name.split('.');
       const ext = parts[parts.length - 1];
       const filename = `${Date.now()}.${ext}`;
-      await uploadToS3(buffer, `pfp/${filename}`);
+      await uploadToS3(buffer, `pfp/${filename}`, file.type);
       pfp = `https://traitforge.s3.ap-southeast-2.amazonaws.com/pfp/${filename}`;
     }
 

@@ -1,6 +1,6 @@
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { EntropyGeneratorABI } from '~/lib/abis';
-import { publicClient } from '~/lib/config';
+import { publicClient } from '~/lib/client';
 import { NextResponse } from 'next/server';
 import { processImage } from '~/utils/entropy';
 

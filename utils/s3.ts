@@ -1,12 +1,16 @@
 import { S3 } from 'aws-sdk';
 import s3 from '~/aws-config';
 
-export const uploadToS3 = async (imageBuffer: Buffer, fileName: string) => {
+export const uploadToS3 = async (
+  imageBuffer: Buffer,
+  fileName: string,
+  type = 'image/jpeg'
+) => {
   const params: S3.PutObjectRequest = {
     Bucket: process.env.AWS_S3_BUCKET_NAME || '',
     Key: fileName,
     Body: imageBuffer,
-    ContentType: 'image/jpeg',
+    ContentType: type,
   };
   return s3.upload(params).promise();
 };
@@ -16,11 +20,11 @@ export const uploadToS3 = async (imageBuffer: Buffer, fileName: string) => {
 //   fs.writeFileSync(path.join('assets', fileName), imageBuffer, { flag: 'w' });
 // }
 
-export const getS3Object = async (fileName: string, folder = 'variables') => {
+export const getS3Object = async (fileName: string) => {
   try {
     const params: S3.GetObjectRequest = {
       Bucket: process.env.AWS_S3_BUCKET_NAME || '',
-      Key: `${folder}/${fileName}`,
+      Key: `variables/${fileName}`,
     };
 
     const data = await s3.getObject(params).promise();
