@@ -15,6 +15,7 @@ const links = [
   { url: '/forging', text: 'FORGING' },
   { url: '/trading', text: 'MARKETPLACE' },
   { url: '/nuke-fund', text: 'NUKEFUND' },
+  { url: '/explore', text: 'EXPLORE' },
   //{ url: '/stats', text: 'GAME STATS' },
 ];
 
@@ -78,7 +79,7 @@ const Navbar = () => {
     'after:bg-neon-green hover:text-neon-green': pathname === '/trading',
     'after:bg-neon-purple hover:text-neon-purple': pathname === '/nuke-fund',
     'after:bg-neon-green-yellow hover:text-neon-green-yellow':
-      pathname === '/stats',
+      pathname === '/explore',
     'after:bg-primary hover:text-primary': pathname === '/home',
   });
 

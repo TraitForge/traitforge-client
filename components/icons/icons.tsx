@@ -1,6 +1,24 @@
 export type IconProps = React.SVGProps<SVGSVGElement>;
 
 export const icons = {
+  search: (props?: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      fill="none"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        stroke="#A7A7A7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M10.875 18.75a7.875 7.875 0 100-15.75 7.875 7.875 0 000 15.75zM16.443 16.444L21 21"
+      ></path>
+    </svg>
+  ),
   wallet: (props?: IconProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
