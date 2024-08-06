@@ -7,3 +7,4 @@ export * from './EntropyGenerator';
 export * from './NukeFund';
 export * from './Trait';
 export * from './TraitForgeNft';
+export * from './PriceOracle';
