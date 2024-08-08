@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { calculateEntityAttributes, calculateUri } from '~/utils';
 import { useIsSafari } from '~/hooks/useIsSafari';
+import { useEthPrice } from '~/hooks';
 
 type EntitySliderCardTypes = {
   entropy: number;
@@ -25,6 +26,8 @@ export const EntitySliderCard = ({
   const generation = currentGeneration?.toString();
   const uri = calculateUri(paddedEntropy, generation);
   const isSafari = useIsSafari();
+  const { data: ethPrice } = useEthPrice();
+  const usdAmount = Number(price) * ethPrice;
 
   const { role, forgePotential, performanceFactor, nukeFactor } =
     calculateEntityAttributes(paddedEntropy);
@@ -56,7 +59,12 @@ export const EntitySliderCard = ({
           <p className="text-[20px]">{role}</p>
         </div>
         {showPrice && (
-          <h4 className="text-[24px] text-left py-5">{price} ETH</h4>
+          <div className="flex items-center justify-between">
+            <h4 className="flex-1 text-[24px] text-left py-5">{price} ETH</h4>
+            <h4 className="flex-1 text-[24px] text-right truncate py-5">
+              ${usdAmount.toLocaleString()}
+            </h4>
+          </div>
         )}
         <Image
           loading="lazy"

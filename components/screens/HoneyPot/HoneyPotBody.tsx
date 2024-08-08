@@ -2,7 +2,6 @@ import { Button } from '~/components';
 import styles from '~/styles/honeypot.module.scss';
 import { formatEther } from 'viem';
 import { useEthPrice, useNukeFundBalance } from '~/hooks';
-import { useEffect } from 'react';
 
 type HoneyPotBodyTypes = {
   handleStep: () => void;
@@ -19,7 +18,9 @@ export const HoneyPotBody = ({ handleStep }: HoneyPotBodyTypes) => {
         <p className="text-[40px] font-bebas">
           {Number(formatEther(nukeFundBalance)).toFixed(4)} ETH
         </p>
-        <p className="text-[40px] font-bebas">= ${usdAmount.toFixed(2)} USD</p>
+        <p className="text-[40px] font-bebas">
+          = ${usdAmount.toLocaleString()}
+        </p>
       </div>
       <div className="flex flex-col justify-center items-center">
         <Button
