@@ -59,11 +59,11 @@ export const EntitySliderCard = ({
           <p className="text-[20px]">{role}</p>
         </div>
         {showPrice && (
-          <div className="flex items-center justify-between">
-            <h4 className="flex-1 text-[24px] text-left py-5">{price} ETH</h4>
-            <h4 className="flex-1 text-[24px] text-right truncate py-5">
+          <div className="text-left py-5">
+            <h4 className="text-[24px] truncate">
               ${usdAmount.toLocaleString()}
             </h4>
+            <div className="text-[16px]">{price} ETH</div>
           </div>
         )}
         <Image

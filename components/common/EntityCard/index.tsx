@@ -85,11 +85,11 @@ export const EntityCard = ({
           <p className="text-[20px]">{role}</p>
         </div>
         {showPrice && (
-          <div className="flex items-center justify-between">
-            <h4 className="flex-1 text-[24px] text-left">{displayPrice} ETH</h4>
-            <h4 className="flex-1 text-[24px] text-right truncate">
+          <div className="text-left">
+            <h4 className="text-[24px] truncate">
               ${usdAmount.toLocaleString()}
             </h4>
+            <div className="text-[16px]">{displayPrice} ETH</div>
           </div>
         )}
         <Image
