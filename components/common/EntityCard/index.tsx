@@ -8,6 +8,7 @@ import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
 import { usePathname } from 'next/navigation';
 import { useIsSafari } from '~/hooks/useIsSafari';
+import { useEthPrice } from '~/hooks';
 
 type EntityCardTypes = {
   entity: Entity;
@@ -36,8 +37,9 @@ export const EntityCard = ({
   } = entity;
   const [imgLoaded, setImgLoaded] = useState(false);
   const isSafari = useIsSafari();
-
   const asPath = usePathname();
+  const { data: ethPrice } = useEthPrice();
+  const usdAmount = Number(displayPrice ?? 0) * ethPrice;
 
   const uri = calculateUri(paddedEntropy, generation);
 
@@ -48,13 +50,13 @@ export const EntityCard = ({
       'opacity-1': imgLoaded,
       'opacity-0': !imgLoaded,
       'from-light-green border-neon-green shadow-custom-green':
-      asPath === '/trading',
+        asPath === '/trading',
       'from-light-blue border-neon-blue shadow-custom-blue':
-      asPath === '/profile',
+        asPath === '/profile',
       'from-light-orange border-neon-orange shadow-custom-forge':
-      asPath === '/forging',
+        asPath === '/forging',
       'from-light-purple border-neon-purple shaow-custom-purple':
-      asPath === '/nuke-fund',
+        asPath === '/nuke-fund',
       'bg-gray-800 opacity-50 pointer-events-none': isOwnedByUser,
       'cursor-pointer': onSelect,
     }
@@ -83,7 +85,12 @@ export const EntityCard = ({
           <p className="text-[20px]">{role}</p>
         </div>
         {showPrice && (
-          <h4 className="text-[24px] text-left">{displayPrice} ETH</h4>
+          <div className="text-left">
+            <h4 className="text-[24px] truncate">
+              ${usdAmount.toLocaleString()}
+            </h4>
+            <div className="text-[16px]">{displayPrice} ETH</div>
+          </div>
         )}
         <Image
           loading="lazy"
