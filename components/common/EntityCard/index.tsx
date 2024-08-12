@@ -8,7 +8,7 @@ import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
 import { usePathname } from 'next/navigation';
 import { useIsSafari } from '~/hooks/useIsSafari';
-import { useEthPrice } from '~/hooks';
+import { useEthPrice, useForgingCounts } from '~/hooks';
 
 type EntityCardTypes = {
   entity: Entity;
@@ -28,6 +28,7 @@ export const EntityCard = ({
   isOwnedByUser,
 }: EntityCardTypes) => {
   const {
+    tokenId,
     paddedEntropy,
     generation,
     role,
@@ -35,6 +36,7 @@ export const EntityCard = ({
     performanceFactor,
     nukeFactor,
   } = entity;
+  const { data: forgingCount } = useForgingCounts(tokenId);
   const [imgLoaded, setImgLoaded] = useState(false);
   const isSafari = useIsSafari();
   const asPath = usePathname();
@@ -112,7 +114,9 @@ export const EntityCard = ({
             </span>
           </div>
           <div className="flex flex-col gap-1 basis-1/3 flex-1">
-            <h1>{forgePotential}</h1>
+            <h1>
+              {forgePotential - forgingCount}/{forgePotential}
+            </h1>
             <span className="text-xs md:text-sm sm:pr-4 md:pr-0">
               Forge Potential
             </span>
