@@ -3,12 +3,13 @@ import { processImage } from '~/utils/entropy';
 
 export const POST = async (req: NextRequest) => {
   const data = await req.json();
-  const { paddedEntropy, entityGeneration } = data;
+  const { paddedEntropy, entityGeneration, power } = data;
 
   try {
     const url = await processImage(
       paddedEntropy as string,
-      entityGeneration as string
+      entityGeneration as string,
+      power as number
     );
     return NextResponse.json({ url }, { status: 200 });
   } catch (error) {

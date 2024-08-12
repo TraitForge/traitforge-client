@@ -38,7 +38,8 @@ export const POST = async (req: NextRequest) => {
             args: [BigInt(tokenId)],
           })
         );
-        await processImage(tokenEntropy, tokenGen);
+        const power = Math.floor(Number(tokenEntropy) / 40000)
+        await processImage(tokenEntropy, tokenGen, power);
       }
     }
     return NextResponse.json({ status: 'ok' }, { status: 200 });

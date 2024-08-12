@@ -3,9 +3,10 @@ import { uploadToS3 } from './s3';
 
 export async function processImage(
   paddedEntropy: string | number,
-  entityGeneration: string | number
+  entityGeneration: string | number,
+  power: number
 ) {
-  const imageBuffer = await composeIMG(paddedEntropy, entityGeneration);
+  const imageBuffer = await composeIMG(paddedEntropy, entityGeneration, power);
   if (imageBuffer) {
     const uri = await generateUri(paddedEntropy, entityGeneration);
     const fileName = `${uri}`;
