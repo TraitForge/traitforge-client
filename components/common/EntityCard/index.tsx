@@ -8,7 +8,7 @@ import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
 import { usePathname } from 'next/navigation';
 import { useIsSafari } from '~/hooks/useIsSafari';
-import { useEthPrice, useForgingCounts } from '~/hooks';
+import { useEthPrice, useForgingCounts, useNukeFactor } from '~/hooks';
 
 type EntityCardTypes = {
   entity: Entity;
@@ -34,9 +34,9 @@ export const EntityCard = ({
     role,
     forgePotential,
     performanceFactor,
-    nukeFactor,
   } = entity;
   const { data: forgingCount } = useForgingCounts(tokenId);
+  const { data: nukeFactor } = useNukeFactor(tokenId);
   const [imgLoaded, setImgLoaded] = useState(false);
   const isSafari = useIsSafari();
   const asPath = usePathname();
@@ -44,6 +44,7 @@ export const EntityCard = ({
   const usdAmount = Number(displayPrice ?? 0) * ethPrice;
 
   const uri = calculateUri(paddedEntropy, generation);
+  const fixedNukeFactor = (nukeFactor/ 1000).toFixed(2);
 
   const wrapperClasses = classNames(
     ' border-[1.33px] rounded-[20px] px-2 md:px-4 py-2 md:py-5 bg-gradient-to-bl to-light-dark',
@@ -108,7 +109,7 @@ export const EntityCard = ({
         />
         <div className="mt-3 text-base xl:text-[24px] flex max-xl:flex-wrap gap-y-2 md:gap-x-2 text-left 2xl:gap-x-3 overflow-hidden">
           <div className="flex flex-col gap-1 basis-1/3 flex-1">
-            <h1>{nukeFactor}%</h1>
+            <h1>{fixedNukeFactor}%</h1>
             <span className="text-xs md:text-sm ">
               Nuke <br /> Factor
             </span>

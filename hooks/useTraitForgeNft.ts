@@ -317,6 +317,21 @@ export const useForgingCounts = (tokenId: number) => {
   };
 };
 
+export const useNukeFactor = (tokenId: number) => {
+  const { data, isFetching, refetch } = useReadContract({
+    abi: NukeFundABI,
+    address: CONTRACT_ADDRESSES.NukeFund,
+    functionName: 'calculateNukeFactor',
+    args: [BigInt(tokenId)],
+  });
+
+  return {
+    data: Number(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
 // EntityTrading
 export const useTradingListings = () => {
   const {
