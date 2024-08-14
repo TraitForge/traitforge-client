@@ -2,7 +2,7 @@ import { createConfig, http } from 'wagmi';
 import { sepolia } from 'viem/chains';
 import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 
-export const projectId = 'db99d4d311764dbfb7e4563ce13e71fb';
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 if (!projectId) throw new Error('Project ID is not defined');
 

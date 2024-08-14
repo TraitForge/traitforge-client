@@ -4,7 +4,7 @@ import { uploadToS3 } from './s3';
 export async function processImage(
   paddedEntropy: string | number,
   entityGeneration: string | number,
-  power: number
+  power: string | number
 ) {
   const imageBuffer = await composeIMG(paddedEntropy, entityGeneration, power);
   if (imageBuffer) {
