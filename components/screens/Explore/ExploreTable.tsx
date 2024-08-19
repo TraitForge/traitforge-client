@@ -18,10 +18,11 @@ const numberPerPage = 10;
 
 export const ExploreTable = ({ users }: Props) => {
   const [page, setPage] = useState(0);
-  const paginationNumber = Math.ceil(users.length / numberPerPage);
+
+  const numOfPages = Math.ceil(users.length / numberPerPage);
 
   return (
-    <section className="container my-10 h-full">
+    <section className="container">
       <div className="min-h-[631px]">
         <table className="w-full overflow-y-auto ">
           <thead>
@@ -67,63 +68,58 @@ export const ExploreTable = ({ users }: Props) => {
           </tbody>
         </table>
       </div>
-      <nav aria-label="Page navigation example mx-auto">
+      <nav aria-label="Page navigation example" className="py-5">
         <ul className="flex items-center justify-center -space-x-px h-8 text-sm">
-          <li onClick={() => setPage(prev => prev - 1)}>
-            <a
-              href="#"
-              className="flex items-center justify-center px-3 h-8 ms-0 leading-tight"
+          <li
+            onClick={() => page > 0 && setPage(prev => prev - 1)}
+            className="flex items-center justify-center px-3 h-8 ms-0 leading-tight"
+          >
+            <span className="sr-only">Previous</span>
+            <svg
+              className="w-2.5 h-2.5 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
             >
-              <span className="sr-only">Previous</span>
-              <svg
-                className="w-2.5 h-2.5 rtl:rotate-180"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 6 10"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 1 1 5l4 4"
-                />
-              </svg>
-            </a>
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 1 1 5l4 4"
+              />
+            </svg>
           </li>
-          {[...Array(paginationNumber)].map((item, idx) => (
-            <li key={idx} onClick={() => setPage(idx)}>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight"
-              >
-                {idx + 1}
-              </a>
+          {[...Array(numOfPages)].map((item, idx) => (
+            <li
+              key={idx}
+              onClick={() => setPage(idx)}
+              className="flex items-center justify-center px-3 h-8 leading-tight cursor-pointer"
+            >
+              {idx + 1}
             </li>
           ))}
-          <li onClick={() => setPage(prev => prev + 1)}>
-            <a
-              href="#"
-              className="flex items-center justify-center px-3 h-8 leading-tight "
+          <li
+            onClick={() => page < numOfPages - 1 && setPage(prev => prev + 1)}
+            className="flex items-center justify-center px-3 h-8 leading-tight"
+          >
+            <span className="sr-only">Next</span>
+            <svg
+              className="w-2.5 h-2.5 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
             >
-              <span className="sr-only">Next</span>
-              <svg
-                className="w-2.5 h-2.5 rtl:rotate-180"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 6 10"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m1 9 4-4-4-4"
-                />
-              </svg>
-            </a>
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 9 4-4-4-4"
+              />
+            </svg>
           </li>
         </ul>
       </nav>
