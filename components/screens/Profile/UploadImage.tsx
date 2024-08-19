@@ -1,6 +1,6 @@
 // components/ImageUpload.js
 import { useState, useRef } from 'react';
-import axios from 'axios';
+
 import { icons } from '~/components/icons';
 import Image from 'next/image';
 
@@ -50,9 +50,9 @@ export const ImageUpload = ({
       ) : (
         <div className="bg-[#023340] rounded-full h-[130px] w-[130px] flex justify-center items-center ">
           {pfpUrl ? (
-            <img src={pfpUrl} className="rounded-full" alt="profile image" />
+            <img src={pfpUrl} className="rounded-full w-full h-full object-cover" alt="profile image" />
           ) : (
-            icons.user()
+            icons.user({className: 'text-[#0ADFDB]'})
           )}
         </div>
       )}
