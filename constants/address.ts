@@ -9,4 +9,5 @@ export const CONTRACT_ADDRESSES = {
   Airdrop: '0x422fE8065c54E00B95429b4E3ef9f2B2E7C424c2' as `0x${string}`,
   DAOFund: '0xF99Bfb20cDe17e52424a8923f78f979C3a65eD15' as `0x${string}`,
   NukeFund: '0x29FCB59F18cf05a96b316Bb03E762Bc91dCFbc7F' as `0x${string}`,
+  PriceOracle: '0x694AA1769357215DE4FAC081bf1f309aDC325306' as `0x${string}`,
 };

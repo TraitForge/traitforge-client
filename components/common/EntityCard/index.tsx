@@ -8,6 +8,7 @@ import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
 import { usePathname } from 'next/navigation';
 import { useIsSafari } from '~/hooks/useIsSafari';
+import { useEthPrice, useForgingCounts } from '~/hooks';
 
 type EntityCardTypes = {
   entity: Entity;
@@ -27,6 +28,7 @@ export const EntityCard = ({
   isOwnedByUser,
 }: EntityCardTypes) => {
   const {
+    tokenId,
     paddedEntropy,
     generation,
     role,
@@ -34,10 +36,12 @@ export const EntityCard = ({
     performanceFactor,
     nukeFactor,
   } = entity;
+  const { data: forgingCount } = useForgingCounts(tokenId);
   const [imgLoaded, setImgLoaded] = useState(false);
   const isSafari = useIsSafari();
-
   const asPath = usePathname();
+  const { data: ethPrice } = useEthPrice();
+  const usdAmount = Number(displayPrice ?? 0) * ethPrice;
 
   const uri = calculateUri(paddedEntropy, generation);
 
@@ -48,13 +52,13 @@ export const EntityCard = ({
       'opacity-1': imgLoaded,
       'opacity-0': !imgLoaded,
       'from-light-green border-neon-green shadow-custom-green':
-      asPath === '/trading',
+        asPath === '/trading',
       'from-light-blue border-neon-blue shadow-custom-blue':
-      asPath === '/profile',
+        asPath === '/profile',
       'from-light-orange border-neon-orange shadow-custom-forge':
-      asPath === '/forging',
+        asPath === '/forging',
       'from-light-purple border-neon-purple shaow-custom-purple':
-      asPath === '/nuke-fund',
+        asPath === '/nuke-fund',
       'bg-gray-800 opacity-50 pointer-events-none': isOwnedByUser,
       'cursor-pointer': onSelect,
     }
@@ -83,7 +87,12 @@ export const EntityCard = ({
           <p className="text-[20px]">{role}</p>
         </div>
         {showPrice && (
-          <h4 className="text-[24px] text-left">{displayPrice} ETH</h4>
+          <div className="text-left">
+            <h4 className="text-[24px] truncate">
+              ${usdAmount.toLocaleString()}
+            </h4>
+            <div className="text-[16px]">{displayPrice} ETH</div>
+          </div>
         )}
         <Image
           loading="lazy"
@@ -105,7 +114,9 @@ export const EntityCard = ({
             </span>
           </div>
           <div className="flex flex-col gap-1 basis-1/3 flex-1">
-            <h1>{forgePotential}</h1>
+            <h1>
+              {forgePotential - forgingCount}/{forgePotential}
+            </h1>
             <span className="text-xs md:text-sm sm:pr-4 md:pr-0">
               Forge Potential
             </span>

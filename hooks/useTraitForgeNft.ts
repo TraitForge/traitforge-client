@@ -302,6 +302,21 @@ export const useEntitiesForForging = () => {
   };
 };
 
+export const useForgingCounts = (tokenId: number) => {
+  const { data, isFetching, refetch } = useReadContract({
+    abi: EntityForgingABI,
+    address: CONTRACT_ADDRESSES.EntityForging,
+    functionName: 'forgingCounts',
+    args: [BigInt(tokenId)],
+  });
+
+  return {
+    data: Number(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
 // EntityTrading
 export const useTradingListings = () => {
   const {
