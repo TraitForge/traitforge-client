@@ -31,6 +31,7 @@ const Home = () => {
     isConfirmed: isMintTokenConfirmed,
   } = useMintToken();
   const {
+    hash,
     onWriteAsync: onMintWithBudget,
     isPending: isMintWithBudgetPending,
     isConfirmed: isMintWithBudgetConfirmed,
@@ -43,6 +44,7 @@ const Home = () => {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState('');
+  const [referralCode, setReferralCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
@@ -51,6 +53,13 @@ const Home = () => {
       refetchPriceIncrement();
     }
   }, [isMintTokenConfirmed, isMintWithBudgetConfirmed]);
+
+  useEffect(() => {
+    const storedReferralCode = localStorage.getItem('referralCode');
+    if (storedReferralCode) {
+      setReferralCode(storedReferralCode);
+    }
+  }, []);
 
   const getProof = () => {
     const res = WHITELIST.find(
@@ -64,8 +73,41 @@ const Home = () => {
   };
 
   const handleMintBatchEntity = async () => {
-    onMintWithBudget(parseEther(budgetAmount), getProof());
+    await onMintWithBudget(parseEther(budgetAmount), getProof());
   };
+
+  useEffect(() => {
+    const handleAPIBatchReq = async () => {
+      await fetch('/api/batchMintReferral', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ referralCode, hash, address }),
+      });
+    };
+  
+    if (isMintWithBudgetConfirmed) {
+      handleAPIBatchReq();
+    }
+  }, [isMintWithBudgetConfirmed, referralCode, hash, address]);
+ 
+
+    useEffect(() => {
+      const handleMintInc = async () => {
+        await fetch('/api/incrementMint', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ referralCode }),
+        });
+      };
+    
+      if (isMintTokenConfirmed) {
+        handleMintInc();
+      }
+    }, [isMintTokenConfirmed, referralCode]);
 
   if (isLoading)
     return (

@@ -1,42 +1,89 @@
-import { S3 } from 'aws-sdk';
-import s3 from '~/aws-config';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { Readable } from 'stream';
+
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+});
 
 export const uploadToS3 = async (
   imageBuffer: Buffer,
   fileName: string,
   type = 'image/jpeg'
-) => {
-  const params: S3.PutObjectRequest = {
+): Promise<void> => {
+  const params = {
     Bucket: process.env.AWS_S3_BUCKET_NAME || '',
     Key: fileName,
     Body: imageBuffer,
     ContentType: type,
   };
-  return s3.upload(params).promise();
+
+  const command = new PutObjectCommand(params);
+  await s3Client.send(command);
 };
 
-// // Local save for faster processing
-// async function uploadToS3(imageBuffer: Buffer, fileName: string) {
-//   fs.writeFileSync(path.join('assets', fileName), imageBuffer, { flag: 'w' });
-// }
-
-export const getS3Object = async (fileName: string) => {
+export const getS3Object = async (fileName: string): Promise<Buffer | null> => {
   try {
-    const params: S3.GetObjectRequest = {
+    const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME || '',
       Key: `variables/${fileName}`,
     };
 
-    const data = await s3.getObject(params).promise();
+    const command = new GetObjectCommand(params);
+    const data = await s3Client.send(command);
 
-    return data.Body;
+    if (data.Body instanceof Readable) {
+      const chunks: Uint8Array[] = [];
+      for await (let chunk of data.Body) {
+        chunks.push(chunk);
+      }
+      return Buffer.concat(chunks);
+    }
+
+    return null;
   } catch (e: any) {
     throw new Error(`Could not retrieve file from S3: ${e.message}`);
   }
 };
 
-// // Local method for faster processing
-// const getS3Object = async (fileName: string) => {
-//   const imagePath = path.join(varConfig.variablesPath, fileName);
-//   return await sharp(imagePath).toBuffer();
-// };
+export const uploadToAnotherS3 = async (
+  content: string,
+  fileName: string,
+  type = 'application/json'
+): Promise<void> => {
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME2 || '',
+    Key: `files/${fileName}`,
+    Body: content,
+    ContentType: type, 
+  };
+  const command = new PutObjectCommand(params);
+  await s3Client.send(command);
+};
+
+export const getAnotherS3Object = async (fileName: string): Promise<string | null> => {
+  try {
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME2 || '',
+      Key: `files/${fileName}`,
+    };
+
+    const command = new GetObjectCommand(params);
+    const data = await s3Client.send(command);
+
+    if (data.Body instanceof Readable) {
+      const chunks: Uint8Array[] = [];
+      for await (let chunk of data.Body) {
+        chunks.push(chunk);
+      }
+      return Buffer.concat(chunks).toString('utf-8');
+    }
+
+    return null;
+  } catch (e: any) {
+    throw new Error(`Could not retrieve file from S3: ${e.message}`);
+  }
+};
