@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { ExploreHeading, ExploreTable } from '~/components/screens';
 import { LoadingSpinner } from '~/components';
 
-export interface User {
+interface User {
   id: number;
   name: string;
   pfp: string;
@@ -45,7 +45,7 @@ const ExplorePage = () => {
 
   return (
     <div
-      className="py-10"
+      className="py-10 h-full"
       style={{
         backgroundImage:
           "radial-gradient(rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%), url('/images/marketplace-background.jpg')",
@@ -54,7 +54,11 @@ const ExplorePage = () => {
         backgroundAttachment: 'fixed',
       }}
     >
-      <ExploreHeading searchQuery={searchQuery} handleSearch={handleSearch} />
+      <ExploreHeading
+        searchQuery={searchQuery}
+        handleSearch={handleSearch}
+        users={users}
+      />
       {loading ? (
         <div className="h-full w-full flex justify-center items-center flex-col">
           <LoadingSpinner color="#AAFF3E" />

@@ -56,10 +56,9 @@ export const ExploreTable = ({ users }: Props) => {
                         })
                       )}
                     </div>
-
                     <p>{item?.name}</p>
                   </td>
-                  <td className="text-base">{item?.twitter}</td>
+                  <td className="text-base">@{item?.twitter}</td>
                   <td className="text-base">
                     {shortenAddress(item.walletAddress)}
                   </td>
