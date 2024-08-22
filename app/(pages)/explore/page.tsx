@@ -5,7 +5,6 @@ import axios from 'axios';
 import _ from 'lodash';
 
 import { ExploreHeading, ExploreTable } from '~/components/screens';
-import { LoadingSpinner } from '~/components';
 
 interface User {
   id: number;
@@ -45,10 +44,10 @@ const ExplorePage = () => {
 
   return (
     <div
-      className="py-10 h-full"
+      className='min-h-screen'
       style={{
         backgroundImage:
-          "radial-gradient(rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%), url('/images/marketplace-background.jpg')",
+          "radial-gradient(rgba(0, 0, 0, 0.7) 49%, rgba(0, 0, 0, 0.7) 100%), url('/images/marketplace-background.jpg')",
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundAttachment: 'fixed',
@@ -59,13 +58,7 @@ const ExplorePage = () => {
         handleSearch={handleSearch}
         users={users}
       />
-      {loading ? (
-        <div className="h-full w-full flex justify-center items-center flex-col">
-          <LoadingSpinner color="#AAFF3E" />
-        </div>
-      ) : (
-        <ExploreTable users={users} />
-      )}
+      <ExploreTable users={users} loading={loading} />
     </div>
   );
 };

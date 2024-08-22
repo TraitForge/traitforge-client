@@ -25,11 +25,11 @@ export const ExploreHeading = ({
   const { ref } = useOutsideClick(() => setIsOpen(false));
 
   return (
-    <div className="flex flex-col md:flex-row justify-center relative items-center container gap-y-5 mb-10">
+    <div className="flex flex-col lg:flex-row justify-center relative items-center container gap-y-5 pt-10 mb-10">
       <h1 className=" text-[36px] md:text-extra-large">Explore</h1>
       <div
         ref={ref}
-        className="relative md:absolute md:top-1/2 md:translate-y-[-50%] md:right-0 xl:right-20 w-full md:w-[25%]"
+        className="relative lg:absolute lg:top-1/2 lg:translate-y-[-50%] md:right-0 xl:right-20 w-full lg:w-[25%]"
       >
         <div className="relative">
           <input
@@ -45,7 +45,7 @@ export const ExploreHeading = ({
           })}
         </div>
         {isOpen && (
-          <ul className="absolute -bottom-4 border border-neon-green-yellow z-10 right-0 min-w-full max-h-[200px] translate-y-full bg-black rounded-md py-6 overflow-y-auto">
+          <ul className="absolute -bottom-4 border border-neon-green-yellow z-10 right-0 min-w-full max-h-[200px] translate-y-full bg-black rounded-md overflow-y-auto">
             {users?.map(item => (
               <li
                 className="flex gap-x-4 py-2 items-center hover:bg-neutral-700 cursor-pointer px-5"
@@ -67,7 +67,7 @@ export const ExploreHeading = ({
                     })
                   )}
                 </div>
-                <p className="text-sm">{item?.name ? item.name : 'User'}</p>
+                <p className="text-sm">{item.name ?? '-'}</p>
               </li>
             ))}
           </ul>

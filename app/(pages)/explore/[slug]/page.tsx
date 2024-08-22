@@ -51,22 +51,22 @@ const ExplorePage = () => {
       }}
     >
       <div className="flex items-center gap-x-[28px] container">
-        <div className='w-20 h-20'>
-        {user?.pfp ? (
-          <Image
-            alt={user?.name}
-            src={user?.pfp}
-            width={100}
-            height={100}
-            className=" object-cover rounded-xl w-full h-full"
-          />
-        ) : (
-          icons.user({
-            className: 'w-full h-full object-cover text-[#AAFF3E]',
-          })
-        )}
+        <div className="w-20 h-20">
+          {user?.pfp ? (
+            <Image
+              alt={user?.name}
+              src={user?.pfp}
+              width={100}
+              height={100}
+              className=" object-cover rounded-xl w-full h-full"
+            />
+          ) : (
+            icons.user({
+              className: 'w-full h-full object-cover text-[#AAFF3E]',
+            })
+          )}
         </div>
-        
+
         <div className="flex flex-col gap-4 justify-center">
           <div className="flex items-center gap-x-4">
             <p className="text-[40px] py-[14px]">{user?.name}</p>
