@@ -49,8 +49,8 @@ export const EntityCard = ({
     ' border-[1.33px] rounded-[20px] px-2 md:px-4 py-2 md:py-5 bg-gradient-to-bl to-light-dark',
     wrapperClass,
     {
-      'opacity-1': imgLoaded,
-      'opacity-0': !imgLoaded,
+      'opacity-1 h-full': imgLoaded,
+      'opacity-0 h-0': !imgLoaded,
       'from-light-green border-neon-green shadow-custom-green':
         asPath === '/trading',
       'from-light-blue border-neon-blue shadow-custom-blue':
@@ -63,6 +63,7 @@ export const EntityCard = ({
       'cursor-pointer': onSelect,
     }
   );
+
   const skeletonClasses = classNames({
     block: !imgLoaded,
     hidden: imgLoaded,

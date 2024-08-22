@@ -40,13 +40,15 @@ export const ImageUpload = ({
   return (
     <form onSubmit={handleSubmit}>
       {preview ? (
-        <Image
-          width={200}
-          height={200}
-          src={preview}
-          alt="Image Preview"
-          className="h-[130px] w-[130px] object-cover rounded-full"
-        />
+        <div className='h-[130px] w-[130px]'>
+          <Image
+            width={200}
+            height={200}
+            src={preview}
+            alt="Image Preview"
+            className="object-cover rounded-full w-full h-full"
+          />
+        </div>
       ) : (
         <div className="bg-[#023340] rounded-full h-[130px] w-[130px] flex justify-center items-center ">
           {pfpUrl ? (

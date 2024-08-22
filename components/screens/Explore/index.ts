@@ -1,3 +1,3 @@
 export * from './ExploreHeading';
-export * from './ExploreTable';
+export * from './Explore';
 export * from './Pagination';

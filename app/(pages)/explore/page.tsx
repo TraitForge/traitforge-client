@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 
-import { ExploreHeading, ExploreTable } from '~/components/screens';
+import { ExploreHeading, Explore } from '~/components/screens';
 
 interface User {
   id: number;
@@ -44,7 +44,7 @@ const ExplorePage = () => {
 
   return (
     <div
-      className='min-h-screen'
+      className="min-h-screen pt-10"
       style={{
         backgroundImage:
           "radial-gradient(rgba(0, 0, 0, 0.7) 49%, rgba(0, 0, 0, 0.7) 100%), url('/images/marketplace-background.jpg')",
@@ -58,7 +58,7 @@ const ExplorePage = () => {
         handleSearch={handleSearch}
         users={users}
       />
-      <ExploreTable users={users} loading={loading} />
+      <Explore users={users} loading={loading} />
     </div>
   );
 };

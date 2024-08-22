@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { icons } from '~/components/icons';
 import { useOutsideClick } from '~/hooks/useOutsideClick';
+import { shortenAddress } from '~/utils';
 
 interface Props {
   searchQuery: string;
@@ -25,7 +26,7 @@ export const ExploreHeading = ({
   const { ref } = useOutsideClick(() => setIsOpen(false));
 
   return (
-    <div className="flex flex-col lg:flex-row justify-center relative items-center container gap-y-5 pt-10 mb-10">
+    <div className="flex flex-col lg:flex-row justify-center relative items-center container gap-y-5 mb-10">
       <h1 className=" text-[36px] md:text-extra-large">Explore</h1>
       <div
         ref={ref}
@@ -67,7 +68,7 @@ export const ExploreHeading = ({
                     })
                   )}
                 </div>
-                <p className="text-sm">{item.name ?? '-'}</p>
+                <p className="text-sm">{item.name ?? shortenAddress(item.walletAddress)}</p>
               </li>
             ))}
           </ul>

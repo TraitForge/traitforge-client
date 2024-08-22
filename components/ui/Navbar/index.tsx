@@ -20,12 +20,10 @@ const links = [
 ];
 
 const Navbar = () => {
-  const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { address } = useAccount();
   const [originalMessage, setOriginalMessage] = useState('');
-
   const { data: signMessageData, signMessage } = useSignMessage();
 
   useEffect(() => {
@@ -73,7 +71,7 @@ const Navbar = () => {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  const commonClasses = `text-base font-bebas flex items-center py-6 lg:text-[32px] lg:text-[32px] relative after:absolute after:bottom-0 after:left-0 after:w-full hover:after:h-[2px] after:h-[0px]`;
+  const commonClasses = `text-base font-bebas flex items-center py-6 lg:text-[30px] relative after:absolute after:bottom-0 after:left-0 after:w-full hover:after:h-[2px] after:h-[0px]`;
   const navLinkClasses = classNames(commonClasses, {
     'after:bg-neon-orange hover:text-neon-orange': pathname === '/forging',
     'after:bg-neon-green hover:text-neon-green': pathname === '/trading',
@@ -101,7 +99,7 @@ const Navbar = () => {
         <Link href="/" className="inline-block">
           <Logo />
         </Link>
-        <ul className="flex gap-x-[20px] xl:gap-x-[64px] max-lg:hidden">
+        <ul className="flex items-center gap-x-[20px] xl:gap-x-[64px] max-lg:hidden">
           {links.map((link, index) => (
             <li key={index}>
               <Link

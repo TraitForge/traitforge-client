@@ -25,8 +25,8 @@ export const ExploreTableItem = ({
         href={`/explore/${walletAddress}`}
         className="grid grid-cols-12 items-center"
       >
-        <p className="col-span-1 text-base text-left">{id}</p>
-        <div className="flex items-center gap-x-4 col-span-8 md:col-span-5">
+        <p className="col-span-2 text-base text-left">{id}</p>
+        <div className="flex items-center gap-x-4 col-span-6">
           <div className="w-12 h-12">
             {pfp ? (
               <Image
@@ -42,10 +42,9 @@ export const ExploreTableItem = ({
               })
             )}
           </div>
-          <p className="text-base">{name ?? '-'}</p>
+          <p className="text-base">{name ?? walletAddress}</p>
         </div>
-        <p className="text-base col-span-3">{twitter ? `@${twitter}` : '-'}</p>
-        <p className="text-base col-span-3 hidden md:block">{shortenAddress(walletAddress)}</p>
+        <p className="text-base col-span-4">{twitter ? `@${twitter}` : '-'}</p>
       </Link>
     </li>
   );
