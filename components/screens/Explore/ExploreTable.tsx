@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { shortenAddress } from '~/utils';
 import { icons } from '~/components/icons';
@@ -24,48 +25,56 @@ export const ExploreTable = ({ users }: Props) => {
   return (
     <section className="container">
       <div className="min-h-[631px]">
-        <table className="w-full overflow-y-auto ">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Name</th>
-              <th>Twiter</th>
-              <th>Address</th>
-            </tr>
-          </thead>
-          <tbody className="">
+        <div className="w-full overflow-y-auto ">
+          <ul className="grid w-full grid-cols-12">
+            <li className="col-span-2">Rank</li>
+            <li className="col-span-5 text-left">Name</li>
+            <li className="col-span-3">Twiter</li>
+            <li className="col-span-2">Address</li>
+          </ul>
+          <ul className="flex flex-col gap-y-2 mt-10">
             {users
               .slice(page * numberPerPage, (page + 1) * numberPerPage)
               .map(item => (
-                <tr key={item.id} className="h-[60px]">
-                  <td>{item?.id}</td>
-                  <td className="flex items-center gap-x-4">
-                    <div className="w-12 h-12">
-                      {item.pfp ? (
-                        <Image
-                          alt={item?.name}
-                          src={item?.pfp}
-                          width={100}
-                          height={100}
-                          className=" object-cover rounded-xl w-full h-full"
-                        />
-                      ) : (
-                        icons.user({
-                          className:
-                            'w-full h-full object-cover text-[#AAFF3E]',
-                        })
-                      )}
+                <li className="h-[60px]">
+                  <Link
+                    href={`/explore/${item.walletAddress}`}
+                    key={item.id}
+                    className="grid grid-cols-12"
+                  >
+                    <p className="col-span-2 text-base">{item?.id}</p>
+                    <div className="flex items-center gap-x-4 col-span-5">
+                      <div className="w-12 h-12">
+                        {item.pfp ? (
+                          <Image
+                            alt={item?.name}
+                            src={item?.pfp}
+                            width={100}
+                            height={100}
+                            className=" object-cover rounded-xl w-full h-full"
+                          />
+                        ) : (
+                          icons.user({
+                            className:
+                              'w-full h-full object-cover text-[#AAFF3E]',
+                          })
+                        )}
+                      </div>
+                      <p className="text-base">
+                        {item?.name ? item.name : 'User'}
+                      </p>
                     </div>
-                    <p>{item?.name}</p>
-                  </td>
-                  <td className="text-base">@{item?.twitter}</td>
-                  <td className="text-base">
-                    {shortenAddress(item.walletAddress)}
-                  </td>
-                </tr>
+                    <p className="text-base col-span-3">
+                      {item?.twitter ? `@${item.twitter}` : '-'}
+                    </p>
+                    <p className="text-base col-span-2">
+                      {shortenAddress(item.walletAddress)}
+                    </p>
+                  </Link>
+                </li>
               ))}
-          </tbody>
-        </table>
+          </ul>
+        </div>
       </div>
       <nav aria-label="Page navigation example" className="py-5">
         <ul className="flex items-center justify-center -space-x-px h-8 text-sm">
