@@ -198,6 +198,30 @@ export const useTokenGenerations = (tokenIds: number[]) => {
   };
 };
 
+export const useIsNukeable = (entities: Entity[]) => {
+  const { data, isFetching } = useReadContracts({
+    contracts: entities.map(entity => ({
+      abi: NukeFundABI,
+      address: CONTRACT_ADDRESSES.NukeFund,
+      functionName: 'canTokenBeNuked',
+      args: [entity.tokenId],
+    })),
+  });
+
+  const nukeableMap = (data as any)?.reduce((acc: Record<number, boolean>, res: any, index: number) => {
+    if (entities && entities[index]) {
+      acc[entities[index].tokenId] = Boolean(res.result);
+    }
+    return acc;
+  }, {});
+
+  return {
+    data: nukeableMap ?? {},
+    isFetching,
+  };
+};
+
+
 export const useTokenEntropies = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({

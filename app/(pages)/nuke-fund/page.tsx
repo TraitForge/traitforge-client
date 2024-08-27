@@ -10,6 +10,7 @@ import {
   useApproveNft,
   useNukeEntity,
   useOwnerEntities,
+  useIsNukeable
 } from '~/hooks';
 import { SingleValue } from 'react-select';
 import { HoneyPotBody, HoneyPotHeader, NukeEntity } from '~/components/screens';
@@ -19,7 +20,7 @@ import { CONTRACT_ADDRESSES } from '~/constants/address';
 const HoneyPot = () => {
   const { address } = useAccount();
   const { data: ownerEntities, refetch } = useOwnerEntities(address || '0x0');
-
+  const { data: isTokenNukeable} = useIsNukeable(ownerEntities);
   const [selectedForNuke, setSelectedForNuke] = useState<Entity | null>(null);
   const [step, setStep] = useState('one');
   const [sortOption, setSortOption] = useState('all');
@@ -43,10 +44,11 @@ const HoneyPot = () => {
   } = useNukeEntity();
 
   const isLoading = isApprovePending || isNukePending;
-
+  
   useEffect(() => {
     if (isNukeConfirmed) {
       refetch();
+      setSelectedForNuke(null);
     }
   }, [isNukeConfirmed]);
 
@@ -141,16 +143,22 @@ const HoneyPot = () => {
               sortingFilter={sortingFilter}
             />
             <div className="grid mt-10 grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-[15px] gap-y-3 md:gap-y-4">
-              {filteredAndSortedListings.map(entity => (
+            {filteredAndSortedListings.map(entity => {
+              const canTokenBeNuked = isTokenNukeable[entity.tokenId];
+              return (
                 <EntityCard
                   key={entity.tokenId}
                   entity={entity}
+                  isOwnedByUser={!canTokenBeNuked} // Set to true if the token cannot be nuked
                   onSelect={() => {
+                  if (canTokenBeNuked) { // Allow selection only if the token can be nuked
                     setSelectedForNuke(entity);
                     setStep('three');
+                  }
                   }}
                 />
-              ))}
+                );
+                })}
             </div>
           </div>
         </div>
