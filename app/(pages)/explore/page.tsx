@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { ExploreHeading, Explore } from '~/components/screens';
 
-interface User {
+export interface User {
   id: number;
   name: string;
   pfp: string;
@@ -14,10 +14,17 @@ interface User {
   walletAddress: `0x${string}`;
 }
 
+export interface SearchResults {
+  twitter: User[];
+  users: User[];
+  walletAddress: User[];
+}
+
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [users, setUsers] = useState<User[]>([]);
+  const [results, setSearchResults] = useState<SearchResults | null>(null);
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState<User[]>([]);
 
   const handleSearch = (text: string) => setSearchQuery(text);
 
@@ -25,7 +32,8 @@ const ExplorePage = () => {
     setLoading(true);
     try {
       const { data } = await axios.get(`/api/users?name=${searchQuery}`);
-      setUsers(data.users);
+      setSearchResults(data);
+      return data;
     } catch (error) {
       console.log(error);
     } finally {
@@ -36,11 +44,22 @@ const ExplorePage = () => {
   const debouncedSearch = _.debounce(searchUsers, 500);
 
   useEffect(() => {
-    debouncedSearch(searchQuery);
-    return () => {
-      debouncedSearch.cancel();
-    };
+    if (searchQuery) {
+      debouncedSearch(searchQuery);
+      return () => {
+        debouncedSearch.cancel();
+      };
+    }
   }, [searchQuery]);
+
+  useEffect(() => {
+    console.log('hello')
+    const fetchData = async () => {
+      const data = await searchUsers('');
+      setUsers(data.walletAddress);
+    };
+    fetchData();
+  }, []);
 
   return (
     <div
@@ -56,9 +75,10 @@ const ExplorePage = () => {
       <ExploreHeading
         searchQuery={searchQuery}
         handleSearch={handleSearch}
-        users={users}
+        results={results as SearchResults}
+        loading={loading}
       />
-      <Explore users={users} loading={loading} />
+      <Explore users={users as User[]} />
     </div>
   );
 };

@@ -18,10 +18,10 @@ export const ExploreTable = ({ users, page, numberPerPage }: Props) => {
       <div className="w-full overflow-y-auto ">
         <ul className="grid w-full grid-cols-12">
           <li className="col-span-2 text-left">Rank</li>
-          <li className="col-span-6 text-left">Name/</li>
-          <li className="col-span-4">Twitter/X</li>
+          <li className="col-span-6 text-left">Name</li>
+          <li className="col-span-4 text-right">Twitter/X</li>
         </ul>
-        <ul className="flex flex-col gap-y-2 mt-10">
+        <ul className="flex flex-col gap-y-2 mt-5">
           {users
             .slice(page * numberPerPage, (page + 1) * numberPerPage)
             .map(item => (

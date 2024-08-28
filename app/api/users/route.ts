@@ -8,27 +8,33 @@ export const GET = async (req: NextRequest) => {
   try {
     const users = await prisma.user.findMany({
       where: {
-        OR: [
-          {
-            walletAddress: {
-              startsWith: name as string,
-            },
-          },
-          {
-            name: {
-              startsWith: name as string,
-            },
-          },
-          {
-            twitter: {
-              startsWith: name as string,
-            },
-          },
-        ],
+        name: {
+          startsWith: name as string,
+        }
       },
     });
-    if (users) {
-      return NextResponse.json({ users }, { status: 200 });
+
+    const walletAddress = await prisma.user.findMany({
+      where: {
+        walletAddress: {
+          startsWith: name as string,
+        },
+      },
+    });
+
+    const twitter = await prisma.user.findMany({
+      where: {
+        twitter: {
+          startsWith: name as string,
+        },
+      },
+    });
+
+    if (users || walletAddress || twitter) {
+      return NextResponse.json(
+        { users, walletAddress, twitter },
+        { status: 200 }
+      );
     } else {
       return NextResponse.json(
         { error: 'User does not exist' },

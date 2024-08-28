@@ -19,4 +19,14 @@ model User {
   name          String? @db.VarChar(50)
   twitter       String? @db.VarChar(255)
   pfp           String? @db.VarChar(255)
+  entities      Entity[]
+}
+
+model Entity {
+  id        Int     @id @default(autoincrement())
+  title     String
+  published Boolean @default(true)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+  comments  Json
 }

@@ -45,6 +45,7 @@ export const EntityCard = ({
 
   const uri = calculateUri(paddedEntropy, generation);
 
+
   const wrapperClasses = classNames(
     ' border-[1.33px] rounded-[20px] px-2 md:px-4 py-2 md:py-5 bg-gradient-to-bl to-light-dark',
     wrapperClass,
