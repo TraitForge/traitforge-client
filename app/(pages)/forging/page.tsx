@@ -9,6 +9,8 @@ import {
   useForgeWithListed,
   useListForForging,
   useOwnerEntities,
+  useTokenEntropies,
+  useTokenGenerations
 } from '~/hooks';
 import { useAccount } from 'wagmi';
 import {
@@ -34,15 +36,18 @@ const Forging = () => {
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
   const [selectedFromPool, setSelectedFromPool] = useState<EntityForging | null>(null);
-  const [tokenID, setTokenID] = useState<number | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
   const [selectedForListing, setSelectedForListing] = useState<Entity | null>(null);
   const [areEntitiesForged, setEntitiesForged] = useState(false);
   const [processingText, setProcessingText] = useState('Forging');
   const [generationFilter, setGenerationFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newlyCreatedEntity, setNewlyCreatedEntity] = useState<Entity | null>(null);
   const isLoading = isForgePending || isListPending;
+
+  const [tokenID, setTokenID] = useState<number | null>(null);
+  const { data: entityEntropyData, isFetching: isFetchingEntropy } = useTokenEntropies(tokenID ? [tokenID] : []);
+  const { data: entityGenerationData, isFetching: isFetchingGeneration } = useTokenGenerations(tokenID ? [tokenID] : []);
+  const [newlyCreatedEntity, setNewlyCreatedEntity] = useState<Entity | null>(null);
 
   const createNewEntity = (tokenID: number, entropy: number[], generation: number[]) => {
     if (entropy.length > 0 && generation.length > 0) {
@@ -99,9 +104,6 @@ const Forging = () => {
             const hexString = res.logs[7].topics[1].toString();
             const tokenID = parseInt(hexString, 16);
             setTokenID(tokenID);
-
-            const entityEntropyData = []; 
-            const entityGenerationData = [];
 
             if (entityEntropyData.length && entityGenerationData.length) {
               const newEntity = createNewEntity(tokenID, entityEntropyData, entityGenerationData);

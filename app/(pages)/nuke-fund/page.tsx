@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useAccount } from 'wagmi';
+import { formatUnits } from 'viem';
 import styles from '~/styles/honeypot.module.scss';
 import { EntityCard, LoadingSpinner, RewardModal } from '~/components';
 import { FiltersHeader } from '~/components';
@@ -16,6 +17,7 @@ import { SingleValue } from 'react-select';
 import { HoneyPotBody, HoneyPotHeader, NukeEntity, NukingReceipt } from '~/components/screens';
 import { Entity } from '~/types';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
+import { publicClient } from '~/lib/client';
 
 const HoneyPot = () => {
   const { address } = useAccount();
@@ -28,6 +30,8 @@ const HoneyPot = () => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const [loadingText, setLoadingText] = useState('');
+  const [isModalOpen, setModalOpen] = useState(false);
+  const closeModal = () => setModalOpen(false);
 
   const { data: approved } = useApproval(
     CONTRACT_ADDRESSES.NukeFund,
@@ -39,6 +43,7 @@ const HoneyPot = () => {
     isConfirmed: isApproveConfirmed,
   } = useApproveNft();
   const {
+    hash,
     onWriteAsync: onNuke,
     isPending: isNukePending,
     isConfirmed: isNukeConfirmed,
@@ -49,7 +54,6 @@ const HoneyPot = () => {
   useEffect(() => {
     if (isNukeConfirmed) {
       refetch();
-      setSelectedForNuke(null);
     }
   }, [isNukeConfirmed]);
 
@@ -103,6 +107,27 @@ const HoneyPot = () => {
   };
 
   useEffect(() => {
+    if (hash && isNukeConfirmed) {
+      (async () => {
+        try {
+          const res = await publicClient.getTransactionReceipt({ hash });
+          if (res && res.logs && res.logs.length > 1 && res.logs[1]) {
+            const logData = res.logs[1].data;
+            const weiValue = BigInt(logData);
+            const etherValue = formatUnits(weiValue, 18);
+            setEthFromNuke(parseFloat(etherValue).toFixed(4));
+            setModalOpen(true);
+          } else {
+            console.log('Log data not found or not enough logs.');
+          }
+        } catch (error) {
+          console.error('Failed to fetch transaction receipt:', error);
+        }
+      })();
+    }
+  }, [hash, isNukeConfirmed]);
+
+  useEffect(() => {
     if (selectedForNuke && isApproveConfirmed) {
       onNuke(selectedForNuke.tokenId);
     }
@@ -150,9 +175,9 @@ const HoneyPot = () => {
                 <EntityCard
                   key={entity.tokenId}
                   entity={entity}
-                  isOwnedByUser={!canTokenBeNuked} // Set to true if the token cannot be nuked
+                  isOwnedByUser={!canTokenBeNuked} 
                   onSelect={() => {
-                  if (canTokenBeNuked) { // Allow selection only if the token can be nuked
+                  if (canTokenBeNuked) { 
                     setSelectedForNuke(entity);
                     setStep('three');
                   }
@@ -172,25 +197,17 @@ const HoneyPot = () => {
   return (
     <div className={styles.honeyPotContainer}>
       <div className="flex flex-col h-full w-full">
-        <HoneyPotHeader step={step} handleStep={setStep} />
-        {content}
-      </div>
-    </div>
-  );
-  return (
-    <div className={styles.honeyPotContainer}>
-      <div className="flex flex-col h-full w-full">
       {selectedForNuke && ethFromNuke && (
          <RewardModal
-    isOpen={isModalOpen}
-    closeModal={closeModal}
-    modalClasses="pb-4"
-    page="nuke"
-  >
-    <NukingReceipt
-      entityJustNuked={selectedForNuke}
-      ethNuked={ethFromNuke}
-    />
+            isOpen={isModalOpen}
+            closeModal={closeModal}
+            modalClasses="pb-4"
+            page="nuke"
+         >
+             <NukingReceipt
+              entityJustNuked={selectedForNuke}
+               ethNuked={ethFromNuke}
+             />
           </RewardModal>
           )}
         <HoneyPotHeader step={step} handleStep={setStep} />

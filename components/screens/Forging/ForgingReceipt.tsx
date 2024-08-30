@@ -10,6 +10,32 @@ type ForgingReceiptTypes = {
 export const ForgingReceipt = ({
     offspring
   }: ForgingReceiptTypes) => {
+    
+    const parentNames = {
+      forger: [
+        "Dad",
+        "Padre",
+        "Daddy",
+        "Daddio",
+        "Gramps",
+        "Forger",
+        "Papa",
+        "Papi",
+      ],
+      merger: [
+        "Mom",
+        "Merger",
+        "Madre",
+        "Mommy",
+        "Mamacita",
+        "Mama",
+        "Mami",
+      ]
+    };
+    
+    const getRandomEmoji = (emojiArray: String[]) => {
+      return emojiArray[Math.floor(Math.random() * emojiArray.length)];
+    };
 
   return (
     <div className="bg-black items-center w-full lg:w-[70vw] 2xl:w-[50vw] h-[80vh] sm:h-[60vh] sm:w-[80vw] rounded-[30px] py-10 px-10 flex sm:flex-row flex-col">
@@ -18,11 +44,11 @@ export const ForgingReceipt = ({
           Entity Forged
         </h2>
         <div className="hidden pt-4 sm:block"> 
-         <p> Forger </p>
+         <p> {getRandomEmoji(parentNames.forger)} </p>
          <div className="h-[80px] border my-5 rounded-lg w-10/12">
           {/* <AccountTag /> not made yet */} 
          </div>
-         <p> Merger </p>
+         <p> {getRandomEmoji(parentNames.merger)} </p>
          <div className="h-[80px] border my-5 rounded-lg w-10/12">
           {/* <AccountTag /> not made yet */} 
          </div>
@@ -44,13 +70,13 @@ export const ForgingReceipt = ({
       <div className="sm:hidden py-6"> 
       <div className="flex flex-row w-[85vw] justify-between">
       <div className="w-5/12">
-        <p>Forger</p>
+        <p>{getRandomEmoji(parentNames.forger)}</p>
          <div className="h-[70px] mt-2 border rounded-lg">
           {/* <AccountTag /> not made yet */} 
          </div>
          </div>
          <div className="w-5/12">
-         <p>Merger</p>
+         <p>{getRandomEmoji(parentNames.merger)}</p>
          <div className="h-[70px] mt-2 border rounded-lg">
           {/* <AccountTag /> not made yet */} 
          </div>
