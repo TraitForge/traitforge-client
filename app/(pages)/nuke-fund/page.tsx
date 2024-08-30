@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import styles from '~/styles/honeypot.module.scss';
-import { EntityCard, LoadingSpinner } from '~/components';
+import { EntityCard, LoadingSpinner, RewardModal } from '~/components';
 import { FiltersHeader } from '~/components';
 import {
   useApproval,
@@ -13,7 +13,7 @@ import {
   useIsNukeable
 } from '~/hooks';
 import { SingleValue } from 'react-select';
-import { HoneyPotBody, HoneyPotHeader, NukeEntity } from '~/components/screens';
+import { HoneyPotBody, HoneyPotHeader, NukeEntity, NukingReceipt } from '~/components/screens';
 import { Entity } from '~/types';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 
@@ -22,6 +22,7 @@ const HoneyPot = () => {
   const { data: ownerEntities, refetch } = useOwnerEntities(address || '0x0');
   const { data: isTokenNukeable} = useIsNukeable(ownerEntities);
   const [selectedForNuke, setSelectedForNuke] = useState<Entity | null>(null);
+  const [ethFromNuke, setEthFromNuke] = useState<string | null>(null);
   const [step, setStep] = useState('one');
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
@@ -171,6 +172,27 @@ const HoneyPot = () => {
   return (
     <div className={styles.honeyPotContainer}>
       <div className="flex flex-col h-full w-full">
+        <HoneyPotHeader step={step} handleStep={setStep} />
+        {content}
+      </div>
+    </div>
+  );
+  return (
+    <div className={styles.honeyPotContainer}>
+      <div className="flex flex-col h-full w-full">
+      {selectedForNuke && ethFromNuke && (
+         <RewardModal
+    isOpen={isModalOpen}
+    closeModal={closeModal}
+    modalClasses="pb-4"
+    page="nuke"
+  >
+    <NukingReceipt
+      entityJustNuked={selectedForNuke}
+      ethNuked={ethFromNuke}
+    />
+          </RewardModal>
+          )}
         <HoneyPotHeader step={step} handleStep={setStep} />
         {content}
       </div>
