@@ -1,0 +1,30 @@
+.honeyPotContainer {
+  color: #ffffff;
+  height: 100%;
+  // font-family: 'Bebas Neue', sans-serif;
+  background: url('/images/honeypot-background.jpg') center / cover no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .frameContainer {
+    background-image: url('/images/honeypotcontainer.png');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 384px;
+    min-height: 304px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 20px auto;
+    @apply font-bebas;
+
+    @media (max-width: 756px) {
+      max-width: 384px;
+      width: 100%;
+      max-height: 384px;
+    }
+  }
+}

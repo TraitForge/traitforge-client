@@ -1,0 +1,68 @@
+$primary-color: #ff7a00;
+$background-color-modal: rgba(0, 0, 0, 0.5);
+$border-color-dropdown: rgba(255, 123, 0, 0.24);
+
+.tradingPage {
+  // font-family: 'Bebas Neue', sans-serif;
+  background: radial-gradient(rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%), url('/images/marketplace-background.jpg') center / cover no-repeat;
+  background-attachment: fixed;
+  height: 100%;
+  padding-bottom: 20px;
+}
+
+.entityDisplay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.entityDisplay h1 {
+  font-size: 1.5em;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 1000px) {
+  .tradingPage {
+    .marketPageContainer {
+      width: 95vw;
+    }
+
+    .tradingfilters {
+      flex-direction: column;
+      align-items: center;
+
+      button {
+        margin: 5px 0;
+      }
+
+      .sortingDropdown {
+        margin-top: 10px;
+      }
+    }
+
+    .listings {
+      justify-content: center;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .tradingPage {
+    .tradingTopButtons {
+      flex-direction: row;
+      justify-content: space-around;
+      width: 100%;
+    }
+
+    .tradingfilters {
+      width: 100%;
+      justify-content: space-around;
+
+      button {
+        font-size: 0.8em;
+      }
+    }
+  }
+}
