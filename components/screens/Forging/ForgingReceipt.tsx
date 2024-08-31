@@ -1,37 +1,93 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { icons } from '~/components/icons';
-import { EntityCard } from '~/components';
+import { EntityCard, AccountTag } from '~/components';
 import { Entity } from '~/types';
+import { shortenAddress } from '~/utils';
 
 type ForgingReceiptTypes = {
     offspring: Entity;
+    forgerOwner: `0x${string}`;
+    mergerOwner: `0x${string}`;
+};
+
+interface User {
+  id: number;
+  walletAddress: string;
+  name: string | null;
+  twitter: string | null;
+  pfp: string | null;
+}
+
+const parentNames = {
+  forger: [
+    "Dad",
+    "Padre",
+    "Daddy",
+    "Daddio",
+    "Gramps",
+    "Forger",
+    "Papa",
+    "Papi",
+  ],
+  merger: [
+    "Mom",
+    "Merger",
+    "Madre",
+    "Mommy",
+    "Mamacita",
+    "Mama",
+    "Mami",
+  ]
 };
 
 export const ForgingReceipt = ({
-    offspring
+    offspring,
+    forgerOwner,
+    mergerOwner
   }: ForgingReceiptTypes) => {
+    const [forgerUser, setForgerUser] = useState<User | null>(null);
+    const [mergerUser, setMergerUser] = useState<User | null>(null);
+  
+    const fetchUserData = async (walletAddress: string): Promise<User | null> => {
+      try {
+        const response = await fetch(`/api/user?walletAddress=${walletAddress}`);
+        const data = await response.json();
     
-    const parentNames = {
-      forger: [
-        "Dad",
-        "Padre",
-        "Daddy",
-        "Daddio",
-        "Gramps",
-        "Forger",
-        "Papa",
-        "Papi",
-      ],
-      merger: [
-        "Mom",
-        "Merger",
-        "Madre",
-        "Mommy",
-        "Mamacita",
-        "Mama",
-        "Mami",
-      ]
+        if (data.error === 'User does not exist') {
+          return null;
+        } else {
+          return data.user;
+        }
+      } catch (err) {
+        console.error('Failed to check user registration:', err);
+        return null;
+      }
     };
+  
+    useEffect(() => {
+      const fetchUsers = async () => {
+        if (forgerOwner) {
+          const forgerData = await fetchUserData(forgerOwner);
+          setForgerUser(forgerData);
+        }
+  
+        if (mergerOwner) {
+          const mergerData = await fetchUserData(mergerOwner);
+          setMergerUser(mergerData);
+        }
+      };
+  
+      fetchUsers();
+    }, [forgerOwner, mergerOwner]);
+  
+    const forgerDisplayName = forgerUser?.name || shortenAddress(forgerOwner);
+    const mergerDisplayName = mergerUser?.name || shortenAddress(mergerOwner);
+  
+    const forgerTwitter = forgerUser?.twitter || '';
+    const mergerTwitter = mergerUser?.twitter || '';
+  
+    const forgerPfpUrl = forgerUser?.pfp || '';
+    const mergerPfpUrl = mergerUser?.pfp || '';
     
     const getRandomEmoji = (emojiArray: String[]) => {
       return emojiArray[Math.floor(Math.random() * emojiArray.length)];
@@ -46,11 +102,25 @@ export const ForgingReceipt = ({
         <div className="hidden pt-4 sm:block"> 
          <p> {getRandomEmoji(parentNames.forger)} </p>
          <div className="h-[80px] border my-5 rounded-lg w-10/12">
-          {/* <AccountTag /> not made yet */} 
+         <AccountTag
+            bg="#023340"
+            text={forgerDisplayName}
+            twitterText={forgerTwitter}
+            variant="purple"
+            pfpUrl={forgerPfpUrl}
+            address={shortenAddress(forgerOwner)}
+          /> 
          </div>
          <p> {getRandomEmoji(parentNames.merger)} </p>
          <div className="h-[80px] border my-5 rounded-lg w-10/12">
-          {/* <AccountTag /> not made yet */} 
+         <AccountTag
+            bg="#023340"
+            text={mergerDisplayName}
+            twitterText={mergerTwitter}
+            variant="purple"
+            pfpUrl={mergerPfpUrl}
+            address={shortenAddress(mergerOwner)}
+          />
          </div>
          <div className="pt-4">
          <p className="pb-3">

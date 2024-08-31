@@ -88,8 +88,6 @@ const Forging = () => {
     if (isForgeConfirmed) {
       setProcessingText('');
       setGenerationFilter('');
-      setSelectedEntity(null);
-      setSelectedFromPool(null);
       refetchOwnerEntities();
       refetchEntitiesForForging();
     }
@@ -99,17 +97,22 @@ const Forging = () => {
     if (hash && isForgeConfirmed) {
       (async () => {
         try {
+          console.log("starting new entity gen")
           const res = await publicClient.getTransactionReceipt({ hash });
           if (res?.logs?.[7]?.topics?.[1]) {
             const hexString = res.logs[7].topics[1].toString();
             const tokenID = parseInt(hexString, 16);
+            console.log("new entity token id:", tokenID)
             setTokenID(tokenID);
 
-            if (entityEntropyData.length && entityGenerationData.length) {
+            if (entityEntropyData && entityGenerationData) {
+              console.log("entityEntropyData:", entityEntropyData, "entityGenerationData:", entityGenerationData);
               const newEntity = createNewEntity(tokenID, entityEntropyData, entityGenerationData);
               if (newEntity) {
                 setNewlyCreatedEntity(newEntity);
                 openModal();
+                setSelectedEntity(null);
+                setSelectedFromPool(null);
               } else {
                 console.error('Failed to create new entity.');
               }
@@ -245,14 +248,18 @@ const Forging = () => {
         backgroundAttachment: 'fixed',
       }}
     >
-      {newlyCreatedEntity && (
+      {newlyCreatedEntity && selectedFromPool && address && (
         <RewardModal
           isOpen={isModalOpen}
           closeModal={closeModal}
           modalClasses="pb-4"
           page="forging"
         >
-          <ForgingReceipt offspring={newlyCreatedEntity} />
+            <ForgingReceipt
+              offspring={newlyCreatedEntity}
+              forgerOwner={selectedFromPool?.account}
+              mergerOwner={address}
+            />
         </RewardModal>
       )}
       {content}

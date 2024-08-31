@@ -16,7 +16,7 @@ export const AccountTag = ({
   text,
   pfpUrl,
   twitterText,
-  address;
+  address,
   bg,
   variant = 'blue',
   width,
@@ -38,7 +38,7 @@ export const AccountTag = ({
 
   return (
     <h1 className={textClasses} {...alt}>
-      {showProfile ? (
+      {pfpUrl ? (
         <div className="flex items-center">
           {pfpUrl && (
             <img
