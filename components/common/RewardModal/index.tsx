@@ -8,6 +8,7 @@ type ModalTypes = {
   isOpen: boolean;
   closeModal: () => void;
   modalClasses?: string;
+  
   containerClass?: string;
   page?: 'forging' | 'nuke'; // New prop for determining the page
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;

@@ -48,13 +48,16 @@ export const AccountTag = ({
             />
           )}
           <div className="pl-2 pt-1 flex flex-col align-middle justify-center">
-            <p className="text-2xl lg:text-base xl:text-2xl">{text}</p>
-            <p className="text-sm lg:text-sm">@{twitterText}</p>
+            <p className="hidden sm:block text-xs md:text-sm xl:text-2xl truncate">
+              {text}
+            </p>
+            <p className="text-xs lg:text-sm truncate">@{twitterText}</p>
           </div>
         </div>
       ) : (
-        <p className="text-2xl lg:text-base xl:text-2xl">{address}</p>
+        <p className="text-base lg:text-base xl:text-2xl truncate">{address}</p>
       )}
     </h1>
   );
+  
 };

@@ -205,6 +205,7 @@ const HoneyPot = () => {
             page="nuke"
          >
              <NukingReceipt
+             tagColor="purple"
               entityJustNuked={selectedForNuke}
                ethNuked={ethFromNuke}
              />

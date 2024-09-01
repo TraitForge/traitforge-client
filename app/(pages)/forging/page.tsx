@@ -73,7 +73,12 @@ const Forging = () => {
   const handleListingPage = () => setStep('two');
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedEntity(null); 
+    setSelectedFromPool(null);
+  };
+
 
   const forgeEntity = async () => {
     if (!selectedFromPool || !selectedEntity) return;
@@ -105,14 +110,12 @@ const Forging = () => {
             console.log("new entity token id:", tokenID)
             setTokenID(tokenID);
 
-            if (entityEntropyData && entityGenerationData) {
+            if (!isFetchingEntropy && !isFetchingGeneration) {
               console.log("entityEntropyData:", entityEntropyData, "entityGenerationData:", entityGenerationData);
               const newEntity = createNewEntity(tokenID, entityEntropyData, entityGenerationData);
               if (newEntity) {
                 setNewlyCreatedEntity(newEntity);
                 openModal();
-                setSelectedEntity(null);
-                setSelectedFromPool(null);
               } else {
                 console.error('Failed to create new entity.');
               }
@@ -125,7 +128,7 @@ const Forging = () => {
         }
       })();
     }
-  }, [hash, isForgeConfirmed]);
+  }, [hash, isForgeConfirmed, isFetchingEntropy, isFetchingGeneration]);
 
   const listEntityForForging = async (selectedForListing: Entity, fee: string) => {
     setProcessingText('Listing entity');
@@ -256,8 +259,9 @@ const Forging = () => {
           page="forging"
         >
             <ForgingReceipt
+              tagColor="orange"
               offspring={newlyCreatedEntity}
-              forgerOwner={selectedFromPool?.account}
+              forgerOwner={selectedFromPool.account}
               mergerOwner={address}
             />
         </RewardModal>

@@ -8,7 +8,8 @@ import { shortenAddress } from '~/utils';
 
 type NukingReceiptTypes = {
     entityJustNuked: Entity;
-    ethNuked: String;
+    ethNuked: string;
+    tagColor: "purple";
 };
 
 interface User {
@@ -51,12 +52,15 @@ const getRandomEmoji = (emojiArray: String[]) => {
 
 export const NukingReceipt = ({
     entityJustNuked,
-    ethNuked
+    ethNuked,
+    tagColor
   }: NukingReceiptTypes) => {
     const { address } = useAccount();
     const { data: ethPrice } = useEthPrice();
     const dollarClaimed = (Number(ethNuked) * ethPrice).toFixed(2);
     const [user, setUser] = useState<User>();
+    const [emoji, setEmoji] = useState("");
+    const [quote, setQuote] = useState("");
     const [userName, setUserName] = useState(user?.name || 'User');
     const [twitterHandle, setTwitterHandle] = useState(
       user?.twitter || 'twitterhandle'
@@ -87,14 +91,25 @@ export const NukingReceipt = ({
       })();
     }, [address]);
 
+    useEffect(() => {
+      if (entityJustNuked) {
+        const emoji = getRandomEmoji(sadEmojis);
+        const quote = getRandomEmoji(deathQuotes)
+        setEmoji(emoji as string);
+        setQuote(quote as string);
+        console.log("Random emoji:", emoji);
+      }
+    }, [entityJustNuked]);
+
+
   return (
     <div className="bg-black items-center w-[100vw] lg:w-[50vw] h-[90vh] sm:h-[60vh] sm:w-[80vw] rounded-[30px] py-10 px-10 flex sm:flex-row flex-col">
       <div className="md:w-6/12">
         <h2 className="text-center md:text-left pb-2 md:pb-10 text-[40px] xs:text-[50px] uppercase">
-          RIP {getRandomEmoji(sadEmojis)}
+          RIP {emoji}
         </h2>
         <p className="text-center md:text-left pb-2 md:pb-10 text-[10px] xs:text-[20px]">
-        {getRandomEmoji(deathQuotes)}
+        {quote}
         </p>
         <div>
         <h2 className="text-center  md:text-left text-[40px] xs:text-[50px] text-purple-400 uppercase">
@@ -107,10 +122,10 @@ export const NukingReceipt = ({
         <div className="hidden pt-4 sm:block"> 
          <div className="z-50 h-[80px] rounded-lg w-10/12">
           <AccountTag
-          bg="#023340"
+          bg={tagColor}
           text={userName}
           twitterText={twitterHandle}
-          variant="purple"
+          variant={tagColor}
           pfpUrl={pfpUrl}
           address={shortAddress}
           /> 
