@@ -142,7 +142,7 @@ const HoneyPot = () => {
               generationFilter={generationFilter}
               sortingFilter={sortingFilter}
             />
-            <div className="grid mt-10 grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-[15px] gap-y-3 md:gap-y-4">
+            <div className="grid mt-10 grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-[5px] gap-y-2">
             {filteredAndSortedListings.map(entity => {
               const canTokenBeNuked = isTokenNukeable[entity.tokenId];
               return (

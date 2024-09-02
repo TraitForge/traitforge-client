@@ -68,7 +68,7 @@ export const ListEntityTrading = ({
           sortingFilter={sortingFilter}
         />
         {filteredAndSortedOwnerEntities.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 mt-10 gap-x-3  md:gap-x-[15px] gap-y-7 lg:gap-y-4 bg-green bg-opacity-80 p-5 md:p-[30px] rounded-2xl">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 mt-10 gap-x-2  md:gap-x-[10px] gap-y-2 bg-green bg-opacity-80 p-5 md:p-[30px] rounded-2xl">
             {filteredAndSortedOwnerEntities.map(entity => (
               <EntityCard
                 key={entity.tokenId}
