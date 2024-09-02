@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Slider, Button, BudgetModal, LoadingSpinner } from '~/components';
+import { useEffect, useState, useRef } from 'react';
+import { Slider, Button, LoadingSpinner } from '~/components';
 import {
   useCurrentGeneration,
   useMintPrice,
@@ -11,7 +11,12 @@ import {
   useUpcomingMints,
   useWhitelistEndTime,
 } from '~/hooks';
-import { formatEther, parseEther } from 'viem';
+import {
+  Mint,
+  MintingHeader,
+  BudgetMint
+} from '~/components/screens'
+import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
 import Countdown from 'react-countdown';
@@ -42,7 +47,7 @@ const Home = () => {
   const isLoading =
     isMintTokenPending || isMintWithBudgetPending || isUpcomingMintsFetching;
 
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [step, setStep] = useState('one');
   const [budgetAmount, setBudgetAmount] = useState('');
   const [referralCode, setReferralCode] = useState<string | null>(null);
 
@@ -61,6 +66,15 @@ const Home = () => {
     }
   }, []);
 
+  const refreshEntities = async () => {
+    refetchMintPrice();
+    if (mintPrice === undefined || mintPrice === null) {
+      return;
+    }
+    refetchCurrentGeneration();
+    refetchPriceIncrement();
+  }
+
   const getProof = () => {
     const res = WHITELIST.find(
       item => item.address.toLowerCase() === address?.toLowerCase()
@@ -70,10 +84,16 @@ const Home = () => {
 
   const handleMintEntity = async () => {
     onMintToken(mintPrice, getProof());
+    setStep('three');
   };
 
   const handleMintBatchEntity = async () => {
     await onMintWithBudget(parseEther(budgetAmount), getProof());
+    setStep('three');
+  };
+
+  const handleExit = () => {
+    setStep('one'); 
   };
 
   useEffect(() => {
@@ -92,6 +112,7 @@ const Home = () => {
     }
   }, [isMintWithBudgetConfirmed, referralCode, hash, address]);
  
+  const upcomingMint = upcomingMints.length > 0 ? upcomingMints[0] : null;
 
     useEffect(() => {
       const handleMintInc = async () => {
@@ -121,83 +142,116 @@ const Home = () => {
       </div>
     );
 
-  return (
-    <div
-      className="mint-container  py-5 "
-      style={{
-        backgroundImage:
-          "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundAttachment: 'fixed',
-      }}
-    >
-      <h1
-        title="Mint Your Traitforge Entity"
-        className="headers text-[36px] my-6 text-center md:text-extra-large"
-      >
-        Mint your traitforge entity
-      </h1>
-      <h2>
-        <Countdown
-          renderer={({ days, hours, minutes, seconds, completed }) => {
-            if (completed) {
-              return null;
-            } else {
-              return (
-                <>
-                  <span>Whitelist mint finishes in</span>
-                  &nbsp;
-                  <span>
-                    {_.padStart(String(days), 2, '0')}:
-                    {_.padStart(String(hours), 2, '0')}:
-                    {_.padStart(String(minutes), 2, '0')}:
-                    {_.padStart(String(seconds), 2, '0')}
-                  </span>
-                </>
-              );
-            }
-          }}
-          date={new Date(whitelistEndTime * 1000)}
-        />
-      </h2>
-      <div className="w-full flex justify-center">
-        <Slider
-          mintPrice={mintPrice}
-          priceIncrement={priceIncrement}
-          currentGeneration={currentGeneration}
-          upcomingMints={upcomingMints}
-        />
-      </div>
-      <div className="max-md:px-5 flex flex-col max-md:mt-5">
-        <Button
-          onClick={handleMintEntity}
-          bg="#023340"
-          variant="blue"
-          text={`Mint For ${formatEther(mintPrice)} ETH`}
-          style={{ marginBottom: '25px' }}
-          textClass="font-electrolize"
-        />
-        <Button
-          onClick={() => setModalOpen(true)}
-          bg="#023340"
-          text={`Mint With a Budget`}
-          textClass="font-electrolize"
-          variant="secondary"
-        />
-        {isModalOpen && (
-          <BudgetModal
+    let content;
+
+    switch (step) {
+      case 'three':
+        content = (
+          <BudgetMint
             bg="#023340"
+            setStep={setStep}
             borderColor="#0ADFDB"
             budgetAmount={budgetAmount}
             setBudgetAmount={setBudgetAmount}
-            onSubmit={handleMintBatchEntity}
-            onClose={() => setModalOpen(false)}
+            handleMintWithBudget={handleMintBatchEntity}
+            onClose={handleExit}/>
+        );
+        break;
+      case 'two':
+        content = (
+          <>
+          {upcomingMint ? (
+          <Mint
+            mintPrice={mintPrice}
+            upcomingMint={upcomingMint}
+            currentGeneration={currentGeneration}
+            refreshEntities={refreshEntities}
+            bg="#023340"
+            setStep={setStep}
+            borderColor="#0ADFDB"
+            handleMintEntity={handleMintEntity}
+            budgetAmount={budgetAmount}
+            setBudgetAmount={setBudgetAmount}
+            handleMintWithBudget={handleMintBatchEntity}
+            onClose={handleExit}
           />
-        )}
-      </div>
-    </div>
-  );
+          ) : (
+            <p className="text-center text-neutral-400">No upcoming mint available</p>
+          )}
+          </>
+        );
+        break;
+      default:
+        content = (
+          <>
+          <h1
+            title="Mint Your Traitforge Entity"
+            className="headers text-[36px] my-1 text-center md:text-extra-large"
+          >
+            Mint your traitforge entity
+          </h1>
+          <h2>
+            <Countdown
+              renderer={({ days, hours, minutes, seconds, completed }) => {
+                if (completed) {
+                  return null;
+                } else {
+                  return (
+                    <>
+                      <span>Whitelist mint finishes in</span>
+                      &nbsp;
+                      <span>
+                        {_.padStart(String(days), 2, '0')}:
+                        {_.padStart(String(hours), 2, '0')}:
+                        {_.padStart(String(minutes), 2, '0')}:
+                        {_.padStart(String(seconds), 2, '0')}
+                      </span>
+                    </>
+                  );
+                }
+              }}
+              date={new Date(whitelistEndTime * 1000)}
+            />
+          </h2>
+          <div className="w-full flex justify-center">
+            <Slider
+              mintPrice={mintPrice}
+              priceIncrement={priceIncrement}
+              currentGeneration={currentGeneration}
+              upcomingMints={upcomingMints}
+            />
+          </div>
+          <div className="intro-container flex flex-col items-center">
+            <div className="flex">
+              <Button
+                onClick={() => setStep('two')}
+                bg="#023340"
+                text={`MINT NOW`}
+                textClass="font-electrolize"
+                variant="secondary"
+              />
+            </div>
+          </div>
+          </>
+        );
+    }
+  
+    return (
+      <div
+          className="mint-container py-1"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundAttachment: 'fixed',
+          }}
+        >
+          <MintingHeader handleStep={setStep} step={step} />
+          {content}
+        </div>
+    
+    );
 };
 
 export default Home;
