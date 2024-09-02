@@ -41,7 +41,19 @@ export const EntityCard = ({
   const isSafari = useIsSafari();
   const asPath = usePathname();
   const { data: ethPrice } = useEthPrice();
-  const usdAmount = Number(displayPrice ?? 0) * ethPrice;
+  const usdAmount = Math.floor(Number(displayPrice) * ethPrice);
+
+  const formatNumber = (num: number): string => {
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(2).replace(/\.0$/, '') + 'm';
+    } else if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(2).replace(/\.0$/, '') + 'm';
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(2).replace(/\.0$/, '') + 'k';
+    }
+
+    return num.toString();
+  };
 
   const uri = calculateUri(paddedEntropy, generation);
 
@@ -106,7 +118,7 @@ export const EntityCard = ({
           <div className="pl-1 text-left py-1 flex flex-row gap-2">
             <h4 className="text-[14px] md:text-[24px]">{displayPrice} ETH</h4>
             <h4 className="text-[12px] md:text-[22px] truncate">
-              ${usdAmount.toLocaleString()}
+            ${formatNumber(usdAmount)}
             </h4>
           </div>
         )}
