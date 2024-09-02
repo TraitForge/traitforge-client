@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
@@ -38,13 +38,24 @@ export const EntityCard = ({
   } = entity;
   const { data: forgingCount } = useForgingCounts(tokenId);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [key, setKey] = useState<number>(0);
   const isSafari = useIsSafari();
   const asPath = usePathname();
   const { data: ethPrice } = useEthPrice();
   const usdAmount = Number(displayPrice ?? 0) * ethPrice;
 
   const uri = calculateUri(paddedEntropy, generation);
+  const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
 
+  useEffect(() => {
+    if (!imgLoaded) {
+      const timer = setTimeout(() => {
+        setKey(prevKey => prevKey + 1); 
+      }, 5000);
+
+      return () => clearTimeout(timer); 
+    }
+  }, [imgLoaded]);
 
   const wrapperClasses = classNames(
     ' border-[1.33px] rounded-[20px] px-2 md:px-4 py-2 md:py-5 bg-gradient-to-bl to-light-dark',
@@ -83,7 +94,7 @@ export const EntityCard = ({
   return (
     <div>
       {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
-      <div className={wrapperClasses} onClick={onSelect}>
+      <div key={key} className={wrapperClasses} onClick={onSelect}>
         <div className="flex justify-between items-center pb-3">
           <p className={badgeClasses}>GEN{generation}</p>
           <p className="text-[20px]">{role}</p>
@@ -98,7 +109,7 @@ export const EntityCard = ({
         )}
         <Image
           loading="lazy"
-          src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
+          src={imageUrl}
           alt="IMG"
           className="w-full rounded-xl md:max-h-[250px] object-cover mt-3"
           width={250}
@@ -107,6 +118,7 @@ export const EntityCard = ({
             const { naturalWidth } = e.target as HTMLImageElement;
             setImgLoaded(!!naturalWidth);
           }}
+          onError={() => setImgLoaded(false)}
         />
         <div className="mt-3 text-base xl:text-[24px] flex max-xl:flex-wrap gap-y-2 md:gap-x-2 text-left 2xl:gap-x-3 overflow-hidden">
           <div className="flex flex-col gap-1 basis-1/3 flex-1">

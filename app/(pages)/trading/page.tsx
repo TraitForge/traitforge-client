@@ -68,6 +68,7 @@ const Marketplace = () => {
     if (isBuyConfirmed || isListConfirmed) {
       refetchOwnerEntities();
       refetchEntitiesForSale();
+      setSelectedListing(null);
     }
   }, [isBuyConfirmed, isListConfirmed]);
 
@@ -134,6 +135,7 @@ const Marketplace = () => {
     if (selectedForSale && isApproveConfirmed) {
       const priceInWei = parseEther(price);
       onList(selectedForSale.tokenId, priceInWei);
+      setSelectedForSale(null);
     }
   }, [selectedForSale, isApproveConfirmed]);
 
