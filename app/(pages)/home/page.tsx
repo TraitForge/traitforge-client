@@ -225,6 +225,7 @@ const Home = () => {
             <div className="flex">
               <Button
                 onClick={() => setStep('two')}
+                style={{ border: '1px solid #0ff' }}
                 bg="#023340"
                 text={`MINT NOW`}
                 textClass="font-electrolize"

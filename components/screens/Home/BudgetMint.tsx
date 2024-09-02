@@ -26,7 +26,8 @@ export const BudgetMint = ({
   };
 
   return (
-    <div className="md:bg-zinc-900 md:bg-opacity-85 max-md:px-5 w-full md:w-[70%] xl:w-[50%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center h-6/12">
+    <div className="h-screen">
+    <div className="md:bg-zinc-900 md:bg-opacity-85 max-md:px-5 w-full mt-[100px] py-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center h-6/12">
       <h3 className="text-large font-electrolize mb-8 max-md:pt-5">Enter ETH Amount</h3>
       <input
         type="text"
@@ -35,17 +36,19 @@ export const BudgetMint = ({
         onChange={handleInputChange}
         placeholder="ETH Amount"
       />
-      <div className="max-md:order-3 max-md:px-10 mt-4">
+      <div className="max-md:order-3 mt-4">
         <Button
           onClick={handleMintWithBudget}
           bg="#023340"
-          text={`Mint With a ${budgetAmount} ETH Budget`}
+          style={{ border: '2px solid #0ff', fontSize: '20px'}}
+          text={`Mint With a ${budgetAmount?.trim() || '??'} ETH Budget`}
           textClass="font-electrolize"
           variant="secondary"
         >
           Mint with Budget
         </Button>
       </div>
+    </div>
     </div>
   );
 };

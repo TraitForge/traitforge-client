@@ -42,7 +42,7 @@ export const Mint = ({
     };
 
   return (
-      <div className="relative md:bg-zinc-900 md:bg-opacity-85 max-md:px-5 w-full md:w-[70%] xl:w-[50%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
+      <div className="relative md:bg-blue max-md:px-5 w-full md:w-[70%] xl:w-[50%] 2xl:w-[35%] mx-auto pt-10 pb-[50px] md:px-[100px] flex flex-col rounded-[20px] items-center">
       <button
         className={`absolute top-4 left-4 ${isSpinning ? 'animate-spin-once' : ''}`}
         onClick={handleRefresh}
@@ -74,6 +74,7 @@ export const Mint = ({
         <Button
           onClick={() => setStep('three')}
           bg="#023340"
+          style={{ border: '2px solid #0ff', width: '100%' }}
           text={`Mint With a Budget`}
           textClass="font-electrolize"
           variant="secondary"
