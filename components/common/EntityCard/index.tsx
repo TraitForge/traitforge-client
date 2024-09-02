@@ -50,11 +50,10 @@ export const EntityCard = ({
   useEffect(() => {
     if (!imgLoaded) {
       const timer = setTimeout(() => {
-        console.log("Attempting to reload the image");
-        setKey(prevKey => prevKey + 1); // Increment the key to force re-render
+        setKey(prevKey => prevKey + 1); 
       }, 5000);
 
-      return () => clearTimeout(timer); // Clean up the timeout on unmount or re-render
+      return () => clearTimeout(timer); 
     }
   }, [imgLoaded]);
 

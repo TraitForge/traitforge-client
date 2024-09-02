@@ -93,11 +93,9 @@ export const NukingReceipt = ({
 
     useEffect(() => {
       if (entityJustNuked) {
-        const emoji = getRandomEmoji(sadEmojis);
-        const quote = getRandomEmoji(deathQuotes)
+        const [emoji, quote] = [getRandomEmoji(sadEmojis), getRandomEmoji(deathQuotes)];
         setEmoji(emoji as string);
         setQuote(quote as string);
-        console.log("Random emoji:", emoji);
       }
     }, [entityJustNuked]);
 

@@ -102,16 +102,13 @@ const Forging = () => {
     if (hash && isForgeConfirmed) {
       (async () => {
         try {
-          console.log("starting new entity gen")
           const res = await publicClient.getTransactionReceipt({ hash });
           if (res?.logs?.[7]?.topics?.[1]) {
             const hexString = res.logs[7].topics[1].toString();
             const tokenID = parseInt(hexString, 16);
-            console.log("new entity token id:", tokenID)
             setTokenID(tokenID);
 
             if (!isFetchingEntropy && !isFetchingGeneration) {
-              console.log("entityEntropyData:", entityEntropyData, "entityGenerationData:", entityGenerationData);
               const newEntity = createNewEntity(tokenID, entityEntropyData, entityGenerationData);
               if (newEntity) {
                 setNewlyCreatedEntity(newEntity);

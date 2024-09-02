@@ -106,26 +106,35 @@ const HoneyPot = () => {
     }
   };
 
+  const fetchTransactionReceipt = async (hash: string, publicClient: any) => {
+    try {
+      const res = await publicClient.getTransactionReceipt({ hash });
+      if (res && res.logs && res.logs.length > 1 && res.logs[1]) {
+        const logData = res.logs[1].data;
+        const weiValue = BigInt(logData);
+        const etherValue = formatUnits(weiValue, 18);
+        return parseFloat(etherValue).toFixed(4);
+      } else {
+        throw new Error('Log data not found or not enough logs.');
+      }
+    } catch (error) {
+      console.error('Failed to fetch transaction receipt:', error);
+      throw error;
+    }
+  };
+  
   useEffect(() => {
     if (hash && isNukeConfirmed) {
-      (async () => {
-        try {
-          const res = await publicClient.getTransactionReceipt({ hash });
-          if (res && res.logs && res.logs.length > 1 && res.logs[1]) {
-            const logData = res.logs[1].data;
-            const weiValue = BigInt(logData);
-            const etherValue = formatUnits(weiValue, 18);
-            setEthFromNuke(parseFloat(etherValue).toFixed(4));
-            setModalOpen(true);
-          } else {
-            console.log('Log data not found or not enough logs.');
-          }
-        } catch (error) {
-          console.error('Failed to fetch transaction receipt:', error);
-        }
-      })();
+      fetchTransactionReceipt(hash, publicClient)
+        .then((ethFromNuke) => {
+          setEthFromNuke(ethFromNuke);
+          setModalOpen(true);
+        })
+        .catch((error) => {
+          console.error('Failed to process transaction receipt:', error);
+        });
     }
-  }, [hash, isNukeConfirmed]);
+  }, [hash, isNukeConfirmed, publicClient]);
 
   useEffect(() => {
     if (selectedForNuke && isApproveConfirmed) {
