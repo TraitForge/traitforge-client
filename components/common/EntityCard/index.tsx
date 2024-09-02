@@ -101,8 +101,8 @@ export const EntityCard = ({
             <path d="M1 0.25H0.25V1.75H1V0.25ZM118.5 1L119.013 0.453058L118.797 0.25H118.5V1ZM159 39L158.487 39.5469L158.703 39.75H159V39ZM1 1.75H118.5V0.25H1V1.75ZM117.987 1.54694L158.487 39.5469L159.513 38.4531L119.013 0.453058L117.987 1.54694ZM159 39.75H296V38.25H159V39.75Z" fill="url(#paint0_linear_1401_7592)"/>
             <defs>
               <linearGradient id="paint0_linear_1401_7592" x1="-50.6222" y1="-41.8827" x2="292.622" y2="61.8827" gradientUnits="userSpaceOnUse">
-              <stop stopColor={currentColors.from}/>
-              <stop offset="1" stopColor={currentColors.to}/>
+                <stop stopColor={currentColors?.from || '#000'} />
+                <stop offset="1" stopColor={currentColors?.to || '#fff'} />
               </linearGradient>
             </defs>
           </svg>
@@ -144,8 +144,8 @@ export const EntityCard = ({
         <path d="M1 0.25H0.25V1.75H1V0.25ZM118.5 1L119.013 0.453058L118.797 0.25H118.5V1ZM159 39L158.487 39.5469L158.703 39.75H159V39ZM1 1.75H118.5V0.25H1V1.75ZM117.987 1.54694L158.487 39.5469L159.513 38.4531L119.013 0.453058L117.987 1.54694ZM159 39.75H296V38.25H159V39.75Z" fill="url(#paint0_linear_1401_7592)"/>
         <defs>
           <linearGradient id="paint0_linear_1401_7592" x1="-50.6222" y1="-41.8827" x2="292.622" y2="61.8827" gradientUnits="userSpaceOnUse">
-            <stop stopColor={currentColors.from}/>
-            <stop offset="1" stopColor={currentColors.to}/>
+            <stop stopColor={currentColors?.from || '#000'} />
+            <stop offset="1" stopColor={currentColors?.to || '#fff'} />
           </linearGradient>
         </defs>
       </svg>
