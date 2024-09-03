@@ -107,7 +107,7 @@ export const EntityCard = ({
       {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
       <div className={wrapperClasses} onClick={onSelect}>
       <div className="flex justify-between items-center">
-      <div className="relative w-full pt-2 md:pt-0">
+      <div className="relative w-full pt-1 md:pt-0">
           <div className="hidden md:block">
           <svg width="full" height="auto" viewBox="0 0 296 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 0.25H0.25V1.75H1V0.25ZM118.5 1L119.013 0.453058L118.797 0.25H118.5V1ZM159 39L158.487 39.5469L158.703 39.75H159V39ZM1 1.75H118.5V0.25H1V1.75ZM117.987 1.54694L158.487 39.5469L159.513 38.4531L119.013 0.453058L117.987 1.54694ZM159 39.75H296V38.25H159V39.75Z" fill="url(#paint0_linear_1401_7592)"/>
@@ -119,11 +119,11 @@ export const EntityCard = ({
             </defs>
           </svg>
           </div>
-          <div className="w-full text-[21px] xl:text-[20px] flex justify-between items-center md:absolute md:top-1 md:left-0">
+          <div className="w-full flex justify-between items-center md:absolute md:top-1 md:left-0">
         <h6 className="text-[15px] lg:text-lg 3xl:text-[20px] pl-1">
           GEN{generation}
         </h6>
-          <h6 className="text-[16px] pt-1">{role}</h6>
+          <h6 className="text-[14px] lg:text-base 3xl:text-[20px]">{role}</h6>
         </div>
         </div>
         </div>
