@@ -42,7 +42,19 @@ export const EntityCard = ({
   const isSafari = useIsSafari();
   const asPath = usePathname();
   const { data: ethPrice } = useEthPrice();
-  const usdAmount = Number(displayPrice ?? 0) * ethPrice;
+  const usdAmount = Math.floor(Number(displayPrice) * ethPrice);
+
+  const formatNumber = (num: number): string => {
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(2).replace(/\.0$/, '') + 'm';
+    } else if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(2).replace(/\.0$/, '') + 'm';
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(2).replace(/\.0$/, '') + 'k';
+    }
+
+    return num.toString();
+  };
 
   const uri = calculateUri(paddedEntropy, generation);
   const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
@@ -58,7 +70,7 @@ export const EntityCard = ({
   }, [imgLoaded]);
 
   const wrapperClasses = classNames(
-    ' border-[1.33px] rounded-[20px] px-2 md:px-4 py-2 md:py-5 bg-gradient-to-bl to-light-dark',
+    ' border-[2.13px] rounded-[20px] px-2 md:px-4 pt-4 pb-5 md:pt-4 bg-gradient-to-bl to-light-dark',
     wrapperClass,
     {
       'opacity-1 h-full': imgLoaded,
@@ -76,69 +88,88 @@ export const EntityCard = ({
     }
   );
 
+  const gradientColors: { [key: string]: { from: string; to: string } } = {
+    '/trading': { from: 'rgba(10, 150, 80, 0.59)', to: 'rgba(10, 150, 80, 0.89)' },
+    '/profile': { from: 'rgba(20, 150, 130, 0.94)', to: 'rgba(20, 150, 130, 0.74)' }, 
+    '/forging': { from: '#FF6600', to: '#FFCC00' },
+    '/nuke-fund': { from: '#800080', to: '#FF00FF' },
+  };
+
   const skeletonClasses = classNames({
     block: !imgLoaded,
     hidden: imgLoaded,
   });
 
-  const badgeClasses = classNames(
-    'text-[10px] lg:text-base 3xl:text-[20px] py-2.5 px-[14px] bg-opacity-20 rounded-xl',
-    {
-      'bg-[#0EEB81]': asPath === '/trading',
-      'bg-[#FD8D26]': asPath === '/forging',
-      'bg-neon-purple': asPath === '/nuke-fund',
-      'bg-neon-blue': asPath === '/profile',
-    }
-  );
+  const currentColors = gradientColors[asPath] || gradientColors['/trading'];
 
   return (
     <div>
       {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
-      <div key={key} className={wrapperClasses} onClick={onSelect}>
-        <div className="flex justify-between items-center pb-3">
-          <p className={badgeClasses}>GEN{generation}</p>
-          <p className="text-[20px]">{role}</p>
+      <div className={wrapperClasses} onClick={onSelect}>
+      <div className="flex justify-between items-center">
+      <div className="relative pb-1">
+          <svg width="full" height="auto" viewBox="0 0 296 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 0.25H0.25V1.75H1V0.25ZM118.5 1L119.013 0.453058L118.797 0.25H118.5V1ZM159 39L158.487 39.5469L158.703 39.75H159V39ZM1 1.75H118.5V0.25H1V1.75ZM117.987 1.54694L158.487 39.5469L159.513 38.4531L119.013 0.453058L117.987 1.54694ZM159 39.75H296V38.25H159V39.75Z" fill="url(#paint0_linear_1401_7592)"/>
+            <defs>
+              <linearGradient id="paint0_linear_1401_7592" x1="-50.6222" y1="-41.8827" x2="292.622" y2="61.8827" gradientUnits="userSpaceOnUse">
+                <stop stopColor={currentColors?.from || '#000'} />
+                <stop offset="1" stopColor={currentColors?.to || '#fff'} />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="w-full text-left absolute top-2.5 left-2 text-[21px] xl:text-[20px] grid grid-cols-2 2xl:gap-x-3">
+        <h6 className="text-[14px] 3xl:text-[20px]">
+          GEN {generation}
+        </h6>
+        <h6 className="text-[14px] 3xl:text-[20px]">{role}</h6>
+        </div>
+        </div>
         </div>
         {showPrice && (
-          <div className="text-left">
-            <h4 className="text-[24px] truncate">
-              ${usdAmount.toLocaleString()}
+          <div className="pl-1 text-left py-1 flex flex-row gap-2">
+            <h4 className="text-[14px] md:text-[24px]">{displayPrice} ETH</h4>
+            <h4 className="text-[12px] md:text-[22px] truncate">
+            ${formatNumber(usdAmount)}
             </h4>
-            <div className="text-[16px]">{displayPrice} ETH</div>
           </div>
         )}
-        <Image
-          loading="lazy"
-          src={imageUrl}
-          alt="IMG"
-          className="w-full rounded-xl md:max-h-[250px] object-cover mt-3"
-          width={250}
-          height={250}
-          onLoad={e => {
-            const { naturalWidth } = e.target as HTMLImageElement;
-            setImgLoaded(!!naturalWidth);
-          }}
-          onError={() => setImgLoaded(false)}
-        />
-        <div className="mt-3 text-base xl:text-[24px] flex max-xl:flex-wrap gap-y-2 md:gap-x-2 text-left 2xl:gap-x-3 overflow-hidden">
-          <div className="flex flex-col gap-1 basis-1/3 flex-1">
-            <h1>{nukeFactor}%</h1>
-            <span className="text-xs md:text-sm ">
-              Nuke <br /> Factor
-            </span>
+        <div className="relative">
+          <h6 className="absolute top-20 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
+           {nukeFactor}%
+          </h6>
+          <Image
+            loading="lazy"
+            src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
+            alt="IMG"
+            className="w-full rounded-xl md:max-h-[250px] object-cover mt-1"
+            width={250}
+           height={250}
+           onLoad={e => {
+              const { naturalWidth } = e.target as HTMLImageElement;
+              setImgLoaded(!!naturalWidth);
+            }}
+          />
+        </div>
+        <div className="relative pt-1 pb-3">
+        <svg width="full" height="auto" viewBox="0 0 296 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 0.25H0.25V1.75H1V0.25ZM118.5 1L119.013 0.453058L118.797 0.25H118.5V1ZM159 39L158.487 39.5469L158.703 39.75H159V39ZM1 1.75H118.5V0.25H1V1.75ZM117.987 1.54694L158.487 39.5469L159.513 38.4531L119.013 0.453058L117.987 1.54694ZM159 39.75H296V38.25H159V39.75Z" fill="url(#paint0_linear_1401_7592)"/>
+        <defs>
+          <linearGradient id="paint0_linear_1401_7592" x1="-50.6222" y1="-41.8827" x2="292.622" y2="61.8827" gradientUnits="userSpaceOnUse">
+            <stop stopColor={currentColors?.from || '#000'} />
+            <stop offset="1" stopColor={currentColors?.to || '#fff'} />
+          </linearGradient>
+        </defs>
+      </svg>
+         <div className="w-full absolute top-0 left-0 pt-[3px] text-[21px] xl:text-[20px] grid grid-cols-2 2xl:gap-x-3">
+          <div className="flex flex-col text-left pl-2 gap-1 pt-2">
+            <h6 className="text-[8px] lg:text-[11px]">Forge <br/> Potential</h6>
+            <h6 className="text-base sm:text-xl">{forgePotential - forgingCount} / {forgePotential}</h6>
           </div>
-          <div className="flex flex-col gap-1 basis-1/3 flex-1">
-            <h1>
-              {forgePotential - forgingCount}/{forgePotential}
-            </h1>
-            <span className="text-xs md:text-sm sm:pr-4 md:pr-0">
-              Forge Potential
-            </span>
+          <div className="flex flex-col text-right pr-3 gap-2 pt-1 md:pt-2 lg:pt-2.5 xl:pt-[8px]">
+            <h6 className="text-[8px] lg:text-[11px]">Performance <br/> Factor</h6>
+            <h6 className="text-base sm:text-xl">{performanceFactor}</h6>
           </div>
-          <div className="flex flex-col gap-1 basis-1/3 flex-1">
-            <h1>{performanceFactor}</h1>
-            <span className="text-xs md:text-sm gap-2">Performance Factor</span>
-          </div>
+        </div>
         </div>
       </div>
     </div>
