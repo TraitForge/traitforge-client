@@ -2,12 +2,14 @@ import sharp from 'sharp';
 import path from 'path';
 import varConfig from './variablesConfig';
 import { getS3Object } from './s3';
+import { createGauge } from './createMercuryGauge';
 
 export const composeIMG = async (
   paddedEntropy: string | number,
-  entityGeneration: string | number
+  entityGeneration: string | number,
+  power: number
 ) => {
-  console.log('starting next image:', paddedEntropy, entityGeneration);
+  console.log('starting next image:', paddedEntropy, entityGeneration, power);
   try {
     const baseCharacterBuffer = await baseCharacterImg(
       entityGeneration,
@@ -26,6 +28,7 @@ export const composeIMG = async (
 
     const backgroundImage = await getS3Object('backgroundfinish.png');
     const backgroundBuffer = await sharp(backgroundImage as any).toBuffer();
+    const gaugeBuffer = await createGauge(power);
 
     const composedImage = await sharp({
       create: {
@@ -39,6 +42,7 @@ export const composeIMG = async (
         { input: backgroundBuffer, blend: 'over' },
         { input: baseCharacterBuffer, blend: 'over' },
         { input: variablesImgBuffer, blend: 'over' },
+        { input: gaugeBuffer, blend: 'over', top: 150, left: 150},
       ])
       .jpeg()
       .toBuffer();
