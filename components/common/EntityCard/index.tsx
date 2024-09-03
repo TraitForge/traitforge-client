@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
 import { EntityCardSkeleton } from '../EntityCardSkeleton';
@@ -38,6 +38,7 @@ export const EntityCard = ({
   } = entity;
   const { data: forgingCount } = useForgingCounts(tokenId);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [key, setKey] = useState<number>(0);
   const isSafari = useIsSafari();
   const asPath = usePathname();
   const { data: ethPrice } = useEthPrice();
@@ -56,7 +57,17 @@ export const EntityCard = ({
   };
 
   const uri = calculateUri(paddedEntropy, generation);
+  const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
 
+  useEffect(() => {
+    if (!imgLoaded) {
+      const timer = setTimeout(() => {
+        setKey(prevKey => prevKey + 1); 
+      }, 5000);
+
+      return () => clearTimeout(timer); 
+    }
+  }, [imgLoaded]);
 
   const wrapperClasses = classNames(
     ' border-[2.13px] rounded-[20px] px-2 md:px-4 pt-4 pb-5 md:pt-4 bg-gradient-to-bl to-light-dark',

@@ -8,3 +8,4 @@ export * from './ListNow';
 export * from './SelectEntityList';
 export * from './WalletEntityModal';
 export * from './MobileForgingArena';
+export * from './ForgingReceipt';

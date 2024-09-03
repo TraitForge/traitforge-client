@@ -2,8 +2,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useAccount } from 'wagmi';
+import { formatUnits } from 'viem';
 import styles from '~/styles/honeypot.module.scss';
-import { EntityCard, LoadingSpinner } from '~/components';
+import { EntityCard, LoadingSpinner, RewardModal } from '~/components';
 import { FiltersHeader } from '~/components';
 import {
   useApproval,
@@ -13,20 +14,24 @@ import {
   useIsNukeable
 } from '~/hooks';
 import { SingleValue } from 'react-select';
-import { HoneyPotBody, HoneyPotHeader, NukeEntity } from '~/components/screens';
+import { HoneyPotBody, HoneyPotHeader, NukeEntity, NukingReceipt } from '~/components/screens';
 import { Entity } from '~/types';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
+import { publicClient } from '~/lib/client';
 
 const HoneyPot = () => {
   const { address } = useAccount();
   const { data: ownerEntities, refetch } = useOwnerEntities(address || '0x0');
   const { data: isTokenNukeable} = useIsNukeable(ownerEntities);
   const [selectedForNuke, setSelectedForNuke] = useState<Entity | null>(null);
+  const [ethFromNuke, setEthFromNuke] = useState<string | null>(null);
   const [step, setStep] = useState('one');
   const [sortOption, setSortOption] = useState('all');
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const [loadingText, setLoadingText] = useState('');
+  const [isModalOpen, setModalOpen] = useState(false);
+  const closeModal = () => setModalOpen(false);
 
   const { data: approved } = useApproval(
     CONTRACT_ADDRESSES.NukeFund,
@@ -38,6 +43,7 @@ const HoneyPot = () => {
     isConfirmed: isApproveConfirmed,
   } = useApproveNft();
   const {
+    hash,
     onWriteAsync: onNuke,
     isPending: isNukePending,
     isConfirmed: isNukeConfirmed,
@@ -48,7 +54,6 @@ const HoneyPot = () => {
   useEffect(() => {
     if (isNukeConfirmed) {
       refetch();
-      setSelectedForNuke(null);
     }
   }, [isNukeConfirmed]);
 
@@ -101,6 +106,36 @@ const HoneyPot = () => {
     }
   };
 
+  const fetchTransactionReceipt = async (hash: string, publicClient: any) => {
+    try {
+      const res = await publicClient.getTransactionReceipt({ hash });
+      if (res && res.logs && res.logs.length > 1 && res.logs[1]) {
+        const logData = res.logs[1].data;
+        const weiValue = BigInt(logData);
+        const etherValue = formatUnits(weiValue, 18);
+        return parseFloat(etherValue).toFixed(4);
+      } else {
+        throw new Error('Log data not found or not enough logs.');
+      }
+    } catch (error) {
+      console.error('Failed to fetch transaction receipt:', error);
+      throw error;
+    }
+  };
+  
+  useEffect(() => {
+    if (hash && isNukeConfirmed) {
+      fetchTransactionReceipt(hash, publicClient)
+        .then((ethFromNuke) => {
+          setEthFromNuke(ethFromNuke);
+          setModalOpen(true);
+        })
+        .catch((error) => {
+          console.error('Failed to process transaction receipt:', error);
+        });
+    }
+  }, [hash, isNukeConfirmed, publicClient]);
+
   useEffect(() => {
     if (selectedForNuke && isApproveConfirmed) {
       onNuke(selectedForNuke.tokenId);
@@ -149,9 +184,9 @@ const HoneyPot = () => {
                 <EntityCard
                   key={entity.tokenId}
                   entity={entity}
-                  isOwnedByUser={!canTokenBeNuked} // Set to true if the token cannot be nuked
+                  isOwnedByUser={!canTokenBeNuked} 
                   onSelect={() => {
-                  if (canTokenBeNuked) { // Allow selection only if the token can be nuked
+                  if (canTokenBeNuked) { 
                     setSelectedForNuke(entity);
                     setStep('three');
                   }
@@ -171,6 +206,20 @@ const HoneyPot = () => {
   return (
     <div className={styles.honeyPotContainer}>
       <div className="flex flex-col h-full w-full">
+      {selectedForNuke && ethFromNuke && (
+         <RewardModal
+            isOpen={isModalOpen}
+            closeModal={closeModal}
+            modalClasses="pb-4"
+            page="nuke"
+         >
+             <NukingReceipt
+             tagColor="purple"
+              entityJustNuked={selectedForNuke}
+               ethNuked={ethFromNuke}
+             />
+          </RewardModal>
+          )}
         <HoneyPotHeader step={step} handleStep={setStep} />
         {content}
       </div>

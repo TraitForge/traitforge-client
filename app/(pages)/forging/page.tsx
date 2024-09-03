@@ -1,12 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button, Modal, LoadingSpinner } from '~/components';
+import { Button, Modal, LoadingSpinner, RewardModal } from '~/components';
+import { calculateEntityAttributes } from '~/utils';
+import { publicClient } from '~/lib/client';
 import {
   useEntitiesForForging,
   useForgeWithListed,
   useListForForging,
   useOwnerEntities,
+  useTokenEntropies,
+  useTokenGenerations
 } from '~/hooks';
 import { useAccount } from 'wagmi';
 import {
@@ -16,57 +20,72 @@ import {
   SelectEntityList,
   WalletEntityModal,
   MobileForgingArena,
+  ForgingReceipt,
 } from '~/components/screens';
 import { Entity, EntityForging } from '~/types';
 import { parseEther } from 'viem';
 
 const Forging = () => {
   const { address } = useAccount();
-  const { data: ownerEntities, refetch: refetchOwnerEntities } =
-    useOwnerEntities(address || '0x0');
-  const { data: entitiesForForging, refetch: refetchEntitiesForForging } =
-    useEntitiesForForging();
-  const {
-    onWriteAsync: onForge,
-    isPending: isForgePending,
-    isConfirmed: isForgeConfirmed,
-  } = useForgeWithListed();
-  const { onWriteAsync: onList, isPending: isListPending } =
-    useListForForging();
+  const { data: ownerEntities, refetch: refetchOwnerEntities } = useOwnerEntities(address || '0x0');
+  const { data: entitiesForForging, refetch: refetchEntitiesForForging } = useEntitiesForForging();
+  const { hash, onWriteAsync: onForge, isPending: isForgePending, isConfirmed: isForgeConfirmed } = useForgeWithListed();
+  const { onWriteAsync: onList, isPending: isListPending } = useListForForging();
 
-  const isLoading = isForgePending || isListPending;
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);
-  const [selectedFromPool, setSelectedFromPool] =
-    useState<EntityForging | null>(null);
+  const [selectedFromPool, setSelectedFromPool] = useState<EntityForging | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
-  const [selectedForListing, setSelectedForListing] = useState<Entity | null>(
-    null
-  );
+  const [selectedForListing, setSelectedForListing] = useState<Entity | null>(null);
   const [areEntitiesForged, setEntitiesForged] = useState(false);
   const [processingText, setProcessingText] = useState('Forging');
   const [generationFilter, setGenerationFilter] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const isLoading = isForgePending || isListPending;
 
-  const handleSelectedFromPool = (entity: EntityForging) =>
-    setSelectedFromPool(entity);
-  const handleSelectedFromWallet = (entity: Entity) =>
-    setSelectedEntity(entity);
+  const [tokenID, setTokenID] = useState<number | null>(null);
+  const { data: entityEntropyData, isFetching: isFetchingEntropy } = useTokenEntropies(tokenID ? [tokenID] : []);
+  const { data: entityGenerationData, isFetching: isFetchingGeneration } = useTokenGenerations(tokenID ? [tokenID] : []);
+  const [newlyCreatedEntity, setNewlyCreatedEntity] = useState<Entity | null>(null);
 
-  const handleEntityListModal = () =>
-    setIsEntityListModalOpen(prevState => !prevState);
-  const handleOwnerEntityList = () =>
-    setIsOwnerListOpen(prevState => !prevState);
+  const createNewEntity = (tokenID: number, entropy: number[], generation: number[]) => {
+    if (entropy.length > 0 && generation.length > 0) {
+      const paddedEntropy = entropy.join('');
+      const newGeneration = Number(generation[0]);
+      const attributes = calculateEntityAttributes(paddedEntropy);
+      return {
+        tokenId: tokenID,
+        paddedEntropy,
+        generation: newGeneration,
+        ...attributes,
+      };
+    }
+    return null;
+  };
+
+  const handleSelectedFromPool = (entity: EntityForging) => setSelectedFromPool(entity);
+  const handleSelectedFromWallet = (entity: Entity) => setSelectedEntity(entity);
+
+  const handleEntityListModal = () => setIsEntityListModalOpen(prevState => !prevState);
+  const handleOwnerEntityList = () => setIsOwnerListOpen(prevState => !prevState);
 
   const handleListingPage = () => setStep('two');
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedEntity(null); 
+    setSelectedFromPool(null);
+  };
+
+
   const forgeEntity = async () => {
-    if (!selectedFromPool || !selectedEntity) {
-      return;
-    }
+    if (!selectedFromPool || !selectedEntity) return;
+
     setProcessingText('Forging');
     const feeInWei = parseEther(String(selectedFromPool.fee));
-    onForge(selectedFromPool.tokenId, selectedEntity.tokenId, feeInWei);
+    await onForge(selectedFromPool.tokenId, selectedEntity.tokenId, feeInWei);
     setEntitiesForged(true);
   };
 
@@ -74,24 +93,47 @@ const Forging = () => {
     if (isForgeConfirmed) {
       setProcessingText('');
       setGenerationFilter('');
-      setSelectedEntity(null);
-      setSelectedFromPool(null);
       refetchOwnerEntities();
       refetchEntitiesForForging();
     }
   }, [isForgeConfirmed]);
 
-  const listEntityForForging = async (
-    selectedForListing: Entity,
-    fee: string
-  ) => {
+  useEffect(() => {
+    if (hash && isForgeConfirmed) {
+      (async () => {
+        try {
+          const res = await publicClient.getTransactionReceipt({ hash });
+          if (res?.logs?.[7]?.topics?.[1]) {
+            const hexString = res.logs[7].topics[1].toString();
+            const tokenID = parseInt(hexString, 16);
+            setTokenID(tokenID);
+
+            if (!isFetchingEntropy && !isFetchingGeneration) {
+              const newEntity = createNewEntity(tokenID, entityEntropyData, entityGenerationData);
+              if (newEntity) {
+                setNewlyCreatedEntity(newEntity);
+                openModal();
+              } else {
+                console.error('Failed to create new entity.');
+              }
+            }
+          } else {
+            console.error('Log data not found or not enough logs.');
+          }
+        } catch (error) {
+          console.error('Failed to fetch transaction receipt:', error);
+        }
+      })();
+    }
+  }, [hash, isForgeConfirmed, isFetchingEntropy, isFetchingGeneration]);
+
+  const listEntityForForging = async (selectedForListing: Entity, fee: string) => {
     setProcessingText('Listing entity');
     const feeInWei = parseEther(fee);
-    onList(selectedForListing.tokenId, feeInWei);
+    await onList(selectedForListing.tokenId, feeInWei);
   };
 
-  const isGenerationsDifferent =
-    selectedEntity?.generation !== selectedFromPool?.generation;
+  const isGenerationsDifferent = selectedEntity?.generation !== selectedFromPool?.generation;
 
   let content;
 
@@ -99,16 +141,14 @@ const Forging = () => {
     return (
       <div className="h-full w-full flex justify-center items-center flex-col">
         <LoadingSpinner color="#FF5F1F" />
-        {processingText && (
-          <p className="text-[#FF5F1F] mt-4">{processingText}</p>
-        )}
+        {processingText && <p className="text-[#FF5F1F] mt-4">{processingText}</p>}
       </div>
     );
 
   switch (step) {
     case 'one':
       content = (
-        <div className=" py-10  overflow-y-auto">
+        <div className="py-10 overflow-y-auto">
           <div className="h-full w-full">
             <div className="flex flex-col md:flex-row justify-center relative items-center">
               <h1 className="text-[36px] md:text-extra-large">Forging Arena</h1>
@@ -138,11 +178,7 @@ const Forging = () => {
             </div>
             <div className="max-md:px-5">
               <Button
-                text={
-                  isGenerationsDifferent
-                    ? 'SAME GENERATION ONLY'
-                    : 'FORGE ENTITY'
-                }
+                text={isGenerationsDifferent ? 'SAME GENERATION ONLY' : 'FORGE ENTITY'}
                 bg="rgba(31, 15, 0, 0.6)"
                 width="408"
                 height="92"
@@ -156,7 +192,7 @@ const Forging = () => {
           {isEntityListModalOpen && (
             <Modal
               isOpen={isEntityListModalOpen}
-              closeModal={() => setIsEntityListModalOpen(false)}
+              closeModal={handleEntityListModal}
               modalClasses="items-end pb-4"
             >
               <SelectEntityList
@@ -169,7 +205,7 @@ const Forging = () => {
           {isOwnerListOpen && (
             <Modal
               isOpen={isOwnerListOpen}
-              closeModal={() => setIsOwnerListOpen(false)}
+              closeModal={handleOwnerEntityList}
               modalClasses="items-end pb-4"
             >
               <WalletEntityModal
@@ -187,7 +223,7 @@ const Forging = () => {
         <ListEntity
           ownerEntities={ownerEntities}
           setSelectedForListing={setSelectedForListing}
-          handleStep={step => setStep(step)}
+          handleStep={setStep}
         />
       );
       break;
@@ -196,11 +232,12 @@ const Forging = () => {
         <ListNow
           selectedForListing={selectedForListing}
           listEntityForForging={listEntityForForging}
-          handleStep={step => setStep(step)}
+          handleStep={setStep}
         />
       );
       break;
   }
+
   return (
     <div
       className="mint-container h-full"
@@ -211,6 +248,21 @@ const Forging = () => {
         backgroundAttachment: 'fixed',
       }}
     >
+      {newlyCreatedEntity && selectedFromPool && address && (
+        <RewardModal
+          isOpen={isModalOpen}
+          closeModal={closeModal}
+          modalClasses="pb-4"
+          page="forging"
+        >
+            <ForgingReceipt
+              tagColor="orange"
+              offspring={newlyCreatedEntity}
+              forgerOwner={selectedFromPool.account}
+              mergerOwner={address}
+            />
+        </RewardModal>
+      )}
       {content}
     </div>
   );
