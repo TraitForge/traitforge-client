@@ -9,6 +9,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      keyframes: {
+      'spin-once': {
+        '0%': { transform: 'rotate(0deg)' },
+        '100%': { transform: 'rotate(360deg)' },
+      },
+    },
+    animation: {
+      'spin-once': 'spin-once 0.5s ease-in-out',
+    },
       fontFamily: {
         bebas: ['var(--font-bebas)'],
         electrolize: ['var(--font-electrolize)'],
