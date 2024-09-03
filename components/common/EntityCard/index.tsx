@@ -63,7 +63,7 @@ export const EntityCard = ({
     if (!imgLoaded) {
       const timer = setTimeout(() => {
         setKey(prevKey => prevKey + 1); 
-      }, 5000);
+      }, 3000);
 
       return () => clearTimeout(timer); 
     }
@@ -103,7 +103,7 @@ export const EntityCard = ({
   const currentColors = gradientColors[asPath] || gradientColors['/trading'];
 
   return (
-    <div>
+    <div key={key}>
       {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
       <div className={wrapperClasses} onClick={onSelect}>
       <div className="flex justify-between items-center">
@@ -141,7 +141,7 @@ export const EntityCard = ({
           </h6>
           <Image
             loading="lazy"
-            src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
+            src={imageUrl}
             alt="IMG"
             className="w-full rounded-xl md:max-h-[250px] object-cover mt-1"
             width={250}
