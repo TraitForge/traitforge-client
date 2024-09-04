@@ -5,7 +5,8 @@ export async function processImage(
   paddedEntropy: string | number,
   entityGeneration: string | number
 ) {
-  const imageBuffer = await composeIMG(paddedEntropy, entityGeneration);
+  const power = Math.floor(Number(paddedEntropy) / 40000);
+  const imageBuffer = await composeIMG(paddedEntropy, entityGeneration, power);
   if (imageBuffer) {
     const uri = await generateUri(paddedEntropy, entityGeneration);
     const fileName = `${uri}`;
