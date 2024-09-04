@@ -63,7 +63,7 @@ export const EntityCard = ({
     if (!imgLoaded) {
       const timer = setTimeout(() => {
         setKey(prevKey => prevKey + 1); 
-      }, 5000);
+      }, 3000);
 
       return () => clearTimeout(timer); 
     }
@@ -103,25 +103,27 @@ export const EntityCard = ({
   const currentColors = gradientColors[asPath] || gradientColors['/trading'];
 
   return (
-    <div>
+    <div key={key}>
       {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
       <div className={wrapperClasses} onClick={onSelect}>
       <div className="flex justify-between items-center">
-      <div className="relative pb-1">
+      <div className="relative w-full pt-1 md:pt-0">
+          <div className="hidden md:block">
           <svg width="full" height="auto" viewBox="0 0 296 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 0.25H0.25V1.75H1V0.25ZM118.5 1L119.013 0.453058L118.797 0.25H118.5V1ZM159 39L158.487 39.5469L158.703 39.75H159V39ZM1 1.75H118.5V0.25H1V1.75ZM117.987 1.54694L158.487 39.5469L159.513 38.4531L119.013 0.453058L117.987 1.54694ZM159 39.75H296V38.25H159V39.75Z" fill="url(#paint0_linear_1401_7592)"/>
             <defs>
               <linearGradient id="paint0_linear_1401_7592" x1="-50.6222" y1="-41.8827" x2="292.622" y2="61.8827" gradientUnits="userSpaceOnUse">
-                <stop stopColor={currentColors?.from || '#000'} />
-                <stop offset="1" stopColor={currentColors?.to || '#fff'} />
+                <stop stopColor={currentColors?.from || '#fff'}/>
+                <stop offset="1" stopColor={currentColors?.to || '#fff'}/>
               </linearGradient>
             </defs>
           </svg>
-          <div className="w-full text-left absolute top-2.5 left-2 text-[21px] xl:text-[20px] grid grid-cols-2 2xl:gap-x-3">
-        <h6 className="text-[14px] 3xl:text-[20px]">
-          GEN {generation}
+          </div>
+          <div className="w-full flex justify-between items-center md:absolute md:top-1 md:left-0">
+        <h6 className="text-[15px] lg:text-lg 3xl:text-[20px] pl-1">
+          GEN{generation}
         </h6>
-        <h6 className="text-[14px] 3xl:text-[20px]">{role}</h6>
+          <h6 className="text-[14px] lg:text-base 3xl:text-[20px]">{role}</h6>
         </div>
         </div>
         </div>
@@ -139,7 +141,7 @@ export const EntityCard = ({
           </h6>
           <Image
             loading="lazy"
-            src={`https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`}
+            src={imageUrl}
             alt="IMG"
             className="w-full rounded-xl md:max-h-[250px] object-cover mt-1"
             width={250}
