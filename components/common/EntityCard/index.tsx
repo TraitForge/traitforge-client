@@ -88,6 +88,17 @@ export const EntityCard = ({
     }
   );
 
+  const textForPages = {
+    forging: 'CANNOT BE SELECTED',
+    nuking: 'NOT MATURE ENOUGH',
+  };
+  let message = 'Default message';
+  if (asPath === '/forging') {
+    message = textForPages.forging;
+  } else if (asPath === '/nuke-fund') {
+    message = textForPages.nuking;
+  }
+
   const gradientColors: { [key: string]: { from: string; to: string } } = {
     '/trading': { from: 'rgba(10, 150, 80, 0.59)', to: 'rgba(10, 150, 80, 0.89)' },
     '/profile': { from: 'rgba(20, 150, 130, 0.94)', to: 'rgba(20, 150, 130, 0.74)' }, 
@@ -104,6 +115,11 @@ export const EntityCard = ({
 
   return (
     <div>
+      {isOwnedByUser && (
+          <div className="relative">
+            <p className="text-[14px] absolute top-20 left-3 md:left-16 z-10">{message}</p>
+          </div>
+        )}
       {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
       <div className={wrapperClasses} onClick={onSelect}>
       <div className="flex justify-between items-center">

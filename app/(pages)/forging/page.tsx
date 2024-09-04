@@ -222,6 +222,7 @@ const Forging = () => {
       content = (
         <ListEntity
           ownerEntities={ownerEntities}
+          entitiesForForging={entitiesForForging}
           setSelectedForListing={setSelectedForListing}
           handleStep={setStep}
         />

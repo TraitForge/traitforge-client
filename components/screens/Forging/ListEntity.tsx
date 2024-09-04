@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { EntityCard } from '~/components';
 import { ListingHeader } from './ListingHeader';
-import { Entity, EntityRole } from '~/types';
+import { Entity, EntityForging, EntityRole } from '~/types';
 
 type ListEntityTypes = {
   ownerEntities: Entity[];
+  entitiesForForging: EntityForging[],
   handleStep: (value: string) => void;
   setSelectedForListing: (entity: Entity) => void;
 };
 
 export const ListEntity = ({
   ownerEntities,
+  entitiesForForging,
   handleStep,
   setSelectedForListing,
 }: ListEntityTypes) => {
@@ -31,6 +33,10 @@ export const ListEntity = ({
     fetchAndFilterEntities();
   }, [ownerEntities]);
 
+  const isEntityListedForForging = (entity: Entity): boolean => {
+    return entitiesForForging.some(listedEntity => listedEntity.tokenId === entity.tokenId);
+  };
+
   return (
     <div className="h-full w-full ">
       <div className="pt-5 h-full bg-custom-radial">
@@ -41,6 +47,7 @@ export const ListEntity = ({
               <EntityCard
                 key={entity.tokenId}
                 entity={entity}
+                isOwnedByUser={isEntityListedForForging(entity)}
                 onSelect={() => {
                   setSelectedForListing(entity);
                   handleStep('three');
