@@ -101,7 +101,7 @@ export const NukingReceipt = ({
 
 
   return (
-    <div className="bg-black items-center w-[100vw] lg:w-[50vw] h-[90vh] sm:h-[60vh] sm:w-[80vw] rounded-[30px] py-10 px-10 flex sm:flex-row flex-col">
+    <div className="bg-black items-center w-[100vw] lg:w-[50vw] h-[90vh] sm:h-[65vh] sm:w-[80vw] rounded-[30px] py-10 px-10 flex sm:flex-row flex-col">
       <div className="md:w-6/12">
         <h2 className="text-center md:text-left pb-2 md:pb-10 text-[40px] xs:text-[50px] uppercase">
           RIP {emoji}
