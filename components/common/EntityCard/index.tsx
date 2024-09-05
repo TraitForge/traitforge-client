@@ -152,14 +152,14 @@ export const EntityCard = ({
           </div>
         )}
         <div className="relative">
-          <h6 className="absolute top-20 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
+          <h6 className="absolute top-24 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
            {nukeFactor}%
           </h6>
           <Image
             loading="lazy"
             src={imageUrl}
             alt="IMG"
-            className="w-full rounded-xl md:max-h-[250px] object-cover mt-1"
+            className="w-full rounded-xl md:max-h-[285px] object-cover mt-1"
             width={250}
            height={250}
            onLoad={e => {
@@ -183,7 +183,7 @@ export const EntityCard = ({
             <h6 className="text-[8px] lg:text-[11px]">Forge <br/> Potential</h6>
             <h6 className="text-base sm:text-xl">{forgePotential - forgingCount} / {forgePotential}</h6>
           </div>
-          <div className="flex flex-col text-right pr-3 gap-2 pt-1 md:pt-2 lg:pt-2.5 xl:pt-[8px]">
+          <div className="flex flex-col text-right pr-3 gap-2 pt-1 md:pt-2 lg:pt-2.5 xl:pt-[10px]">
             <h6 className="text-[8px] lg:text-[11px]">Performance <br/> Factor</h6>
             <h6 className="text-base sm:text-xl">{performanceFactor}</h6>
           </div>
