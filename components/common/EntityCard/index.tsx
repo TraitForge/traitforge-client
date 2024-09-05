@@ -159,7 +159,7 @@ export const EntityCard = ({
             loading="lazy"
             src={imageUrl}
             alt="IMG"
-            className="w-full rounded-xl md:max-h-[285px] object-cover mt-1"
+            className="w-full rounded-xl md:max-h-[300px] object-cover mt-1"
             width={250}
            height={250}
            onLoad={e => {
