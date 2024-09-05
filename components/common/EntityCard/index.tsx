@@ -114,14 +114,14 @@ export const EntityCard = ({
   const currentColors = gradientColors[asPath] || gradientColors['/trading'];
 
   return (
-    <div key={key}>
+    <div>
       {isOwnedByUser && (
           <div className="relative">
             <p className="text-[14px] absolute top-20 left-3 md:left-16 z-10">{message}</p>
           </div>
         )}
       {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
-      <div className={wrapperClasses} onClick={onSelect}>
+      <div key={key} className={wrapperClasses} onClick={onSelect}>
       <div className="flex justify-between items-center">
       <div className="relative w-full pt-1 md:pt-0">
           <div className="hidden md:block">
