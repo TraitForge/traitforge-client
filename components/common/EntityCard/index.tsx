@@ -63,7 +63,7 @@ export const EntityCard = ({
     if (!imgLoaded) {
       const timer = setTimeout(() => {
         setKey(prevKey => prevKey + 1); 
-      }, 3000);
+      }, 5000);
 
       return () => clearTimeout(timer); 
     }
