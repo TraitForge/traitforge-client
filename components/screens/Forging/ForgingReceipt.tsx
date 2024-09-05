@@ -107,7 +107,7 @@ export const ForgingReceipt = ({
     };
 
   return (
-    <div className="bg-black items-center w-full lg:w-[70vw] 2xl:w-[50vw] h-[75vh] sm:h-[60vh] sm:w-[80vw] rounded-[30px] py-10 px-10 flex sm:flex-row flex-col">
+    <div className="bg-black items-center w-full lg:w-[70vw] 2xl:w-[50vw] h-[75vh] sm:h-[65vh] sm:w-[80vw] rounded-[30px] py-10 px-10 flex sm:flex-row flex-col">
       <div className="md:w-7/12 h-full">
         <h2 className="text-center md:text-left pb-2 md:pb-7 text-[40px] xs:text-[50px] uppercase">
           Entity Forged
