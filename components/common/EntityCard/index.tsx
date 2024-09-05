@@ -57,7 +57,7 @@ export const EntityCard = ({
   };
 
   const uri = calculateUri(paddedEntropy, generation);
-  const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg`;
+  const imageUrl = `https://traitforge.s3.ap-southeast-2.amazonaws.com/${uri}.jpeg?key=${key}`;
 
   useEffect(() => {
     if (!imgLoaded) {
@@ -121,7 +121,7 @@ export const EntityCard = ({
           </div>
         )}
       {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
-      <div key={key} className={wrapperClasses} onClick={onSelect}>
+      <div className={wrapperClasses} onClick={onSelect}>
       <div className="flex justify-between items-center">
       <div className="relative w-full pt-1 md:pt-0">
           <div className="hidden md:block">
