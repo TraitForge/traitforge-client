@@ -1,6 +1,4 @@
 import sharp from 'sharp';
-import path from 'path';
-import varConfig from './variablesConfig';
 import { getS3Object } from './s3';
 
 export const createGauge = async (power: number) => {
