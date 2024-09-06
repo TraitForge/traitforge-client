@@ -96,12 +96,18 @@ export const useApproval = (address: `0x${string}`, tokenId: number) => {
   };
 };
 
-export const useUpcomingMints = (mintPrice: bigint) => {
+export const useUpcomingMints = (mintPrice: bigint, generation: number) => {
+  const basePrice = 0.005;  
+  const initialIncrement = 0.0000245;
+  const generationIncrement = 0.000005;
+  const currentGeneration = generation;
+ 
   const entityPrice = Number(formatEther(mintPrice));
-  const priceToIndex = Math.floor(entityPrice * 10000);
-  const startSlot = Math.floor(priceToIndex / 13);
-  const startNumberIndex = (priceToIndex + 12) % 13;
-  const maxSlot = 770;
+  const effectiveIncrement = initialIncrement + (generationIncrement * currentGeneration);
+  const nftIndex = (entityPrice - basePrice) / effectiveIncrement;
+  const startSlot = Math.floor(nftIndex / 12); 
+  const startNumberIndex = nftIndex % 12;
+  const maxSlot = 833;
   const maxCount = 50;
   const inputs = [];
 
@@ -111,7 +117,7 @@ export const useUpcomingMints = (mintPrice: bigint) => {
   while (inputs.length < maxCount && slot < maxSlot) {
     for (
       let numberIndex = index;
-      numberIndex < 13 && inputs.length < maxCount;
+      numberIndex < 12 && inputs.length < maxCount;
       numberIndex++
     ) {
       inputs.push({ slot: slot, index: numberIndex });
@@ -134,7 +140,7 @@ export const useUpcomingMints = (mintPrice: bigint) => {
       data?.map(
         (res, index) =>
           ({
-            id: startSlot * 13 + index,
+            id: startSlot * 12 + index,
             entropy: Number(res.result ?? 0),
           }) as Entropy
       ) ?? [],
