@@ -70,7 +70,7 @@ export const EntityCard = ({
   }, [imgLoaded]);
 
   const wrapperClasses = classNames(
-    ' border-[2.13px] rounded-[20px] px-2 md:px-4 pt-4 pb-5 md:pt-4 bg-gradient-to-bl to-light-dark',
+    'border-[2.13px] rounded-[20px] px-2 md:px-4 pt-4 pb-5 md:pt-4 bg-gradient-to-bl to-light-dark',
     wrapperClass,
     {
       'opacity-1 h-full': imgLoaded,
@@ -115,12 +115,12 @@ export const EntityCard = ({
 
   return (
     <div>
+      {!isSafari && <EntityCardSkeleton className={skeletonClasses} style={{ justifyContent: 'center', alignContent: 'center' }} />}
       {isOwnedByUser && (
           <div className="relative">
             <p className="text-[14px] absolute top-20 left-3 md:left-16 z-10">{message}</p>
           </div>
         )}
-      {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
       <div className={wrapperClasses} onClick={onSelect}>
       <div className="flex justify-between items-center">
       <div className="relative w-full pt-1 md:pt-0">
@@ -159,7 +159,7 @@ export const EntityCard = ({
             loading="lazy"
             src={imageUrl}
             alt="IMG"
-            className="w-full rounded-xl md:max-h-[285px] object-cover mt-1"
+            className="w-full rounded-xl md:max-h-[300px] object-cover mt-1"
             width={250}
            height={250}
            onLoad={e => {

@@ -38,7 +38,7 @@ export const AccountTag = ({
 
   return (
     <h1 className={textClasses} {...alt}>
-      {pfpUrl ? (
+      {text ? (
         <div className="flex items-center">
           {pfpUrl && (
             <img
@@ -48,7 +48,7 @@ export const AccountTag = ({
             />
           )}
           <div className="pl-2 pt-1 flex flex-col align-middle justify-center">
-            <p className="hidden sm:block text-xs md:text-sm xl:text-2xl truncate">
+            <p className="hidden sm:block text-xs md:text-sm xl:text-lg truncate">
               {text}
             </p>
             <p className="text-xs lg:text-sm truncate">@{twitterText}</p>
