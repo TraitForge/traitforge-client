@@ -10,7 +10,8 @@ export const GET = async (req: NextRequest) => {
       where: {
         name: {
           startsWith: name as string,
-        }
+          mode: 'insensitive',
+        },
       },
     });
 
@@ -18,6 +19,7 @@ export const GET = async (req: NextRequest) => {
       where: {
         walletAddress: {
           startsWith: name as string,
+          mode: 'insensitive',
         },
       },
     });
@@ -26,6 +28,7 @@ export const GET = async (req: NextRequest) => {
       where: {
         twitter: {
           startsWith: name as string,
+          mode: 'insensitive',
         },
       },
     });
