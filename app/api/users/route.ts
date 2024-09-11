@@ -31,8 +31,6 @@ export const GET = async (req: NextRequest) => {
       },
     });
 
-    console.log(walletAddress);
-
     const twitter = await prisma.user.findMany({
       where: {
         twitter: {
