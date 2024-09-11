@@ -12,6 +12,11 @@ export interface User {
   pfp: string;
   twitter: string;
   walletAddress: `0x${string}`;
+  entities: {
+    entropy: number;
+    id: number;
+    userId: number;
+  }[];
 }
 
 export interface SearchResults {

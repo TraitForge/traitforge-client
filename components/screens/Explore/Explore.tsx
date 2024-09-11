@@ -11,6 +11,11 @@ interface Props {
     pfp: string;
     twitter: string;
     walletAddress: `0x${string}`;
+    entities: {
+      entropy: number;
+      id: number;
+      userId: number;
+    }[];
   }[];
   loading: boolean;
 }

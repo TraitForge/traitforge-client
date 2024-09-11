@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import { Slider, Button, BudgetModal, LoadingSpinner } from '~/components';
 import {
   useCurrentGeneration,
@@ -60,7 +62,11 @@ const Home = () => {
   };
 
   const handleMintEntity = async () => {
-    onMintToken(mintPrice, getProof());
+    await onMintToken(mintPrice, getProof());
+    await axios.post('/api/users', {
+      walletAddress: address,
+      entity: upcomingMints[0]?.entropy,
+    });
   };
 
   const handleMintBatchEntity = async () => {
