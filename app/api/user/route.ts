@@ -105,6 +105,9 @@ export const GET = async (req: NextRequest) => {
   try {
     const user = await prisma.user.findFirst({
       where: { walletAddress: walletAddress as string },
+      include: {
+        entities: true,
+      },
     });
     if (user) {
       return NextResponse.json({ user }, { status: 200 });

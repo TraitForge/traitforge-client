@@ -10,6 +10,11 @@ interface Props {
   pfp: string;
   twitter: string;
   walletAddress: `0x${string}`;
+  entities: {
+    entropy: number;
+    id: number;
+    userId: number;
+  }[];
 }
 
 export const ExploreTableItem = ({
@@ -18,6 +23,7 @@ export const ExploreTableItem = ({
   pfp,
   name,
   twitter,
+  entities
 }: Props) => {
   return (
     <li>
@@ -25,7 +31,7 @@ export const ExploreTableItem = ({
         href={`/explore/${walletAddress}`}
         className="grid grid-cols-12 items-center"
       >
-        <p className="col-span-2 text-base text-left">{id}</p>
+        <p className="col-span-2 text-base text-left">{entities.length}</p>
         <div className="flex items-center gap-x-4 col-span-6">
           <div className="w-12 h-12">
             {pfp ? (
