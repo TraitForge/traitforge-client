@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { Slider, Button, LoadingSpinner } from '~/components';
+import { Slider, Button, LoadingSpinner, Modal } from '~/components';
 import {
   useCurrentGeneration,
   useMintPrice,
@@ -14,7 +14,8 @@ import {
 import {
   Mint,
   MintingHeader,
-  BudgetMint
+  BudgetMint,
+  ReferInputs
 } from '~/components/screens'
 import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
@@ -50,6 +51,11 @@ const Home = () => {
   const [step, setStep] = useState('one');
   const [budgetAmount, setBudgetAmount] = useState('');
   const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [referModalOpen, setReferModalOpen] = useState<boolean>(false);
+  const [twitterHandle, setTwitterHandle] = useState('')
+  const [smallLoading, setSmallLoading] = useState<boolean | null>(false);
+
+  const handleReferModal = () => setReferModalOpen(prevState => !prevState);
 
   useEffect(() => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
@@ -64,7 +70,12 @@ const Home = () => {
     if (storedReferralCode) {
       setReferralCode(storedReferralCode);
     }
-  }, []);
+    if (!storedReferralCode && !address && address === undefined) {
+      setReferModalOpen(true);
+    } else {
+      setReferModalOpen(false);
+    }
+  }, [address, referralCode]);
 
   const refreshEntities = async () => {
     refetchMintPrice();
@@ -82,14 +93,28 @@ const Home = () => {
     return res?.proof ?? [];
   };
 
+  const handleSubmitTwitter = async () => {
+    setSmallLoading(true)
+    const refCode = twitterHandle;
+    await fetch('/api/incrementMint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refCode }),
+      });
+      setSmallLoading(false)
+      setReferModalOpen(false);
+  };
+
   const handleMintEntity = async () => {
     onMintToken(mintPrice, getProof());
-    setStep('three');
+    setStep('one');
   };
 
   const handleMintBatchEntity = async () => {
     await onMintWithBudget(parseEther(budgetAmount), getProof());
-    setStep('three');
+    setStep('one');
   };
 
   const handleExit = () => {
@@ -98,12 +123,13 @@ const Home = () => {
 
   useEffect(() => {
     const handleAPIBatchReq = async () => {
+      const refCode = referralCode;
       await fetch('/api/batchMintReferral', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ referralCode, hash, address }),
+        body: JSON.stringify({ refCode, hash, address }),
       });
     };
   
@@ -116,12 +142,13 @@ const Home = () => {
 
     useEffect(() => {
       const handleMintInc = async () => {
+        const refCode = referralCode;
         await fetch('/api/incrementMint', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ referralCode }),
+          body: JSON.stringify({ refCode }),
         });
       };
     
@@ -239,7 +266,7 @@ const Home = () => {
   
     return (
       <div
-          className="mint-container py-1"
+          className="mint-container min-h-screen"
           style={{
             backgroundImage:
               "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
@@ -248,6 +275,21 @@ const Home = () => {
             backgroundAttachment: 'fixed',
           }}
         >
+          {referModalOpen && !referralCode && (
+         <Modal
+         isOpen={referModalOpen}
+         closeModal={handleReferModal}
+         modalClasses="items-end pb-4"
+         >
+         <ReferInputs
+          handleReferModal={handleReferModal}
+          setTwitterHandle={setTwitterHandle}
+          twitterHandle={twitterHandle}
+          handleSubmitTwitter={handleSubmitTwitter}
+          smallLoading={smallLoading}
+          />
+          </Modal>
+          )}
           <MintingHeader handleStep={setStep} step={step} />
           {content}
         </div>

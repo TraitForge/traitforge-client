@@ -8,7 +8,7 @@ type ReferralData = {
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
   try {
-    const { referralCode, hash, address }: { referralCode: string; hash: `0x${string}`; address: string } = await req.json();
+    const { refCode, hash, address }: { refCode: string; hash: `0x${string}`; address: string } = await req.json();
 
     if (!hash) {
       return NextResponse.json({ success: false, message: 'Transaction hash is required' }, { status: 400 });
@@ -30,7 +30,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     const targetTopics = '0x19f5f791ee407773427bf7b970bbbc3375065c32edd1ab142e23a84f94b0719b';
     const count = receipt.logs.filter((log: any) => log.topics.includes(targetTopics)).length;
 
-    if (!referralCode) {
+    if (!refCode) {
       return NextResponse.json({ success: false, message: 'Referral code not found' }, { status: 400 });
     }
 
@@ -44,10 +44,10 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     const fileContent = await getAnotherS3Object(fileKey);
     let data: ReferralData = fileContent ? JSON.parse(fileContent as string) : {};
 
-    if (data[referralCode]) {
-      data[referralCode] += count;
+    if (data[refCode]) {
+      data[refCode] += count;
     } else {
-      data[referralCode] = count;
+      data[refCode] = count;
     }
 
     const jsonData = JSON.stringify(data, null, 2);

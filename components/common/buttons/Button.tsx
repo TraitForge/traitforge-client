@@ -1,8 +1,8 @@
 import classNames from 'classnames';
-import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
+import { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode } from 'react';
 
 type ButtonTypes = {
-  text: string;
+  text: string | ReactNode;
   bg?: string;
   variant: 'blue' | 'green' | 'orange' | 'purple' | 'secondary' | 'null';
   width?: string | number;

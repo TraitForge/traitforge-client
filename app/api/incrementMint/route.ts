@@ -6,8 +6,8 @@ type ReferralData = {
 };
 
 export async function POST(req: NextRequest) {
-  const { referralCode } = await req.json();
-  if (typeof referralCode !== 'string') {
+  const { refCode } = await req.json();
+  if (typeof refCode !== 'string') {
     return NextResponse.json({ error: 'Invalid referral code' }, { status: 400 });
   }
 
@@ -21,14 +21,14 @@ export async function POST(req: NextRequest) {
   const fileContent = await getAnotherS3Object(fileKey);
   let data: ReferralData = fileContent ? JSON.parse(fileContent as string) : {};
 
-    if (data[referralCode]) {
-      data[referralCode] += 1;
+    if (data[refCode]) {
+      data[refCode] += 1;
     } else {
-      data[referralCode] = 1;
+      data[refCode] = 1;
     }
     const jsonData = JSON.stringify(data, null, 2);
     await uploadToAnotherS3(jsonData, fileKey, 'application/json');
-
+    console.log("submitted increment successfully")
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error writing to file:', error);
