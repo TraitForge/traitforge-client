@@ -34,7 +34,7 @@ export const ReferInputs = ({
           <input
             type="text"
             className="border w-full pl-6 border-neon-blue bg-dark-81 p-3 text-white text-base focus:outline-none"
-            placeholder=""
+            placeholder="twitter/x"
             value={twitterHandle}
             onChange={handleInputChange}
           />
