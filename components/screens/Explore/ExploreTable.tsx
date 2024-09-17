@@ -22,7 +22,7 @@ export const ExploreTable = ({ users, page, numberPerPage }: Props) => {
     <div className="min-h-[631px]">
       <div className="w-full overflow-y-auto ">
         <ul className="grid w-full grid-cols-12">
-          <li className="col-span-2 text-left">Rank</li>
+          <li className="col-span-2 text-left">Entities owned</li>
           <li className="col-span-6 text-left">Name</li>
           <li className="col-span-4 text-right">Twitter/X</li>
         </ul>
