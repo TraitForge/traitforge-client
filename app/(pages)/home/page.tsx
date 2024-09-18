@@ -230,7 +230,7 @@ const Home = () => {
               upcomingMints={upcomingMints}
             />
           </div>
-          <div className="intro-container flex flex-col items-center">
+          <div className="intro-container flex flex-col items-center mt-5">
             <div className="flex">
               <Button
                 onClick={() => setStep('two')}

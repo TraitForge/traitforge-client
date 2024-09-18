@@ -73,7 +73,7 @@ const ExplorePage = () => {
 
   return (
     <div
-      className="min-h-screen pt-10"
+      className="min-h-screen pt-8"
       style={{
         backgroundImage:
           "radial-gradient(rgba(0, 0, 0, 0.7) 49%, rgba(0, 0, 0, 0.7) 100%), url('/images/marketplace-background.jpg')",

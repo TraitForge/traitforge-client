@@ -26,7 +26,7 @@ export const ExploreTable = ({ users, page, numberPerPage }: Props) => {
           <li className="col-span-6 text-left">Name</li>
           <li className="col-span-4 text-right">Twitter/X</li>
         </ul>
-        <ul className="flex flex-col gap-y-2 mt-5">
+        <ul className="flex flex-col gap-y-4 mt-5">
           {users
             .slice(page * numberPerPage, (page + 1) * numberPerPage)
             .map(item => (
