@@ -62,6 +62,11 @@ const Slider = ({
         spaceBetween: 15,
         centeredSlides: false,
       },
+      1900: {
+        slidesPerView: 6,
+        spaceBetween: 15,
+        centeredSlides: false,
+      },
     },
   };
 

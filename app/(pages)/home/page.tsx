@@ -266,7 +266,7 @@ const Home = () => {
   
     return (
       <div
-          className="mint-container min-h-screen"
+          className="mint-container min-h-screen 3xl:pt-[100px]"
           style={{
             backgroundImage:
               "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
