@@ -1,4 +1,4 @@
-# TraitForge: The NFT Honeypot Game
+# TraitForge: The NFT NukeFund Game
 
 ## Abstract
 
