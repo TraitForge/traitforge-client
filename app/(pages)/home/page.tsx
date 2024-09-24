@@ -105,6 +105,7 @@ const Home = () => {
         },
         body: JSON.stringify({ refCode }),
       });
+      localStorage.setItem('referralCode', refCode);
       setSmallLoading(false)
       setReferModalOpen(false);
   };
