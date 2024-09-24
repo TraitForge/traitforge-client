@@ -83,7 +83,7 @@ export const OwnedEntities = () => {
             />
           </div>
           <div className={entitiesWrapper}>
-            <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-2 flex-1 overflow-y-scroll">
+            <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 md:text-large md:w-full text-white md:mb-8 gap-5 flex-1 overflow-y-scroll">
               {ownerEntities.map((entity: Entity) => (
                 <EntityCard key={entity.tokenId} entity={entity} />
               ))}

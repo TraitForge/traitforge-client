@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import { Slider, Button, LoadingSpinner } from '~/components';
 import {
   useCurrentGeneration,
@@ -11,11 +13,7 @@ import {
   useUpcomingMints,
   useWhitelistEndTime,
 } from '~/hooks';
-import {
-  Mint,
-  MintingHeader,
-  BudgetMint
-} from '~/components/screens'
+import { Mint, MintingHeader, BudgetMint } from '~/components/screens';
 import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
@@ -73,7 +71,7 @@ const Home = () => {
     }
     refetchCurrentGeneration();
     refetchPriceIncrement();
-  }
+  };
 
   const getProof = () => {
     const res = WHITELIST.find(
@@ -83,17 +81,25 @@ const Home = () => {
   };
 
   const handleMintEntity = async () => {
-    onMintToken(mintPrice, getProof());
-    setStep('three');
+    await onMintToken(mintPrice, getProof());
+    await axios.post('/api/users', {
+      walletAddress: address,
+      entity: upcomingMints[0]?.entropy,
+    });
+    setStep('one');
   };
 
   const handleMintBatchEntity = async () => {
     await onMintWithBudget(parseEther(budgetAmount), getProof());
-    setStep('three');
+    await axios.post('/api/users', {
+      walletAddress: address,
+      entity: upcomingMints[0]?.entropy,
+    });
+    setStep('one');
   };
 
   const handleExit = () => {
-    setStep('one'); 
+    setStep('one');
   };
 
   useEffect(() => {
@@ -106,29 +112,29 @@ const Home = () => {
         body: JSON.stringify({ referralCode, hash, address }),
       });
     };
-  
+
     if (isMintWithBudgetConfirmed) {
       handleAPIBatchReq();
     }
   }, [isMintWithBudgetConfirmed, referralCode, hash, address]);
- 
+
   const upcomingMint = upcomingMints.length > 0 ? upcomingMints[0] : null;
 
-    useEffect(() => {
-      const handleMintInc = async () => {
-        await fetch('/api/incrementMint', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ referralCode }),
-        });
-      };
-    
-      if (isMintTokenConfirmed) {
-        handleMintInc();
-      }
-    }, [isMintTokenConfirmed, referralCode]);
+  useEffect(() => {
+    const handleMintInc = async () => {
+      await fetch('/api/incrementMint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ referralCode }),
+      });
+    };
+
+    if (isMintTokenConfirmed) {
+      handleMintInc();
+    }
+  }, [isMintTokenConfirmed, referralCode]);
 
   if (isLoading)
     return (
@@ -142,48 +148,51 @@ const Home = () => {
       </div>
     );
 
-    let content;
+  let content;
 
-    switch (step) {
-      case 'three':
-        content = (
-          <BudgetMint
-            bg="#023340"
-            setStep={setStep}
-            borderColor="#0ADFDB"
-            budgetAmount={budgetAmount}
-            setBudgetAmount={setBudgetAmount}
-            handleMintWithBudget={handleMintBatchEntity}
-            onClose={handleExit}/>
-        );
-        break;
-      case 'two':
-        content = (
-          <>
+  switch (step) {
+    case 'three':
+      content = (
+        <BudgetMint
+          bg="#023340"
+          setStep={setStep}
+          borderColor="#0ADFDB"
+          budgetAmount={budgetAmount}
+          setBudgetAmount={setBudgetAmount}
+          handleMintWithBudget={handleMintBatchEntity}
+          onClose={handleExit}
+        />
+      );
+      break;
+    case 'two':
+      content = (
+        <>
           {upcomingMint ? (
-          <Mint
-            mintPrice={mintPrice}
-            upcomingMint={upcomingMint}
-            currentGeneration={currentGeneration}
-            refreshEntities={refreshEntities}
-            bg="#023340"
-            setStep={setStep}
-            borderColor="#0ADFDB"
-            handleMintEntity={handleMintEntity}
-            budgetAmount={budgetAmount}
-            setBudgetAmount={setBudgetAmount}
-            handleMintWithBudget={handleMintBatchEntity}
-            onClose={handleExit}
-          />
+            <Mint
+              mintPrice={mintPrice}
+              upcomingMint={upcomingMint}
+              currentGeneration={currentGeneration}
+              refreshEntities={refreshEntities}
+              bg="#023340"
+              setStep={setStep}
+              borderColor="#0ADFDB"
+              handleMintEntity={handleMintEntity}
+              budgetAmount={budgetAmount}
+              setBudgetAmount={setBudgetAmount}
+              handleMintWithBudget={handleMintBatchEntity}
+              onClose={handleExit}
+            />
           ) : (
-            <p className="text-center text-neutral-400">No upcoming mint available</p>
+            <p className="text-center text-neutral-400">
+              No upcoming mint available
+            </p>
           )}
-          </>
-        );
-        break;
-      default:
-        content = (
-          <>
+        </>
+      );
+      break;
+    default:
+      content = (
+        <>
           <h1
             title="Mint Your Traitforge Entity"
             className="headers text-[36px] my-1 text-center md:text-extra-large"
@@ -221,7 +230,7 @@ const Home = () => {
               upcomingMints={upcomingMints}
             />
           </div>
-          <div className="intro-container flex flex-col items-center">
+          <div className="intro-container flex flex-col items-center mt-5">
             <div className="flex">
               <Button
                 onClick={() => setStep('two')}
@@ -233,26 +242,25 @@ const Home = () => {
               />
             </div>
           </div>
-          </>
-        );
-    }
-  
-    return (
-      <div
-          className="mint-container py-1"
-          style={{
-            backgroundImage:
-              "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundAttachment: 'fixed',
-          }}
-        >
-          <MintingHeader handleStep={setStep} step={step} />
-          {content}
-        </div>
-    
-    );
+        </>
+      );
+  }
+
+  return (
+    <div
+      className="mint-container py-1 h-full"
+      style={{
+        backgroundImage:
+          "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      <MintingHeader handleStep={setStep} step={step} />
+      {content}
+    </div>
+  );
 };
 
 export default Home;

@@ -177,6 +177,7 @@ const Line = (
   <motion.line
     fill="#fff"
     stroke="#fff"
+    
     strokeLinecap="round"
     strokeWidth="1.5"
     {...props}

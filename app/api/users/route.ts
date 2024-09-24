@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import prisma from '~/lib/prisma';
 
 export const GET = async (req: NextRequest) => {
@@ -10,7 +11,8 @@ export const GET = async (req: NextRequest) => {
       where: {
         name: {
           startsWith: name as string,
-        }
+          mode: 'insensitive',
+        },
       },
     });
 
@@ -18,6 +20,13 @@ export const GET = async (req: NextRequest) => {
       where: {
         walletAddress: {
           startsWith: name as string,
+          mode: 'insensitive',
+        },
+      },
+      include: {
+        entities: true,
+        _count: {
+          select: { entities: true }
         },
       },
     });
@@ -26,6 +35,7 @@ export const GET = async (req: NextRequest) => {
       where: {
         twitter: {
           startsWith: name as string,
+          mode: 'insensitive',
         },
       },
     });
@@ -44,4 +54,39 @@ export const GET = async (req: NextRequest) => {
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
+};
+
+export const POST = async (req: NextRequest) => {
+  if (req.method === 'POST') {
+    try {
+      const {
+        walletAddress,
+        entity,
+      }: { walletAddress: string; entity: number } = await req.json();
+
+      const existingUser = await prisma.user.findUnique({
+        where: { walletAddress },
+      });
+
+      if (!existingUser) {
+        return NextResponse.json({ error: 'No address' }, { status: 404 });
+      }
+
+      await prisma.entity.createMany({
+        data: [
+          {
+            entropy: entity,
+            userId: existingUser.id,
+          },
+        ],
+      });
+
+      return NextResponse.json({ message: 'Success' }, { status: 200 });
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
+    }
+  }
+
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 };
