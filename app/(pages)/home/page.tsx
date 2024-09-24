@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 
-import { Slider, Button, LoadingSpinner } from '~/components';
+import { useEffect, useState, useRef } from 'react';
+import { Slider, Button, LoadingSpinner, Modal } from '~/components';
+import axios from 'axios';
 import {
   useCurrentGeneration,
   useMintPrice,
@@ -13,7 +13,12 @@ import {
   useUpcomingMints,
   useWhitelistEndTime,
 } from '~/hooks';
-import { Mint, MintingHeader, BudgetMint } from '~/components/screens';
+import {
+  Mint,
+  MintingHeader,
+  BudgetMint,
+  ReferInputs
+} from '~/components/screens'
 import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
@@ -48,6 +53,11 @@ const Home = () => {
   const [step, setStep] = useState('one');
   const [budgetAmount, setBudgetAmount] = useState('');
   const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [referModalOpen, setReferModalOpen] = useState<boolean>(false);
+  const [twitterHandle, setTwitterHandle] = useState('')
+  const [smallLoading, setSmallLoading] = useState<boolean | null>(false);
+
+  const handleReferModal = () => setReferModalOpen(prevState => !prevState);
 
   useEffect(() => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
@@ -62,7 +72,12 @@ const Home = () => {
     if (storedReferralCode) {
       setReferralCode(storedReferralCode);
     }
-  }, []);
+    if (!storedReferralCode && !address && address === undefined) {
+      setReferModalOpen(true);
+    } else {
+      setReferModalOpen(false);
+    }
+  }, [address, referralCode]);
 
   const refreshEntities = async () => {
     refetchMintPrice();
@@ -78,6 +93,20 @@ const Home = () => {
       item => item.address.toLowerCase() === address?.toLowerCase()
     );
     return res?.proof ?? [];
+  };
+
+  const handleSubmitTwitter = async () => {
+    setSmallLoading(true)
+    const refCode = twitterHandle;
+    await fetch('/api/incrementMint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refCode }),
+      });
+      setSmallLoading(false)
+      setReferModalOpen(false);
   };
 
   const handleMintEntity = async () => {
@@ -104,12 +133,13 @@ const Home = () => {
 
   useEffect(() => {
     const handleAPIBatchReq = async () => {
+      const refCode = referralCode;
       await fetch('/api/batchMintReferral', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ referralCode, hash, address }),
+        body: JSON.stringify({ refCode, hash, address }),
       });
     };
 
@@ -120,21 +150,22 @@ const Home = () => {
 
   const upcomingMint = upcomingMints.length > 0 ? upcomingMints[0] : null;
 
-  useEffect(() => {
-    const handleMintInc = async () => {
-      await fetch('/api/incrementMint', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ referralCode }),
-      });
-    };
-
-    if (isMintTokenConfirmed) {
-      handleMintInc();
-    }
-  }, [isMintTokenConfirmed, referralCode]);
+    useEffect(() => {
+      const handleMintInc = async () => {
+        const refCode = referralCode;
+        await fetch('/api/incrementMint', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refCode }),
+        });
+      };
+    
+      if (isMintTokenConfirmed) {
+        handleMintInc();
+      }
+    }, [isMintTokenConfirmed, referralCode]);
 
   if (isLoading)
     return (
@@ -242,25 +273,41 @@ const Home = () => {
               />
             </div>
           </div>
-        </>
-      );
-  }
-
-  return (
-    <div
-      className="mint-container py-1 h-full"
-      style={{
-        backgroundImage:
-          "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundAttachment: 'fixed',
-      }}
-    >
-      <MintingHeader handleStep={setStep} step={step} />
-      {content}
-    </div>
-  );
+          </>
+        );
+    }
+  
+    return (
+      <div
+          className="mint-container min-h-screen 3xl:pt-[100px]"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundAttachment: 'fixed',
+          }}
+        >
+          {referModalOpen && !referralCode && (
+         <Modal
+         isOpen={referModalOpen}
+         closeModal={handleReferModal}
+         modalClasses="items-end pb-4"
+         >
+         <ReferInputs
+          handleReferModal={handleReferModal}
+          setTwitterHandle={setTwitterHandle}
+          twitterHandle={twitterHandle}
+          handleSubmitTwitter={handleSubmitTwitter}
+          smallLoading={smallLoading}
+          />
+          </Modal>
+          )}
+          <MintingHeader handleStep={setStep} step={step} />
+          {content}
+        </div>
+    
+    );
 };
 
 export default Home;
