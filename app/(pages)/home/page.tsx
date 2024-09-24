@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useEffect, useState, useRef } from 'react';
 import { Slider, Button, LoadingSpinner, Modal } from '~/components';
+import axios from 'axios';
 import {
   useCurrentGeneration,
   useMintPrice,
@@ -84,7 +86,7 @@ const Home = () => {
     }
     refetchCurrentGeneration();
     refetchPriceIncrement();
-  }
+  };
 
   const getProof = () => {
     const res = WHITELIST.find(
@@ -108,17 +110,25 @@ const Home = () => {
   };
 
   const handleMintEntity = async () => {
-    onMintToken(mintPrice, getProof());
+    await onMintToken(mintPrice, getProof());
+    await axios.post('/api/users', {
+      walletAddress: address,
+      entity: upcomingMints[0]?.entropy,
+    });
     setStep('one');
   };
 
   const handleMintBatchEntity = async () => {
     await onMintWithBudget(parseEther(budgetAmount), getProof());
+    await axios.post('/api/users', {
+      walletAddress: address,
+      entity: upcomingMints[0]?.entropy,
+    });
     setStep('one');
   };
 
   const handleExit = () => {
-    setStep('one'); 
+    setStep('one');
   };
 
   useEffect(() => {
@@ -132,12 +142,12 @@ const Home = () => {
         body: JSON.stringify({ refCode, hash, address }),
       });
     };
-  
+
     if (isMintWithBudgetConfirmed) {
       handleAPIBatchReq();
     }
   }, [isMintWithBudgetConfirmed, referralCode, hash, address]);
- 
+
   const upcomingMint = upcomingMints.length > 0 ? upcomingMints[0] : null;
 
     useEffect(() => {
@@ -169,48 +179,51 @@ const Home = () => {
       </div>
     );
 
-    let content;
+  let content;
 
-    switch (step) {
-      case 'three':
-        content = (
-          <BudgetMint
-            bg="#023340"
-            setStep={setStep}
-            borderColor="#0ADFDB"
-            budgetAmount={budgetAmount}
-            setBudgetAmount={setBudgetAmount}
-            handleMintWithBudget={handleMintBatchEntity}
-            onClose={handleExit}/>
-        );
-        break;
-      case 'two':
-        content = (
-          <>
+  switch (step) {
+    case 'three':
+      content = (
+        <BudgetMint
+          bg="#023340"
+          setStep={setStep}
+          borderColor="#0ADFDB"
+          budgetAmount={budgetAmount}
+          setBudgetAmount={setBudgetAmount}
+          handleMintWithBudget={handleMintBatchEntity}
+          onClose={handleExit}
+        />
+      );
+      break;
+    case 'two':
+      content = (
+        <>
           {upcomingMint ? (
-          <Mint
-            mintPrice={mintPrice}
-            upcomingMint={upcomingMint}
-            currentGeneration={currentGeneration}
-            refreshEntities={refreshEntities}
-            bg="#023340"
-            setStep={setStep}
-            borderColor="#0ADFDB"
-            handleMintEntity={handleMintEntity}
-            budgetAmount={budgetAmount}
-            setBudgetAmount={setBudgetAmount}
-            handleMintWithBudget={handleMintBatchEntity}
-            onClose={handleExit}
-          />
+            <Mint
+              mintPrice={mintPrice}
+              upcomingMint={upcomingMint}
+              currentGeneration={currentGeneration}
+              refreshEntities={refreshEntities}
+              bg="#023340"
+              setStep={setStep}
+              borderColor="#0ADFDB"
+              handleMintEntity={handleMintEntity}
+              budgetAmount={budgetAmount}
+              setBudgetAmount={setBudgetAmount}
+              handleMintWithBudget={handleMintBatchEntity}
+              onClose={handleExit}
+            />
           ) : (
-            <p className="text-center text-neutral-400">No upcoming mint available</p>
+            <p className="text-center text-neutral-400">
+              No upcoming mint available
+            </p>
           )}
-          </>
-        );
-        break;
-      default:
-        content = (
-          <>
+        </>
+      );
+      break;
+    default:
+      content = (
+        <>
           <h1
             title="Mint Your Traitforge Entity"
             className="headers text-[36px] my-1 text-center md:text-extra-large"
@@ -248,7 +261,7 @@ const Home = () => {
               upcomingMints={upcomingMints}
             />
           </div>
-          <div className="intro-container flex flex-col items-center">
+          <div className="intro-container flex flex-col items-center mt-5">
             <div className="flex">
               <Button
                 onClick={() => setStep('two')}

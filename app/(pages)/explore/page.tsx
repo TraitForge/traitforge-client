@@ -12,6 +12,11 @@ export interface User {
   pfp: string;
   twitter: string;
   walletAddress: `0x${string}`;
+  entities: {
+    entropy: number;
+    id: number;
+    userId: number;
+  }[];
 }
 
 export interface SearchResults {
@@ -24,6 +29,7 @@ const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setSearchResults] = useState<SearchResults | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setTableLoading] = useState(true);
   const [users, setUsers] = useState<User[]>([]);
 
   const handleSearch = (text: string) => setSearchQuery(text);
@@ -53,17 +59,21 @@ const ExplorePage = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    console.log('hello')
     const fetchData = async () => {
-      const data = await searchUsers('');
-      setUsers(data.walletAddress);
+      setTableLoading(true);
+      await searchUsers('')
+        .then(res => setUsers(res.walletAddress))
+        .catch(error => console.log(error))
+        .finally(() => {
+          setTableLoading(false);
+        });
     };
     fetchData();
   }, []);
 
   return (
     <div
-      className="min-h-screen pt-10"
+      className="min-h-screen pt-8"
       style={{
         backgroundImage:
           "radial-gradient(rgba(0, 0, 0, 0.7) 49%, rgba(0, 0, 0, 0.7) 100%), url('/images/marketplace-background.jpg')",
@@ -78,7 +88,7 @@ const ExplorePage = () => {
         results={results as SearchResults}
         loading={loading}
       />
-      <Explore users={users as User[]} />
+      <Explore users={users as User[]} loading={isLoading} />
     </div>
   );
 };

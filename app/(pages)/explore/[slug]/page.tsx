@@ -6,6 +6,9 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 
 import { icons } from '~/components/icons';
+import { useMintPrice, usePriceIncrement, useCurrentGeneration } from '~/hooks';
+import { EntitySliderCard } from '~/components/common/Slider/EntitySliderCard';
+import { getEntityPrice } from '~/utils';
 
 interface User {
   id: number;
@@ -13,12 +16,21 @@ interface User {
   pfp: string;
   twitter: string;
   walletAddress: `0x${string}`;
+  entities: {
+    entropy: number;
+    id: number;
+    userId: number;
+  }[];
 }
 
 const ExplorePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
+  const { data: mintPrice } = useMintPrice();
+  const { data: priceIncrement } = usePriceIncrement();
+  const { data: currentGeneration, refetch: refetchCurrentGeneration } =
+    useCurrentGeneration();
 
   useEffect(() => {
     // check user already registered
@@ -42,11 +54,9 @@ const ExplorePage = () => {
     })();
   }, [slug]);
 
-  console.log(user);
-
   return (
     <div
-      className="py-10 h-full"
+      className="py-10 min-h-screen"
       style={{
         backgroundImage:
           "radial-gradient(rgba(0, 0, 0, 0.8) 49%, rgba(0, 0, 0, 0.8) 100%), url('/images/marketplace-background.jpg')",
@@ -56,7 +66,7 @@ const ExplorePage = () => {
       }}
     >
       {loading ? (
-        <div className="h-[500px] w-full flex justify-center items-center flex-col">
+        <div className="h-[700px] w-full flex justify-center items-center flex-col">
           <LoadingSpinner color="#AAFF3E" />
         </div>
       ) : (
@@ -85,6 +95,20 @@ const ExplorePage = () => {
                 <p className="text-xl">{`@${user?.twitter}`}</p>
               </div>
             </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-2 md:gap-x-[15px] mt-10 gap-y-5 lg:gap-y-10">
+            {user?.entities?.map((item, index) => {
+              const price = getEntityPrice(mintPrice, priceIncrement, index);
+              return (
+                <EntitySliderCard
+                  key={item.id}
+                  currentGeneration={currentGeneration}
+                  entropy={item.entropy}
+                  price={price}
+                  showPrice
+                />
+              );
+            })}
           </div>
         </div>
       )}

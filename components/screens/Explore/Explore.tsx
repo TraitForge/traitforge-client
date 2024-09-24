@@ -11,12 +11,18 @@ interface Props {
     pfp: string;
     twitter: string;
     walletAddress: `0x${string}`;
+    entities: {
+      entropy: number;
+      id: number;
+      userId: number;
+    }[];
   }[];
+  loading: boolean;
 }
 
 const numberPerPage = 10;
 
-export const Explore = ({ users }: Props) => {
+export const Explore = ({ users, loading }: Props) => {
   const [page, setPage] = useState(0);
   const numOfPages = Math.ceil(users?.length / numberPerPage);
 
@@ -24,8 +30,24 @@ export const Explore = ({ users }: Props) => {
 
   return (
     <section className="container">
-      <ExploreTable numberPerPage={numberPerPage} users={users} page={page} />
-      <Pagination numOfPages={numOfPages} handlePage={handlePage} page={page} />
+      {loading ? (
+        <div className="min-h-[500px] w-full flex justify-center items-center flex-col">
+          <LoadingSpinner color="#AAFF3E" />
+        </div>
+      ) : (
+        <>
+          <ExploreTable
+            numberPerPage={numberPerPage}
+            users={users}
+            page={page}
+          />
+          <Pagination
+            numOfPages={numOfPages}
+            handlePage={handlePage}
+            page={page}
+          />
+        </>
+      )}
     </section>
   );
 };
