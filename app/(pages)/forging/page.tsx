@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, LoadingSpinner, RewardModal } from '~/components';
 import { calculateEntityAttributes } from '~/utils';
-import { publicClient } from '~/lib/client';
+import { baseSepoliaClient } from '~/lib/client';
 import {
   useEntitiesForForging,
   useForgeWithListed,
@@ -102,7 +102,7 @@ const Forging = () => {
     if (hash && isForgeConfirmed) {
       (async () => {
         try {
-          const res = await publicClient.getTransactionReceipt({ hash });
+          const res = await baseSepoliaClient.getTransactionReceipt({ hash });
           if (res?.logs?.[7]?.topics?.[1]) {
             const hexString = res.logs[7].topics[1].toString();
             const tokenID = parseInt(hexString, 16);

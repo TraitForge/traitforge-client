@@ -10,27 +10,8 @@ export const composeIMG = async (
   power: number
 ) => {
   console.log('starting next image:', paddedEntropy, entityGeneration, power);
-  if(paddedEntropy == 999999) {
-    const imagePath = path.join(
-      varConfig.variablesPath,
-      entityGeneration,
-      `GoldenGod.png`
-    );
-    const composedImage = await sharp({
-      create: {
-        width: 3000,
-        height: 3000,
-        channels: 4,
-        background: { r: 255, g: 255, b: 255, alpha: 0 },
-      },
-    })
-      .composite([
-        { input: imagePath, blend: 'over' },
-      ])
-      .jpeg()
-      .toBuffer();
-
-    return composedImage;
+  if(paddedEntropy === 999999) {
+    return;
   }
   try {
     const baseCharacterBuffer = await baseCharacterImg(

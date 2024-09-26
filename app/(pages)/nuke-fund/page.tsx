@@ -17,7 +17,7 @@ import { SingleValue } from 'react-select';
 import { HoneyPotBody, HoneyPotHeader, NukeEntity, NukingReceipt } from '~/components/screens';
 import { Entity } from '~/types';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
-import { publicClient } from '~/lib/client';
+import { baseSepoliaClient } from '~/lib/client';
 
 const HoneyPot = () => {
   const { address } = useAccount();
@@ -106,9 +106,9 @@ const HoneyPot = () => {
     }
   };
 
-  const fetchTransactionReceipt = async (hash: string, publicClient: any) => {
+  const fetchTransactionReceipt = async (hash: string, baseSepoliaClient: any) => {
     try {
-      const res = await publicClient.getTransactionReceipt({ hash });
+      const res = await baseSepoliaClient.getTransactionReceipt({ hash });
       if (res && res.logs && res.logs.length > 1 && res.logs[1]) {
         const logData = res.logs[1].data;
         const weiValue = BigInt(logData);
@@ -125,7 +125,7 @@ const HoneyPot = () => {
   
   useEffect(() => {
     if (hash && isNukeConfirmed) {
-      fetchTransactionReceipt(hash, publicClient)
+      fetchTransactionReceipt(hash, baseSepoliaClient)
         .then((ethFromNuke) => {
           setEthFromNuke(ethFromNuke);
           setModalOpen(true);
@@ -134,7 +134,7 @@ const HoneyPot = () => {
           console.error('Failed to process transaction receipt:', error);
         });
     }
-  }, [hash, isNukeConfirmed, publicClient]);
+  }, [hash, isNukeConfirmed, baseSepoliaClient]);
 
   useEffect(() => {
     if (selectedForNuke && isApproveConfirmed) {

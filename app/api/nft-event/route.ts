@@ -1,4 +1,4 @@
-import { publicClient } from '~/lib/client';
+import { baseSepoliaClient } from '~/lib/client';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { TraitForgeNftABI } from '~/lib/abis';
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
       // Mints new NFT
       const tokenId = Number(activity.erc721TokenId);
       const currentGen = Number(
-        await publicClient.readContract({
+        await baseSepoliaClient.readContract({
           address: CONTRACT_ADDRESSES.TraitForgeNft,
           abi: TraitForgeNftABI,
           functionName: 'currentGeneration',
@@ -21,7 +21,7 @@ export const POST = async (req: NextRequest) => {
         })
       );
       const tokenGen = Number(
-        await publicClient.readContract({
+        await baseSepoliaClient.readContract({
           address: CONTRACT_ADDRESSES.TraitForgeNft,
           abi: TraitForgeNftABI,
           functionName: 'tokenGenerations',
@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest) => {
       if (tokenGen > currentGen) {
         // EntityForging
         const tokenEntropy = Number(
-          await publicClient.readContract({
+          await baseSepoliaClient.readContract({
             address: CONTRACT_ADDRESSES.TraitForgeNft,
             abi: TraitForgeNftABI,
             functionName: 'tokenEntropy',
