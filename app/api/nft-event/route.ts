@@ -1,10 +1,11 @@
 import { baseSepoliaClient } from '~/lib/client';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
-import { TraitForgeNftABI, EntityForgingABI } from '~/lib/abis';
+import { TraitForgeNftABI, EntityForgingABI, EntropyGeneratorABI } from '~/lib/abis';
 import { NextRequest, NextResponse } from 'next/server';
 import { processImage } from '~/utils/entropy';
 import { isInbred } from '~/utils';
 import { decodeEventLog } from 'viem'
+import { random } from 'lodash';
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -14,14 +15,6 @@ export const POST = async (req: NextRequest) => {
     if (activity.fromAddress === '0x0000000000000000000000000000000000000000') {
       // Mints new NFT
       const tokenId = Number(activity.erc721TokenId);
-      const currentGen = Number(
-        await baseSepoliaClient.readContract({
-          address: CONTRACT_ADDRESSES.TraitForgeNft,
-          abi: TraitForgeNftABI,
-          functionName: 'currentGeneration',
-          args: [],
-        })
-      );
       const tokenGen = Number(
         await baseSepoliaClient.readContract({
           address: CONTRACT_ADDRESSES.TraitForgeNft,
@@ -59,11 +52,24 @@ export const POST = async (req: NextRequest) => {
           const parent1Id = decodedLog.args.parent1Id;
           const parent2Id = decodedLog.args.parent2Id;
           const isPossiblyInbred = await isInbred(parent1Id, parent2Id);
-        
-          await processImage(tokenEntropy, tokenGen, isPossiblyInbred);
+          if (isPossiblyInbred) {
+            const index = Math.floor(Math.random() * 13);
+            const slot = Math.floor(Math.random() * 834);
+            const randomEntropy = Number(
+              await baseSepoliaClient.readContract({
+                address: CONTRACT_ADDRESSES.EntropyGenerator, 
+                abi: EntropyGeneratorABI,
+                functionName: 'getPublicEntropy',
+                args: [BigInt(slot), BigInt(index)], 
+              })
+            );
+          await processImage(tokenEntropy, randomEntropy, tokenGen, isPossiblyInbred);
         } else {
-          console.error('parent1Id and parent2Id do not exist in the event args');
+          await processImage(tokenEntropy, tokenEntropy, tokenGen, isPossiblyInbred);
         }
+      } else {
+        console.error('parent1Id and parent2Id do not exist in the event args');
+      }
     }
     return NextResponse.json({ status: 'ok' }, { status: 200 });
   } catch (e) {

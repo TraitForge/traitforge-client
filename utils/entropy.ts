@@ -3,11 +3,12 @@ import { uploadToS3 } from './s3';
 
 export async function processImage(
   paddedEntropy: string | number,
+  randomEntropy: string | number,
   entityGeneration: string | number,
   isPossiblyInbred: boolean
 ) {
   const power = Math.floor(Number(paddedEntropy) / 40000);
-  const imageBuffer = await composeIMG(paddedEntropy, entityGeneration, power, isPossiblyInbred);
+  const imageBuffer = await composeIMG(randomEntropy, entityGeneration, power, isPossiblyInbred);
   if (imageBuffer) {
     const uri = await generateUri(paddedEntropy, entityGeneration);
     const fileName = `${uri}`;

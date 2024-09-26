@@ -8,6 +8,7 @@ export const POST = async (req: NextRequest) => {
   try {
     const url = await processImage(
       paddedEntropy as string,
+      paddedEntropy as string,
       entityGeneration as string,
       isPossiblyInbred as boolean
     );
