@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, LoadingSpinner, RewardModal } from '~/components';
 import { calculateEntityAttributes } from '~/utils';
-import { publicClient } from '~/lib/client';
+import { baseSepoliaClient } from '~/lib/client';
 import {
   useEntitiesForForging,
   useForgeWithListed,
@@ -28,7 +28,7 @@ import { parseEther } from 'viem';
 const Forging = () => {
   const { address } = useAccount();
   const { data: ownerEntities, refetch: refetchOwnerEntities } = useOwnerEntities(address || '0x0');
-  const { data: entitiesForForging, refetch: refetchEntitiesForForging } = useEntitiesForForging();
+  const { data: entitiesForForging, refetch: refetchEntitiesForForging } = useEntitiesForForging(0, 60);
   const { hash, onWriteAsync: onForge, isPending: isForgePending, isConfirmed: isForgeConfirmed } = useForgeWithListed();
   const { onWriteAsync: onList, isPending: isListPending } = useListForForging();
 
@@ -102,7 +102,7 @@ const Forging = () => {
     if (hash && isForgeConfirmed) {
       (async () => {
         try {
-          const res = await publicClient.getTransactionReceipt({ hash });
+          const res = await baseSepoliaClient.getTransactionReceipt({ hash });
           if (res?.logs?.[7]?.topics?.[1]) {
             const hexString = res.logs[7].topics[1].toString();
             const tokenID = parseInt(hexString, 16);

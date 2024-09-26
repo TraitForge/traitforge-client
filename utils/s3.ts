@@ -14,15 +14,20 @@ export const uploadToS3 = async (
   fileName: string,
   type = 'image/jpeg'
 ): Promise<void> => {
-  const params = {
-    Bucket: process.env.AWS_S3_BUCKET_NAME || '',
-    Key: fileName,
-    Body: imageBuffer,
-    ContentType: type,
-  };
+  try {
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME || '',
+      Key: fileName,
+      Body: imageBuffer,
+      ContentType: type,
+    };
 
-  const command = new PutObjectCommand(params);
-  await s3Client.send(command);
+    const command = new PutObjectCommand(params);
+    await s3Client.send(command);
+  } catch (error: any) {
+    console.error(`Error uploading file to S3: ${error.message}`);
+    throw new Error(`Could not upload file to S3: ${error.message}`);
+  }
 };
 
 export const getS3Object = async (fileName: string): Promise<Buffer | null> => {
@@ -37,7 +42,7 @@ export const getS3Object = async (fileName: string): Promise<Buffer | null> => {
 
     if (data.Body instanceof Readable) {
       const chunks: Uint8Array[] = [];
-      for await (let chunk of data.Body) {
+      for await (const chunk of data.Body) {
         chunks.push(chunk);
       }
       return Buffer.concat(chunks);
@@ -45,7 +50,8 @@ export const getS3Object = async (fileName: string): Promise<Buffer | null> => {
 
     return null;
   } catch (e: any) {
-    throw new Error(`Could not retrieve file from S3: ${e.message}`);
+    console.error(`Error retrieving file from S3: ${e.message}`);
+    return null;
   }
 };
 

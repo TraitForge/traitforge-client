@@ -7,7 +7,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';
-import { sepolia } from 'wagmi/chains';
+import { sepolia, baseSepolia } from 'wagmi/chains';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import {
   EntityForgingABI,
@@ -24,6 +24,7 @@ import { calculateEntityAttributes } from '~/utils';
 // NFT
 export const useWhitelistEndTime = () => {
   const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'whitelistEndTime',
@@ -39,6 +40,7 @@ export const useWhitelistEndTime = () => {
 
 export const useCurrentGeneration = () => {
   const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'getGeneration',
@@ -54,6 +56,7 @@ export const useCurrentGeneration = () => {
 
 export const useMintPrice = () => {
   const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'calculateMintPrice',
@@ -69,6 +72,7 @@ export const useMintPrice = () => {
 
 export const usePriceIncrement = () => {
   const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'priceIncrement',
@@ -84,6 +88,7 @@ export const usePriceIncrement = () => {
 
 export const useApproval = (address: `0x${string}`, tokenId: number) => {
   const { data, isFetching } = useReadContract({
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'isApprovedOrOwner',
@@ -96,22 +101,27 @@ export const useApproval = (address: `0x${string}`, tokenId: number) => {
   };
 };
 
-export const useUpcomingMints = (mintPrice: bigint) => {
+export const useUpcomingMints = (mintPrice: bigint, generation: number) => {
+  const basePrice = 0.005;  
+  const initialIncrement = 0.0000245;
+  const generationIncrement = 0.000005;
+  const currentGeneration = generation;
   const entityPrice = Number(formatEther(mintPrice));
-  const priceToIndex = Math.floor(entityPrice * 10000);
-  const startSlot = Math.floor(priceToIndex / 13);
-  const startNumberIndex = (priceToIndex + 12) % 13;
-  const maxSlot = 770;
+  const effectiveIncrement = initialIncrement + (generationIncrement * (currentGeneration - 1));
+  const nftIndex = (entityPrice - basePrice) / effectiveIncrement;
+  const startSlot = Math.floor(nftIndex / 12); 
+  const startNumberIndex = nftIndex % 12;
+  const maxSlot = 833;
   const maxCount = 50;
   const inputs = [];
 
-  let slot = startSlot;
-  let index = startNumberIndex;
+  let slot = Math.floor(startSlot);
+  let index = Math.floor(startNumberIndex);
 
   while (inputs.length < maxCount && slot < maxSlot) {
     for (
       let numberIndex = index;
-      numberIndex < 13 && inputs.length < maxCount;
+      numberIndex < 12 && inputs.length < maxCount;
       numberIndex++
     ) {
       inputs.push({ slot: slot, index: numberIndex });
@@ -122,6 +132,7 @@ export const useUpcomingMints = (mintPrice: bigint) => {
 
   const { data, isFetching } = useReadContracts({
     contracts: inputs.map(input => ({
+      chainId: baseSepolia.id,
       abi: EntropyGeneratorABI,
       address: CONTRACT_ADDRESSES.EntropyGenerator,
       functionName: 'getPublicEntropy',
@@ -134,7 +145,7 @@ export const useUpcomingMints = (mintPrice: bigint) => {
       data?.map(
         (res, index) =>
           ({
-            id: startSlot * 13 + index,
+            id: startSlot * 12 + index,
             entropy: Number(res.result ?? 0),
           }) as Entropy
       ) ?? [],
@@ -144,6 +155,7 @@ export const useUpcomingMints = (mintPrice: bigint) => {
 
 export const useNftBalance = (address: `0x${string}`) => {
   const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'balanceOf',
@@ -166,6 +178,7 @@ export const useTokenIds = (address: `0x${string}`) => {
 
   const { data, isFetching } = useReadContracts({
     contracts: new Array(balance).fill(0).map((_, index) => ({
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'tokenOfOwnerByIndex',
@@ -185,6 +198,7 @@ export const useTokenIds = (address: `0x${string}`) => {
 export const useTokenGenerations = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'getTokenGeneration',
@@ -201,6 +215,7 @@ export const useTokenGenerations = (tokenIds: number[]) => {
 export const useIsNukeable = (entities: Entity[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: entities.map(entity => ({
+      chainId: baseSepolia.id,
       abi: NukeFundABI,
       address: CONTRACT_ADDRESSES.NukeFund,
       functionName: 'canTokenBeNuked',
@@ -225,6 +240,7 @@ export const useIsNukeable = (entities: Entity[]) => {
 export const useTokenEntropies = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'getTokenEntropy',
@@ -241,6 +257,7 @@ export const useTokenEntropies = (tokenIds: number[]) => {
 // NukeFund
 export const useNukeFundBalance = () => {
   const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
     abi: NukeFundABI,
     address: CONTRACT_ADDRESSES.NukeFund,
     functionName: 'getFundBalance',
@@ -257,6 +274,7 @@ export const useNukeFundBalance = () => {
 export const useNukeFactors = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({
+      chainId: baseSepolia.id,
       abi: NukeFundABI,
       address: CONTRACT_ADDRESSES.NukeFund,
       functionName: 'calculateNukeFactor',
@@ -271,12 +289,13 @@ export const useNukeFactors = (tokenIds: number[]) => {
 };
 
 // EntityForging
-export const useForgeListings = () => {
+export const useForgeListings = (offset: number, limit: number) => {
   const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
     abi: EntityForgingABI,
     address: CONTRACT_ADDRESSES.EntityForging,
     functionName: 'fetchListings',
-    args: [],
+    args: [BigInt(offset), BigInt(limit)],
   });
 
   return {
@@ -286,13 +305,14 @@ export const useForgeListings = () => {
   };
 };
 
-export const useEntitiesForForging = () => {
+export const useEntitiesForForging = (offset: number, limit: number) => {
   const {
     data: listings,
     isFetching: isForgeListingsFetching,
     refetch,
-  } = useForgeListings();
+  } = useForgeListings(offset, limit);
   const tokenIds = listings.map(listing => Number(listing.tokenId));
+  console.log(tokenIds);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
     useTokenGenerations(tokenIds);
   const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
@@ -328,6 +348,7 @@ export const useEntitiesForForging = () => {
 
 export const useForgingCounts = (tokenId: number) => {
   const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
     abi: EntityForgingABI,
     address: CONTRACT_ADDRESSES.EntityForging,
     functionName: 'forgingCounts',
@@ -348,6 +369,7 @@ export const useTradingListings = () => {
     isFetching: isCountFetching,
     refetch,
   } = useReadContract({
+    chainId: baseSepolia.id,
     abi: EntityTradingABI,
     address: CONTRACT_ADDRESSES.EntityTrading,
     functionName: 'listingCount',
@@ -356,6 +378,7 @@ export const useTradingListings = () => {
 
   const { data, isFetching: isListFetching } = useReadContracts({
     contracts: new Array(Number(count ?? 0)).fill(0).map((_, index) => ({
+      chainId: baseSepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'listings',
@@ -455,14 +478,14 @@ export const useOwnerEntities = (address: `0x${string}`) => {
   };
 };
 
-export const useListedEntitiesByUser = (account: `0x${string}`) => {
+export const useListedEntitiesByUser = (account: `0x${string}`, offset: number, limit: number) => {
   const { data: ownerEntities, isFetching: isOwnerEntitiesFetching } =
     useOwnerEntities(account);
   const {
     data: entitiesForForging,
     isFetching: isForgingFetching,
     refetch: refetchForging,
-  } = useEntitiesForForging();
+  } = useEntitiesForForging(offset, limit);
   const {
     data: entitiesForSale,
     isFetching: isTradingFetching,
@@ -524,7 +547,7 @@ export const useMintToken = () => {
 
   const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[]) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintToken',
@@ -570,13 +593,13 @@ export const useMintWithBudget = () => {
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
-  const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[]) => {
+  const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[], minAmountMinted: number) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintWithBudget',
-      args: [proof],
+      args: [proof, BigInt(minAmountMinted)],
       value: mintPrice,
     });
   };
@@ -620,7 +643,7 @@ export const useApproveNft = () => {
 
   const onWriteAsync = async (address: `0x${string}`, tokenId: number) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'approve',
@@ -668,7 +691,7 @@ export const useListForForging = () => {
 
   const onWriteAsync = async (tokenId: number, fee: bigint) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'listForForging',
@@ -715,7 +738,7 @@ export const useUnlistEntityForForging = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'cancelListingForForging',
@@ -766,7 +789,7 @@ export const useForgeWithListed = () => {
     fee: bigint
   ) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'forgeWithListed',
@@ -815,7 +838,7 @@ export const useListEntityForSale = () => {
 
   const onWriteAsync = async (tokenId: number, price: bigint) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'listNFTForSale',
@@ -862,8 +885,7 @@ export const useUnlistEntityForSale = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
-      chainId: sepolia.id,
-
+      chainId: baseSepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'cancelListing',
@@ -910,7 +932,7 @@ export const useBuyEntity = () => {
 
   const onWriteAsync = async (tokenId: number, price: bigint) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'buyNFT',
@@ -959,7 +981,7 @@ export const useNukeEntity = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
-      chainId: sepolia.id,
+      chainId: baseSepolia.id,
       abi: NukeFundABI,
       address: CONTRACT_ADDRESSES.NukeFund,
       functionName: 'nuke',
