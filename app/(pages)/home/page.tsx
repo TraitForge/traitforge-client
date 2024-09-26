@@ -23,6 +23,7 @@ import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
 import Countdown from 'react-countdown';
+import { calculateMinimumBudgetMint } from '~/utils';
 import _ from 'lodash';
 
 const Home = () => {
@@ -120,7 +121,8 @@ const Home = () => {
   };
 
   const handleMintBatchEntity = async () => {
-    await onMintWithBudget(parseEther(budgetAmount), getProof());
+    const minAmountMinted = calculateMinimumBudgetMint(mintPrice, budgetAmount);
+    await onMintWithBudget(parseEther(budgetAmount), getProof(), minAmountMinted);
     await axios.post('/api/users', {
       walletAddress: address,
       entity: upcomingMints[0]?.entropy,

@@ -18,7 +18,8 @@ export const POST = async () => {
             args: [BigInt(slotIndex), BigInt(numberIndex)],
           });
           const paddedEntropy = String(result);
-          const url = await processImage(paddedEntropy, entityGeneration);
+          const isPossiblyInbred = false
+          const url = await processImage(paddedEntropy, entityGeneration, isPossiblyInbred);
           console.log(
             `${finalIndex}: Processed ${paddedEntropy} in generation ${entityGeneration}: ${url}`
           );

@@ -1,525 +1,493 @@
 export const EntityForgingABI = [
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'address',
-        name: '_traitForgeNft',
-        type: 'address',
-      },
+        "internalType": "address",
+        "name": "_addressProvider",
+        "type": "address"
+      }
     ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
-      },
-    ],
-    name: 'CancelledListingForForging',
-    type: 'event',
+    "inputs": [],
+    "name": "AddressCantBeZero",
+    "type": "error"
   },
   {
-    anonymous: false,
-    inputs: [
+    "inputs": [
       {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'newTokenid',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'parent1Id',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'parent2Id',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'newEntropy',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'forgingFee',
-        type: 'uint256',
-      },
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
     ],
-    name: 'EntityForged',
-    type: 'event',
+    "name": "CallerNotProtocolMaintainer",
+    "type": "error"
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'fee',
-        type: 'uint256',
-      },
-    ],
-    name: 'ListedForForging',
-    type: 'event',
+    "inputs": [],
+    "name": "OffsetOutOfBounds",
+    "type": "error"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
     ],
-    name: 'OwnershipTransferred',
-    type: 'event',
+    "name": "CancelledListingForForging",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "newTokenid",
+        "type": "uint256"
       },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "parent1Id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "parent2Id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newEntropy",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "forgingFee",
+        "type": "uint256"
+      }
     ],
-    name: 'Paused',
-    type: 'event',
+    "name": "EntityForged",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      }
     ],
-    name: 'Unpaused',
-    type: 'event',
+    "name": "ListedForForging",
+    "type": "event"
   },
   {
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
-      },
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
-    name: 'cancelListingForForging',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "name": "Paused",
+    "type": "event"
   },
   {
-    inputs: [],
-    name: 'fetchListings',
-    outputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        components: [
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Unpaused",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "cancelListingForForging",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "offset",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "limit",
+        "type": "uint256"
+      }
+    ],
+    "name": "fetchListings",
+    "outputs": [
+      {
+        "components": [
           {
-            internalType: 'address',
-            name: 'account',
-            type: 'address',
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
           },
           {
-            internalType: 'uint256',
-            name: 'tokenId',
-            type: 'uint256',
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
           },
           {
-            internalType: 'bool',
-            name: 'isListed',
-            type: 'bool',
+            "internalType": "bool",
+            "name": "isListed",
+            "type": "bool"
           },
           {
-            internalType: 'uint256',
-            name: 'fee',
-            type: 'uint256',
-          },
+            "internalType": "uint256",
+            "name": "fee",
+            "type": "uint256"
+          }
         ],
-        internalType: 'struct IEntityForging.Listing[]',
-        name: '_listings',
-        type: 'tuple[]',
-      },
+        "internalType": "struct IEntityForging.Listing[]",
+        "name": "_listings",
+        "type": "tuple[]"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: 'forgerTokenId',
-        type: 'uint256',
+        "internalType": "uint256",
+        "name": "forgerTokenId",
+        "type": "uint256"
       },
       {
-        internalType: 'uint256',
-        name: 'mergerTokenId',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "mergerTokenId",
+        "type": "uint256"
+      }
     ],
-    name: 'forgeWithListed',
-    outputs: [
+    "name": "forgeWithListed",
+    "outputs": [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'payable',
-    type: 'function',
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    name: 'forgingCounts',
-    outputs: [
+    "name": "forgingCounts",
+    "outputs": [
       {
-        internalType: 'uint8',
-        name: '',
-        type: 'uint8',
-      },
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: 'tokenId_',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "tokenId_",
+        "type": "uint256"
+      }
     ],
-    name: 'getListedTokenIds',
-    outputs: [
+    "name": "getListedTokenIds",
+    "outputs": [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: 'id',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
     ],
-    name: 'getListings',
-    outputs: [
+    "name": "getListings",
+    "outputs": [
       {
-        components: [
+        "components": [
           {
-            internalType: 'address',
-            name: 'account',
-            type: 'address',
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
           },
           {
-            internalType: 'uint256',
-            name: 'tokenId',
-            type: 'uint256',
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
           },
           {
-            internalType: 'bool',
-            name: 'isListed',
-            type: 'bool',
+            "internalType": "bool",
+            "name": "isListed",
+            "type": "bool"
           },
           {
-            internalType: 'uint256',
-            name: 'fee',
-            type: 'uint256',
-          },
+            "internalType": "uint256",
+            "name": "fee",
+            "type": "uint256"
+          }
         ],
-        internalType: 'struct IEntityForging.Listing',
-        name: '',
-        type: 'tuple',
-      },
+        "internalType": "struct IEntityForging.Listing",
+        "name": "",
+        "type": "tuple"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       },
       {
-        internalType: 'uint256',
-        name: 'fee',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      }
     ],
-    name: 'listForForging',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "name": "listForForging",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    name: 'listedTokenIds',
-    outputs: [
+    "name": "listedTokenIds",
+    "outputs": [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'listingCount',
-    outputs: [
+    "inputs": [],
+    "name": "listingCount",
+    "outputs": [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    name: 'listings',
-    outputs: [
+    "name": "listings",
+    "outputs": [
       {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
       },
       {
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       },
       {
-        internalType: 'bool',
-        name: 'isListed',
-        type: 'bool',
+        "internalType": "bool",
+        "name": "isListed",
+        "type": "bool"
       },
       {
-        internalType: 'uint256',
-        name: 'fee',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'minimumListFee',
-    outputs: [
+    "inputs": [],
+    "name": "minimumListFee",
+    "outputs": [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'nftContract',
-    outputs: [
+    "inputs": [],
+    "name": "nukeFundAddress",
+    "outputs": [
       {
-        internalType: 'contract ITraitForgeNft',
-        name: '',
-        type: 'address',
-      },
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'nukeFundAddress',
-    outputs: [
+    "inputs": [],
+    "name": "oneYearInDays",
+    "outputs": [
       {
-        internalType: 'address payable',
-        name: '',
-        type: 'address',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'oneYearInDays',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'owner',
-    outputs: [
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'paused',
-    outputs: [
+    "inputs": [
       {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
+        "internalType": "uint256",
+        "name": "_fee",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "name": "setMinimumListingFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'renounceOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "setOneYearInDays",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: '_fee',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "_taxCut",
+        "type": "uint256"
+      }
     ],
-    name: 'setMinimumListingFee',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "name": "setTaxCut",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "taxCut",
+    "outputs": [
       {
-        internalType: 'address payable',
-        name: '_nukeFundAddress',
-        type: 'address',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    name: 'setNukeFundAddress',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256',
-      },
-    ],
-    name: 'setOneYearInDays',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_taxCut',
-        type: 'uint256',
-      },
-    ],
-    name: 'setTaxCut',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'taxCut',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'transferOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
 ] as const;

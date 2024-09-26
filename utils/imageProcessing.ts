@@ -6,17 +6,19 @@ import { createGauge } from './createMercuryGauge';
 
 export const composeIMG = async (
   paddedEntropy: string | number,
-  entityGeneration: string,
-  power: number
+  entityGeneration: string | number,
+  power: number,
+  isPossiblyInbred: boolean
 ) => {
-  console.log('starting next image:', paddedEntropy, entityGeneration, power);
+  console.log('starting next image:', paddedEntropy, entityGeneration, power, isPossiblyInbred);
   if(paddedEntropy === 999999) {
     return;
   }
   try {
     const baseCharacterBuffer = await baseCharacterImg(
       entityGeneration,
-      paddedEntropy
+      paddedEntropy,
+      isPossiblyInbred
     );
 
     const variablesImgBuffer = await variablesLayer(
@@ -165,13 +167,20 @@ const variablesLayer = async (
 const baseCharacterImg = async (
   entityGeneration: string | number,
   paddedEntropy: string | number,
+  isPossiblyInbred: boolean,
   overlayBuffer: Buffer | null = null,
   offsetX = 0,
   offsetY = 0
 ) => {
   const generation = entityGeneration.toString();
   const entropy = paddedEntropy.toString();
-  const imagePath = path.join(generation, `baseCharacter_${generation}.png`);
+  const num = Math.floor(Math.random() * 2) + 1;
+  let imagePath;
+  if (isPossiblyInbred) {
+    imagePath = path.join(generation, `inbred${num}.png`);
+  } else {
+    imagePath = path.join(generation, `baseCharacter_${generation}.png`);
+  }
 
   const hexColorWhite =
     varConfig.colorOptions.characterColorOptions1[
@@ -206,11 +215,11 @@ const tintCharacter = async (
   const rgbGrey = hexToRgb(hexColorGrey);
 
   const imageObj = await getS3Object(imagePath);
-
-  const originalImage = sharp(imageObj as any);
-  const { data, info } = await originalImage
-    .raw()
-    .toBuffer({ resolveWithObject: true });
+  if (!imageObj) {
+    throw new Error('Image buffer is empty or invalid.');
+  }
+  const originalImage = sharp(imageObj);
+  const { data, info } = await originalImage.raw().toBuffer({ resolveWithObject: true });
 
   for (let i = 0; i < data.length; i += 4) {
     const isPureWhite =

@@ -107,7 +107,7 @@ export const useUpcomingMints = (mintPrice: bigint, generation: number) => {
   const generationIncrement = 0.000005;
   const currentGeneration = generation;
   const entityPrice = Number(formatEther(mintPrice));
-  const effectiveIncrement = initialIncrement + (generationIncrement * currentGeneration);
+  const effectiveIncrement = initialIncrement + (generationIncrement * (currentGeneration - 1));
   const nftIndex = (entityPrice - basePrice) / effectiveIncrement;
   const startSlot = Math.floor(nftIndex / 12); 
   const startNumberIndex = nftIndex % 12;
@@ -115,8 +115,8 @@ export const useUpcomingMints = (mintPrice: bigint, generation: number) => {
   const maxCount = 50;
   const inputs = [];
 
-  let slot = startSlot;
-  let index = startNumberIndex;
+  let slot = Math.floor(startSlot);
+  let index = Math.floor(startNumberIndex);
 
   while (inputs.length < maxCount && slot < maxSlot) {
     for (
@@ -289,13 +289,13 @@ export const useNukeFactors = (tokenIds: number[]) => {
 };
 
 // EntityForging
-export const useForgeListings = () => {
+export const useForgeListings = (offset: number, limit: number) => {
   const { data, isFetching, refetch } = useReadContract({
     chainId: baseSepolia.id,
     abi: EntityForgingABI,
     address: CONTRACT_ADDRESSES.EntityForging,
     functionName: 'fetchListings',
-    args: [],
+    args: [BigInt(offset), BigInt(limit)],
   });
 
   return {
@@ -305,13 +305,14 @@ export const useForgeListings = () => {
   };
 };
 
-export const useEntitiesForForging = () => {
+export const useEntitiesForForging = (offset: number, limit: number) => {
   const {
     data: listings,
     isFetching: isForgeListingsFetching,
     refetch,
-  } = useForgeListings();
+  } = useForgeListings(offset, limit);
   const tokenIds = listings.map(listing => Number(listing.tokenId));
+  console.log(tokenIds);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
     useTokenGenerations(tokenIds);
   const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
@@ -477,14 +478,14 @@ export const useOwnerEntities = (address: `0x${string}`) => {
   };
 };
 
-export const useListedEntitiesByUser = (account: `0x${string}`) => {
+export const useListedEntitiesByUser = (account: `0x${string}`, offset: number, limit: number) => {
   const { data: ownerEntities, isFetching: isOwnerEntitiesFetching } =
     useOwnerEntities(account);
   const {
     data: entitiesForForging,
     isFetching: isForgingFetching,
     refetch: refetchForging,
-  } = useEntitiesForForging();
+  } = useEntitiesForForging(offset, limit);
   const {
     data: entitiesForSale,
     isFetching: isTradingFetching,
@@ -592,13 +593,13 @@ export const useMintWithBudget = () => {
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
-  const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[]) => {
+  const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[], minAmountMinted: number) => {
     await writeContractAsync({
       chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintWithBudget',
-      args: [proof],
+      args: [proof, BigInt(minAmountMinted)],
       value: mintPrice,
     });
   };

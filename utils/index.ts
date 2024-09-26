@@ -1,5 +1,10 @@
 import { formatEther } from 'viem';
 import { EntityRole } from '~/types';
+import { baseSepoliaClient } from '~/lib/client';
+import {
+  TraitForgeNftABI,
+} from '~/lib/abis';
+import { CONTRACT_ADDRESSES } from '~/constants/address';
 
 export const calculateUri = (
   _paddedEntropy: number | string,
@@ -38,4 +43,31 @@ export const shortenAddress = (address: `0x${string}`) => {
   const shortenedAddress = `${firstPart}......${lastPart}`;
 
   return shortenedAddress;
+};
+
+export const calculateMinimumBudgetMint = (entityPrice: bigint, budgetAmount: string) => {
+  const amount = (Number(budgetAmount) / Number(entityPrice));
+  return Math.floor(amount);
+};
+
+export const isInbred = async(parent1Id: bigint, parent2Id: bigint) => {
+  try {
+    const parent1Owner = await baseSepoliaClient.readContract({
+      address: CONTRACT_ADDRESSES.TraitForgeNft,
+      abi: TraitForgeNftABI,
+      functionName: 'ownerOf',
+      args: [parent1Id],
+    });
+
+    const parent2Owner = await baseSepoliaClient.readContract({
+      address: CONTRACT_ADDRESSES.TraitForgeNft,
+      abi: TraitForgeNftABI,
+      functionName: 'ownerOf',
+      args: [parent2Id],
+    });
+    return parent1Owner === parent2Owner;
+  } catch (error) {
+    console.error('Error fetching token owners:', error);
+    return false; 
+  }
 };

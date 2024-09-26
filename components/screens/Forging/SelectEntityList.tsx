@@ -73,21 +73,17 @@ export const SelectEntityList = ({
       <div className="flex-1 overflow-y-scroll">
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 md:gap-x-[12px] gap-y-3">
           {filteredAndSortedListings.map(listing => {
-            const isOwnedByUser = listing.account === address;
 
             return (
               <EntityCard
                 key={listing.tokenId}
                 entity={listing}
                 onSelect={() => {
-                  if (!isOwnedByUser) {
                     handleSelectedFromPool(listing);
                     handleEntityListModal();
-                  }
                 }}
                 showPrice
                 displayPrice={listing.fee}
-                isOwnedByUser={isOwnedByUser}
               />
             );
           })}

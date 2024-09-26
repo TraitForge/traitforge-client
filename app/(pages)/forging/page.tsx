@@ -28,7 +28,7 @@ import { parseEther } from 'viem';
 const Forging = () => {
   const { address } = useAccount();
   const { data: ownerEntities, refetch: refetchOwnerEntities } = useOwnerEntities(address || '0x0');
-  const { data: entitiesForForging, refetch: refetchEntitiesForForging } = useEntitiesForForging();
+  const { data: entitiesForForging, refetch: refetchEntitiesForForging } = useEntitiesForForging(0, 60);
   const { hash, onWriteAsync: onForge, isPending: isForgePending, isConfirmed: isForgeConfirmed } = useForgeWithListed();
   const { onWriteAsync: onList, isPending: isListPending } = useListForForging();
 

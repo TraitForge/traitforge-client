@@ -1,8 +1,10 @@
 import { baseSepoliaClient } from '~/lib/client';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
-import { TraitForgeNftABI } from '~/lib/abis';
+import { TraitForgeNftABI, EntityForgingABI } from '~/lib/abis';
 import { NextRequest, NextResponse } from 'next/server';
 import { processImage } from '~/utils/entropy';
+import { isInbred } from '~/utils';
+import { decodeEventLog } from 'viem'
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -28,7 +30,6 @@ export const POST = async (req: NextRequest) => {
           args: [BigInt(tokenId)],
         })
       );
-      if (tokenGen > currentGen) {
         // EntityForging
         const tokenEntropy = Number(
           await baseSepoliaClient.readContract({
@@ -38,8 +39,21 @@ export const POST = async (req: NextRequest) => {
             args: [BigInt(tokenId)],
           })
         );
-        await processImage(tokenEntropy, tokenGen);
-      }
+        const transactionHash = activity.transactionHash;
+        const receipt = await baseSepoliaClient.getTransactionReceipt({ hash: transactionHash });
+        const eventLog = receipt.logs[3];
+        if (!eventLog) {
+          return NextResponse.json({ status: 'fail' }, { status: 404 });;
+        }
+        const decodedLog = decodeEventLog({
+          abi: EntityForgingABI,
+          data: eventLog.data,
+          topics: eventLog.topics,
+        }); 
+        const parent1Id = decodedLog.args.parent1Id;
+        const parent2Id = decodedLog.args.parent2Id;
+        const isPossiblyInbred = await isInbred(parent1Id, parent2Id);
+        await processImage(tokenEntropy, tokenGen, isPossiblyInbred);
     }
     return NextResponse.json({ status: 'ok' }, { status: 200 });
   } catch (e) {
