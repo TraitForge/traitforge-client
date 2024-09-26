@@ -32,7 +32,11 @@ export const POST = async (req: NextRequest) => {
             args: [BigInt(tokenId)],
           })
         );
-        const transactionHash = activity.transactionHash;
+        const transactionHash = activity.hash;
+        if (!transactionHash) {
+           console.error('Transaction hash is missing or null');
+         return NextResponse.json({ status: 'fail', message: 'Invalid transaction hash' }, { status: 400 });
+        }
         const receipt = await baseSepoliaClient.getTransactionReceipt({ hash: transactionHash });
         const eventLog = receipt.logs[3];
         if (!eventLog) {

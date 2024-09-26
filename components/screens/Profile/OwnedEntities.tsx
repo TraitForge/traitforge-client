@@ -22,6 +22,7 @@ export const OwnedEntities = () => {
 
   const { data: ownerEntities, refetch: refetchOwnerEntities } =
     useOwnerEntities(address || '0x0');
+    console.log(ownerEntities)
 
   const { data: entitiesListedByUser, refetch: refetchListedEntities } =
     useListedEntitiesByUser(address || '0x0', 0, 60);
