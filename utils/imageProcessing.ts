@@ -6,10 +6,32 @@ import { createGauge } from './createMercuryGauge';
 
 export const composeIMG = async (
   paddedEntropy: string | number,
-  entityGeneration: string | number,
+  entityGeneration: string,
   power: number
 ) => {
   console.log('starting next image:', paddedEntropy, entityGeneration, power);
+  if(paddedEntropy == 999999) {
+    const imagePath = path.join(
+      varConfig.variablesPath,
+      entityGeneration,
+      `GoldenGod.png`
+    );
+    const composedImage = await sharp({
+      create: {
+        width: 3000,
+        height: 3000,
+        channels: 4,
+        background: { r: 255, g: 255, b: 255, alpha: 0 },
+      },
+    })
+      .composite([
+        { input: imagePath, blend: 'over' },
+      ])
+      .jpeg()
+      .toBuffer();
+
+    return composedImage;
+  }
   try {
     const baseCharacterBuffer = await baseCharacterImg(
       entityGeneration,

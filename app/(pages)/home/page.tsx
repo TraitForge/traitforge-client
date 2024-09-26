@@ -45,7 +45,7 @@ const Home = () => {
     isConfirmed: isMintWithBudgetConfirmed,
   } = useMintWithBudget();
   const { data: upcomingMints, isFetching: isUpcomingMintsFetching } =
-    useUpcomingMints(mintPrice);
+  useUpcomingMints(mintPrice, currentGeneration);
 
   const isLoading =
     isMintTokenPending || isMintWithBudgetPending || isUpcomingMintsFetching;
