@@ -50,10 +50,20 @@ export const POST = async (req: NextRequest) => {
           data: eventLog.data,
           topics: eventLog.topics,
         }); 
-        const parent1Id = decodedLog.args.parent1Id;
-        const parent2Id = decodedLog.args.parent2Id;
-        const isPossiblyInbred = await isInbred(parent1Id, parent2Id);
-        await processImage(tokenEntropy, tokenGen, isPossiblyInbred);
+        if (
+          'parent1Id' in decodedLog.args && 
+          'parent2Id' in decodedLog.args &&
+          typeof decodedLog.args.parent1Id === 'bigint' &&
+          typeof decodedLog.args.parent2Id === 'bigint'
+        ) {
+          const parent1Id = decodedLog.args.parent1Id;
+          const parent2Id = decodedLog.args.parent2Id;
+          const isPossiblyInbred = await isInbred(parent1Id, parent2Id);
+        
+          await processImage(tokenEntropy, tokenGen, isPossiblyInbred);
+        } else {
+          console.error('parent1Id and parent2Id do not exist in the event args');
+        }
     }
     return NextResponse.json({ status: 'ok' }, { status: 200 });
   } catch (e) {
