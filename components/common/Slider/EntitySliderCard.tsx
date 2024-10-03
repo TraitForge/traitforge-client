@@ -8,9 +8,9 @@ import { useEthPrice } from '~/hooks';
 
 type EntitySliderCardTypes = {
   entropy: number;
-  price: number | string;
+  price?: number | string;
   wrapperClass?: string;
-  showPrice: boolean;
+  showPrice?: boolean;
   currentGeneration: number;
 };
 

@@ -8,7 +8,7 @@ import { Entity } from '~/types';
 import { calculateUri } from '~/utils';
 import { usePathname } from 'next/navigation';
 import { useIsSafari } from '~/hooks/useIsSafari';
-import { useEthPrice, useForgingCounts } from '~/hooks';
+import { useEthPrice, useForgingCounts, useNukeFactors } from '~/hooks';
 
 type EntityCardTypes = {
   entity: Entity;
@@ -43,6 +43,7 @@ export const EntityCard = ({
   const asPath = usePathname();
   const { data: ethPrice } = useEthPrice();
   const usdAmount = Math.floor(Number(displayPrice) * ethPrice);
+  const { data: currentNukeFactor } = useNukeFactors([tokenId]);
 
   const formatNumber = (num: number): string => {
     if (num >= 1_000_000_000) {
@@ -63,7 +64,7 @@ export const EntityCard = ({
     if (!imgLoaded) {
       const timer = setTimeout(() => {
         setKey(prevKey => prevKey + 1); 
-      }, 5000);
+      }, 2000);
 
       return () => clearTimeout(timer); 
     }
@@ -75,10 +76,12 @@ export const EntityCard = ({
     {
       'opacity-1 h-full': imgLoaded,
       'opacity-0 h-0': !imgLoaded,
+      'from-light-blue border-neon-blue shadow-custom-blue':
+      asPath === '/profile',
       'from-light-green border-neon-green shadow-custom-green':
         asPath === '/trading',
-      'from-light-blue border-neon-blue shadow-custom-blue':
-        asPath === '/profile',
+        'from-light-green border-light-green shadow-custom-green':
+        asPath.startsWith('/explore/'),
       'from-light-orange border-neon-orange shadow-custom-forge':
         asPath === '/forging',
       'from-light-purple border-neon-purple shaow-custom-purple':
@@ -153,7 +156,7 @@ export const EntityCard = ({
         )}
         <div className="relative">
           <h6 className="absolute top-24 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
-           {nukeFactor}%
+           {(Number(currentNukeFactor)/1000).toFixed(2)}%
           </h6>
           <Image
             loading="lazy"

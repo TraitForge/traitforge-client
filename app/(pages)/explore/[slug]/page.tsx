@@ -4,11 +4,11 @@ import { LoadingSpinner } from '~/components';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
+import { Entity } from '~/types';
 
 import { icons } from '~/components/icons';
-import { useMintPrice, usePriceIncrement, useCurrentGeneration } from '~/hooks';
-import { EntitySliderCard } from '~/components/common/Slider/EntitySliderCard';
-import { getEntityPrice } from '~/utils';
+import { useOwnerEntities } from '~/hooks';
+import { EntityCard } from '~/components';
 
 interface User {
   id: number;
@@ -27,11 +27,8 @@ const ExplorePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
-  const { data: mintPrice } = useMintPrice();
-  const { data: priceIncrement } = usePriceIncrement();
-  const { data: currentGeneration, refetch: refetchCurrentGeneration } =
-    useCurrentGeneration();
-
+  const { data: ownerEntities, refetch: refetchOwnerEntities } =
+    useOwnerEntities( slug as `0x${string}`  || '0x0');
   useEffect(() => {
     // check user already registered
     (async () => {
@@ -72,6 +69,12 @@ const ExplorePage = () => {
       ) : (
         <div className=" container">
           <div className="flex items-center gap-x-[28px]">
+          <button
+            className=" -translate-y-1/2 max-md:h-auto bg-[#0C001F] bg-opacity-80 px-4 rounded-md "
+            onClick={() =>  window.location.href = '/explore'}
+          >
+            {icons.arrow({ className: 'text-neon-green' })}
+          </button>
             <div className="w-20 h-20">
               {user?.pfp ? (
                 <Image
@@ -96,16 +99,11 @@ const ExplorePage = () => {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-2 md:gap-x-[15px] mt-10 gap-y-5 lg:gap-y-10">
-            {user?.entities?.map((item, index) => {
-              const price = getEntityPrice(mintPrice, priceIncrement, index);
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-2 md:gap-x-[10px] mt-10 gap-y-2 lg:gap-y-2">
+            {ownerEntities.map((entity: Entity) => {
               return (
-                <EntitySliderCard
-                  key={item.id}
-                  currentGeneration={currentGeneration}
-                  entropy={item.entropy}
-                  price={price}
-                  showPrice
+                <EntityCard
+                entity={entity}
                 />
               );
             })}

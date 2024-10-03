@@ -489,5 +489,5 @@ export const EntityForgingABI = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
+  }
 ] as const;

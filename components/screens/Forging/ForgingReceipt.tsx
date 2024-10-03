@@ -5,7 +5,7 @@ import { Entity } from '~/types';
 import { shortenAddress } from '~/utils';
 
 type ForgingReceiptTypes = {
-    offspring: Entity;
+    offspring: Entity | null;
     forgerOwner: `0x${string}`;
     mergerOwner: `0x${string}`;
     tagColor: "orange";
@@ -49,6 +49,7 @@ export const ForgingReceipt = ({
   }: ForgingReceiptTypes) => {
     const [forgerUser, setForgerUser] = useState<User | null>(null);
     const [mergerUser, setMergerUser] = useState<User | null>(null);
+    const [newEntity, setNewEntity] = useState<Entity | null>(offspring);
     const [mergerName, setMergerName] = useState("");
     const [forgerName, setForgerName] = useState("");
   
@@ -137,9 +138,9 @@ export const ForgingReceipt = ({
          </div>
       </div>
       </div>
-      {offspring && (
+      {newEntity && (
         <div className="flex justify-center w-6/12 sm:w-10/12 pt-2 md:pt-0">
-            <EntityCard entity={offspring} />
+            <EntityCard entity={newEntity} />
         </div>
       )}
       <div className="sm:hidden py-6"> 
