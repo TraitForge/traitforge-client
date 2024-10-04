@@ -44,6 +44,7 @@ export const EntityCard = ({
   const { data: ethPrice } = useEthPrice();
   const usdAmount = Math.floor(Number(displayPrice) * ethPrice);
   const { data: currentNukeFactor } = useNukeFactors([tokenId]);
+  console.log("entropy:", paddedEntropy)
 
   const formatNumber = (num: number): string => {
     if (num >= 1_000_000_000) {

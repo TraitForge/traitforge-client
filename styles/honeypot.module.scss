@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: center;
   .frameContainer {
+    position: relative;
     background-image: url('/images/honeypotcontainer.png');
     background-position: center;
     background-size: contain;
@@ -28,3 +29,54 @@
     }
   }
 }
+
+.locked {
+  background-color: rgba(0, 0, 0, 0.8); // Darken the container when locked
+}
+
+.lockOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7); // Semi-transparent overlay
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  z-index: 10;
+  border-radius: 15px;
+}
+
+.empText {
+  position: relative;
+  text-transform: uppercase;
+  animation: glitch-glow 0.2s infinite alternate;
+  display: inline-block;
+  letter-spacing: 1px;
+}
+
+@keyframes glitch-glow {
+  0%, 100% {
+    text-shadow: 0 0 0.5px #b100ff, 0 0 4px #b100ff, 0 0 8px #b100ff;
+  }
+  10%, 90% {
+    text-shadow: 0 0 1px #b100ff, 0 0 4px #b100ff, 0 0 6px #b100ff;
+  }
+  20%, 80% {
+    text-shadow: 0 0 1px #b100ff, 0 0 2px #b100ff, 0 0 3px #b100ff;
+  }
+  30%, 50%, 70% {
+    text-shadow: 0 0 1px #b100ff, 0 0 3px #b100ff, 0 0 6px #b100ff;
+  }
+  40%, 60% {
+    text-shadow: 0 0 1px #b100ff, 0 0 4px #b100ff, 0 0 10px #b100ff;
+  }
+}
+
+
+

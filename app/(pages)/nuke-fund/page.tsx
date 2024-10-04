@@ -31,6 +31,7 @@ const HoneyPot = () => {
   const [sortingFilter, setSortingFilter] = useState('');
   const [loadingText, setLoadingText] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const closeModal = () => setModalOpen(false);
 
   const { data: approved } = useApproval(
@@ -200,7 +201,7 @@ const HoneyPot = () => {
       );
       break;
     default:
-      content = <HoneyPotBody handleStep={() => setStep('two')} />;
+      content = <HoneyPotBody handleStep={() => setStep('two')} timeLeft={99999} isLocked={isLocked}/>;
   }
 
   return (
@@ -214,9 +215,9 @@ const HoneyPot = () => {
             page="nuke"
          >
              <NukingReceipt
-             tagColor="purple"
+              tagColor="purple"
               entityJustNuked={selectedForNuke}
-               ethNuked={ethFromNuke}
+              ethNuked={ethFromNuke}
              />
           </RewardModal>
           )}
