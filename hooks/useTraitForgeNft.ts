@@ -271,6 +271,38 @@ export const useNukeFundBalance = () => {
   };
 };
 
+export const useIsEMP = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: NukeFundABI,
+    address: CONTRACT_ADDRESSES.NukeFund,
+    functionName: 'isEMPActive',
+    args: [],
+  });
+
+  return {
+    data,
+    isFetching,
+    refetch,
+  };
+};
+
+export const useEMPFinishTime = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: NukeFundABI,
+    address: CONTRACT_ADDRESSES.NukeFund,
+    functionName: 'unpauseAt',
+    args: [],
+  });
+
+  return {
+    data: Number(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
 export const useNukeFactors = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({

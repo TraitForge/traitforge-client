@@ -28,6 +28,7 @@ export const EntitySliderCard = ({
   const isSafari = useIsSafari();
   const { data: ethPrice } = useEthPrice();
   const usdAmount = Math.floor(Number(price) * ethPrice);
+  const isEMP = (Number(entropy) % 10) === 7;
 
   const { role, forgePotential, performanceFactor, nukeFactor } =
     calculateEntityAttributes(paddedEntropy);
@@ -85,6 +86,11 @@ export const EntitySliderCard = ({
           <h6 className="absolute top-28 left-1 md:top-20 md:left-0 bg-opacity-80 text-sm px-2 py-1 rounded">
            {nukeFactor}%
           </h6>
+          {isEMP && (
+          <h6 className="absolute top-28 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
+           EMP
+          </h6>
+          )}
           <Image
             loading="lazy"
             src={imageUrl}

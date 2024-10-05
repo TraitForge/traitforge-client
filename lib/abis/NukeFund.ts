@@ -48,6 +48,16 @@ export const NukeFundABI = [
   },
   {
     "inputs": [],
+    "name": "NukeFund__DivisorIsZero",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NukeFund__EmpIsActive",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "NukeFund__TaxCutExceedsLimit",
     "type": "error"
   },
@@ -111,6 +121,25 @@ export const NukeFundABI = [
       }
     ],
     "name": "DevShareDistributed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "unpauseAt",
+        "type": "uint256"
+      }
+    ],
+    "name": "EmpActivated",
     "type": "event"
   },
   {
@@ -294,6 +323,19 @@ export const NukeFundABI = [
   },
   {
     "inputs": [],
+    "name": "empDivisor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "ethCollector",
     "outputs": [
       {
@@ -313,6 +355,32 @@ export const NukeFundABI = [
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "initNukeFactorDivisor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isEMPActive",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -411,6 +479,32 @@ export const NukeFundABI = [
         "type": "uint256"
       }
     ],
+    "name": "setEmpDivisor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "setInitNukeFactorDivisor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
     "name": "setMaxAllowedClaimDivisor",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -476,7 +570,20 @@ export const NukeFundABI = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "unpauseAt",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "stateMutability": "payable",
     "type": "receive"
-  },
+  }
 ] as const;

@@ -26,7 +26,7 @@ export const calculateEntityAttributes = (paddedEntropy: string | number) => {
   const performanceFactor = paddedEntropyNumber % 10;
   const lastTwoDigits = paddedEntropyNumber % 100;
   const forgePotential = Math.floor(lastTwoDigits / 10);
-  const nukeFactor = Number((paddedEntropyNumber / 40000).toFixed(2));
+  const nukeFactor = Number((paddedEntropyNumber / 100000).toFixed(2));
   const result = paddedEntropyNumber % 3;
   const role = result === 0 ? EntityRole.FORGER : EntityRole.MERGER;
   return { role, forgePotential, nukeFactor, performanceFactor };
@@ -46,7 +46,7 @@ export const shortenAddress = (address: `0x${string}`) => {
 };
 
 export const calculateMinimumBudgetMint = (entityPrice: bigint, budgetAmount: string) => {
-  const amount = (Number(budgetAmount) / Number(entityPrice));
+  const amount = (Number(budgetAmount) / Number(formatEther(entityPrice)));
   return Math.floor(amount);
 };
 

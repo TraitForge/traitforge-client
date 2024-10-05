@@ -44,7 +44,7 @@ export const EntityCard = ({
   const { data: ethPrice } = useEthPrice();
   const usdAmount = Math.floor(Number(displayPrice) * ethPrice);
   const { data: currentNukeFactor } = useNukeFactors([tokenId]);
-  console.log("entropy:", paddedEntropy)
+  const isEMP = (Number(paddedEntropy) % 10) === 7;
 
   const formatNumber = (num: number): string => {
     if (num >= 1_000_000_000) {
@@ -159,6 +159,11 @@ export const EntityCard = ({
           <h6 className="absolute top-24 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
            {(Number(currentNukeFactor)/1000).toFixed(2)}%
           </h6>
+          {isEMP && (
+          <h6 className="absolute top-28 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
+           EMP
+          </h6>
+          )}
           <Image
             loading="lazy"
             src={imageUrl}
