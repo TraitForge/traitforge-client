@@ -38,7 +38,7 @@ export const POST = async (req: NextRequest) => {
          return NextResponse.json({ status: 'fail', message: 'Invalid transaction hash' }, { status: 400 });
         }
         const receipt = await baseSepoliaClient.getTransactionReceipt({ hash: transactionHash });
-        const eventLog = receipt.logs[3];
+        const eventLog = receipt.logs[4];
         if (!eventLog) {
           return NextResponse.json({ status: 'fail' }, { status: 404 });;
         }
@@ -47,6 +47,7 @@ export const POST = async (req: NextRequest) => {
           data: eventLog.data,
           topics: eventLog.topics,
         }); 
+        console.log(decodedLog);
         if (
           'parent1Id' in decodedLog.args && 
           'parent2Id' in decodedLog.args &&
@@ -56,6 +57,7 @@ export const POST = async (req: NextRequest) => {
           const parent1Id = decodedLog.args.parent1Id;
           const parent2Id = decodedLog.args.parent2Id;
           const isPossiblyInbred = await isInbred(parent1Id, parent2Id);
+          console.log(isPossiblyInbred);
           if (isPossiblyInbred) {
             const index = Math.floor(Math.random() * 13);
             const slot = Math.floor(Math.random() * 834);
