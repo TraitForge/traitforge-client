@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useBlock } from 'wagmi';
 import { formatUnits } from 'viem';
+import { baseSepolia } from 'viem/chains'
 import styles from '~/styles/honeypot.module.scss';
 import { EntityCard, LoadingSpinner, RewardModal } from '~/components';
 import { FiltersHeader } from '~/components';
@@ -11,7 +12,9 @@ import {
   useApproveNft,
   useNukeEntity,
   useOwnerEntities,
-  useIsNukeable
+  useIsNukeable,
+  useIsEMP,
+  useEMPFinishTime
 } from '~/hooks';
 import { SingleValue } from 'react-select';
 import { HoneyPotBody, HoneyPotHeader, NukeEntity, NukingReceipt } from '~/components/screens';
@@ -37,6 +40,9 @@ const HoneyPot = () => {
     CONTRACT_ADDRESSES.NukeFund,
     selectedForNuke?.tokenId || 0
   );
+  const { data: isLocked } = useIsEMP();
+  const { data: blockNumber } = useBlock({ chainId: baseSepolia.id });
+  const { data: timeLeft } = useEMPFinishTime();
   const {
     onWriteAsync: onApprove,
     isPending: isApprovePending,
@@ -200,7 +206,7 @@ const HoneyPot = () => {
       );
       break;
     default:
-      content = <HoneyPotBody handleStep={() => setStep('two')} />;
+      content = <HoneyPotBody handleStep={() => setStep('two')} timeLeft={timeLeft} isLocked={isLocked} blockNumber={blockNumber?.number}/>;
   }
 
   return (
@@ -214,9 +220,9 @@ const HoneyPot = () => {
             page="nuke"
          >
              <NukingReceipt
-             tagColor="purple"
+              tagColor="purple"
               entityJustNuked={selectedForNuke}
-               ethNuked={ethFromNuke}
+              ethNuked={ethFromNuke}
              />
           </RewardModal>
           )}

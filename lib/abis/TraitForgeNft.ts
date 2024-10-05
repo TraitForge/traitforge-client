@@ -33,7 +33,48 @@ export const TraitForgeNftABI = [
   },
   {
     "inputs": [],
-    "name": "NotEnoughTokensMinted",
+    "name": "TraitForgeNft__CannotForgeWithSameToken",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TraitForgeNft__InsufficientETHSent",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TraitForgeNft__MaxGenerationReached",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TraitForgeNft__MinAmountIsZero",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TraitForgeNft__NewGenerationCreatedOverMaxGeneration",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TraitForgeNft__NotEnoughTokensMinted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TraitForgeNft__NotWhiteListed",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "TraitForgeNft__OnlyEntityForgingAuthorized",
     "type": "error"
   },
   {
@@ -743,7 +784,13 @@ export const TraitForgeNftABI = [
       }
     ],
     "name": "mintToken",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "payable",
     "type": "function"
   },
@@ -1235,5 +1282,5 @@ export const TraitForgeNftABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  },
+  }
 ] as const;

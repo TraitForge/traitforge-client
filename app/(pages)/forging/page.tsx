@@ -103,11 +103,10 @@ const Forging = () => {
       (async () => {
         try {
           const res = await baseSepoliaClient.getTransactionReceipt({ hash });
-          if (res?.logs?.[7]?.topics?.[1]) {
-            const hexString = res.logs[7].topics[1].toString();
+          if (res?.logs?.[1]?.topics?.[2]) {
+            const hexString = res.logs[1].topics[2].toString();
             const tokenID = parseInt(hexString, 16);
             setTokenID(tokenID);
-
             if (!isFetchingEntropy && !isFetchingGeneration) {
               const newEntity = createNewEntity(tokenID, entityEntropyData, entityGenerationData);
               if (newEntity) {

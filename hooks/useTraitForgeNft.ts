@@ -271,6 +271,38 @@ export const useNukeFundBalance = () => {
   };
 };
 
+export const useIsEMP = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: NukeFundABI,
+    address: CONTRACT_ADDRESSES.NukeFund,
+    functionName: 'isEMPActive',
+    args: [],
+  });
+
+  return {
+    data,
+    isFetching,
+    refetch,
+  };
+};
+
+export const useEMPFinishTime = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: NukeFundABI,
+    address: CONTRACT_ADDRESSES.NukeFund,
+    functionName: 'unpauseAt',
+    args: [],
+  });
+
+  return {
+    data: Number(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
 export const useNukeFactors = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({
@@ -312,7 +344,6 @@ export const useEntitiesForForging = (offset: number, limit: number) => {
     refetch,
   } = useForgeListings(offset, limit);
   const tokenIds = listings.map(listing => Number(listing.tokenId));
-  console.log(tokenIds);
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
     useTokenGenerations(tokenIds);
   const { data: tokenEntropies, isFetching: isTokenEntropiesFetching } =
@@ -355,6 +386,20 @@ export const useForgingCounts = (tokenId: number) => {
     args: [BigInt(tokenId)],
   });
 
+  return {
+    data: Number(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useTotalSupply = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: TraitForgeNftABI,
+    address: CONTRACT_ADDRESSES.TraitForgeNft,
+    functionName: 'totalSupply'
+  });
   return {
     data: Number(data ?? 0),
     isFetching,
@@ -512,6 +557,7 @@ export const useListedEntitiesByUser = (account: `0x${string}`, offset: number, 
     },
   };
 };
+
 
 // --------- Write Functions -----------
 

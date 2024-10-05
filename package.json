@@ -19,6 +19,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@graphprotocol/graph-cli": "^0.84.0",
     "@prisma/client": "5.16.2",
     "@rainbow-me/rainbowkit": "^2.0.5",
     "@tanstack/react-query": "^5.45.1",

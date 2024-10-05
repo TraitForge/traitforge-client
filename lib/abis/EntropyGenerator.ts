@@ -218,5 +218,5 @@ export const EntropyGeneratorABI = [
     ],
     "stateMutability": "view",
     "type": "function"
-  },
+  }
 ] as const;

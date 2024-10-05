@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: center;
   .frameContainer {
+    position: relative;
     background-image: url('/images/honeypotcontainer.png');
     background-position: center;
     background-size: contain;
@@ -28,3 +29,111 @@
     }
   }
 }
+
+.locked {
+  background-color: rgba(0, 0, 0, 0.8); // Darken the container when locked
+}
+
+.lockOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7); // Semi-transparent overlay
+  color: white;
+  font-size: 24px;
+  padding-block: 40px;
+  text-align: center;
+  z-index: 10;
+  border-radius: 15px;
+}
+
+.empText {
+  position: relative;
+  text-transform: uppercase;
+  animation: glitch-glow 0.2s infinite alternate, glitch 0.5s linear infinite;
+  display: inline-block;
+  letter-spacing: 1px;
+}
+
+@keyframes glitch-glow {
+  0%, 100% {
+    text-shadow: 0 0 0.5px #b100ff, 0 0 4px #b100ff, 0 0 8px #b100ff;
+  }
+  10%, 90% {
+    text-shadow: 0 0 1px #b100ff, 0 0 4px #b100ff, 0 0 6px #b100ff;
+  }
+  20%, 80% {
+    text-shadow: 0 0 1px #b100ff, 0 0 2px #b100ff, 0 0 3px #b100ff;
+  }
+  30%, 50%, 70% {
+    text-shadow: 0 0 1px #b100ff, 0 0 3px #b100ff, 0 0 6px #b100ff;
+  }
+  40%, 60% {
+    text-shadow: 0 0 1px #b100ff, 0 0 4px #b100ff, 0 0 10px #b100ff;
+  }
+}
+
+
+@keyframes glitch{
+  2%,64%{
+    transform: translate(1px,0) skew(0deg);
+  }
+  4%,60%{
+    transform: translate(-1px,0) skew(0deg);
+  }
+  62%{
+    transform: translate(0,0) skew(2deg); 
+  }
+}
+
+.empText:before,
+.empText:after{
+  content: attr(title);
+  position: absolute;
+  left: 0;
+}
+
+.empText:before{
+  animation: glitchTop 1s linear infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+
+@keyframes glitchTop{
+  2%,64%{
+    transform: translate(1px,-1px);
+  }
+  4%,60%{
+    transform: translate(-1px,1px);
+  }
+  62%{
+    transform: translate(4px,-1px) skew(-3deg); 
+  }
+}
+
+.empText:after{
+  animation: glitchBottom 1.5s linear infinite;
+  clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+  -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+}
+
+@keyframes glitchBottom{
+  2%,64%{
+    transform: translate(-1px,0);
+  }
+  4%,60%{
+    transform: translate(-1px,0);
+  }
+  62%{
+    transform: translate(-3px,2px) skew(3deg); 
+  }
+}
+
+
+
