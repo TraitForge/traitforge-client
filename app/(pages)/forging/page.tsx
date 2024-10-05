@@ -130,6 +130,7 @@ const Forging = () => {
     setProcessingText('Listing entity');
     const feeInWei = parseEther(fee);
     await onList(selectedForListing.tokenId, feeInWei);
+    refetchEntitiesForForging();
   };
 
   const isGenerationsDifferent = selectedEntity?.generation !== selectedFromPool?.generation;
