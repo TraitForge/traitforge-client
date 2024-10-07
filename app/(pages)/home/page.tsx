@@ -1,7 +1,6 @@
 'use client';
 
-
-import { useEffect, useState, useRef, Suspense } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Slider, Button, LoadingSpinner, Modal } from '~/components';
 import axios from 'axios';
 import {
@@ -24,12 +23,10 @@ import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
 import Countdown from 'react-countdown';
 import { calculateMinimumBudgetMint } from '~/utils';
-import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import _ from 'lodash';
 
 const Home = () => {
-  const searchParams = useSearchParams();
-  const ref = searchParams.get('ref');
   const { address } = useAccount();
   const { data: whitelistEndTime } = useWhitelistEndTime();
   const { data: currentGeneration, refetch: refetchCurrentGeneration } =
@@ -63,11 +60,9 @@ const Home = () => {
 
   const handleReferModal = () => setReferModalOpen(prevState => !prevState);
 
-  useEffect(() => {
-    if (ref) {
-      localStorage.setItem('referralCode', ref); 
-    }
-  }, [ref]);
+  const ClientComponent = dynamic(() => import('~/components/screens/Home/refCode'), {
+    ssr: false, 
+  });
 
   useEffect(() => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
@@ -245,7 +240,7 @@ const Home = () => {
           </h1>
           {referralCode && (
           <p className="text-xs">
-            referral code: "{referralCode}"
+            <ClientComponent/>
           </p>
            )}
           <h2 className="pt-6">
@@ -296,7 +291,6 @@ const Home = () => {
     }
   
     return (
-      <Suspense fallback={<LoadingSpinner color={"#0ff"}/>}>
       <div
           className="mint-container min-h-screen 3xl:pt-[100px]"
           style={{
@@ -325,8 +319,6 @@ const Home = () => {
           <MintingHeader handleStep={setStep} step={step} />
           {content}
         </div>
-        </Suspense>
-    
     );
 };
 
