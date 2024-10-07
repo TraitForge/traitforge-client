@@ -238,11 +238,9 @@ const Home = () => {
           >
             Mint your traitforge entity
           </h1>
-          {referralCode && (
           <p className="text-xs">
             <ClientComponent/>
           </p>
-           )}
           <h2 className="pt-6">
             <Countdown
               renderer={({ days, hours, minutes, seconds, completed }) => {

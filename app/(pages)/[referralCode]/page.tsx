@@ -1,14 +1,17 @@
-// app/[referralCode]/page.tsx
 
-import { redirect } from 'next/navigation';
+export async function getServerSideProps(context: any) {
+  const { referralCode } = context.params;
 
-export default function DynamicRedirectPage({ params }: { params: { referralCode: string } }) {
-  const { referralCode } = params;
-
-  if (typeof window === 'undefined') {
-    redirect(`/home?ref=${referralCode}`);
-  }
-
-  // On the client side, this would be redundant, so returning null
-  return null;
+  // Handle logic for referral code
+  // For example, store the referral code in cookies or pass it to a backend
+  return {
+    redirect: {
+      destination: `/home?ref=${referralCode}`,
+      permanent: false,
+    },
+  };
 }
+
+const ReferralRedirect = () => null;
+
+export default ReferralRedirect;
