@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { formatEther } from 'viem';
 import { EntityCard, Button } from '~/components';
 import { ListingHeader } from './ListingHeader';
 import { Entity } from '~/types';
@@ -7,12 +8,14 @@ type ListNowTypes = {
   selectedForListing: Entity;
   listEntityForForging: (entity: Entity, fee: string) => void;
   handleStep: (value: string) => void;
+  minimumForgeFee: bigint
 };
 
 export const ListNow = ({
   selectedForListing,
   listEntityForForging,
   handleStep,
+  minimumForgeFee
 }: ListNowTypes) => {
   const [fee, setFee] = useState('');
   const [showFeeError, setShowFeeError] = useState(false);
@@ -27,7 +30,7 @@ export const ListNow = ({
               Set a fee for your forger:
             </h3>
             <p className="text-sm mb-2 uppercase text-neutral-100">
-              min fee is 0.01 ETH
+              min fee is {formatEther(minimumForgeFee)} ETH
             </p>
             <input
               className="border w-full border-neon-orange bg-dark-81 p-3 text-neutral-100 text-base focus:outline-none"

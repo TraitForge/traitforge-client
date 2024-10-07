@@ -1,22 +1,14 @@
+// app/[referralCode]/page.tsx
 
-'use client';
+import { redirect } from 'next/navigation';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
-const DynamicRedirectPage = ({ params }: { params: { referralCode: string } }) => {
+export default function DynamicRedirectPage({ params }: { params: { referralCode: string } }) {
   const { referralCode } = params;
-  const router = useRouter();
 
-  useEffect(() => {
-    if (referralCode) {
-      localStorage.setItem('referralCode', referralCode);
+  if (typeof window === 'undefined') {
+    redirect(`/home?ref=${referralCode}`);
+  }
 
-      router.push('/home');
-    }
-  }, [referralCode, router]);
-
-  return null; 
-};
-
-export default DynamicRedirectPage;
+  // On the client side, this would be redundant, so returning null
+  return null;
+}

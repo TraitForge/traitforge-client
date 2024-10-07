@@ -10,7 +10,8 @@ import {
   useListForForging,
   useOwnerEntities,
   useTokenEntropies,
-  useTokenGenerations
+  useTokenGenerations,
+  useMintPrice
 } from '~/hooks';
 import { useAccount } from 'wagmi';
 import {
@@ -20,13 +21,14 @@ import {
   SelectEntityList,
   WalletEntityModal,
   MobileForgingArena,
-  ForgingReceipt,
+  ForgingReceipt
 } from '~/components/screens';
 import { Entity, EntityForging } from '~/types';
 import { parseEther } from 'viem';
 
 const Forging = () => {
   const { address } = useAccount();
+  const { data: mintPrice, refetch: refetchMintPrice } = useMintPrice();
   const { data: ownerEntities, refetch: refetchOwnerEntities } = useOwnerEntities(address || '0x0');
   const { data: entitiesForForging, refetch: refetchEntitiesForForging } = useEntitiesForForging(0, 60);
   const { hash, onWriteAsync: onForge, isPending: isForgePending, isConfirmed: isForgeConfirmed } = useForgeWithListed();
@@ -231,6 +233,7 @@ const Forging = () => {
     case 'three':
       content = selectedForListing && (
         <ListNow
+        minimumForgeFee={mintPrice}
           selectedForListing={selectedForListing}
           listEntityForForging={listEntityForForging}
           handleStep={setStep}

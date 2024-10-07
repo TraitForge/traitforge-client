@@ -24,9 +24,12 @@ import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
 import Countdown from 'react-countdown';
 import { calculateMinimumBudgetMint } from '~/utils';
+import { useSearchParams } from 'next/navigation';
 import _ from 'lodash';
 
 const Home = () => {
+  const searchParams = useSearchParams();
+  const ref = searchParams.get('ref');
   const { address } = useAccount();
   const { data: whitelistEndTime } = useWhitelistEndTime();
   const { data: currentGeneration, refetch: refetchCurrentGeneration } =
@@ -59,6 +62,12 @@ const Home = () => {
   const [smallLoading, setSmallLoading] = useState<boolean | null>(false);
 
   const handleReferModal = () => setReferModalOpen(prevState => !prevState);
+
+  useEffect(() => {
+    if (ref) {
+      localStorage.setItem('referralCode', ref); 
+    }
+  }, [ref]);
 
   useEffect(() => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
@@ -234,7 +243,12 @@ const Home = () => {
           >
             Mint your traitforge entity
           </h1>
-          <h2>
+          {referralCode && (
+          <p className="text-xs">
+            referral code: "{referralCode}"
+          </p>
+           )}
+          <h2 className="pt-6">
             <Countdown
               renderer={({ days, hours, minutes, seconds, completed }) => {
                 if (completed) {
