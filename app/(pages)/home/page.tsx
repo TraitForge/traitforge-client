@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Slider, Button, LoadingSpinner, Modal } from '~/components';
 import axios from 'axios';
 import {
@@ -57,6 +58,14 @@ const Home = () => {
   const [referModalOpen, setReferModalOpen] = useState<boolean>(false);
   const [twitterHandle, setTwitterHandle] = useState('')
   const [smallLoading, setSmallLoading] = useState<boolean | null>(false);
+  const searchParams = useSearchParams();
+  const referCode = searchParams.get('ref');
+
+  useEffect(() => {
+    if (referCode) {
+      localStorage.setItem('referralCode', referCode); 
+    }
+  }, [referCode]);
 
   const handleReferModal = () => setReferModalOpen(prevState => !prevState);
 
