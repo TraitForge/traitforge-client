@@ -15,7 +15,9 @@ const refCode = () => {
 
   return (
     <div>
+      {ref && (
       <p>Referral code: "{ref}"</p>
+      )}
     </div>
   );
 };
