@@ -1,7 +1,7 @@
 'use client';
 
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { Slider, Button, LoadingSpinner, Modal } from '~/components';
 import axios from 'axios';
 import {
@@ -296,6 +296,7 @@ const Home = () => {
     }
   
     return (
+      <Suspense fallback={<LoadingSpinner color={"#0ff"}/>}>
       <div
           className="mint-container min-h-screen 3xl:pt-[100px]"
           style={{
@@ -324,6 +325,7 @@ const Home = () => {
           <MintingHeader handleStep={setStep} step={step} />
           {content}
         </div>
+        </Suspense>
     
     );
 };
