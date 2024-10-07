@@ -19,6 +19,15 @@ const nextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+  async redirects() {
+    return [
+      {
+        source: '/affiliateCode', 
+        destination: '/home?ref=affiliateCode',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

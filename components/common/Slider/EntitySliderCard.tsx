@@ -87,9 +87,9 @@ export const EntitySliderCard = ({
            {nukeFactor}%
           </h6>
           {isEMP && (
-          <h6 className="absolute top-28 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
-           EMP
-          </h6>
+            <h6 className="absolute top-1 right-0 bg-opacity-80 text-sm rounded">
+                <img src="/images/emp.svg" alt="EMP" className="inline-block w-[50px] h-[50px]" />
+            </h6>
           )}
           <Image
             loading="lazy"

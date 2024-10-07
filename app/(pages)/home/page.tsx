@@ -1,6 +1,5 @@
 'use client';
 
-
 import { useEffect, useState, useRef } from 'react';
 import { Slider, Button, LoadingSpinner, Modal } from '~/components';
 import axios from 'axios';
@@ -24,6 +23,7 @@ import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
 import Countdown from 'react-countdown';
 import { calculateMinimumBudgetMint } from '~/utils';
+import dynamic from 'next/dynamic';
 import _ from 'lodash';
 
 const Home = () => {
@@ -59,6 +59,10 @@ const Home = () => {
   const [smallLoading, setSmallLoading] = useState<boolean | null>(false);
 
   const handleReferModal = () => setReferModalOpen(prevState => !prevState);
+
+  const ClientComponent = dynamic(() => import('~/components/screens/Home/refCode'), {
+    ssr: false, 
+  });
 
   useEffect(() => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
@@ -234,7 +238,12 @@ const Home = () => {
           >
             Mint your traitforge entity
           </h1>
-          <h2>
+          {referralCode && (
+          <p className="text-xs">
+            <ClientComponent/>
+          </p>
+           )}
+          <h2 className="pt-6">
             <Countdown
               renderer={({ days, hours, minutes, seconds, completed }) => {
                 if (completed) {
@@ -310,7 +319,6 @@ const Home = () => {
           <MintingHeader handleStep={setStep} step={step} />
           {content}
         </div>
-    
     );
 };
 
