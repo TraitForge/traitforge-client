@@ -29,7 +29,7 @@ export const HoneyPotBody = ({ handleStep, timeLeft, isLocked, blockNumber }: Ho
         = ${usdAmount.toLocaleString()}
       </p>
 
-      {isLockedEq && (
+      {isLockedEq && timeLeft && (
         <div className={styles.lockOverlay}>
           <p className={`${styles.empText} text-[40px] font-bebas`} title="EMP is active">EMP is active</p>
           <div>
