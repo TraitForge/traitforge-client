@@ -239,7 +239,7 @@ const Home = () => {
             Mint your traitforge entity
           </h1>
           <p className="text-xs">
-            <ClientComponent/>
+            <ClientComponent setReferralCode={setReferralCode}/>
           </p>
           <h2 className="pt-6">
             <Countdown
