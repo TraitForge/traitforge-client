@@ -27,6 +27,11 @@ export const EntropyGeneratorABI = [
     "type": "error"
   },
   {
+    "inputs": [],
+    "name": "EntropyGenerator__MaxSlotIndexReached",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {

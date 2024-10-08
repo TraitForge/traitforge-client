@@ -28,7 +28,83 @@ export const EntityForgingABI = [
   },
   {
     "inputs": [],
-    "name": "OffsetOutOfBounds",
+    "name": "EntityForging__FeeMismatchWithEthSent",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__FeeTooLow",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__ForgerTokenIdNotListed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__InsufficientForgerForgePotential",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__InsufficientMergerForgePotential",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__MergerEntropyCannotMerge",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__MergerTokenIdIsZero",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__MergerTokenNotOwnedByCaller",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__NotForger",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__OffsetOutOfBounds",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__TokenAlreadyListed",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "EntityForging__TokenNotListedForForging",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__TokenNotOwnedByCaller",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__TokensAlreadyForged",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EntityForging__TokensNotSameGeneration",
     "type": "error"
   },
   {
@@ -251,6 +327,47 @@ export const EntityForgingABI = [
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getListingForTokenId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isListed",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fee",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IEntityForging.Listing",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
@@ -374,7 +491,7 @@ export const EntityForgingABI = [
   },
   {
     "inputs": [],
-    "name": "minimumListFee",
+    "name": "mintPriceDivisor",
     "outputs": [
       {
         "internalType": "uint256",
@@ -435,11 +552,11 @@ export const EntityForgingABI = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_fee",
+        "name": "divisor",
         "type": "uint256"
       }
     ],
-    "name": "setMinimumListingFee",
+    "name": "setMintPriceDivisor",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

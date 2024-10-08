@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { baseSepoliaClient } from '~/lib/client';
+import { baseClient } from '~/lib/client';
 import { getAnotherS3Object, uploadToAnotherS3 } from '~/utils/s3';
 
 type ReferralData = {
@@ -14,7 +14,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
       return NextResponse.json({ success: false, message: 'Transaction hash is required' }, { status: 400 });
     }
 
-    const receipt = await baseSepoliaClient.getTransactionReceipt({ hash });
+    const receipt = await baseClient.getTransactionReceipt({ hash });
     if (!receipt) {
       return NextResponse.json({ success: false, message: 'Transaction not found' }, { status: 404 });
     }

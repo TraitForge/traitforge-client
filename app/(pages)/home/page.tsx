@@ -93,11 +93,14 @@ const Home = () => {
     refetchPriceIncrement();
   };
 
-  const getProof = () => {
+  const getProof = (): `0x${string}`[] => {
     const res = WHITELIST.find(
       item => item.address.toLowerCase() === address?.toLowerCase()
     );
-    return res?.proof ?? [];
+  
+    return (res?.proof ?? []).map((p) => {
+      return p.startsWith('0x') ? p as `0x${string}` : `0x${p}` as `0x${string}`;
+    });
   };
 
   const handleSubmitTwitter = async () => {
@@ -239,7 +242,7 @@ const Home = () => {
             Mint your traitforge entity
           </h1>
           <p className="text-xs">
-            <ClientComponent/>
+            <ClientComponent setReferralCode={setReferralCode}/>
           </p>
           <h2 className="pt-6">
             <Countdown

@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useAccount, useBlock } from 'wagmi';
 import { formatUnits } from 'viem';
-import { baseSepolia } from 'viem/chains'
+import { base } from 'viem/chains'
 import styles from '~/styles/honeypot.module.scss';
 import { EntityCard, LoadingSpinner, RewardModal } from '~/components';
 import { FiltersHeader } from '~/components';
@@ -20,7 +20,7 @@ import { SingleValue } from 'react-select';
 import { HoneyPotBody, HoneyPotHeader, NukeEntity, NukingReceipt } from '~/components/screens';
 import { Entity } from '~/types';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
-import { baseSepoliaClient } from '~/lib/client';
+import { baseClient } from '~/lib/client';
 
 const HoneyPot = () => {
   const { address } = useAccount();
@@ -41,7 +41,7 @@ const HoneyPot = () => {
     selectedForNuke?.tokenId || 0
   );
   const { data: isLocked } = useIsEMP();
-  const { data: blockNumber } = useBlock({ chainId: baseSepolia.id });
+  const { data: blockNumber } = useBlock({ chainId: base.id });
   const { data: timeLeft } = useEMPFinishTime();
   const {
     onWriteAsync: onApprove,
@@ -112,9 +112,9 @@ const HoneyPot = () => {
     }
   };
 
-  const fetchTransactionReceipt = async (hash: string, baseSepoliaClient: any) => {
+  const fetchTransactionReceipt = async (hash: string, baseClient: any) => {
     try {
-      const res = await baseSepoliaClient.getTransactionReceipt({ hash });
+      const res = await baseClient.getTransactionReceipt({ hash });
       if (res && res.logs && res.logs.length > 1 && res.logs[1]) {
         const logData = res.logs[1].data;
         const weiValue = BigInt(logData);
@@ -131,7 +131,7 @@ const HoneyPot = () => {
   
   useEffect(() => {
     if (hash && isNukeConfirmed) {
-      fetchTransactionReceipt(hash, baseSepoliaClient)
+      fetchTransactionReceipt(hash, baseClient)
         .then((ethFromNuke) => {
           setEthFromNuke(ethFromNuke);
           setModalOpen(true);
@@ -140,7 +140,7 @@ const HoneyPot = () => {
           console.error('Failed to process transaction receipt:', error);
         });
     }
-  }, [hash, isNukeConfirmed, baseSepoliaClient]);
+  }, [hash, isNukeConfirmed, baseClient]);
 
   useEffect(() => {
     if (selectedForNuke && isApproveConfirmed) {
