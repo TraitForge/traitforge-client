@@ -17,7 +17,7 @@ export const HoneyPotBody = ({ handleStep, timeLeft, isLocked, blockNumber }: Ho
   const { data: ethPrice } = useEthPrice();
   const usdAmount = Number(formatEther(nukeFundBalance)) * ethPrice;
 
-  console.log("timeLeft:", timeLeft)
+  const isLockedEq = (timeLeft ?? 0) > (blockNumber ?? BigInt(0));
 
   return (
     <>
@@ -29,7 +29,7 @@ export const HoneyPotBody = ({ handleStep, timeLeft, isLocked, blockNumber }: Ho
         = ${usdAmount.toLocaleString()}
       </p>
 
-      {isLocked && timeLeft && (
+      {isLockedEq && (
         <div className={styles.lockOverlay}>
           <p className={`${styles.empText} text-[40px] font-bebas`} title="EMP is active">EMP is active</p>
           <div>
@@ -61,9 +61,9 @@ export const HoneyPotBody = ({ handleStep, timeLeft, isLocked, blockNumber }: Ho
           <div className="flex flex-col justify-center items-center">
           <Button
             bg="rgba(12, 0, 31,0.8)"
-            variant={isLocked ? "inactive" : "purple"}
+            variant={isLockedEq  ? "inactive" : "purple"}
             text="nuke entity"
-            onClick={isLocked ? undefined : handleStep}
+            onClick={isLockedEq  ? undefined : handleStep}
             textClass="font-bebas !text-[32px] !px-20 capitalize"
           />
         </div>
