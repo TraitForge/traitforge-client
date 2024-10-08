@@ -37,6 +37,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "constants/whitelist.js"  ],
   "exclude": ["node_modules"]
 }

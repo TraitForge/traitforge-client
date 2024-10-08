@@ -93,11 +93,14 @@ const Home = () => {
     refetchPriceIncrement();
   };
 
-  const getProof = () => {
+  const getProof = (): `0x${string}`[] => {
     const res = WHITELIST.find(
       item => item.address.toLowerCase() === address?.toLowerCase()
     );
-    return res?.proof ?? [];
+  
+    return (res?.proof ?? []).map((p) => {
+      return p.startsWith('0x') ? p as `0x${string}` : `0x${p}` as `0x${string}`;
+    });
   };
 
   const handleSubmitTwitter = async () => {

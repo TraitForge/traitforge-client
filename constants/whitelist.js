@@ -1,8 +1,4 @@
-export const WHITELIST: {
-  address: `0x${string}`;
-  leaf: `0x${string}`;
-  proof: `0x${string}`[];
-}[] = [
+export const WHITELIST = [
   {
     "address": "0x225b791581185B73Eb52156942369843E8B0Eec7",
     "leaf": "0xc86c16e17ceec4e4cfe6670bb0b509cd7d6b6e87a19745216fb21219a3886196",
