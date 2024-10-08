@@ -362,6 +362,19 @@ export const NukeFundABI = [
   },
   {
     "inputs": [],
+    "name": "goldenGodInitNfDivisor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "initNukeFactorDivisor",
     "outputs": [
       {
@@ -480,6 +493,19 @@ export const NukeFundABI = [
       }
     ],
     "name": "setEmpDivisor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "setGoldenGodInitNfDivisor",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

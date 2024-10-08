@@ -1,6 +1,6 @@
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { EntropyGeneratorABI } from '~/lib/abis';
-import { baseSepoliaClient } from '~/lib/client';
+import { baseClient } from '~/lib/client';
 import { NextResponse } from 'next/server';
 import { processImage } from '~/utils/entropy';
 
@@ -11,7 +11,7 @@ export const POST = async () => {
     for (let slotIndex = 0; slotIndex < 770; slotIndex++) {
       for (let numberIndex = 0; numberIndex < 13; numberIndex++) {
         try {
-          const result = await baseSepoliaClient.readContract({
+          const result = await baseClient.readContract({
             address: CONTRACT_ADDRESSES.EntropyGenerator,
             abi: EntropyGeneratorABI,
             functionName: 'getPublicEntropy',

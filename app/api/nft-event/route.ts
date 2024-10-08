@@ -1,4 +1,4 @@
-import { baseSepoliaClient } from '~/lib/client';
+import { baseClient } from '~/lib/client';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { TraitForgeNftABI, EntityForgingABI, EntropyGeneratorABI } from '~/lib/abis';
 import { NextRequest, NextResponse } from 'next/server';
@@ -16,7 +16,7 @@ export const POST = async (req: NextRequest) => {
       // Mints new NFT
       const tokenId = Number(activity.erc721TokenId);
       const tokenGen = Number(
-        await baseSepoliaClient.readContract({
+        await baseClient.readContract({
           address: CONTRACT_ADDRESSES.TraitForgeNft,
           abi: TraitForgeNftABI,
           functionName: 'tokenGenerations',
@@ -25,7 +25,7 @@ export const POST = async (req: NextRequest) => {
       );
         // EntityForging
         const tokenEntropy = Number(
-          await baseSepoliaClient.readContract({
+          await baseClient.readContract({
             address: CONTRACT_ADDRESSES.TraitForgeNft,
             abi: TraitForgeNftABI,
             functionName: 'tokenEntropy',
@@ -37,7 +37,7 @@ export const POST = async (req: NextRequest) => {
            console.error('Transaction hash is missing or null');
          return NextResponse.json({ status: 'fail', message: 'Invalid transaction hash' }, { status: 400 });
         }
-        const receipt = await baseSepoliaClient.getTransactionReceipt({ hash: transactionHash });
+        const receipt = await baseClient.getTransactionReceipt({ hash: transactionHash });
         const eventLog = receipt.logs[4];
         if (!eventLog) {
           return NextResponse.json({ status: 'fail' }, { status: 404 });;
@@ -60,7 +60,7 @@ export const POST = async (req: NextRequest) => {
             const index = Math.floor(Math.random() * 13);
             const slot = Math.floor(Math.random() * 834);
             const randomEntropy = Number(
-              await baseSepoliaClient.readContract({
+              await baseClient.readContract({
                 address: CONTRACT_ADDRESSES.EntropyGenerator, 
                 abi: EntropyGeneratorABI,
                 functionName: 'getPublicEntropy',

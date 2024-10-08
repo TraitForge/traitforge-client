@@ -327,5 +327,5 @@ export const EntityTradingABI = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
+  }
 ] as const;

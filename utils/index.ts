@@ -1,6 +1,6 @@
 import { formatEther } from 'viem';
 import { EntityRole } from '~/types';
-import { baseSepoliaClient } from '~/lib/client';
+import { baseClient } from '~/lib/client';
 import {
   TraitForgeNftABI,
 } from '~/lib/abis';
@@ -52,14 +52,14 @@ export const calculateMinimumBudgetMint = (entityPrice: bigint, budgetAmount: st
 
 export const isInbred = async(parent1Id: bigint, parent2Id: bigint) => {
   try {
-    const parent1Owner = await baseSepoliaClient.readContract({
+    const parent1Owner = await baseClient.readContract({
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       abi: TraitForgeNftABI,
       functionName: 'ownerOf',
       args: [parent1Id],
     });
 
-    const parent2Owner = await baseSepoliaClient.readContract({
+    const parent2Owner = await baseClient.readContract({
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       abi: TraitForgeNftABI,
       functionName: 'ownerOf',
