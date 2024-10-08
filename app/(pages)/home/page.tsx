@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Slider, Button, LoadingSpinner, Modal } from '~/components';
 import axios from 'axios';
 import {
@@ -57,6 +58,8 @@ const Home = () => {
   const [referModalOpen, setReferModalOpen] = useState<boolean>(false);
   const [twitterHandle, setTwitterHandle] = useState('')
   const [smallLoading, setSmallLoading] = useState<boolean | null>(false);
+  const searchParams = useSearchParams();
+  const ref = searchParams.get('ref');
 
   const handleReferModal = () => setReferModalOpen(prevState => !prevState);
 
@@ -299,7 +302,7 @@ const Home = () => {
             backgroundAttachment: 'fixed',
           }}
         >
-          {referModalOpen && !referralCode && (
+          {referModalOpen && !ref && (
          <Modal
          isOpen={referModalOpen}
          closeModal={handleReferModal}
