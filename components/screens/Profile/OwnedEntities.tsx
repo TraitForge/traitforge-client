@@ -14,6 +14,7 @@ import { icons } from '~/components/icons';
 
 export const OwnedEntities = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [showForging, setShowForging] = useState(true);
 
   const { address } = useAccount();
   const [selectedForUnlisting, setSelectedForUnlisting] = useState<
@@ -25,7 +26,7 @@ export const OwnedEntities = () => {
 
   const { data: entitiesListedByUser, refetch: refetchListedEntities } =
     useListedEntitiesByUser(address || '0x0', 0, 700);
-
+    console.log(entitiesListedByUser);
   const {
     onWriteAsync: onUnlistTrading,
     isPending: isUnlistTradingPending,
@@ -42,6 +43,10 @@ export const OwnedEntities = () => {
   const handleSelectEntity = (entity: EntityTrading | EntityForging) => {
     setSelectedForUnlisting(entity);
     setCurrentStep(3);
+  };
+
+  const toggleView = () => {
+    setShowForging(!showForging);
   };
 
   const handleUnlist = () => {
@@ -102,21 +107,48 @@ export const OwnedEntities = () => {
             </button>
             <h2 className="text-[28px] lg:text-[48px] ml-8">Select entity to unlist</h2>
           </div>
+          <button
+          onClick={toggleView}
+          className="px-4 py-2 bg-gray-700 text-white rounded-md"
+        >
+          {showForging ? 'Show Trading Listings' : 'Show Forging Listings'}
+        </button>
           {entitiesListedByUser.length > 0 && (
             <div className="bg-blue rounded-2xl p-[30px] mt-10">
-              <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:text-large md:w-full text-white md:mb-8 gap-4 flex-1 overflow-y-scroll">
-                {entitiesListedByUser.map(
-                  (entity: EntityTrading | EntityForging) => (
-                    <EntityCard
-                      key={entity.tokenId}
-                      entity={entity}
-                      onSelect={() => handleSelectEntity(entity)}
-                    />
-                  )
+              <div className="pb-5 gap-4 md:gap-6">
+                 {showForging && (
+                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                     {entitiesListedByUser
+                       .filter((entity: EntityForging | EntityTrading) => 'fee' in entity)
+                       .map((entity: EntityForging) => (
+                         <EntityCard
+                           key={entity.tokenId}
+                           entity={entity}
+                           onSelect={() => handleSelectEntity(entity)}
+                           showPrice={true}
+                           displayPrice={entity.fee} // Show fee for forging
+                         />
+                       ))}
+                   </div>
+                 )}
+                {!showForging && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    {entitiesListedByUser
+                      .filter((entity: EntityForging | EntityTrading) => 'price' in entity)
+                      .map((entity: EntityTrading) => (
+                        <EntityCard
+                          key={entity.tokenId}
+                          entity={entity}
+                          onSelect={() => handleSelectEntity(entity)}
+                          showPrice={true}
+                          displayPrice={entity.price} // Show price for trading
+                        />
+                      ))}
+                  </div>
                 )}
               </div>
-            </div>
-          )}
+          </div>
+        )}
         </>
       )}
       {currentStep === 3 && selectedForUnlisting && (
