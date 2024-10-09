@@ -165,7 +165,7 @@ export const EntityCard = ({
             </h6>
           )}
           <Image
-            loading="lazy"
+            loading={window.innerWidth <= 768 ? "eager" : "lazy"}
             src={imageUrl}
             alt="IMG"
             className="w-full rounded-xl md:max-h-[300px] object-cover mt-1"

@@ -51,7 +51,7 @@ export const EntitySliderCard = ({
 
   return (
     <div>
-      {!isSafari && <EntityCardSkeleton className={skeletonClasses} />}
+      {isSafari && <EntityCardSkeleton className={skeletonClasses} />}
       <div className={wrapperClasses}>
         <div className="flex justify-between items-center">
         <div className="relative w-full pt-2 md:pt-0">
@@ -92,7 +92,7 @@ export const EntitySliderCard = ({
             </h6>
           )}
           <Image
-            loading="lazy"
+            loading={window.innerWidth <= 768 ? "eager" : "lazy"}
             src={imageUrl}
             alt="IMG"
             className="w-full rounded-xl md:max-h-[250px] object-cover mt-1"

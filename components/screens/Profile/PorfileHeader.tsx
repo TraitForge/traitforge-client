@@ -1,4 +1,4 @@
-import { useAccount, useSignMessage } from 'wagmi';
+import { useAccount, useSignMessage, useBalance } from 'wagmi';
 import { useEffect, useState } from 'react';
 
 import { shortenAddress } from '~/utils';
@@ -13,6 +13,7 @@ interface User {
   name: string | null;
   twitter: string | null;
   pfp: string | null;
+  balanceInEth: string | number;
 }
 
 export const ProfileHeader = () => {
@@ -26,6 +27,9 @@ export const ProfileHeader = () => {
   const [pfpUrl, setPfpUrl] = useState();
   const [file, setFile] = useState<File | undefined>(undefined);
   const [originalMessage, setOriginalMessage] = useState('');
+  const { data: balanceInETH, isError, isLoading } = useBalance({
+    address: address, 
+  });
 
   const { data: signMessageData, signMessage } = useSignMessage();
 
@@ -98,13 +102,13 @@ export const ProfileHeader = () => {
 
   return (
     <section className="flex max-md:flex-col gap-y-10 justify-between items-center container mt-16">
-      <div className="flex items-center gap-x-[28px]">
+      <div className="flex flex-col md:flex-row items-center gap-x-[28px]">
         <ImageUpload
           pfpUrl={pfpUrl}
           isEditing={isEditing}
           handleImageUpdate={(f: File) => handleImageUpdate(f)}
         />
-        <div className="flex flex-col gap-4 justify-center">
+        <div className="flex flex-col gap-2 md:gap-4 items-center justify-center">
           <div className="flex gap-x-3 items-center">
             {isEditing ? (
               <>
@@ -133,10 +137,10 @@ export const ProfileHeader = () => {
               </>
             )}
           </div>
-          <div className="flex items-center gap-x-4">
+          <div className="flex items-center justify-center gap-x-4">
             {isEditing ? (
               <input
-                className="bg-transparent focus-within:outline-none inline text-[40px] py-[10.5px]"
+                className="bg-transparent focus-within:outline-none inline text-[40px] py-[10.5px] max-w-[200px] md:max-w-[400px]"
                 onChange={e => setUserName(e.target.value)}
                 value={userName}
               />
@@ -194,7 +198,7 @@ export const ProfileHeader = () => {
           <div>
             <p className="text-neutral-100 text-sm sm:text-base">ETH</p>
             <span className="text-white text-md sm:text-large">
-              {/* {balanceInETH} */}
+              {balanceInETH ? balanceInETH.formatted.slice(0, 6) : '0'}
             </span>
           </div>
         </div>
