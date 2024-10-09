@@ -140,10 +140,10 @@ export const EntityCard = ({
           </svg>
           </div>
           <div className="w-full flex justify-between items-center md:absolute md:top-1 md:left-0">
-        <h6 className="text-[15px] lg:text-lg 3xl:text-[20px] pl-1">
+        <h6 className="text-[12px] lg:text-lg 3xl:text-[20px] pl-1">
           GEN{generation}
         </h6>
-          <h6 className="text-[14px] lg:text-base 3xl:text-[20px]">{role}</h6>
+          <h6 className="text-[12px] lg:text-base 3xl:text-[20px]">{role}</h6>
         </div>
         </div>
         </div>
@@ -156,7 +156,7 @@ export const EntityCard = ({
           </div>
         )}
         <div className="relative">
-          <h6 className="absolute top-24 left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
+          <h6 className="absolute top-[52px] md:top-[80px] left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
            {(Number(currentNukeFactor)/1000).toFixed(2)}%
           </h6>
           {isEMP && (
@@ -170,8 +170,8 @@ export const EntityCard = ({
             alt="IMG"
             className="w-full rounded-xl md:max-h-[300px] object-cover mt-1"
             width={250}
-           height={250}
-           onLoad={e => {
+            height={250}
+            onLoad={e => {
               const { naturalWidth } = e.target as HTMLImageElement;
               setImgLoaded(!!naturalWidth);
             }}
@@ -189,11 +189,11 @@ export const EntityCard = ({
       </svg>
          <div className="w-full absolute top-0 left-0 pt-[3px] text-[21px] xl:text-[20px] grid grid-cols-2 2xl:gap-x-3">
           <div className="flex flex-col text-left pl-2 gap-1 pt-2">
-            <h6 className="text-[8px] lg:text-[11px]">Forge <br/> Potential</h6>
+            <h6 className="text-[6px] lg:text-[11px]">Forge <br/> Potential</h6>
             <h6 className="text-base sm:text-xl">{forgePotential - forgingCount} / {forgePotential}</h6>
           </div>
           <div className="flex flex-col text-right pr-3 gap-2 pt-1 md:pt-2 lg:pt-2.5 xl:pt-[10px]">
-            <h6 className="text-[8px] lg:text-[11px]">Performance <br/> Factor</h6>
+            <h6 className="text-[6px] lg:text-[11px]">Performance <br/> Factor</h6>
             <h6 className="text-base sm:text-xl">{performanceFactor}</h6>
           </div>
         </div>

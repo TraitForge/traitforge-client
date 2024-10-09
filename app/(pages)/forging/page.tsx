@@ -177,7 +177,7 @@ const Forging = () => {
                 handleOwnerEntityList={handleOwnerEntityList}
               />
             </div>
-            <div className="max-md:px-5">
+            <div className="max-md:px-5 pb-6">
               <Button
                 text={isGenerationsDifferent ? 'SAME GENERATION ONLY' : 'FORGE ENTITY'}
                 bg="rgba(31, 15, 0, 0.6)"

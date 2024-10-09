@@ -13,8 +13,10 @@ import {
 import { icons } from '~/components/icons';
 
 export const OwnedEntities = () => {
+  const ITEMS_PER_PAGE = 12;
   const [currentStep, setCurrentStep] = useState(1);
   const [showForging, setShowForging] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { address } = useAccount();
   const [selectedForUnlisting, setSelectedForUnlisting] = useState<
@@ -26,7 +28,7 @@ export const OwnedEntities = () => {
 
   const { data: entitiesListedByUser, refetch: refetchListedEntities } =
     useListedEntitiesByUser(address || '0x0', 0, 700);
-    console.log(entitiesListedByUser);
+    
   const {
     onWriteAsync: onUnlistTrading,
     isPending: isUnlistTradingPending,
@@ -39,11 +41,30 @@ export const OwnedEntities = () => {
   } = useUnlistEntityForForging();
 
   const isLoading = isUnlistTradingPending || isUnlistForgingPending;
+  const totalPages = Math.ceil(ownerEntities.length / ITEMS_PER_PAGE);
 
   const handleSelectEntity = (entity: EntityTrading | EntityForging) => {
     setSelectedForUnlisting(entity);
     setCurrentStep(3);
   };
+
+  const paginatedEntities = ownerEntities.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
 
   const toggleView = () => {
     setShowForging(!showForging);
@@ -88,12 +109,31 @@ export const OwnedEntities = () => {
             />
           </div>
           <div className={entitiesWrapper}>
-            <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 md:text-large md:w-full text-white md:mb-8 gap-5 flex-1 overflow-y-scroll">
-              {ownerEntities.map((entity: Entity) => (
-                <EntityCard key={entity.tokenId} entity={entity} />
+          <div className="pb-5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 md:text-large md:w-full text-white md:mb-8 gap-5 flex-1 overflow-y-scroll">
+              {paginatedEntities.map((entity: Entity) => (
+                  <EntityCard key={entity.tokenId} entity={entity} />
               ))}
-            </div>
           </div>
+          </div>
+          <div className="flex justify-between items-center mt-4 pb-[50px] px-[10px] md:px-[50px]">
+        <button
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-neon-blue text-black rounded-md disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-white">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2  bg-neon-blue text-black rounded-md disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
         </>
       )}
       {currentStep === 2 && (

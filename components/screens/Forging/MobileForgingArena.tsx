@@ -20,26 +20,26 @@ export const MobileForgingArena = ({
   selectedFromWallet,
 }: ForgingArenaTypes) => {
   return (
-    <div className="grid md:hidden grid-cols-4 gap-5 px-8">
-      <div className="col-span-2 col-start-2">
-        <ArenaCenter
-          selectedFromPool={selectedFromPool}
-          selectedFromWallet={selectedFromWallet}
-          areEntitiesForged={areEntitiesForged}
-        />
-      </div>
-      <div className="col-span-2">
+    <div className="grid md:hidden grid-cols-6 gap-5 px-8">
+      <div className="col-span-3">
         <ArenaItemForger
           handleEntityListModal={handleEntityListModal}
           selectedFromPool={selectedFromPool}
           btnLabel="select entity from the pool button"
         />
       </div>
-      <div className="col-span-2">
+      <div className="col-span-3">
         <ArenaItem
           handleOwnerEntityList={handleOwnerEntityList}
           selectedFromWallet={selectedFromWallet}
           btnLabel="select entity from wallet button"
+        />
+      </div>
+      <div className="col-span-4 col-start-2">
+        <ArenaCenter
+          selectedFromPool={selectedFromPool}
+          selectedFromWallet={selectedFromWallet}
+          areEntitiesForged={areEntitiesForged}
         />
       </div>
     </div>

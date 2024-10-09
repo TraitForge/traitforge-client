@@ -24,6 +24,8 @@ import {
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import { parseEther } from 'viem';
 
+const ITEMS_PER_PAGE = 30; 
+
 const Marketplace = () => {
   const { address } = useAccount();
   const { data: ownerEntities, refetch: refetchOwnerEntities } =
@@ -58,6 +60,7 @@ const Marketplace = () => {
   const [generationFilter, setGenerationFilter] = useState('');
   const [sortingFilter, setSortingFilter] = useState('');
   const [loadingText, setLoadingText] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data: approved } = useApproval(
     CONTRACT_ADDRESSES.EntityTrading,
@@ -83,6 +86,7 @@ const Marketplace = () => {
     } else if (type === 'sorting') {
       setSortingFilter(String(selectedOption?.value || ''));
     }
+    setCurrentPage(1); 
   };
 
   const filteredAndSortedListings = useMemo(() => {
@@ -108,6 +112,21 @@ const Marketplace = () => {
 
     return filtered;
   }, [sortOption, generationFilter, sortingFilter, entitiesForSale]);
+
+  const totalPages = Math.ceil(filteredAndSortedListings.length / ITEMS_PER_PAGE);
+  const paginatedListings = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    return filteredAndSortedListings.slice(start, end);
+  }, [currentPage, filteredAndSortedListings]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
 
   const buyEntity = async () => {
     if (!selectedListing) {
@@ -194,7 +213,7 @@ const Marketplace = () => {
               sortingFilter={sortingFilter}
             />
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-1 md:gap-x-[8px] mt-10 gap-y-1 lg:gap-y-2">
-              {filteredAndSortedListings.map(entity => (
+              {paginatedListings.map(entity => (
                 <EntityCard
                   key={entity.tokenId}
                   entity={entity}
@@ -206,6 +225,25 @@ const Marketplace = () => {
                   displayPrice={entity.price}
                 />
               ))}
+            </div>
+            <div className="flex justify-between items-center mt-4">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-neon-green text-black rounded-md disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="text-white">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-neon-green text-black rounded-md disabled:opacity-50"
+              >
+                Next
+              </button>
             </div>
           </div>
         </>
