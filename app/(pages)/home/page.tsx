@@ -119,7 +119,7 @@ const Home = () => {
   };
 
   const handleMintEntity = async () => {
-    await onMintToken(mintPrice, getProof());
+    await onMintToken(getProof());
     await axios.post('/api/users', {
       walletAddress: address,
       entity: upcomingMints[0]?.entropy,
@@ -129,7 +129,6 @@ const Home = () => {
 
   const handleMintBatchEntity = async () => {
     const minAmountMinted = calculateMinimumBudgetMint(mintPrice, budgetAmount);
-    console.log(minAmountMinted);
     await onMintWithBudget(parseEther(budgetAmount), getProof(), minAmountMinted);
     await axios.post('/api/users', {
       walletAddress: address,

@@ -576,6 +576,9 @@ export const useMintToken = () => {
     isError: isConfirmError,
     isSuccess: isConfirmed,
   } = useWaitForTransactionReceipt({ hash });
+  const { 
+    data: mintPrice
+  } = useMintPrice();
 
   useEffect(() => {
     if (isConfirmed) {
@@ -591,7 +594,7 @@ export const useMintToken = () => {
     }
   }, [isConfirmed, isCreationError, isConfirmError]);
 
-  const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[]) => {
+  const onWriteAsync = async (proof: `0x${string}`[]) => {
     await writeContractAsync({
       chainId: base.id,
       abi: TraitForgeNftABI,
