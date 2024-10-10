@@ -16,7 +16,8 @@ import {
   Mint,
   MintingHeader,
   BudgetMint,
-  ReferInputs
+  ReferInputs,
+  MintProgressBar
 } from '~/components/screens'
 import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
@@ -240,6 +241,7 @@ const Home = () => {
           >
             Mint your traitforge entity
           </h1>
+          <MintProgressBar ethPrice={mintPrice} generation={currentGeneration}/>
           <p className="text-xs">
             <ClientComponent setReferralCode={setReferralCode}/>
           </p>
