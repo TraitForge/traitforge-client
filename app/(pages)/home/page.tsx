@@ -241,7 +241,7 @@ const Home = () => {
       content = (
         <>
         <h1
-          className="text-[36px] my-1 text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-light-blue via-neon-blue to-light-blue animate-pulse shadow-lg"
+          className="text-[24px] md:test-[36px] my-1 text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-light-blue via-neon-blue to-light-blue animate-pulse shadow-lg"
         >
           🚀 NUKEFUND: ${usdAmount.toLocaleString()} 🚀
         </h1>
