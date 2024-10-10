@@ -10,7 +10,7 @@ import {
   useMintWithBudget,
   usePriceIncrement,
   useUpcomingMints,
-  useWhitelistEndTime,
+  useWhitelistEndTime
 } from '~/hooks';
 import {
   Mint,
