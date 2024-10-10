@@ -321,28 +321,54 @@ export const useNukeFactors = (tokenIds: number[]) => {
 };
 
 // EntityForging
-export const useForgeListings = (offset: number, limit: number) => {
-  const { data, isFetching, refetch } = useReadContract({
+export const useForgeListings = () => {
+  const {
+    data: count,
+    isFetching: isCountFetching,
+    refetch,
+  } = useReadContract({
     chainId: base.id,
     abi: EntityForgingABI,
     address: CONTRACT_ADDRESSES.EntityForging,
-    functionName: 'fetchListings',
-    args: [BigInt(offset), BigInt(limit)],
+    functionName: 'listingCount',
+    args: [],
+  });
+
+  const { data, isFetching: isListFetching } = useReadContracts({
+    contracts: new Array(Number(count ?? 0)).fill(0).map((_, index) => ({
+      chainId: base.id,
+      abi: EntityForgingABI,
+      address: CONTRACT_ADDRESSES.EntityForging,
+      functionName: 'listings',
+      args: [index + 1],
+    })),
   });
 
   return {
-    data: data?.slice(1).filter(item => item.isListed) ?? [],
-    isFetching,
+    data:
+      data
+        ?.map((res: any) => {
+          console.log(res); 
+  
+          return {
+            seller: (res.result?.[0] ?? '0x0') as `0x${string}`,
+            tokenId: res.result?.[1] ?? 0,
+            price: formatEther(res.result?.[3] ?? 0),
+            isActive: Boolean(res.result?.[2] ?? false),
+          };
+        })
+        .filter(listing => listing.isActive) ?? [],
+    isFetching: isCountFetching || isListFetching,
     refetch,
   };
 };
 
-export const useEntitiesForForging = (offset: number, limit: number) => {
+export const useEntitiesForForging = () => {
   const {
     data: listings,
     isFetching: isForgeListingsFetching,
     refetch,
-  } = useForgeListings(offset, limit);
+  } = useForgeListings();
   const tokenIds = listings.map(listing => Number(listing.tokenId));
   const { data: tokenGenerations, isFetching: isTokenGenerationsFetching } =
     useTokenGenerations(tokenIds);
@@ -364,9 +390,9 @@ export const useEntitiesForForging = (offset: number, limit: number) => {
         role,
         forgePotential,
         performanceFactor,
-        account: listing.account,
-        fee: Number(formatEther(listing.fee)),
-        isListed: listing.isListed,
+        account: listing.seller,
+        fee: Number(listing.price),
+        isListed: listing.isActive,
       } as EntityForging;
     }),
     isFetching:
@@ -523,14 +549,14 @@ export const useOwnerEntities = (address: `0x${string}`) => {
   };
 };
 
-export const useListedEntitiesByUser = (account: `0x${string}`, offset: number, limit: number) => {
+export const useListedEntitiesByUser = (account: `0x${string}`) => {
   const { data: ownerEntities, isFetching: isOwnerEntitiesFetching } =
     useOwnerEntities(account);
   const {
     data: entitiesForForging,
     isFetching: isForgingFetching,
     refetch: refetchForging,
-  } = useEntitiesForForging(offset, limit);
+  } = useEntitiesForForging();
   const {
     data: entitiesForSale,
     isFetching: isTradingFetching,

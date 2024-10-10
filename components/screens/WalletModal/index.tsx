@@ -30,7 +30,7 @@ export const WalletModal = ({
   const { data: ownerEntities, refetch: refetchOwnerEntities } =
     useOwnerEntities(address || '0x0');
   const { data: entitiesListedByUser, refetch: refetchListedEntities } =
-    useListedEntitiesByUser(address || '0x0', 0, 1450);
+    useListedEntitiesByUser(address || '0x0');
   const {
     onWriteAsync: onUnlistTrading,
     isPending: isUnlistTradingPending,
