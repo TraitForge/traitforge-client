@@ -7,7 +7,7 @@ export const EntityCardSkeleton = (props: IContentLoaderProps) => {
     <ContentLoader
       speed={2}
       width="full"
-      height={400}
+      height="auto"
       viewBox="0 0 350 410"
       backgroundColor="#1B1A19"
       foregroundColor="#2A2A29"
@@ -19,11 +19,11 @@ export const EntityCardSkeleton = (props: IContentLoaderProps) => {
         y="0"
         width="350"
         height="410"
-        rx="20"  
+        rx="20"
         ry="20"
         fill="#2A2A29"
-        stroke="#1B1A19" 
-        strokeWidth="2" 
+        stroke="#1B1A19"
+        strokeWidth="2"
       />
       <text
         x="50%"

@@ -47,7 +47,7 @@ export const FiltersHeader = ({
   });
 
   const genOptions = [
-    { value: '', label: 'All Gens' },
+    { value: 0, label: 'All Gens' },
     ...Array.from({ length: 10 }, (_, index) => ({
       value: index + 1,
       label: `Gen ${index + 1}`,
@@ -91,7 +91,7 @@ export const FiltersHeader = ({
       ...styles,
       backgroundColor: 'rgba(0, 0, 0, 0.6)',
       boxShadow: `0px 0px 1px 1px ${borderColor}`,
-      minWidth: '190px',
+      minWidth: '220px',
       right: 0,
       zIndex: 100,
     }),
@@ -132,7 +132,9 @@ export const FiltersHeader = ({
         <Select
           options={genOptions}
           onChange={option => handleFilterChange(option, 'generation')}
-          value={genOptions.find(option => option.value === generationFilter)}
+          value={genOptions.find(
+            option => option.value === Number(generationFilter)
+          )}
           styles={{
             ...customStyles,
             menu: styles => ({
@@ -152,7 +154,17 @@ export const FiltersHeader = ({
               ? nukeSortingOptions
               : sortingOptions
             ).find(option => option.value === sortingFilter)}
-            styles={customStyles}
+            styles={{
+              ...customStyles,
+              menu: styles => ({
+                ...styles,
+                minWidth: '220px',
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                boxShadow: `0px 0px 1px 1px ${borderColor}`,
+                zIndex: 100,
+                right:0
+              }),
+            }}
           />
         )}
       </div>

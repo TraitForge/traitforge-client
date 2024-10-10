@@ -5,21 +5,27 @@ import { EntityForging } from '~/types';
 
 import { useAccount } from 'wagmi';
 
-const ITEMS_PER_PAGE = 20; 
+const ITEMS_PER_PAGE = 20;
 
 type SelectEntityListTypes = {
   entitiesForForging: EntityForging[];
   handleSelectedFromPool: (entity: EntityForging) => void;
   handleEntityListModal: () => void;
+  handleGenerationFilter: (value: string) => void;
+  handleSortingFilter: (value: string) => void;
+  generationFilter: string;
+  sortingFilter: string;
 };
 
 export const SelectEntityList = ({
   entitiesForForging,
   handleSelectedFromPool,
   handleEntityListModal,
+  handleGenerationFilter,
+  handleSortingFilter,
+  generationFilter,
+  sortingFilter,
 }: SelectEntityListTypes) => {
-  const [generationFilter, setGenerationFilter] = useState('');
-  const [sortingFilter, setSortingFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const { address } = useAccount();
 
@@ -30,11 +36,11 @@ export const SelectEntityList = ({
     type: string
   ) => {
     if (type === 'generation') {
-      setGenerationFilter(String(selectedOption?.value || ''));
-      setCurrentPage(1); 
+      handleGenerationFilter(String(selectedOption?.value || ''));
+      setCurrentPage(1);
     } else if (type === 'sorting') {
-      setSortingFilter(String(selectedOption?.value || ''));
-      setCurrentPage(1); 
+      handleSortingFilter(String(selectedOption?.value || ''));
+      setCurrentPage(1);
     }
   };
 
@@ -59,7 +65,9 @@ export const SelectEntityList = ({
     return filtered;
   }, [generationFilter, sortingFilter, entitiesForForging]);
 
-  const totalPages = Math.ceil(filteredAndSortedListings.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(
+    filteredAndSortedListings.length / ITEMS_PER_PAGE
+  );
   const paginatedListings = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;

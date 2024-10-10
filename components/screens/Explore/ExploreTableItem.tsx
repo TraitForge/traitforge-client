@@ -49,7 +49,7 @@ export const ExploreTableItem = ({
           </div>
           <p className="text-base">{name ?? walletAddress}</p>
         </div>
-        <p className="text-base col-span-4 text-right">{twitter ? `@${twitter}` : '-'}</p>
+        <p className="text-base col-span-6 text-right">{twitter ? `@${twitter}` : '-'}</p>
       </Link>
     </li>
   );
