@@ -10,7 +10,9 @@ import {
   useMintWithBudget,
   usePriceIncrement,
   useUpcomingMints,
-  useWhitelistEndTime
+  useWhitelistEndTime,
+  useNukeFundBalance,
+  useEthPrice
 } from '~/hooks';
 import {
   Mint,
@@ -19,7 +21,7 @@ import {
   ReferInputs,
   MintProgressBar
 } from '~/components/screens'
-import { parseEther } from 'viem';
+import { parseEther, formatEther } from 'viem';
 import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
 import Countdown from 'react-countdown';
@@ -29,6 +31,9 @@ import _ from 'lodash';
 
 const Home = () => {
   const { address } = useAccount();
+  const { data: nukeFundBalance } = useNukeFundBalance();
+  const { data: ethPrice } = useEthPrice();
+  const usdAmount = Number(formatEther(nukeFundBalance)) * ethPrice;
   const { data: whitelistEndTime } = useWhitelistEndTime();
   const { data: currentGeneration, refetch: refetchCurrentGeneration } =
     useCurrentGeneration();
@@ -235,6 +240,11 @@ const Home = () => {
     default:
       content = (
         <>
+        <h1
+          className="text-[36px] my-1 text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-light-blue via-neon-blue to-light-blue animate-pulse shadow-lg"
+        >
+          🚀 NUKEFUND: ${usdAmount.toLocaleString()} 🚀
+        </h1>
           <h1
             title="Mint Your Traitforge Entity"
             className="headers text-[36px] my-1 text-center md:text-extra-large"

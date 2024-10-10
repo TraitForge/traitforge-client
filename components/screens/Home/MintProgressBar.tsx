@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { formatEther } from 'viem';
-import { useEthPrice, useNukeFundBalance } from '~/hooks';
-
 const STARTING_PRICE = 0.005;
 const INCREMENT = 0.0000245; 
 const MAX_MINTS = 10000; 
@@ -12,10 +9,7 @@ type BarTypes = {
 };
 
 export const MintProgressBar = ({ ethPrice, generation }: BarTypes) => {
-  const { data: nukeFundBalance } = useNukeFundBalance();
-  const { data: ethCost } = useEthPrice();
   const [mintProgress, setMintProgress] = useState<{ mintNumber: number; progressPercentage: string } | null>(null);
-  const usdAmount = Number(formatEther(nukeFundBalance)) * ethCost;
 
   useEffect(() => {
     try {
@@ -48,7 +42,6 @@ export const MintProgressBar = ({ ethPrice, generation }: BarTypes) => {
 
   return (
     <div className="mint-progress-checker text-center">
-      <p className="text-base md:text-xl text-gray-300 mb-2">NUKEFUND: ${usdAmount.toLocaleString()}</p>
       {mintProgress && (
         <div>
           <p className="text-base md:text-xl text-gray-300 mb-2">
