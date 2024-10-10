@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import ProgressBar from 'react-progressbar-line';
 
 const STARTING_PRICE = 0.005;
 const INCREMENT = 0.0000245; 
