@@ -33,7 +33,6 @@ export const Pagination = ({ numOfPages, page, handlePage }: Props) => {
           {Array.from({ length: Math.min(numOfPages, 10) }, (_, idx) => {
             const start = Math.max(0, page - 5);
             const end = Math.min(numOfPages, start + 10);
-            console.log(numOfPages)
             const pageIndex = start + idx;
 
             return (
