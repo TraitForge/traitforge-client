@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { icons } from '~/components/icons';
-import { EntityCard, AccountTag } from '~/components';
+import { EntityCard, AccountTag, LoadingSpinner } from '~/components';
 import { Entity } from '~/types';
 import { shortenAddress } from '~/utils';
 
@@ -47,12 +47,13 @@ export const ForgingReceipt = ({
     mergerOwner,
     tagColor
   }: ForgingReceiptTypes) => {
+    const [showEntity, setShowEntity] = useState(false);
     const [forgerUser, setForgerUser] = useState<User | null>(null);
     const [mergerUser, setMergerUser] = useState<User | null>(null);
     const [newEntity, setNewEntity] = useState<Entity | null>(offspring);
     const [mergerName, setMergerName] = useState("");
     const [forgerName, setForgerName] = useState("");
-  
+
     const fetchUserData = async (walletAddress: string): Promise<User | null> => {
       try {
         const response = await fetch(`/api/user?walletAddress=${walletAddress}`);
@@ -68,6 +69,19 @@ export const ForgingReceipt = ({
         return null;
       }
     };
+
+    useEffect(() => {
+      let timer: any;
+      if (newEntity) {
+        timer = setTimeout(() => {
+          setShowEntity(true);
+        }, 8000); 
+      }
+  
+      return () => {
+        clearTimeout(timer);
+      };
+    }, [newEntity]);
   
     useEffect(() => {
       const fetchUsers = async () => {
@@ -138,9 +152,13 @@ export const ForgingReceipt = ({
          </div>
       </div>
       </div>
-      {newEntity && (
+      {showEntity && newEntity ? (
         <div className="flex justify-center w-6/12 sm:w-10/12 pt-2 md:pt-0">
-            <EntityCard entity={newEntity} />
+          <EntityCard entity={newEntity} />
+        </div>
+      ) : (
+        <div className="flex justify-center items-center w-6/12 sm:w-10/12 pt-2 md:pt-0">
+          <LoadingSpinner color={"#FD8D26"}/>
         </div>
       )}
       <div className="sm:hidden py-6"> 
