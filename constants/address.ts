@@ -4,7 +4,7 @@ export const CONTRACT_ADDRESSES = {
   EntropyGenerator:
     '0x31248a94C8ec87991834f175b1454D4e0E16D0A0' as `0x${string}`,
   EntityTrading: '0x3a61c55bC64B34246A890F3aD5BabC4B74dAb777' as `0x${string}`,
-  EntityForging: '0xE1d5493b321d16e12c747bEc0E1ab4d4dBBf1AF9' as `0x${string}`,
+  EntityForging: '0xfCC74E0c0f63a6aF6A292fC3cA44C2082C138708' as `0x${string}`,
   DevFund: '0x87F1a488229995c9c24C7C528440b21A946F36c1' as `0x${string}`,
   Airdrop: '0x8f1D2e2049A9FC72cE4CDA4eC3b920CBb108eb1B' as `0x${string}`,
   DAOFund: '0xF99Bfb20cDe17e52424a8923f78f979C3a65eD15' as `0x${string}`,

@@ -348,7 +348,6 @@ export const useForgeListings = () => {
     data:
       data
         ?.map((res: any) => {
-          console.log(res); 
   
           return {
             seller: (res.result?.[0] ?? '0x0') as `0x${string}`,

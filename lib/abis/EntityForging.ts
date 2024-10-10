@@ -291,6 +291,30 @@ export const EntityForgingABI = [
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "forgedPairs",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "name": "forgingCounts",
@@ -409,6 +433,25 @@ export const EntityForgingABI = [
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "lastForgeResetTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
       },
@@ -490,29 +533,61 @@ export const EntityForgingABI = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "mintPriceDivisor",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "internalType": "uint256[]",
+        "name": "lowerIds",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "higherIds",
+        "type": "uint256[]"
       }
     ],
-    "stateMutability": "view",
+    "name": "migrateForgedPairsData",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "nukeFundAddress",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isListed",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fee",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IEntityForging.Listing[]",
+        "name": "_listings",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_listingCount",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "migrateListingData",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -546,19 +621,6 @@ export const EntityForgingABI = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "divisor",
-        "type": "uint256"
-      }
-    ],
-    "name": "setMintPriceDivisor",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
