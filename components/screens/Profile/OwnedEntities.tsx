@@ -27,7 +27,7 @@ export const OwnedEntities = () => {
     useOwnerEntities(address || '0x0');
 
   const { data: entitiesListedByUser, refetch: refetchListedEntities } =
-    useListedEntitiesByUser(address || '0x0', 0, 700);
+    useListedEntitiesByUser(address || '0x0', 0, 1450);
     
   const {
     onWriteAsync: onUnlistTrading,
