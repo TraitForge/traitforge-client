@@ -14,12 +14,14 @@ import {
   useUpcomingMints,
   useWhitelistEndTime,
   useNukeFundBalance,
+  useEthPrice,
 } from '~/hooks';
 import {
   Mint,
   MintingHeader,
   BudgetMint,
   ReferInputs,
+  MintProgressBar,
 } from '~/components/screens';
 import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
@@ -31,6 +33,9 @@ import _ from 'lodash';
 
 const Home = () => {
   const { address } = useAccount();
+  const { data: nukeFundBalance } = useNukeFundBalance();
+  const { data: ethPrice } = useEthPrice();
+  const usdAmount = Number(formatEther(nukeFundBalance)) * ethPrice;
   const { data: whitelistEndTime } = useWhitelistEndTime();
   const { data: currentGeneration, refetch: refetchCurrentGeneration } =
     useCurrentGeneration();
@@ -60,7 +65,6 @@ const Home = () => {
   const [referModalOpen, setReferModalOpen] = useState<boolean>(false);
   const [twitterHandle, setTwitterHandle] = useState('');
   const [smallLoading, setSmallLoading] = useState<boolean | null>(false);
-  const { data: nukeFundBalance } = useNukeFundBalance();
 
   const handleReferModal = () => setReferModalOpen(prevState => !prevState);
 
@@ -247,12 +251,19 @@ const Home = () => {
     default:
       content = (
         <>
+          <h1 className="text-[24px] md:test-[36px] my-1 text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-light-blue via-neon-blue to-light-blue animate-pulse shadow-lg">
+            🚀 NUKEFUND: ${usdAmount.toLocaleString()} 🚀
+          </h1>
           <h1
             title="Mint Your Traitforge Entity"
             className="headers text-[36px] my-1 text-center md:text-extra-large"
           >
             Mint your traitforge entity
           </h1>
+          <MintProgressBar
+            ethPrice={mintPrice}
+            generation={currentGeneration}
+          />
           <p className="text-xs">
             <ClientComponent setReferralCode={setReferralCode} />
           </p>
@@ -298,8 +309,9 @@ const Home = () => {
                 variant="secondary"
               />
             </div>
-            <p className='mt-5 text-base'>
-              Nukefund balance: {Number(formatEther(nukeFundBalance)).toFixed(4)} ETH
+            <p className="mt-5 text-base">
+              Nukefund balance:{' '}
+              {Number(formatEther(nukeFundBalance)).toFixed(4)} ETH
             </p>
           </div>
         </>

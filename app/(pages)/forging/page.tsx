@@ -29,6 +29,7 @@ import { parseEther } from 'viem';
 const Forging = () => {
   const { address } = useAccount();
   const { data: mintPrice, refetch: refetchMintPrice } = useMintPrice();
+<<<<<<< HEAD
   const { data: ownerEntities, refetch: refetchOwnerEntities } =
     useOwnerEntities(address || '0x0');
   const { data: entitiesForForging, refetch: refetchEntitiesForForging } =
@@ -41,6 +42,12 @@ const Forging = () => {
   } = useForgeWithListed();
   const { onWriteAsync: onList, isPending: isListPending } =
     useListForForging();
+=======
+  const { data: ownerEntities, refetch: refetchOwnerEntities } = useOwnerEntities(address || '0x0');
+  const { data: entitiesForForging, refetch: refetchEntitiesForForging } = useEntitiesForForging();
+  const { hash, onWriteAsync: onForge, isPending: isForgePending, isConfirmed: isForgeConfirmed } = useForgeWithListed();
+  const { onWriteAsync: onList, isPending: isListPending } = useListForForging();
+>>>>>>> main
   const [step, setStep] = useState('one');
   const [isEntityListModalOpen, setIsEntityListModalOpen] = useState(false);
   const [isOwnerListOpen, setIsOwnerListOpen] = useState(false);

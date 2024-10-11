@@ -71,6 +71,8 @@ export const EntityCard = ({
     }
   }, [imgLoaded]);
 
+  const cupidsTouch = role == 'Forger' && Number(paddedEntropy) % 10 == 2;
+
   const wrapperClasses = classNames(
     'border-[2.13px] rounded-[20px] px-2 md:px-4 pt-4 pb-5 md:pt-4 bg-gradient-to-bl to-light-dark',
     wrapperClass,
@@ -187,7 +189,7 @@ export const EntityCard = ({
           </div>
         )}
         <div className="relative">
-          <h6 className="absolute top-[52px] md:top-[80px] left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
+          <h6 className="absolute top-[52px] md:top-[95px] left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
             {(Number(currentNukeFactor) / 1000).toFixed(2)}%
           </h6>
           {isEMP && (
@@ -197,6 +199,11 @@ export const EntityCard = ({
                 alt="EMP"
                 className="inline-block w-[50px] h-[50px]"
               />
+            </h6>
+          )}
+          {cupidsTouch && (
+            <h6 className="absolute top-3 right-2 bg-opacity-80 text-4xl rounded">
+              <p className="inline-block">💘</p>
             </h6>
           )}
           <Image
