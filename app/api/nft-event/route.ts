@@ -4,8 +4,24 @@ import { TraitForgeNftABI, EntityForgingABI, EntropyGeneratorABI } from '~/lib/a
 import { NextRequest, NextResponse } from 'next/server';
 import { processImage } from '~/utils/entropy';
 import { isInbred } from '~/utils';
-import { decodeEventLog } from 'viem'
+import { decodeEventLog } from 'viem';
+import { ethers } from 'ethers';
 import { random } from 'lodash';
+
+const eventAbi = [
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "newTokenid", "type": "uint256" },
+      { "indexed": true, "internalType": "uint256", "name": "parent1Id", "type": "uint256" },
+      { "indexed": true, "internalType": "uint256", "name": "parent2Id", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "newEntropy", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "forgingFee", "type": "uint256" }
+    ],
+    "name": "EntityForged",
+    "type": "event"
+  }
+];
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -38,23 +54,21 @@ export const POST = async (req: NextRequest) => {
          return NextResponse.json({ status: 'fail', message: 'Invalid transaction hash' }, { status: 400 });
         }
         const receipt = await baseClient.getTransactionReceipt({ hash: transactionHash });
-        const eventLog = receipt.logs[4];
+        const eventLog = receipt.logs[9];
         if (!eventLog) {
           return NextResponse.json({ status: 'fail' }, { status: 404 });;
         }
-        const decodedLog = decodeEventLog({
-          abi: EntityForgingABI,
-          data: eventLog.data,
-          topics: eventLog.topics,
-        }); 
+        const iface = new ethers.Interface(eventAbi);
+        const decodedLog = iface.decodeEventLog("EntityForged", eventLog.data, eventLog.topics);
+        console.log(decodedLog);
         if (
-          'parent1Id' in decodedLog.args && 
-          'parent2Id' in decodedLog.args &&
-          typeof decodedLog.args.parent1Id === 'bigint' &&
-          typeof decodedLog.args.parent2Id === 'bigint'
+           decodedLog[1] && 
+           decodedLog[2] &&
+          typeof decodedLog[1] === 'bigint' &&
+          typeof decodedLog[2] === 'bigint'
         ) {
-          const parent1Id = decodedLog.args.parent1Id;
-          const parent2Id = decodedLog.args.parent2Id;
+          const parent1Id = decodedLog[1];
+          const parent2Id = decodedLog[2];
           const isPossiblyInbred = await isInbred(parent1Id, parent2Id);
           if (isPossiblyInbred) {
             const index = Math.floor(Math.random() * 13);

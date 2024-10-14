@@ -28,8 +28,8 @@ export const OwnedEntities = () => {
 
   const { data: entitiesListedByUser, refetch: refetchListedEntities } =
     useListedEntitiesByUser(address || '0x0');
-    
-  const {
+  
+    const {
     onWriteAsync: onUnlistTrading,
     isPending: isUnlistTradingPending,
     isConfirmed: isUnlistTradingConfirmed,
