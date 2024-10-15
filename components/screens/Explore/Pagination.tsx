@@ -28,15 +28,28 @@ export const Pagination = ({ numOfPages, page, handlePage }: Props) => {
             />
           </svg>
         </li>
-        {[...Array(numOfPages)].map((item, idx) => (
-          <li
-            key={idx}
-            onClick={() => handlePage(idx)}
-            className="flex items-center justify-center px-3 h-8 leading-tight cursor-pointer"
-          >
-            {idx + 1}
-          </li>
-        ))}
+
+        <div className="flex">
+          {Array.from({ length: Math.min(numOfPages, 10) }, (_, idx) => {
+            const start = Math.max(0, page - 5);
+            const end = Math.min(numOfPages, start + 10);
+            const pageIndex = start + idx;
+
+            return (
+              pageIndex < end && (
+                <li
+                  key={pageIndex}
+                  onClick={() => handlePage(pageIndex)}
+                  className={`flex items-center justify-center px-3 h-8 leading-tight cursor-pointer ${
+                    pageIndex === page ? 'bg-neon-green rounded-sm' : ''
+                  }`}
+                >
+                  {pageIndex + 1}
+                </li>
+              )
+            );
+          })}
+        </div>
         <li
           onClick={() => page < numOfPages - 1 && handlePage(page + 1)}
           className="flex items-center justify-center px-3 h-8 leading-tight"

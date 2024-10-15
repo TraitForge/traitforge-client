@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { Slider, Button, LoadingSpinner, Modal } from '~/components';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { formatEther } from 'viem';
+
+import { Slider, Button, LoadingSpinner, Modal } from '~/components';
 import {
   useCurrentGeneration,
   useMintPrice,
@@ -12,16 +14,16 @@ import {
   useUpcomingMints,
   useWhitelistEndTime,
   useNukeFundBalance,
-  useEthPrice
+  useEthPrice,
 } from '~/hooks';
 import {
   Mint,
   MintingHeader,
   BudgetMint,
   ReferInputs,
-  MintProgressBar
-} from '~/components/screens'
-import { parseEther, formatEther } from 'viem';
+  MintProgressBar,
+} from '~/components/screens';
+import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
 import { WHITELIST } from '~/constants/whitelist';
 import Countdown from 'react-countdown';
@@ -52,7 +54,7 @@ const Home = () => {
     isConfirmed: isMintWithBudgetConfirmed,
   } = useMintWithBudget();
   const { data: upcomingMints, isFetching: isUpcomingMintsFetching } =
-  useUpcomingMints(mintPrice, currentGeneration);
+    useUpcomingMints(mintPrice, currentGeneration);
 
   const isLoading =
     isMintTokenPending || isMintWithBudgetPending || isUpcomingMintsFetching;
@@ -61,14 +63,17 @@ const Home = () => {
   const [budgetAmount, setBudgetAmount] = useState('');
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [referModalOpen, setReferModalOpen] = useState<boolean>(false);
-  const [twitterHandle, setTwitterHandle] = useState('')
+  const [twitterHandle, setTwitterHandle] = useState('');
   const [smallLoading, setSmallLoading] = useState<boolean | null>(false);
 
   const handleReferModal = () => setReferModalOpen(prevState => !prevState);
 
-  const ClientComponent = dynamic(() => import('~/components/screens/Home/refCode'), {
-    ssr: false, 
-  });
+  const ClientComponent = dynamic(
+    () => import('~/components/screens/Home/refCode'),
+    {
+      ssr: false,
+    }
+  );
 
   useEffect(() => {
     if (isMintTokenConfirmed || isMintWithBudgetConfirmed) {
@@ -103,25 +108,27 @@ const Home = () => {
     const res = WHITELIST.find(
       item => item.address.toLowerCase() === address?.toLowerCase()
     );
-  
-    return (res?.proof ?? []).map((p) => {
-      return p.startsWith('0x') ? p as `0x${string}` : `0x${p}` as `0x${string}`;
+
+    return (res?.proof ?? []).map(p => {
+      return p.startsWith('0x')
+        ? (p as `0x${string}`)
+        : (`0x${p}` as `0x${string}`);
     });
   };
 
   const handleSubmitTwitter = async () => {
-    setSmallLoading(true)
+    setSmallLoading(true);
     const refCode = twitterHandle;
     await fetch('/api/incrementMint', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refCode }),
-      });
-      localStorage.setItem('referralCode', refCode);
-      setSmallLoading(false)
-      setReferModalOpen(false);
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refCode }),
+    });
+    localStorage.setItem('referralCode', refCode);
+    setSmallLoading(false);
+    setReferModalOpen(false);
   };
 
   const handleMintEntity = async () => {
@@ -135,7 +142,11 @@ const Home = () => {
 
   const handleMintBatchEntity = async () => {
     const minAmountMinted = calculateMinimumBudgetMint(mintPrice, budgetAmount);
-    await onMintWithBudget(parseEther(budgetAmount), getProof(), minAmountMinted);
+    await onMintWithBudget(
+      parseEther(budgetAmount),
+      getProof(),
+      minAmountMinted
+    );
     await axios.post('/api/users', {
       walletAddress: address,
       entity: upcomingMints[0]?.entropy,
@@ -166,22 +177,22 @@ const Home = () => {
 
   const upcomingMint = upcomingMints.length > 0 ? upcomingMints[0] : null;
 
-    useEffect(() => {
-      const handleMintInc = async () => {
-        const refCode = referralCode;
-        await fetch('/api/incrementMint', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ refCode }),
-        });
-      };
-    
-      if (isMintTokenConfirmed) {
-        handleMintInc();
-      }
-    }, [isMintTokenConfirmed, referralCode]);
+  useEffect(() => {
+    const handleMintInc = async () => {
+      const refCode = referralCode;
+      await fetch('/api/incrementMint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refCode }),
+      });
+    };
+
+    if (isMintTokenConfirmed) {
+      handleMintInc();
+    }
+  }, [isMintTokenConfirmed, referralCode]);
 
   if (isLoading)
     return (
@@ -240,20 +251,23 @@ const Home = () => {
     default:
       content = (
         <>
-        <h1
-          className="text-[24px] md:text-[36px] my-1 text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-light-blue via-neon-blue to-light-blue animate-pulse shadow-lg"
-        >
-          <span className="animate-bounce text-white">🚀</span> NUKEFUND: ${usdAmount.toLocaleString()} <span className="animate-bounce text-white">🚀</span>
-        </h1>
+          <h1 className="text-[24px] md:text-[36px] my-1 text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-light-blue via-neon-blue to-light-blue animate-pulse shadow-lg">
+            <span className="animate-bounce text-white">🚀</span> NUKEFUND: $
+            {usdAmount.toLocaleString()}{' '}
+            <span className="animate-bounce text-white">🚀</span>
+          </h1>
           <h1
             title="Mint Your Traitforge Entity"
             className="headers text-[36px] my-1 text-center md:text-extra-large"
           >
             Mint your traitforge entity
           </h1>
-          <MintProgressBar ethPrice={mintPrice} generation={currentGeneration}/>
+          <MintProgressBar
+            ethPrice={mintPrice}
+            generation={currentGeneration}
+          />
           <p className="text-xs">
-            <ClientComponent setReferralCode={setReferralCode}/>
+            <ClientComponent setReferralCode={setReferralCode} />
           </p>
           <h2 className="pt-6">
             <Countdown
@@ -297,41 +311,45 @@ const Home = () => {
                 variant="secondary"
               />
             </div>
+            <p className="mt-5 text-base">
+              Nukefund balance:{' '}
+              {Number(formatEther(nukeFundBalance)).toFixed(4)} ETH
+            </p>
           </div>
-          </>
-        );
-    }
-  
-    return (
-      <div
-          className="mint-container min-h-screen 3xl:pt-[100px]"
-          style={{
-            backgroundImage:
-              "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundAttachment: 'fixed',
-          }}
+        </>
+      );
+  }
+
+  return (
+    <div
+      className="mint-container min-h-screen 3xl:pt-[100px]"
+      style={{
+        backgroundImage:
+          "radial-gradient(rgba(0, 0, 0, 0.6) 49%, rgba(0, 0, 0, 0.6) 100%), url('/images/home.png')",
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      {referModalOpen && !referralCode && (
+        <Modal
+          isOpen={referModalOpen}
+          closeModal={handleReferModal}
+          modalClasses="items-end pb-4"
         >
-          {referModalOpen && !referralCode && (
-         <Modal
-         isOpen={referModalOpen}
-         closeModal={handleReferModal}
-         modalClasses="items-end pb-4"
-         >
-         <ReferInputs
-          handleReferModal={handleReferModal}
-          setTwitterHandle={setTwitterHandle}
-          twitterHandle={twitterHandle}
-          handleSubmitTwitter={handleSubmitTwitter}
-          smallLoading={smallLoading}
+          <ReferInputs
+            handleReferModal={handleReferModal}
+            setTwitterHandle={setTwitterHandle}
+            twitterHandle={twitterHandle}
+            handleSubmitTwitter={handleSubmitTwitter}
+            smallLoading={smallLoading}
           />
-          </Modal>
-          )}
-          <MintingHeader handleStep={setStep} step={step} />
-          {content}
-        </div>
-    );
+        </Modal>
+      )}
+      <MintingHeader handleStep={setStep} step={step} />
+      {content}
+    </div>
+  );
 };
 
 export default Home;
