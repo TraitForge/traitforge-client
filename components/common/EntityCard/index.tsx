@@ -180,14 +180,17 @@ export const EntityCard = ({
             </div>
           </div>
         </div>
-        {showPrice && (
-          <div className="pl-1 text-left py-1 flex flex-row gap-2">
-            <h4 className="text-[14px] md:text-[24px]">{displayPrice} ETH</h4>
-            <h4 className="text-[12px] md:text-[22px] truncate">
-              ${formatNumber(usdAmount)}
-            </h4>
-          </div>
-        )}
+        <div className="flex items-center justify-between">
+          {showPrice && (
+            <div className="pl-1 text-left py-1 flex flex-row gap-2">
+              <h4 className="text-[14px] md:text-[24px]">{displayPrice} ETH</h4>
+              <h4 className="text-[12px] md:text-[22px] truncate">
+                ${formatNumber(usdAmount)}
+              </h4>
+            </div>
+          )}
+          <div className="text-sm uppercase ml-auto">token id: {tokenId}</div>
+        </div>
         <div className="relative">
           <h6 className="absolute top-[52px] md:top-[95px] left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
             {(Number(currentNukeFactor) / 1000).toFixed(2)}%

@@ -27,8 +27,10 @@ const ExplorePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
+  const [filterByMerger, setFilterByMerger] = useState(false);
   const { data: ownerEntities, refetch: refetchOwnerEntities } =
-    useOwnerEntities( slug as `0x${string}`  || '0x0');
+    useOwnerEntities((slug as `0x${string}`) || '0x0');
+
   useEffect(() => {
     // check user already registered
     (async () => {
@@ -68,45 +70,83 @@ const ExplorePage = () => {
         </div>
       ) : (
         <div className=" container">
-          <div className="flex items-center gap-x-[28px]">
-          <button
-            className=" -translate-y-1/2 max-md:h-auto bg-[#0C001F] bg-opacity-80 px-4 rounded-md "
-            onClick={() =>  window.location.href = '/explore'}
-          >
-            {icons.arrow({ className: 'text-neon-green' })}
-          </button>
-            <div className="w-20 h-20">
-              {user?.pfp ? (
-                <Image
-                  alt={user?.name}
-                  src={user?.pfp}
-                  width={100}
-                  height={100}
-                  className=" object-cover rounded-xl w-full h-full"
-                />
-              ) : (
-                icons.user({
-                  className: 'w-full h-full object-cover text-[#AAFF3E]',
-                })
-              )}
+          <div className="flex items-center justify-between gap-x-[28px]">
+            <div className="flex items-center gap-x-[28px]">
+              <button
+                className=" -translate-y-1/2 max-md:h-auto bg-[#0C001F] bg-opacity-80 px-4 rounded-md "
+                onClick={() => (window.location.href = '/explore')}
+              >
+                {icons.arrow({ className: 'text-neon-green' })}
+              </button>
+              <div className="w-20 h-20">
+                {user?.pfp ? (
+                  <Image
+                    alt={user?.name}
+                    src={user?.pfp}
+                    width={100}
+                    height={100}
+                    className=" object-cover rounded-xl w-full h-full"
+                  />
+                ) : (
+                  icons.user({
+                    className: 'w-full h-full object-cover text-[#AAFF3E]',
+                  })
+                )}
+              </div>
+              <div className="flex flex-col gap-4 justify-center">
+                <div className="flex items-center gap-x-4">
+                  <p className="text-[40px]">{user?.name}</p>
+                </div>
+                <div className="flex gap-x-3">
+                  <p className="text-xl">{`@${user?.twitter}`}</p>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col gap-4 justify-center">
-              <div className="flex items-center gap-x-4">
-                <p className="text-[40px]">{user?.name}</p>
-              </div>
-              <div className="flex gap-x-3">
-                <p className="text-xl">{`@${user?.twitter}`}</p>
-              </div>
+            <div className="flex items-center gap-x-10">
+              {filterByMerger && (
+                <button
+                  onClick={() => setFilterByMerger(false)}
+                  className="text-neon-green flex items-center gap-x-2 uppercase text-base"
+                >
+                  Merger{' '}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="p-1 bg-light-green border rounded-full border-neon-green"
+                  >
+                    <path
+                      stroke="#fff"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M18.75 5.25l-13.5 13.5M18.75 18.75L5.25 5.25"
+                    />
+                  </svg>
+                </button>
+              )}
+              <button
+                onClick={() => setFilterByMerger(true)}
+                className="text-sm uppercase text-center border border-solid border-[#0EEB81] p-2 rounded-xl"
+              >
+                entities they have listed <br /> for forging/trading
+              </button>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-2 md:gap-x-[10px] mt-10 gap-y-2 lg:gap-y-2">
-            {ownerEntities.map((entity: Entity) => {
-              return (
-                <EntityCard
-                entity={entity}
-                />
-              );
-            })}
+            {ownerEntities
+              .filter(item => {
+                if (item.role === 'Merger' && filterByMerger) {
+                  return item;
+                } else if (!filterByMerger) {
+                  return item;
+                }
+              })
+              .map((entity: Entity) => {
+                return <EntityCard entity={entity} />;
+              })}
           </div>
         </div>
       )}
