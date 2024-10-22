@@ -311,10 +311,6 @@ const Home = () => {
                 variant="secondary"
               />
             </div>
-            <p className="mt-5 text-base">
-              Nukefund balance:{' '}
-              {Number(formatEther(nukeFundBalance)).toFixed(4)} ETH
-            </p>
           </div>
         </>
       );
