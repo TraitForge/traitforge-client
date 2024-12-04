@@ -9,7 +9,7 @@ export const CONTRACT_ADDRESSES = {
   Airdrop: '0x1559775e696674545637AEF0a68816208b6a3D2d' as `0x${string}`,
   DAOFund: '0xF99Bfb20cDe17e52424a8923f78f979C3a65eD15' as `0x${string}`,
   NukeFund: '0xc44dE0cC67bd85C4d0d353D4Af50C6C1ecBa0340' as `0x${string}`,
-  LottFund: '0xa0781e287b91a4A89a799334C12d0aaA998f03a8' as `0x${string}`,
+  LottFund: '0xd285684EA8ab86497C1b2f25907E45272b45cc66' as `0x${string}`,
   PriceOracle: '0x694AA1769357215DE4FAC081bf1f309aDC325306' as `0x${string}`,
   NukeRouter: '0x74371d5c09021114cB48aff50F0Da5DCCd2De8C5' as `0x${string}`,
 };
