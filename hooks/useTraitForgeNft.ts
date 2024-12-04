@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { formatEther } from 'viem';
 import {
@@ -6,8 +6,9 @@ import {
   useReadContracts,
   useWaitForTransactionReceipt,
   useWriteContract,
+  useWatchContractEvent
 } from 'wagmi';
-import { sepolia, base } from 'wagmi/chains';
+import { sepolia, baseSepolia } from 'wagmi/chains';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
 import {
   EntityForgingABI,
@@ -15,8 +16,9 @@ import {
   EntropyGeneratorABI,
   NukeFundABI,
   TraitForgeNftABI,
+  LottFundABI
 } from '~/lib/abis';
-import { Entity, EntityForging, EntityTrading, Entropy } from '~/types';
+import { Entity, EntityForging, EntityTrading, Entropy, BidWinnerEvent } from '~/types';
 import { calculateEntityAttributes } from '~/utils';
 
 // --------- Read Functions -----------
@@ -24,7 +26,7 @@ import { calculateEntityAttributes } from '~/utils';
 // NFT
 export const useWhitelistEndTime = () => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'whitelistEndTime',
@@ -40,7 +42,7 @@ export const useWhitelistEndTime = () => {
 
 export const useCurrentGeneration = () => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'getGeneration',
@@ -56,7 +58,7 @@ export const useCurrentGeneration = () => {
 
 export const useMintPrice = () => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'calculateMintPrice',
@@ -72,7 +74,7 @@ export const useMintPrice = () => {
 
 export const usePriceIncrement = () => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'priceIncrement',
@@ -88,7 +90,7 @@ export const usePriceIncrement = () => {
 
 export const useApproval = (address: `0x${string}`, tokenId: number) => {
   const { data, isFetching } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'isApprovedOrOwner',
@@ -132,7 +134,7 @@ export const useUpcomingMints = (mintPrice: bigint, generation: number) => {
 
   const { data, isFetching } = useReadContracts({
     contracts: inputs.map(input => ({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntropyGeneratorABI,
       address: CONTRACT_ADDRESSES.EntropyGenerator,
       functionName: 'getPublicEntropy',
@@ -155,7 +157,7 @@ export const useUpcomingMints = (mintPrice: bigint, generation: number) => {
 
 export const useNftBalance = (address: `0x${string}`) => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'balanceOf',
@@ -178,7 +180,7 @@ export const useTokenIds = (address: `0x${string}`) => {
 
   const { data, isFetching } = useReadContracts({
     contracts: new Array(balance).fill(0).map((_, index) => ({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'tokenOfOwnerByIndex',
@@ -198,7 +200,7 @@ export const useTokenIds = (address: `0x${string}`) => {
 export const useTokenGenerations = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'getTokenGeneration',
@@ -215,7 +217,7 @@ export const useTokenGenerations = (tokenIds: number[]) => {
 export const useIsNukeable = (entities: Entity[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: entities.map(entity => ({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: NukeFundABI,
       address: CONTRACT_ADDRESSES.NukeFund,
       functionName: 'canTokenBeNuked',
@@ -240,7 +242,7 @@ export const useIsNukeable = (entities: Entity[]) => {
 export const useTokenEntropies = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'getTokenEntropy',
@@ -257,7 +259,7 @@ export const useTokenEntropies = (tokenIds: number[]) => {
 // NukeFund
 export const useNukeFundBalance = () => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: NukeFundABI,
     address: CONTRACT_ADDRESSES.NukeFund,
     functionName: 'getFundBalance',
@@ -273,7 +275,7 @@ export const useNukeFundBalance = () => {
 
 export const useIsEMP = () => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: NukeFundABI,
     address: CONTRACT_ADDRESSES.NukeFund,
     functionName: 'isEMPActive',
@@ -289,7 +291,7 @@ export const useIsEMP = () => {
 
 export const useEMPFinishTime = () => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: NukeFundABI,
     address: CONTRACT_ADDRESSES.NukeFund,
     functionName: 'unpauseAt',
@@ -306,7 +308,7 @@ export const useEMPFinishTime = () => {
 export const useNukeFactors = (tokenIds: number[]) => {
   const { data, isFetching } = useReadContracts({
     contracts: tokenIds.map(tokenId => ({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: NukeFundABI,
       address: CONTRACT_ADDRESSES.NukeFund,
       functionName: 'calculateNukeFactor',
@@ -327,7 +329,7 @@ export const useForgeListings = () => {
     isFetching: isCountFetching,
     refetch,
   } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: EntityForgingABI,
     address: CONTRACT_ADDRESSES.EntityForging,
     functionName: 'listingCount',
@@ -336,7 +338,7 @@ export const useForgeListings = () => {
 
   const { data, isFetching: isListFetching } = useReadContracts({
     contracts: new Array(Number(count ?? 0)).fill(0).map((_, index) => ({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'listings',
@@ -404,7 +406,7 @@ export const useEntitiesForForging = () => {
 
 export const useForgingCounts = (tokenId: number) => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: EntityForgingABI,
     address: CONTRACT_ADDRESSES.EntityForging,
     functionName: 'forgingCounts',
@@ -420,7 +422,7 @@ export const useForgingCounts = (tokenId: number) => {
 
 export const useTotalSupply = () => {
   const { data, isFetching, refetch } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: TraitForgeNftABI,
     address: CONTRACT_ADDRESSES.TraitForgeNft,
     functionName: 'totalSupply'
@@ -439,7 +441,7 @@ export const useTradingListings = () => {
     isFetching: isCountFetching,
     refetch,
   } = useReadContract({
-    chainId: base.id,
+    chainId: baseSepolia.id,
     abi: EntityTradingABI,
     address: CONTRACT_ADDRESSES.EntityTrading,
     functionName: 'listingCount',
@@ -448,7 +450,7 @@ export const useTradingListings = () => {
 
   const { data, isFetching: isListFetching } = useReadContracts({
     contracts: new Array(Number(count ?? 0)).fill(0).map((_, index) => ({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'listings',
@@ -528,7 +530,7 @@ export const useOwnerEntities = (address: `0x${string}`) => {
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor, nukeFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor, maxBidPotential} =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId,
@@ -538,6 +540,7 @@ export const useOwnerEntities = (address: `0x${string}`) => {
         role,
         forgePotential,
         performanceFactor,
+        maxBidPotential
       } as Entity;
     }),
     isFetching:
@@ -621,7 +624,7 @@ export const useMintToken = () => {
 
   const onWriteAsync = async (proof: `0x${string}`[]) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintToken',
@@ -669,7 +672,7 @@ export const useMintWithBudget = () => {
 
   const onWriteAsync = async (mintPrice: bigint, proof: `0x${string}`[], minAmountMinted: number) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'mintWithBudget',
@@ -717,11 +720,58 @@ export const useApproveNft = () => {
 
   const onWriteAsync = async (address: `0x${string}`, tokenId: number) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: TraitForgeNftABI,
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'approve',
       args: [address, BigInt(tokenId)],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useApprovalForAll = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Approved Successfully');
+    }
+    if (isCreationError) {
+      toast.error(`Failed to approve`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Failed to approve`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (address: `0x${string}`) => {
+    await writeContractAsync({
+      chainId: baseSepolia.id,
+      abi: TraitForgeNftABI,
+      address: CONTRACT_ADDRESSES.TraitForgeNft,
+      functionName: 'setApprovalForAll',
+      args: [address, true],
     });
   };
 
@@ -765,7 +815,7 @@ export const useListForForging = () => {
 
   const onWriteAsync = async (tokenId: number, fee: bigint) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'listForForging',
@@ -812,7 +862,7 @@ export const useUnlistEntityForForging = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'cancelListingForForging',
@@ -863,7 +913,7 @@ export const useForgeWithListed = () => {
     fee: bigint
   ) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntityForgingABI,
       address: CONTRACT_ADDRESSES.EntityForging,
       functionName: 'forgeWithListed',
@@ -912,7 +962,7 @@ export const useListEntityForSale = () => {
 
   const onWriteAsync = async (tokenId: number, price: bigint) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'listNFTForSale',
@@ -959,7 +1009,7 @@ export const useUnlistEntityForSale = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'cancelListing',
@@ -1006,7 +1056,7 @@ export const useBuyEntity = () => {
 
   const onWriteAsync = async (tokenId: number, price: bigint) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: EntityTradingABI,
       address: CONTRACT_ADDRESSES.EntityTrading,
       functionName: 'buyNFT',
@@ -1055,7 +1105,7 @@ export const useNukeEntity = () => {
 
   const onWriteAsync = async (tokenId: number) => {
     await writeContractAsync({
-      chainId: base.id,
+      chainId: baseSepolia.id,
       abi: NukeFundABI,
       address: CONTRACT_ADDRESSES.NukeFund,
       functionName: 'nuke',
@@ -1068,5 +1118,258 @@ export const useNukeEntity = () => {
     hash,
     onWriteAsync,
     isConfirmed,
+  };
+};
+
+
+// LottFund
+export const useBidEntity = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity Bidded successfully!');
+    }
+    if (isCreationError) {
+      toast.error(`Bid failed. Please try again`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Bid failed. Please try again`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenId: number) => {
+    await writeContractAsync({
+      chainId: baseSepolia.id,
+      abi: LottFundABI,
+      address: CONTRACT_ADDRESSES.LottFund,
+      functionName: 'bid',
+      args: [BigInt(tokenId)],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+
+// LottFund
+export const useClaimReward = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Winnings claimed successfully!');
+    }
+    if (isCreationError) {
+      toast.error(`Claim failed. Please try again`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Claim failed. Please try again`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async () => {
+    await writeContractAsync({
+      chainId: baseSepolia.id,
+      abi: LottFundABI,
+      address: CONTRACT_ADDRESSES.LottFund,
+      functionName: 'claimWinningRewards',
+      args: [],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+
+export const useBidEntities = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity/ies Bidded successfully!');
+    }
+    if (isCreationError) {
+      toast.error(`Bidding failed. Please try again`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Bidding failed. Please try again`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenIds: bigint[]) => {
+    await writeContractAsync({
+      chainId: baseSepolia.id,
+      abi: LottFundABI,
+      address: CONTRACT_ADDRESSES.LottFund,
+      functionName: 'batchBid',
+      args: [tokenIds], 
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useLottFundBalance = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'getFundBalance',
+    args: [],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useLottFundBidAmount = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'bidsAmount',
+    args: [],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useLottFundMaxBidAmount = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'maxBidAmount',
+    args: [],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useTokenBiddedAmount = (tokenId: bigint) => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'tokenBidCount',
+    args: [tokenId],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useRecentBidWinners = () => {
+  const recentWinners = useRef<BidWinnerEvent[]>([]);
+  useWatchContractEvent({
+    address: CONTRACT_ADDRESSES.LottFund,
+    abi: LottFundABI,
+    eventName: 'BidWinner',
+    onLogs: (logs) => {
+      // Process the logs to extract event data
+      const newWinners = logs.map((log) => {
+        const { args } = log as unknown as {
+          args: [string, bigint, bigint];
+        };
+
+        return {
+          winner: args[0],
+          tokenId: BigInt(args[1]),
+          claimAmount: args[2].toString(),
+        };
+      });
+      recentWinners.current = [...newWinners, ...recentWinners.current].slice(0, 10);
+    },
+  });
+
+  return { data: recentWinners.current };
+};
+
+
+export const useWonAmount = (address: `0x${string}`) => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: baseSepolia.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'getWinningAddress',
+    args: [address],
+  });
+
+  return {
+    data: Number(data ?? 0),
+    isFetching,
+    refetch,
   };
 };

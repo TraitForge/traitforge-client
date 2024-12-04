@@ -27,10 +27,11 @@ export const calculateEntityAttributes = (paddedEntropy: string | number) => {
   const lastTwoDigits = paddedEntropyNumber % 100;
   const forgePotential = Math.floor(lastTwoDigits / 10);
   const nukeFactor = Number((paddedEntropyNumber / 100000).toFixed(2));
+  const maxBidPotential = Number(paddedEntropy) % 2;
   const result = paddedEntropyNumber % 3;
   const role = result === 0 ? EntityRole.FORGER : EntityRole.MERGER;
   const cupidsTouch = role == EntityRole.FORGER && (Number(paddedEntropy) % 10) == 2;
-  return { role, forgePotential, nukeFactor, performanceFactor, cupidsTouch };
+  return { role, forgePotential, nukeFactor, performanceFactor, cupidsTouch, maxBidPotential };
 };
 
 export const shortenAddress = (address: `0x${string}`) => {

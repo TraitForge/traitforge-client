@@ -276,3 +276,50 @@ progress.custom-progress::-moz-progress-bar {
   }
 }
 
+/* Style the progress bar */
+progress.custom-progress2 {
+  width: 100%;
+  height: 24px;
+  border-radius: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  box-shadow: 0px 0px 3px rgba(183, 0, 255, 0.3), 0px 0px 20px rgba(94, 0, 234, 0.5);
+  background: #1f1f1f;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #8100c7;
+}
+
+/* WebKit styles (Chrome, Safari) */
+progress.custom-progress2::-webkit-progress-bar {
+  background-color: #1f1f1f; /* Dark background */
+  border-radius: 12px;
+}
+
+progress.custom-progress2::-webkit-progress-value {
+  background: linear-gradient(270deg, #a500ff, #d700ff, #8a00ff); /* Purple gradient */
+  background-size: 400% 400%;
+  animation: glow 3s ease infinite;
+  border-radius: 12px;
+}
+
+/* Firefox */
+progress.custom-progress2::-moz-progress-bar {
+  background: linear-gradient(270deg, #a500ff, #d700ff, #8a00ff); /* Purple gradient */
+  background-size: 400% 400%;
+  animation: glow 3s ease infinite;
+  border-radius: 12px;
+}
+
+/* Glowing animation effect */
+@keyframes glow {
+  0% {
+    background-position: 0% 20%;
+  }
+  50% {
+    background-position: 50% 200%;
+  }
+  100% {
+    background-position: 0% 200%;
+  }
+}
