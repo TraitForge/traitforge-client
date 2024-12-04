@@ -33,6 +33,7 @@ export const ArenaCenter = ({
         Math.max(selectedFromWallet.generation, selectedFromPool.generation) +
         1,
       role: attributes.role as EntityRole,
+      maxBidPotential: attributes.maxBidPotential,
       forgePotential: attributes.forgePotential,
       performanceFactor: attributes.performanceFactor,
       nukeFactor: attributes.nukeFactor,
