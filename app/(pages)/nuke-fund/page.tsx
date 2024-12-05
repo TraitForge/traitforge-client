@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useAccount, useBlock } from 'wagmi';
 import { formatUnits } from 'viem';
-import { baseSepolia } from 'viem/chains'
+import { base } from 'viem/chains'
 import styles from '~/styles/honeypot.module.scss';
 import { EntityCard, LoadingSpinner, RewardModal } from '~/components';
 import { FiltersHeader } from '~/components';
@@ -41,7 +41,7 @@ const HoneyPot = () => {
     selectedForNuke?.tokenId || 0
   );
   const { data: isLocked } = useIsEMP();
-  const { data: blockNumber } = useBlock({ chainId: baseSepolia.id });
+  const { data: blockNumber } = useBlock({ chainId: base.id });
   const { data: timeLeft } = useEMPFinishTime();
   const {
     onWriteAsync: onApprove,
