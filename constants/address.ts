@@ -1,8 +1,8 @@
 export const CONTRACT_ADDRESSES = {
-  Trait: '0xc358926358Fc1B0D6F9fbb291c9784B05b4B52A9' as `0x${string}`,
+  Trait: '0xd304C83b6b7153E3B71d7f24dA15Dd9615497979' as `0x${string}`,
   TraitForgeNft: '0xCabF9e769a9Dd211836A0e417f3f5fDF57EF2309' as `0x${string}`,
   EntropyGenerator:
-    '0x35192165759556e3E150De2b31ad39F8aaC4F6d4' as `0x${string}`,
+    '0x31248a94C8ec87991834f175b1454D4e0E16D0A0' as `0x${string}`,
   EntityTrading: '0x3a61c55bC64B34246A890F3aD5BabC4B74dAb777' as `0x${string}`,
   EntityForging: '0xfCC74E0c0f63a6aF6A292fC3cA44C2082C138708' as `0x${string}`,
   DevFund: '0x87F1a488229995c9c24C7C528440b21A946F36c1' as `0x${string}`,

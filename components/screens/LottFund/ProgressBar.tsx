@@ -4,7 +4,7 @@ type BarTypes = {
   amountBidded: number; 
 };
 
-const MAX_BIDDED = 4;
+const MAX_BIDDED = 800;
 
 export const ProgressBar = ({ amountBidded }: BarTypes) => {
   const [progress, setProgress] = useState<{ number: number; percentage: string } | null>(null);
