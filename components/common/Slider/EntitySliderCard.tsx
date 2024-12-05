@@ -93,13 +93,17 @@ export const EntitySliderCard = ({
             </h6>
           )}
           <Image
-        loading="lazy"
-        src="/images/questionmarkimage.png"
-        alt="IMG"
-        className="w-auto rounded-xl md:max-h-[250px] object-cover mt-2"
-        width={250}
-        height={250}
-      />
+            loading={window.innerWidth <= 768 ? "eager" : "lazy"}
+            src={imageUrl}
+            alt="IMG"
+            className="w-full rounded-xl md:max-h-[250px] object-cover mt-1"
+            width={250}
+           height={250}
+           onLoad={e => {
+              const { naturalWidth } = e.target as HTMLImageElement;
+              setImgLoaded(!!naturalWidth);
+            }}
+          />
         </div>
         <div className="relative pt-1 pb-8">
         <div className="w-full absolute top-0 left-0 pt-2 text-[21px] xl:text-[20px] grid grid-cols-3 gap-x-4">

@@ -1,5 +1,5 @@
 import { createConfig, http } from 'wagmi';
-import { baseSepolia, sepolia } from 'viem/chains';
+import { base, sepolia } from 'viem/chains';
 import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 
 export const projectId = 'db99d4d311764dbfb7e4563ce13e71fb';
@@ -12,11 +12,11 @@ const { connectors } = getDefaultWallets({
 });
 
 export const config = createConfig({
-  chains: [sepolia, baseSepolia],
+  chains: [sepolia, base],
   connectors,
   transports: {
     [sepolia.id]: http(process.env.NEXT_PUBLIC_ALCHEMY_RPCURL),
-    [baseSepolia.id]: http(process.env.NEXT_PUBLIC_ALCHEMY_BASE_RPCURL)
+    [base.id]: http(process.env.NEXT_PUBLIC_ALCHEMY_BASE_RPCURL)
   },
   ssr: true,
 });

@@ -1,5 +1,5 @@
 import { createPublicClient, http } from 'viem';
-import { sepolia, baseSepolia } from 'viem/chains';
+import { sepolia, base } from 'viem/chains';
 
 export const sepoliaClient = createPublicClient({
   chain: sepolia,
@@ -7,6 +7,6 @@ export const sepoliaClient = createPublicClient({
 });
 
 export const baseClient = createPublicClient({
-  chain: baseSepolia,
+  chain: base,
   transport: http(process.env.NEXT_PUBLIC_ALCHEMY_BASE_RPCURL),
 });

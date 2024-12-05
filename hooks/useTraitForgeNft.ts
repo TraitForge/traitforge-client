@@ -1363,7 +1363,7 @@ export const useWonAmount = (address: `0x${string}`) => {
     chainId: baseSepolia.id,
     abi: LottFundABI,
     address: CONTRACT_ADDRESSES.LottFund,
-    functionName: 'getWinningAddress',
+    functionName: 'winnerClaimAmount',
     args: [address],
   });
 

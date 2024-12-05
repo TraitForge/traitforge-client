@@ -47,7 +47,7 @@ export const LottFundBody = ({ handleStep, handleClaim, wonAmount }: LottFundBod
           <Button
             bg="rgba(12, 0, 31,0.8)"
             variant="purple"
-            text={`Claim: ${wonAmount} ETH`}
+            text={`Claim: ${formatEther(BigInt(wonAmount))} ETH`}
             onClick={handleClaim}
             textClass="font-bebas !text-[22px] px-10 capitalize mt-4 active:!px-9 active:!text-[18px] active:text-gray-500"
           />
