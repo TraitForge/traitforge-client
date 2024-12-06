@@ -194,7 +194,7 @@ export const EntityCard = ({
         )}
         <div className="relative">
           <h6 className="absolute top-[52px] md:top-[95px] left-0 bg-opacity-80 text- text-xs md:text-sm px-2 py-1 rounded">
-          {Number(currentNukeFactor) > 20 
+          {Number(currentNukeFactor) > 20000 
              ? "20%" 
              : `${(Number(currentNukeFactor) / 1000).toFixed(2)}%`}
           </h6>
