@@ -15,6 +15,7 @@ const links = [
   { url: '/forging', text: 'FORGING' },
   { url: '/trading', text: 'MARKETPLACE' },
   { url: '/nuke-fund', text: 'NUKEFUND' },
+  {url: '/lottfund', text: 'LOTTFUND'},
   { url: '/explore', text: 'EXPLORE' },
   //{ url: '/stats', text: 'GAME STATS' },
 ];

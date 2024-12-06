@@ -3,6 +3,7 @@ export * from './DAOFund';
 export * from './DevFund';
 export * from './EntityForging';
 export * from './EntityTrading';
+export * from './LottFund'
 export * from './EntropyGenerator';
 export * from './NukeFund';
 export * from './Trait';

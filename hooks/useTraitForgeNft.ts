@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { formatEther } from 'viem';
 import {
@@ -6,6 +6,7 @@ import {
   useReadContracts,
   useWaitForTransactionReceipt,
   useWriteContract,
+  useWatchContractEvent
 } from 'wagmi';
 import { sepolia, base } from 'wagmi/chains';
 import { CONTRACT_ADDRESSES } from '~/constants/address';
@@ -15,8 +16,9 @@ import {
   EntropyGeneratorABI,
   NukeFundABI,
   TraitForgeNftABI,
+  LottFundABI
 } from '~/lib/abis';
-import { Entity, EntityForging, EntityTrading, Entropy } from '~/types';
+import { Entity, EntityForging, EntityTrading, Entropy, BidWinnerEvent } from '~/types';
 import { calculateEntityAttributes } from '~/utils';
 
 // --------- Read Functions -----------
@@ -379,7 +381,7 @@ export const useEntitiesForForging = () => {
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor, nukeFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor, maxBidPotential} =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId: Number(listing.tokenId),
@@ -388,6 +390,7 @@ export const useEntitiesForForging = () => {
         paddedEntropy,
         role,
         forgePotential,
+        maxBidPotential,
         performanceFactor,
         account: listing.seller,
         fee: Number(listing.price),
@@ -488,7 +491,7 @@ export const useEntitiesForSale = () => {
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor, nukeFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor, maxBidPotential } =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId: listing.tokenId,
@@ -498,6 +501,7 @@ export const useEntitiesForSale = () => {
         role,
         forgePotential,
         performanceFactor,
+        maxBidPotential,
         seller: listing.seller,
         price: Number(formatEther(listing.price)),
         isActive: listing.isActive,
@@ -528,7 +532,7 @@ export const useOwnerEntities = (address: `0x${string}`) => {
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor, nukeFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor, maxBidPotential} =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId,
@@ -538,6 +542,7 @@ export const useOwnerEntities = (address: `0x${string}`) => {
         role,
         forgePotential,
         performanceFactor,
+        maxBidPotential
       } as Entity;
     }),
     isFetching:
@@ -722,6 +727,53 @@ export const useApproveNft = () => {
       address: CONTRACT_ADDRESSES.TraitForgeNft,
       functionName: 'approve',
       args: [address, BigInt(tokenId)],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useApprovalForAll = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Approved Successfully');
+    }
+    if (isCreationError) {
+      toast.error(`Failed to approve`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Failed to approve`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (address: `0x${string}`) => {
+    await writeContractAsync({
+      chainId: base.id,
+      abi: TraitForgeNftABI,
+      address: CONTRACT_ADDRESSES.TraitForgeNft,
+      functionName: 'setApprovalForAll',
+      args: [address, true],
     });
   };
 
@@ -1068,5 +1120,258 @@ export const useNukeEntity = () => {
     hash,
     onWriteAsync,
     isConfirmed,
+  };
+};
+
+
+// LottFund
+export const useBidEntity = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity Bidded successfully!');
+    }
+    if (isCreationError) {
+      toast.error(`Bid failed. Please try again`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Bid failed. Please try again`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenId: number) => {
+    await writeContractAsync({
+      chainId: base.id,
+      abi: LottFundABI,
+      address: CONTRACT_ADDRESSES.LottFund,
+      functionName: 'bid',
+      args: [BigInt(tokenId)],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+
+// LottFund
+export const useClaimReward = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Winnings claimed successfully!');
+    }
+    if (isCreationError) {
+      toast.error(`Claim failed. Please try again`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Claim failed. Please try again`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async () => {
+    await writeContractAsync({
+      chainId: base.id,
+      abi: LottFundABI,
+      address: CONTRACT_ADDRESSES.LottFund,
+      functionName: 'claimWinningRewards',
+      args: [],
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+
+export const useBidEntities = () => {
+  const {
+    data: hash,
+    error: errorCreation,
+    isPending: isTxCreating,
+    isError: isCreationError,
+    writeContractAsync,
+  } = useWriteContract();
+  const {
+    isLoading: isTxConfirming,
+    error: errorConfirm,
+    isError: isConfirmError,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success('Entity/ies Bidded successfully!');
+    }
+    if (isCreationError) {
+      toast.error(`Bidding failed. Please try again`);
+      console.log(errorCreation?.message);
+    }
+    if (isConfirmError) {
+      toast.error(`Bidding failed. Please try again`);
+      console.log(errorConfirm?.message);
+    }
+  }, [isConfirmed, isCreationError, isConfirmError]);
+
+  const onWriteAsync = async (tokenIds: bigint[]) => {
+    await writeContractAsync({
+      chainId: base.id,
+      abi: LottFundABI,
+      address: CONTRACT_ADDRESSES.LottFund,
+      functionName: 'batchBid',
+      args: [tokenIds], 
+    });
+  };
+
+  return {
+    isPending: isTxCreating || isTxConfirming,
+    hash,
+    onWriteAsync,
+    isConfirmed,
+  };
+};
+
+export const useLottFundBalance = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: base.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'getFundBalance',
+    args: [],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useLottFundBidAmount = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: base.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'bidsAmount',
+    args: [],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useLottFundMaxBidAmount = () => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: base.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'maxBidAmount',
+    args: [],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useTokenBiddedAmount = (tokenId: bigint) => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: base.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'tokenBidCount',
+    args: [tokenId],
+  });
+
+  return {
+    data: BigInt(data ?? 0),
+    isFetching,
+    refetch,
+  };
+};
+
+export const useRecentBidWinners = () => {
+  const recentWinners = useRef<BidWinnerEvent[]>([]);
+  useWatchContractEvent({
+    address: CONTRACT_ADDRESSES.LottFund,
+    abi: LottFundABI,
+    eventName: 'BidWinner',
+    onLogs: (logs) => {
+      // Process the logs to extract event data
+      const newWinners = logs.map((log) => {
+        const { args } = log as unknown as {
+          args: [string, bigint, bigint];
+        };
+
+        return {
+          winner: args[0],
+          tokenId: BigInt(args[1]),
+          claimAmount: args[2].toString(),
+        };
+      });
+      recentWinners.current = [...newWinners, ...recentWinners.current].slice(0, 10);
+    },
+  });
+
+  return { data: recentWinners.current };
+};
+
+
+export const useWonAmount = (address: `0x${string}`) => {
+  const { data, isFetching, refetch } = useReadContract({
+    chainId: base.id,
+    abi: LottFundABI,
+    address: CONTRACT_ADDRESSES.LottFund,
+    functionName: 'winnerClaimAmount',
+    args: [address],
+  });
+
+  return {
+    data: Number(data ?? 0),
+    isFetching,
+    refetch,
   };
 };

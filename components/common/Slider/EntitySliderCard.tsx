@@ -5,6 +5,7 @@ import { EntityCardSkeleton } from '../EntityCardSkeleton';
 import { calculateEntityAttributes, calculateUri } from '~/utils';
 import { useIsSafari } from '~/hooks/useIsSafari';
 import { useEthPrice } from '~/hooks';
+import { max } from 'lodash';
 
 type EntitySliderCardTypes = {
   entropy: number;
@@ -30,7 +31,7 @@ export const EntitySliderCard = ({
   const usdAmount = Math.floor(Number(price) * ethPrice);
   const isEMP = (Number(entropy) % 10) === 7;
 
-  const { role, forgePotential, performanceFactor, nukeFactor } =
+  const { role, forgePotential, performanceFactor, nukeFactor, maxBidPotential } =
     calculateEntityAttributes(paddedEntropy);
 
   const wrapperClasses = classNames(
@@ -104,26 +105,26 @@ export const EntitySliderCard = ({
             }}
           />
         </div>
-         <div className="relative pt-2 pb-5">
-          <svg width="full" height="auto" viewBox="0 0 296 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 0.25H0.25V1.75H1V0.25ZM118.5 1L119.013 0.453058L118.797 0.25H118.5V1ZM159 39L158.487 39.5469L158.703 39.75H159V39ZM1 1.75H118.5V0.25H1V1.75ZM117.987 1.54694L158.487 39.5469L159.513 38.4531L119.013 0.453058L117.987 1.54694ZM159 39.75H296V38.25H159V39.75Z" fill="url(#paint0_linear_1401_7592)"/>
-            <defs>
-              <linearGradient id="paint0_linear_1401_7592" x1="-50.6222" y1="-41.8827" x2="292.622" y2="61.8827" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#14494C"/>
-                <stop offset="1" stopColor="#0ADFDB"/>
-              </linearGradient>
-            </defs>
-          </svg>
-         <div className="w-full absolute top-0 left-0 mt-2 text-[21px] xl:text-[20px] grid grid-cols-2 2xl:gap-x-3">
-          <div className="flex flex-col text-left pl-2 gap-1 pt-3">
-            <h6 className="text-[11px]">Forge <br/> Potential</h6>
-            <h6 className="text-2xl xl:text-xl">{forgePotential}</h6>
+        <div className="relative pt-1 pb-8">
+        <div className="w-full absolute top-0 left-0 pt-2 text-[21px] xl:text-[20px] grid grid-cols-3 gap-x-4">
+          
+            <div className="flex flex-col text-left items-center gap-1">
+              <h6 className="text-[12px] lg:text-[17px] font-medium">FP:</h6>
+              <h6 className="text-[12px] lg:text-[17px]">
+                {forgePotential}
+              </h6>
+            </div>
+          
+            <div className="flex flex-col text-center items-center gap-1">
+              <h6 className="text-[12px] lg:text-[17px] font-medium">BF:</h6>
+              <h6 className="text-[12px] lg:text-[17px]">{maxBidPotential}</h6>
+            </div>
+          
+            <div className="flex flex-col text-right items-center gap-1">
+              <h6 className="text-[12px] lg:text-[17px] font-medium">PF:</h6>
+              <h6 className="text-[12px] lg:text-[17px]">{performanceFactor}</h6>
+            </div>
           </div>
-          <div className="flex flex-col text-right pr-2 gap-2 pt-2.5">
-            <h6 className="text-[11px]">Performance <br/> Factor</h6>
-            <h6 className="text-2xl xl:text-xl">{performanceFactor}</h6>
-          </div>
-        </div>
         </div>
       </div>
     </div>
