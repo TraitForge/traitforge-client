@@ -87,8 +87,8 @@ export const EntityCard = ({
       'from-light-green border-neon-green shadow-custom-green': asPath === '/trading',
       'from-light-green border-light-green shadow-custom-green': asPath === '/explore',
       'from-light-orange border-neon-orange shadow-custom-forge': asPath === '/forging',
-      'from-light-purple border-neon-purple shadow-custom-purple': asPath === '/nuke-fund' || '/lottfund',
-      'bg-gray-800 opacity-50': isOwnedByUser,  // Apply conditionally
+      'from-light-purple border-neon-purple shadow-custom-purple': asPath === '/nuke-fund' || asPath === '/lottfund', // Fixed condition
+      'bg-gray-800 opacity-50': isOwnedByUser,
       'cursor-pointer': onSelect,
     }
   );

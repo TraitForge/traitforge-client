@@ -79,7 +79,7 @@ const LottFund = () => {
 
 
   const handleApprove = async () => {
-    if (selectedForBidding.length === 1) {
+    if (selectedForBidding.length == 1) {
       const tokenId = selectedForBidding[0]; 
       if(!tokenId){return};
       await onApprove(CONTRACT_ADDRESSES.LottFund, tokenId);

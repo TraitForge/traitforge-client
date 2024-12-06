@@ -381,7 +381,7 @@ export const useEntitiesForForging = () => {
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor, nukeFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor, maxBidPotential} =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId: Number(listing.tokenId),
@@ -390,6 +390,7 @@ export const useEntitiesForForging = () => {
         paddedEntropy,
         role,
         forgePotential,
+        maxBidPotential,
         performanceFactor,
         account: listing.seller,
         fee: Number(listing.price),
@@ -490,7 +491,7 @@ export const useEntitiesForSale = () => {
       const generation = tokenGenerations?.[index] ?? 0;
       const entropy = tokenEntropies?.[index] ?? 0;
       const paddedEntropy = entropy.toString().padStart(6, '0');
-      const { role, forgePotential, performanceFactor, nukeFactor } =
+      const { role, forgePotential, performanceFactor, nukeFactor, maxBidPotential } =
         calculateEntityAttributes(paddedEntropy);
       return {
         tokenId: listing.tokenId,
@@ -500,6 +501,7 @@ export const useEntitiesForSale = () => {
         role,
         forgePotential,
         performanceFactor,
+        maxBidPotential,
         seller: listing.seller,
         price: Number(formatEther(listing.price)),
         isActive: listing.isActive,
